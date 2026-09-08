@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hambúrguer Dourado</title>
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#f7f4ef;
+      color:#222;
+    }
+    header{
+      background:#171717;
+      color:white;
+      padding:20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    header h1{margin:0;font-size:22px}
+    header a{color:white;text-decoration:none}
+    main{
+      max-width:1100px;
+      margin:auto;
+      padding:25px 15px;
+      display:grid;
+      grid-template-columns:1fr 330px;
+      gap:25px;
+    }
+    .produtos{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:15px;
+    }
+    .card,.carrinho{
+      background:white;
+      padding:18px;
+      border-radius:18px;
+      box-shadow:0 3px 15px #0001;
+    }
+    .emoji{font-size:45px}
+    .card h3{margin:10px 0 5px}
+    .card p{color:#777}
+    button{
+      border:0;
+      border-radius:10px;
+      padding:12px 15px;
+      cursor:pointer;
+      background:#eee;
+      font-weight:bold;
+    }
+    .card button,.confirmar{
+      width:100%;
+      background:#e5a51a;
+      margin-top:10px;
+    }
+    .carrinho{
+      height:max-content;
+      position:sticky;
+      top:15px;
+    }
+    input,select{
+      width:100%;
+      padding:12px;
+      margin:7px 0;
+      border:1px solid #ddd;
+      border-radius:10px;
+    }
+    .item{
+      display:flex;
+      justify-content:space-between;
+      padding:10px 0;
+      border-bottom:1px solid #eee;
+    }
+    .mensagem{
+      margin-top:12px;
+      padding:10px;
+      background:#e9f6e5;
+      border-radius:10px;
+    }
+    @media(max-width:750px){
+      main{grid-template-columns:1fr}
+      .carrinho{position:static}
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🍔 Hambúrguer Dourado</h1>
+  <a href="#carrinho">Meu pedido</a>
+</header>
+
+<main>
+
+<section>
+  <h2>Cardápio</h2>
+  <div class="produtos" id="produtos">
+    <p>Carregando cardápio...</p>
+  </div>
+</section>
+
+<aside class="carrinho" id="carrinho">
+  <h2>🛒 Seu pedido</h2>
+
+  <div id="itens">
+    <p>Seu carrinho está vazio.</p>
+  </div>
+
+  <hr>
+
+  <h3>Total: <span id="total">R$ 0,00</span></h3>
+
+  <input id="nome" placeholder="Seu nome">
+
+  <label>
+    <input type="checkbox" id="entrega" checked>
+    Entrega
+  </label>
+
+  <input id="endereco" placeholder="Endereço de entrega">
+
+  <select id="pagamento">
+    <option value="PIX">PIX</option>
+    <option value="DINHEIRO">Dinheiro</option>
+    <option value="CARTÃO">Cartão</option>
+  </select>
+
+  <button class="confirmar" onclick="finalizarPedido()">
+    Confirmar pedido
+  </button>
+
+  <div id="mensagem"></div>
+</aside>
+
+</main>
+
+<script type="module">
+
+/*
+  CONEXÃO COM O SUPABASE
+
+  Vamos preencher esses dois campos depois.
+*/
+
+const SUPABASE_URL = "COLE_A_URL_DO_SUPABASE_AQUI";
+
+const SUPABASE_KEY = "COLE_A_PUBLISHABLE_KEY_AQUI";
+
+
+let produtos = [];
+let carrinho = [];
+
+
+function dinheiro(valor){
+  return Number(valor).toLocaleString("pt-BR",{
+    style:"currency",
+    currency:"BRL"
+  });
+}
+
+
+async function carregarProdutos(){
+
+  /*
+    A conexão real com o Supabase
+    será ativada na próxima etapa.
+  */
+
+  document.getElementById("produtos").innerHTML = `
+    <div class="card">
+      <div class="emoji">🍔</div>
+      <h3>Cardápio conectado</h3>
+      <p>Estamos preparando a conexão com o banco de dados.</p>
+    </div>
+  `;
+}
+
+
+function adicionar(produto){
+
+  const existente = carrinho.find(x => x.id === produto.id);
+
+  if(existente){
+    existente.quantidade++;
+  }else{
+    carrinho.push({
+      ...produto,
+      quantidade:1
+    });
+  }
+
+  atualizarCarrinho();
+}
+
+
+function atualizarCarrinho(){
+
+  const area = document.getElementById("itens");
+
+  if(carrinho.length === 0){
+
+    area.innerHTML = "<p>Seu carrinho está vazio.</p>";
+
+    document.getElementById("total").textContent =
+      dinheiro(0);
+
+    return;
+  }
+
+  let total = 0;
+
+  area.innerHTML = "";
+
+  carrinho.forEach(item => {
+
+    const subtotal =
+      Number(item.price) * item.quantidade;
+
+    total += subtotal;
+
+    area.innerHTML += `
+      <div class="item">
+        <span>
+          ${item.quantidade}x ${item.name}
+        </span>
+
+        <strong>
+          ${dinheiro(subtotal)}
+        </strong>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").textContent =
+    dinheiro(total);
+}
+
+
+async function finalizarPedido(){
+
+  const nome =
+    document.getElementById("nome").value.trim();
+
+  const endereco =
+    document.getElementById("endereco").value.trim();
+
+  const entrega =
+    document.getElementById("entrega").checked;
+
+  const pagamento =
+    document.getElementById("pagamento").value;
+
+
+  if(!nome){
+
+    alert("Digite seu nome.");
+
+    return;
+  }
+
+
+  if(carrinho.length === 0){
+
+    alert("Adicione algum produto ao pedido.");
+
+    return;
+  }
+
+
+  if(entrega && !endereco){
+
+    alert("Digite seu endereço.");
+
+    return;
+  }
+
+
+  const total =
+    carrinho.reduce(
+      (soma,item) =>
+        soma + Number(item.price) * item.quantidade,
+      0
+    );
+
+
+  /*
+    O envio para o Supabase
+    será ativado na próxima etapa.
+  */
+
+
+  document.getElementById("mensagem").innerHTML = `
+    <div class="mensagem">
+      ✅ Pedido preparado!<br>
+      Total: <strong>${dinheiro(total)}</strong><br>
+      Pagamento: ${pagamento}
+    </div>
+  `;
+}
+
+
+carregarProdutos();
+
+</script>
+
+</body>
+</html>
