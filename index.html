@@ -370,17 +370,15 @@ async function loadProducts(){
     .from("products")
     .select("*")
     .eq("active",true)
-    .order("id");
-
-  if(error){
+    .order("id");if(error){
 
     document.getElementById("products").innerHTML =
-      "<p>Erro ao carregar o cardápio.</p>";
+      "<p>Erro ao carregar o cardápio.</p><p>" + error.message + "</p>";
 
     console.log(error);
 
     return;
-  }
+}
 
   products = data || [];
 
