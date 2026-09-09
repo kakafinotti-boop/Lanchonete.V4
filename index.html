@@ -1951,49 +1951,60 @@ CARRINHO — CORRIGIDO
 
 function addToCart(productId){
 
-console.log("🍔 Adicionando produto:",productId);
+    console.log("🍔 CLIQUEI EM ADICIONAR:", productId);
 
-const product=products.find(item=>
-String(item.id)===String(productId)
-);
+    const product = products.find(
+        item => String(item.id) === String(productId)
+    );
 
-if(!product){
+    if(!product){
 
-console.error(
-"❌ Produto não encontrado:",
-productId,
-products
-);
+        console.error(
+            "❌ PRODUTO NÃO ENCONTRADO:",
+            productId,
+            products
+        );
 
-showToast("Produto não encontrado.");
-return;
-}
+        alert("Produto não encontrado.");
+        return;
+    }
 
-const existing=cart.find(item=>
-String(item.id)===String(productId)
-);
+    const existing = cart.find(
+        item => String(item.id) === String(productId)
+    );
 
-if(existing){
+    if(existing){
 
-existing.qty++;
+        existing.qty += 1;
 
-}else{
+    }else{
 
-cart.push({
-id:product.id,
-name:product.name,
-price:parseMoney(product.price),
-qty:1
-});
+        cart.push({
 
-}
+            id: product.id,
 
-console.log("🛒 CARRINHO:",cart);
+            name: product.name,
 
-renderCart();
-renderProducts();
+            price: parseMoney(product.price),
 
-showToast("🍔 Adicionado ao carrinho!");
+            qty: 1
+
+        });
+
+    }
+
+    console.log("🛒 CARRINHO AGORA:", cart);
+
+    /* ATUALIZA O CARRINHO */
+
+    renderCart();
+
+    /* ATUALIZA OS PRODUTOS */
+
+    renderProducts();
+
+    showToast("🍔 Adicionado ao carrinho!");
+
 }
 
 function changeQty(productId,amount){
@@ -2044,71 +2055,151 @@ RENDER CART
 
 function renderCart(){
 
-const container=document.getElementById("cartContainer");
-const floating=document.getElementById("floatingCart");
-const drawerButton=document.getElementById("drawerCheckoutBtn");
-const floatingCount=document.getElementById("floatingCartCount");
-const floatingTotal=document.getElementById("floatingCartTotal");
+    const floating = document.getElementById("floatingCart");
+    const floatingCount = document.getElementById("floatingCartCount");
+    const floatingTotal = document.getElementById("floatingCartTotal");
+    const container = document.getElementById("cartContainer");
+    const drawerButton = document.getElementById("drawerCheckoutBtn");
 
-if(!container||!floating||!drawerButton){
+    console.log("🛒 RENDERIZANDO CARRINHO");
+    console.log("Itens:", cart);
 
-console.error("❌ Elementos do carrinho não encontrados.");
-return;
+    if(!floating){
+        console.error("❌ floatingCart NÃO EXISTE");
+        return;
+    }
+
+    const count = getCartCount();
+    const total = getCartTotal();
+
+    /* CONTADOR */
+
+    if(floatingCount){
+        floatingCount.textContent = count;
+    }
+
+    /* TOTAL */
+
+    if(floatingTotal){
+        floatingTotal.textContent = money(total);
+    }
+
+    /* =========================
+       MOSTRAR / ESCONDER BOTÃO
+       ========================= */
+
+    if(count > 0){
+
+        console.log("🟢 MOSTRANDO CARRINHO");
+
+        floating.classList.remove("hidden");
+        floating.classList.add("visible");
+
+        floating.style.display = "flex";
+        floating.style.visibility = "visible";
+        floating.style.opacity = "1";
+        floating.style.pointerEvents = "auto";
+
+    }else{
+
+        console.log("🔴 ESCONDENDO CARRINHO");
+
+        floating.classList.remove("visible");
+        floating.classList.add("hidden");
+
+        floating.style.display = "none";
+    }
+
+    /* =========================
+       CONTEÚDO DO CARRINHO
+       ========================= */
+
+    if(!container) return;
+
+    if(cart.length === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                Seu carrinho está vazio.
+            </div>
+        `;
+
+        if(drawerButton){
+            drawerButton.style.display = "none";
+        }
+
+        updateCheckoutAvailability();
+        return;
+    }
+
+    if(drawerButton){
+        drawerButton.style.display = "block";
+    }
+
+    container.innerHTML = cart.map(item => {
+
+        const itemTotal =
+            parseMoney(item.price) *
+            (Number(item.qty) || 0);
+
+        return `
+            <div class="cart-item">
+
+                <div>
+
+                    <strong>
+                        ${escapeHtml(item.name)}
+                    </strong>
+
+                    <div class="muted">
+                        ${money(item.price)} cada
+                    </div>
+
+                    <div class="gold">
+                        ${money(itemTotal)}
+                    </div>
+
+                </div>
+
+                <div class="qty">
+
+                    <button
+                        onclick='changeQty(${JSON.stringify(String(item.id))},-1)'>
+                        −
+                    </button>
+
+                    <strong>
+                        ${item.qty}
+                    </strong>
+
+                    <button
+                        onclick='changeQty(${JSON.stringify(String(item.id))},1)'>
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("") +
+
+    `
+        <div class="total">
+
+            <span>
+                Subtotal
+            </span>
+
+            <span class="gold">
+                ${money(total)}
+            </span>
+
+        </div>
+    `;
+
+    updateCheckoutAvailability();
 }
-
-const count=getCartCount();
-const total=getCartTotal();
-
-console.log("🛒 QUANTIDADE:",count,"TOTAL:",total);
-
-if(floatingCount){
-floatingCount.textContent=String(count);
-}
-
-if(floatingTotal){
-floatingTotal.textContent=money(total);
-}
-
-/* BOTÃO FLUTUANTE */
-
-if(count>0){
-
-floating.classList.remove("hidden");
-floating.classList.add("visible");
-
-floating.style.setProperty("display","flex","important");
-floating.style.setProperty("visibility","visible","important");
-floating.style.setProperty("opacity","1","important");
-floating.style.setProperty("pointer-events","auto","important");
-
-}else{
-
-floating.classList.remove("visible");
-floating.classList.add("hidden");
-
-floating.style.setProperty("display","none","important");
-}
-
-/* CARRINHO VAZIO */
-
-if(!cart.length){
-
-container.innerHTML=`
-<div class="empty">
-Seu carrinho está vazio.
-</div>
-`;
-
-drawerButton.style.setProperty(
-"display",
-"none",
-"important"
-);
-
-updateCheckoutAvailability();
-return;
-}
-
 /* ITENS */
 
 drawerButton.style.setProperty(
