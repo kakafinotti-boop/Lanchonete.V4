@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+
 <title>Burguer Gold</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -77,16 +78,8 @@ main{
 }
 
 .btn:hover{filter:brightness(1.08)}
-
-.btn.secondary{
-  background:#292929;
-  color:#fff;
-}
-
-.btn.danger{
-  background:#8e2525;
-  color:#fff;
-}
+.btn.secondary{background:#292929;color:#fff}
+.btn.danger{background:#8e2525;color:#fff}
 
 .btn.small{
   width:auto;
@@ -97,7 +90,7 @@ main{
 
 .btn:disabled{
   cursor:not-allowed;
-  filter:none;
+  opacity:.55;
 }
 
 input,textarea,select{
@@ -191,17 +184,19 @@ label{
 }
 
 @media(max-width:700px){
-  .business-hours-row{
-    grid-template-columns:1fr 1fr;
-  }
 
-  .business-hours-day{
-    grid-column:1/-1;
-  }
+.business-hours-row{
+  grid-template-columns:1fr 1fr;
+}
 
-  .business-hours-row .btn{
-    width:100%;
-  }
+.business-hours-day{
+  grid-column:1/-1;
+}
+
+.business-hours-row .btn{
+  width:100%;
+}
+
 }
 
 /* ================= CLIENTE ================= */
@@ -215,9 +210,7 @@ label{
   scrollbar-width:none;
 }
 
-.category-tabs::-webkit-scrollbar{
-  display:none;
-}
+.category-tabs::-webkit-scrollbar{display:none}
 
 .category-tab{
   flex:0 0 auto;
@@ -375,9 +368,7 @@ label{
   display:none;
 }
 
-.overlay.active{
-  display:block;
-}
+.overlay.active{display:block}
 
 .cart-drawer{
   position:fixed;
@@ -479,9 +470,7 @@ label{
   scrollbar-width:none;
 }
 
-.admin-tabs::-webkit-scrollbar{
-  display:none;
-}
+.admin-tabs::-webkit-scrollbar{display:none}
 
 .admin-tab{
   flex:0 0 auto;
@@ -499,13 +488,8 @@ label{
   border-color:#d4af37;
 }
 
-.admin-section{
-  display:none;
-}
-
-.admin-section.active{
-  display:block;
-}
+.admin-section{display:none}
+.admin-section.active{display:block}
 
 .dashboard-grid,
 .report-grid{
@@ -623,9 +607,7 @@ label{
   border-bottom:1px solid #292929;
 }
 
-.history-item:last-child{
-  border-bottom:0;
-}
+.history-item:last-child{border-bottom:0}
 
 .zone-row{
   display:grid;
@@ -662,26 +644,22 @@ label{
   text-align:center;
 }
 
-.success-icon{
-  font-size:55px;
-}
+.success-icon{font-size:55px}
 
 @media(max-width:600px){
-  header h1{
-    font-size:25px;
-  }
 
-  main{
-    width:94%;
-  }
+header h1{font-size:25px}
 
-  .movement{
-    grid-template-columns:1fr;
-  }
+main{width:94%}
 
-  .zone-row{
-    grid-template-columns:1fr 1fr;
-  }
+.movement{
+  grid-template-columns:1fr;
+}
+
+.zone-row{
+  grid-template-columns:1fr 1fr;
+}
+
 }
 </style>
 </head>
@@ -691,8 +669,11 @@ label{
 <div class="app">
 
 <header>
-  <h1>🍔 Burguer Gold</h1>
-  <p>Sabor que vale ouro.</p>
+
+<h1>🍔 Burguer Gold</h1>
+
+<p>Sabor que vale ouro.</p>
+
 </header>
 
 <main>
@@ -716,7 +697,11 @@ Escolha seus lanches e monte seu pedido.
 <div id="categoryTabs" class="category-tabs"></div>
 
 <div id="productsContainer" class="products">
-<div class="empty">Carregando cardápio...</div>
+
+<div class="empty">
+Carregando cardápio...
+</div>
+
 </div>
 
 </div>
@@ -737,15 +722,31 @@ Escolha seus lanches e monte seu pedido.
 
 <label>
 Nome
-<input id="customerName" type="text" placeholder="Seu nome">
+
+<input
+id="customerName"
+type="text"
+placeholder="Seu nome">
+
 </label>
 
 <label>
 Tipo do pedido
-<select id="deliveryType" onchange="toggleDeliveryFields()">
-<option value="ENTREGA">Entrega</option>
-<option value="RETIRADA">Retirada na loja</option>
+
+<select
+id="deliveryType"
+onchange="toggleDeliveryFields()">
+
+<option value="ENTREGA">
+Entrega
+</option>
+
+<option value="RETIRADA">
+Retirada na loja
+</option>
+
 </select>
+
 </label>
 
 <div id="addressArea">
@@ -753,30 +754,56 @@ Tipo do pedido
 <label>
 Bairro
 
-<select id="customerNeighborhood" onchange="updateCheckoutTotal()">
-<option value="">Selecione seu bairro</option>
+<select
+id="customerNeighborhood"
+onchange="updateCheckoutTotal()">
+
+<option value="">
+Selecione seu bairro
+</option>
+
 </select>
 
 </label>
 
 <label>
 Endereço completo
-<textarea id="customerAddress" placeholder="Rua, número, complemento..."></textarea>
+
+<textarea
+id="customerAddress"
+placeholder="Rua, número, complemento..."></textarea>
+
 </label>
 
-<div id="deliveryFeePreview" class="checkout-delivery">
+<div
+id="deliveryFeePreview"
+class="checkout-delivery">
+
 Taxa de entrega: R$ 0,00
+
 </div>
 
 </div>
 
 <label>
 Forma de pagamento
+
 <select id="payment">
-<option value="PIX">PIX</option>
-<option value="DINHEIRO">Dinheiro</option>
-<option value="CARTAO">Cartão</option>
+
+<option value="PIX">
+PIX
+</option>
+
+<option value="DINHEIRO">
+Dinheiro
+</option>
+
+<option value="CARTAO">
+Cartão
+</option>
+
 </select>
+
 </label>
 
 <div class="card" style="margin-top:20px">
@@ -786,28 +813,56 @@ Forma de pagamento
 <div id="checkoutItems"></div>
 
 <div class="checkout-line">
+
 <span>Subtotal</span>
-<strong id="checkoutSubtotal">R$ 0,00</strong>
+
+<strong id="checkoutSubtotal">
+R$ 0,00
+</strong>
+
 </div>
 
 <div class="checkout-line">
+
 <span>Entrega</span>
-<strong id="checkoutDelivery">R$ 0,00</strong>
+
+<strong id="checkoutDelivery">
+R$ 0,00
+</strong>
+
 </div>
 
 <div class="total">
+
 <span>Total</span>
-<span id="checkoutTotal" class="gold">R$ 0,00</span>
-</div>
+
+<span
+id="checkoutTotal"
+class="gold">
+
+R$ 0,00
+
+</span>
 
 </div>
 
-<button id="confirmOrderBtn" class="btn" onclick="sendOrder()">
+</div>
+
+<button
+id="confirmOrderBtn"
+class="btn"
+onclick="sendOrder()">
+
 Confirmar pedido
+
 </button>
 
-<button class="btn secondary" onclick="showScreen('menuScreen')">
+<button
+class="btn secondary"
+onclick="showScreen('menuScreen')">
+
 Voltar
+
 </button>
 
 </div>
@@ -820,9 +875,13 @@ Voltar
 
 <div class="card success">
 
-<div class="success-icon">✅</div>
+<div class="success-icon">
+✅
+</div>
 
-<h2>Pedido recebido!</h2>
+<h2>
+Pedido recebido!
+</h2>
 
 <p class="muted">
 Seu pedido foi enviado para a Burguer Gold.
@@ -830,11 +889,19 @@ Seu pedido foi enviado para a Burguer Gold.
 
 <p>
 Número do pedido:
-<strong id="successOrderId" class="gold"></strong>
+
+<strong
+id="successOrderId"
+class="gold"></strong>
+
 </p>
 
-<button class="btn" onclick="location.reload()">
+<button
+class="btn"
+onclick="location.reload()">
+
 Fazer novo pedido
+
 </button>
 
 </div>
@@ -845,9 +912,13 @@ Fazer novo pedido
 
 <section id="adminLogin" class="screen">
 
-<div class="card" style="max-width:450px;margin:40px auto">
+<div
+class="card"
+style="max-width:450px;margin:40px auto">
 
-<h2>🔐 Administração</h2>
+<h2>
+🔐 Administração
+</h2>
 
 <p class="muted">
 Entre com a conta da Burguer Gold.
@@ -855,20 +926,38 @@ Entre com a conta da Burguer Gold.
 
 <label>
 E-mail
-<input id="adminEmail" type="email" placeholder="E-mail">
+
+<input
+id="adminEmail"
+type="email"
+placeholder="E-mail">
+
 </label>
 
 <label>
 Senha
-<input id="adminPassword" type="password" placeholder="Senha">
+
+<input
+id="adminPassword"
+type="password"
+placeholder="Senha">
+
 </label>
 
-<button class="btn" onclick="adminLogin()">
+<button
+class="btn"
+onclick="adminLogin()">
+
 Entrar
+
 </button>
 
-<button class="btn secondary" onclick="showScreen('menuScreen')">
+<button
+class="btn secondary"
+onclick="showScreen('menuScreen')">
+
 Voltar
+
 </button>
 
 </div>
@@ -884,12 +973,23 @@ Voltar
 <div class="admin-header">
 
 <div>
-<h2>⚙️ Painel Burguer Gold</h2>
-<p class="muted">Administração da loja</p>
+
+<h2>
+⚙️ Painel Burguer Gold
+</h2>
+
+<p class="muted">
+Administração da loja
+</p>
+
 </div>
 
-<button class="btn small secondary" onclick="adminLogout()">
+<button
+class="btn small secondary"
+onclick="adminLogout()">
+
 Sair
+
 </button>
 
 </div>
@@ -898,45 +998,73 @@ Sair
 
 <div class="admin-tabs">
 
-<button id="adminTabDashboard" class="admin-tab active"
+<button
+id="adminTabDashboard"
+class="admin-tab active"
 onclick="openAdminTab('dashboard')">
+
 📊 Visão geral
+
 </button>
 
-<button id="adminTabOrders" class="admin-tab"
+<button
+id="adminTabOrders"
+class="admin-tab"
 onclick="openAdminTab('orders')">
+
 📋 Pedidos
+
 </button>
 
-<button id="adminTabProducts" class="admin-tab"
+<button
+id="adminTabProducts"
+class="admin-tab"
 onclick="openAdminTab('products')">
+
 🍔 Produtos
+
 </button>
 
-<button id="adminTabCash" class="admin-tab"
+<button
+id="adminTabCash"
+class="admin-tab"
 onclick="openAdminTab('cash')">
+
 💰 Caixa
+
 </button>
 
-<button id="adminTabReports" class="admin-tab"
+<button
+id="adminTabReports"
+class="admin-tab"
 onclick="openAdminTab('reports')">
+
 📈 Relatórios
+
 </button>
 
-<button id="adminTabSettings" class="admin-tab"
+<button
+id="adminTabSettings"
+class="admin-tab"
 onclick="openAdminTab('settings')">
+
 ⚙️ Configurações
+
 </button>
 
 </div>
 
 <!-- DASHBOARD -->
 
-<div id="admin-dashboard" class="admin-section active">
+<div
+id="admin-dashboard"
+class="admin-section active">
 
 <div class="card">
 
-<h2>📊 Visão geral</h2>
+<h2>
+📊 Visão geral
+</h2>
 
 <div id="dashboardContent">
 Carregando...
@@ -948,19 +1076,32 @@ Carregando...
 
 <!-- PEDIDOS -->
 
-<div id="admin-orders" class="admin-section">
+<div
+id="admin-orders"
+class="admin-section">
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-<h2>📋 Pedidos</h2>
-<p class="muted">Pedidos recebidos pela loja.</p>
+
+<h2>
+📋 Pedidos
+</h2>
+
+<p class="muted">
+Pedidos recebidos pela loja.
+</p>
+
 </div>
 
-<button class="btn small secondary" onclick="loadOrders()">
+<button
+class="btn small secondary"
+onclick="loadOrders()">
+
 ↻ Atualizar
+
 </button>
 
 </div>
@@ -975,11 +1116,15 @@ Carregando pedidos...
 
 <!-- PRODUTOS -->
 
-<div id="admin-products-section" class="admin-section">
+<div
+id="admin-products-section"
+class="admin-section">
 
 <div class="card">
 
-<h2>🍔 Produtos</h2>
+<h2>
+🍔 Produtos
+</h2>
 
 <p class="muted">
 Cadastre os produtos e organize o cardápio.
@@ -987,46 +1132,89 @@ Cadastre os produtos e organize o cardápio.
 
 <label>
 Nome do produto
-<input id="productName" type="text" placeholder="Ex: X-Bacon">
+
+<input
+id="productName"
+type="text"
+placeholder="Ex: X-Bacon">
+
 </label>
 
 <label>
 O que vem no produto?
-<textarea id="productDescription"
+
+<textarea
+id="productDescription"
 placeholder="Ex: pão, hambúrguer, queijo, bacon..."></textarea>
+
 </label>
 
 <label>
 Preço
-<input id="productPrice" type="number" step="0.01" placeholder="24.90">
+
+<input
+id="productPrice"
+type="text"
+inputmode="decimal"
+placeholder="24,90">
+
 </label>
 
 <label>
 Categoria
 
 <select id="productCategory">
-<option value="Lanches">🍔 Lanches</option>
-<option value="Combos">📦 Combos</option>
-<option value="Porções">🍟 Porções</option>
-<option value="Bebidas">🥤 Bebidas</option>
-<option value="Sobremesas">🍰 Sobremesas</option>
-<option value="Outros">⭐ Outros</option>
+
+<option value="Lanches">
+🍔 Lanches
+</option>
+
+<option value="Combos">
+📦 Combos
+</option>
+
+<option value="Porções">
+🍟 Porções
+</option>
+
+<option value="Bebidas">
+🥤 Bebidas
+</option>
+
+<option value="Sobremesas">
+🍰 Sobremesas
+</option>
+
+<option value="Outros">
+⭐ Outros
+</option>
+
 </select>
 
 </label>
 
-<button class="btn" onclick="createProduct()">
+<button
+class="btn"
+onclick="createProduct()">
+
 ➕ Adicionar produto
+
 </button>
 
 </div>
 
 <div class="card">
 
-<h3>Produtos cadastrados</h3>
+<h3>
+Produtos cadastrados
+</h3>
 
-<div id="adminProducts" class="admin-products">
+<div
+id="adminProducts"
+class="admin-products">
+
 Carregando produtos...
+
 </div>
 
 </div>
@@ -1035,21 +1223,32 @@ Carregando produtos...
 
 <!-- CAIXA -->
 
-<div id="admin-cash" class="admin-section">
+<div
+id="admin-cash"
+class="admin-section">
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-<h2>💰 Caixa</h2>
+
+<h2>
+💰 Caixa
+</h2>
+
 <p class="muted">
 Controle as vendas e faça o fechamento.
 </p>
+
 </div>
 
-<button class="btn small secondary" onclick="loadCashRegister()">
+<button
+class="btn small secondary"
+onclick="loadCashRegister()">
+
 ↻ Atualizar
+
 </button>
 
 </div>
@@ -1064,21 +1263,32 @@ Carregando caixa...
 
 <!-- RELATÓRIOS -->
 
-<div id="admin-reports" class="admin-section">
+<div
+id="admin-reports"
+class="admin-section">
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-<h2>📈 Relatórios</h2>
+
+<h2>
+📈 Relatórios
+</h2>
+
 <p class="muted">
 Resumo das vendas da Burguer Gold.
 </p>
+
 </div>
 
-<button class="btn small secondary" onclick="loadReports()">
+<button
+class="btn small secondary"
+onclick="loadReports()">
+
 ↻ Atualizar
+
 </button>
 
 </div>
@@ -1093,28 +1303,26 @@ Carregando relatórios...
 
 <!-- CONFIGURAÇÕES -->
 
-<div id="admin-settings" class="admin-section">
-
-<div class="card">
-
-<h2>⚙️ Configurações</h2>
-
-<p class="muted">
-Configure os horários e as taxas de entrega da loja.
-</p>
+<div
+id="admin-settings"
+class="admin-section">
 
 <!-- HORÁRIOS -->
 
 <div class="card">
 
-<h3>🕐 Horário de funcionamento</h3>
+<h2>
+🕐 Horário de funcionamento
+</h2>
 
 <p class="muted">
 Defina os dias e horários em que a loja aceita pedidos.
 </p>
 
 <div id="businessHoursAdmin">
+
 Carregando horários...
+
 </div>
 
 </div>
@@ -1123,28 +1331,54 @@ Carregando horários...
 
 <div class="card">
 
-<h3>➕ Novo bairro</h3>
+<h2>
+📍 Bairros e taxas de entrega
+</h2>
+
+<p class="muted">
+Cadastre os bairros e defina a taxa de entrega de cada região.
+</p>
+
+<div class="card">
+
+<h3>
+➕ Novo bairro
+</h3>
 
 <label>
 Bairro
-<input id="zoneNeighborhood" type="text"
+
+<input
+id="zoneNeighborhood"
+type="text"
 placeholder="Ex: Vila Santa Cecília">
+
 </label>
 
 <label>
 Taxa de entrega
-<input id="zoneFee" type="number"
-step="0.01"
-placeholder="5.00">
+
+<input
+id="zoneFee"
+type="text"
+inputmode="decimal"
+placeholder="5,00">
+
 </label>
 
-<button class="btn" onclick="createDeliveryZone()">
+<button
+class="btn"
+onclick="createDeliveryZone()">
+
 ➕ Adicionar bairro
+
 </button>
 
 </div>
 
-<h3>📍 Bairros cadastrados</h3>
+<h3>
+📍 Bairros cadastrados
+</h3>
 
 <div id="zonesContainer">
 Carregando bairros...
@@ -1162,13 +1396,23 @@ Carregando bairros...
 
 <!-- ================= CARRINHO ================= -->
 
-<button id="floatingCart"
+<button
+id="floatingCart"
 class="floating-cart"
 onclick="openCart()">
 
 <div>
-<span id="floatingCartCount" class="cart-count">0</span>
+
+<span
+id="floatingCartCount"
+class="cart-count">
+
+0
+
+</span>
+
 itens
+
 </div>
 
 <div id="floatingCartTotal">
@@ -1177,31 +1421,50 @@ R$ 0,00
 
 </button>
 
-<div id="cartOverlay"
+<div
+id="cartOverlay"
 class="overlay"
 onclick="closeCart()">
 </div>
 
-<div id="cartDrawer" class="cart-drawer">
+<div
+id="cartDrawer"
+class="cart-drawer">
 
 <div class="cart-header">
 
 <div>
-<h2>🛒 Seu carrinho</h2>
-<p class="muted">Confira seu pedido.</p>
+
+<h2>
+🛒 Seu carrinho
+</h2>
+
+<p class="muted">
+Confira seu pedido.
+</p>
+
 </div>
 
-<button class="close-cart" onclick="closeCart()">×</button>
+<button
+class="close-cart"
+onclick="closeCart()">
+
+×
+
+</button>
 
 </div>
 
 <div id="cartContainer"></div>
 
-<button id="drawerCheckoutBtn"
+<button
+id="drawerCheckoutBtn"
 class="btn"
 onclick="goCheckout()"
 style="display:none">
+
 Continuar pedido
+
 </button>
 
 </div>
@@ -1230,43 +1493,34 @@ SUPABASE_KEY
 CONFIGURAÇÕES
 ============================================================ */
 
-const DEFAULT_DELIVERY_FEE = 0;
+const DEFAULT_DELIVERY_FEE=0;
 
-const STORE_TIMEZONE = "America/Sao_Paulo";
+const STORE_TIMEZONE=
+"America/Sao_Paulo";
 
-const WEEKDAYS = {
-  Sun:0,
-  Mon:1,
-  Tue:2,
-  Wed:3,
-  Thu:4,
-  Fri:5,
-  Sat:6
-};
-
-const WEEKDAY_NAMES = [
-  "Domingo",
-  "Segunda-feira",
-  "Terça-feira",
-  "Quarta-feira",
-  "Quinta-feira",
-  "Sexta-feira",
-  "Sábado"
+const WEEKDAY_NAMES=[
+"Domingo",
+"Segunda-feira",
+"Terça-feira",
+"Quarta-feira",
+"Quinta-feira",
+"Sexta-feira",
+"Sábado"
 ];
 
-let products = [];
-let cart = [];
-let selectedCategory = "Todos";
+let products=[];
+let cart=[];
+let selectedCategory="Todos";
 
-let deliveryZones = [];
+let deliveryZones=[];
 
-let currentCashRegister = null;
-let currentCashData = null;
+let currentCashRegister=null;
+let currentCashData=null;
 
-let adminOrders = [];
+let adminOrders=[];
 
-let businessHours = [];
-let businessHoursLoaded = false;
+let businessHours=[];
+let businessHoursLoaded=false;
 
 /* ============================================================
 UTILIDADES
@@ -1274,7 +1528,7 @@ UTILIDADES
 
 function money(value){
 
-return Number(value || 0).toLocaleString(
+return Number(value||0).toLocaleString(
 "pt-BR",
 {
 style:"currency",
@@ -1284,21 +1538,52 @@ currency:"BRL"
 
 }
 
+/* CORRIGIDO:
+5,00 -> 5
+5.00 -> 5
+1.234,56 -> 1234.56
+*/
+
 function parseMoney(value){
 
-if(typeof value === "number") return value;
+if(typeof value==="number"){
+return value;
+}
+
+const str=String(value).trim();
+
+if(!str){
+return 0;
+}
+
+if(
+str.includes(",") &&
+str.includes(".")
+){
 
 return Number(
-String(value)
+str
 .replace(/\./g,"")
 .replace(",",".")
 )||0;
 
 }
 
+if(str.includes(",")){
+
+return Number(
+str.replace(",",".")
+)||0;
+
+}
+
+return Number(str)||0;
+
+}
+
 function escapeHtml(text){
 
-return String(text ?? "")
+return String(text??"")
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
@@ -1309,9 +1594,10 @@ return String(text ?? "")
 
 function formatDateTime(date){
 
-if(!date) return "-";
+if(!date)return "-";
 
-return new Date(date).toLocaleString("pt-BR");
+return new Date(date)
+.toLocaleString("pt-BR");
 
 }
 
@@ -1323,7 +1609,8 @@ document
 screen.classList.remove("active");
 });
 
-const screen=document.getElementById(id);
+const screen=
+document.getElementById(id);
 
 if(screen){
 screen.classList.add("active");
@@ -1335,32 +1622,39 @@ window.scrollTo(0,0);
 
 function showToast(message){
 
-const toast=document.getElementById("toast");
+const toast=
+document.getElementById("toast");
 
 toast.textContent=message;
+
 toast.classList.add("show");
 
 clearTimeout(window.toastTimer);
 
-window.toastTimer=setTimeout(()=>{
+window.toastTimer=
+setTimeout(()=>{
 toast.classList.remove("show");
 },1800);
 
 }
 
 /* ============================================================
-HORÁRIO DA LOJA
+HORÁRIO DE FUNCIONAMENTO
 ============================================================ */
 
 function normalizeTime(time){
 
-return time ? String(time).slice(0,5) : "";
+if(!time){
+return null;
+}
+
+return String(time).slice(0,5);
 
 }
 
 function formatTime(time){
 
-return normalizeTime(time);
+return normalizeTime(time)||"--:--";
 
 }
 
@@ -1368,23 +1662,15 @@ function timeToMinutes(time){
 
 if(!time)return null;
 
-const normalized=normalizeTime(time);
-
-const parts=normalized.split(":");
+const parts=
+String(time)
+.substring(0,5)
+.split(":")
+.map(Number);
 
 if(parts.length<2)return null;
 
-const h=Number(parts[0]);
-const m=Number(parts[1]);
-
-if(
-Number.isNaN(h) ||
-Number.isNaN(m)
-){
-return null;
-}
-
-return h*60+m;
+return parts[0]*60+parts[1];
 
 }
 
@@ -1402,21 +1688,30 @@ hourCycle:"h23"
 }
 ).formatToParts(new Date());
 
-const obj=
-Object.fromEntries(
-parts.map(part=>[
-part.type,
-part.value
-])
-);
+const result={};
 
-return {
+parts.forEach(part=>{
+result[part.type]=part.value;
+});
 
-day:WEEKDAYS[obj.weekday],
+const weekdayMap={
+Sun:0,
+Mon:1,
+Tue:2,
+Wed:3,
+Thu:4,
+Fri:5,
+Sat:6
+};
+
+return{
+
+day:
+weekdayMap[result.weekday],
 
 minutes:
-Number(obj.hour)*60+
-Number(obj.minute)
+Number(result.hour)*60+
+Number(result.minute)
 
 };
 
@@ -1427,34 +1722,49 @@ function getBusinessHour(day){
 return businessHours.find(
 hour=>
 Number(hour.day_of_week)===Number(day)
-)||null;
+);
 
 }
 
-function intervalOpen(day,currentMinutes){
-
-if(!day || !day.is_open){
-return false;
-}
-
-const open=timeToMinutes(day.open_time);
-const close=timeToMinutes(day.close_time);
+function intervalOpen(hour,currentMinutes){
 
 if(
-open===null ||
-close===null
+!hour ||
+!hour.is_open ||
+!hour.open_time ||
+!hour.close_time
 ){
+
+return false;
+
+}
+
+const open=
+timeToMinutes(hour.open_time);
+
+const close=
+timeToMinutes(hour.close_time);
+
+if(open===null||close===null){
 return false;
 }
 
 /*
-HORÁRIO NORMAL
-Ex: 18:00 → 23:00
+Mesmo horário significa loja fechada.
+*/
+
+if(open===close){
+return false;
+}
+
+/*
+Horário normal:
+18:00 -> 23:00
 */
 
 if(open<close){
 
-return (
+return(
 currentMinutes>=open &&
 currentMinutes<close
 );
@@ -1462,61 +1772,48 @@ currentMinutes<close
 }
 
 /*
-HORÁRIO QUE PASSA DA MEIA-NOITE
-Ex: 18:00 → 02:00
+Horário atravessando meia-noite:
+18:00 -> 02:00
 */
 
-if(open>close){
-
-return (
+return(
 currentMinutes>=open ||
 currentMinutes<close
 );
 
 }
 
+function isStoreOpenNow(){
+
 /*
-Mesmo horário significa fechado.
+Enquanto ainda está carregando,
+não bloqueamos o cliente.
 */
 
-return false;
-
+if(!businessHoursLoaded){
+return true;
 }
 
-function getActiveBusinessHours(){
-
-if(!businessHoursLoaded){
-return null;
+if(!businessHours.length){
+return true;
 }
 
 const now=getStoreNow();
 
 const today=getBusinessHour(now.day);
 
-/*
-Primeiro verifica o horário de hoje.
-*/
-
 if(
-intervalOpen(
-today,
-now.minutes
-)
+today &&
+intervalOpen(today,now.minutes)
 ){
 
-return today;
+return true;
 
 }
 
 /*
-Depois verifica se ainda estamos
-no período que começou ontem.
-
-Ex:
-Sábado 18:00 → Domingo 02:00
-
-No domingo 01:00,
-o horário ativo pertence ao sábado.
+Verifica o dia anterior para horários
+que atravessam meia-noite.
 */
 
 const previousDay=
@@ -1527,18 +1824,67 @@ getBusinessHour(previousDay);
 
 if(
 previous &&
-previous.is_open
+previous.is_open &&
+previous.open_time &&
+previous.close_time
 ){
 
 const open=
-timeToMinutes(
-previous.open_time
-);
+timeToMinutes(previous.open_time);
 
 const close=
-timeToMinutes(
+timeToMinutes(previous.close_time);
+
+if(
+open!==null &&
+close!==null &&
+open>close &&
+now.minutes<close
+){
+
+return true;
+
+}
+
+}
+
+return false;
+
+}
+
+function getCurrentBusinessHour(){
+
+const now=getStoreNow();
+
+const today=getBusinessHour(now.day);
+
+if(
+today &&
+intervalOpen(today,now.minutes)
+){
+
+return today;
+
+}
+
+const previousDay=
+(now.day+6)%7;
+
+const previous=
+getBusinessHour(previousDay);
+
+if(
+previous &&
+previous.is_open &&
+previous.open_time &&
 previous.close_time
-);
+){
+
+const open=
+timeToMinutes(previous.open_time);
+
+const close=
+timeToMinutes(previous.close_time);
 
 if(
 open!==null &&
@@ -1557,34 +1903,15 @@ return null;
 
 }
 
-function isStoreOpenNow(){
-
-/*
-Se ainda estamos carregando o horário,
-não bloqueamos o cliente.
-*/
-
-if(!businessHoursLoaded){
-return true;
-}
-
-return !!getActiveBusinessHours();
-
-}
-
 function getNextOpening(){
 
-if(!businessHoursLoaded){
+if(!businessHours.length){
 return null;
 }
 
 const now=getStoreNow();
 
-for(
-let offset=0;
-offset<7;
-offset++
-){
+for(let offset=0;offset<8;offset++){
 
 const day=
 (now.day+offset)%7;
@@ -1594,42 +1921,42 @@ getBusinessHour(day);
 
 if(
 !hour ||
-!hour.is_open
+!hour.is_open ||
+!hour.open_time ||
+!hour.close_time
 ){
+
 continue;
+
 }
 
 const open=
-timeToMinutes(
-hour.open_time
-);
+timeToMinutes(hour.open_time);
 
-if(open===null){
-continue;
-}
+if(open===null)continue;
 
-/*
-Se for hoje e já passou da abertura,
-procura o próximo dia.
-*/
+if(offset===0){
 
 if(
-offset===0 &&
-open<=now.minutes
+now.minutes<open &&
+open!==timeToMinutes(hour.close_time)
 ){
-continue;
+
+return{
+day:day,
+time:hour.open_time
+};
+
 }
 
-return {
+}else{
 
+return{
 day:day,
-
-time:
-normalizeTime(
-hour.open_time
-)
-
+time:hour.open_time
 };
+
+}
 
 }
 
@@ -1639,123 +1966,109 @@ return null;
 
 function getDayName(day){
 
-return WEEKDAY_NAMES[day] || "";
+return WEEKDAY_NAMES[
+Number(day)
+]||"";
 
 }
 
 function updateStoreStatus(){
 
-const el=
-document.getElementById(
-"storeStatus"
-);
+const menuStatus=
+document.getElementById("storeStatus");
 
-const checkoutEl=
+const checkoutStatus=
 document.getElementById(
 "checkoutStoreStatus"
 );
 
-if(!el){
-return;
-}
+const open=
+isStoreOpenNow();
+
+let html="";
 
 if(!businessHoursLoaded){
 
-el.className="store-status";
+html=`
+🕐 Verificando horário...
+`;
 
-el.innerHTML=
-"🕐 Verificando horário...";
+}else if(open){
 
-if(checkoutEl){
+const current=
+getCurrentBusinessHour();
 
-checkoutEl.className="store-status";
+html=`
 
-checkoutEl.innerHTML=
-"🕐 Verificando horário...";
-
-}
-
-return;
-
-}
-
-const active=
-getActiveBusinessHours();
-
-if(active){
-
-const message=`
-
-🟢 LOJA ABERTA
+🟢 A loja está ABERTA
 
 <div class="store-hours">
-Pedidos disponíveis até ${formatTime(active.close_time)}
+
+${current
+?
+`Atendimento até ${formatTime(current.close_time)}`
+:
+"Recebendo pedidos agora"
+}
+
 </div>
 
 `;
-
-el.className=
-"store-status store-open";
-
-el.innerHTML=message;
-
-if(checkoutEl){
-
-checkoutEl.className=
-"store-status store-open";
-
-checkoutEl.innerHTML=message;
-
-}
 
 }else{
 
 const next=
 getNextOpening();
 
-let message="🔴 LOJA FECHADA";
+html=`
 
-if(next){
-
-const now=getStoreNow();
-
-let dayText;
-
-if(next.day===now.day){
-
-dayText="hoje";
-
-}else{
-
-dayText=
-"na "+
-getDayName(next.day);
-
-}
-
-message+=`
+🔴 A loja está FECHADA
 
 <div class="store-hours">
-Abrimos ${dayText} às ${next.time}
+
+${
+next
+?
+`Próxima abertura: ${getDayName(next.day)} às ${formatTime(next.time)}`
+:
+"Consulte nossos horários."
+}
+
 </div>
 
 `;
 
 }
 
-el.className=
-"store-status store-closed";
+if(menuStatus){
 
-el.innerHTML=message;
+menuStatus.className=
+"store-status "+
+(
+open
+?
+"store-open"
+:
+"store-closed"
+);
 
-if(checkoutEl){
-
-checkoutEl.className=
-"store-status store-closed";
-
-checkoutEl.innerHTML=message;
+menuStatus.innerHTML=html;
 
 }
+
+if(checkoutStatus){
+
+checkoutStatus.className=
+"store-status "+
+(
+open
+?
+"store-open"
+:
+"store-closed"
+);
+
+checkoutStatus.innerHTML=html;
 
 }
 
@@ -1763,13 +2076,82 @@ updateCheckoutAvailability();
 
 }
 
+function updateCheckoutAvailability(){
+
+const button=
+document.getElementById(
+"drawerCheckoutBtn"
+);
+
+const confirmButton=
+document.getElementById(
+"confirmOrderBtn"
+);
+
+if(!businessHoursLoaded){
+
+if(button){
+
+button.disabled=false;
+button.style.opacity="1";
+
+}
+
+if(confirmButton){
+
+confirmButton.disabled=false;
+confirmButton.style.opacity="1";
+
+}
+
+return;
+
+}
+
+const open=
+isStoreOpenNow();
+
+if(button){
+
+button.disabled=
+!open ||
+cart.length===0;
+
+button.style.opacity=
+open?"1":".55";
+
+button.title=
+open
+?""
+:"A loja está fechada";
+
+}
+
+if(confirmButton){
+
+confirmButton.disabled=!open;
+
+confirmButton.style.opacity=
+open?"1":".55";
+
+}
+
+}
+
 async function loadBusinessHours(){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("business_hours")
 .select("*")
-.order("day_of_week",{ascending:true});
+.order(
+"day_of_week",
+{
+ascending:true
+}
+);
 
 if(error){
 
@@ -1783,17 +2165,155 @@ businessHoursLoaded=false;
 
 updateStoreStatus();
 
+const container=
+document.getElementById(
+"businessHoursAdmin"
+);
+
+if(container){
+
+container.innerHTML=
+`
+<div class="empty">
+
+Erro ao carregar horários.
+
+<br><br>
+
+<span class="muted">
+
+${escapeHtml(error.message)}
+
+</span>
+
+<br>
+
+<span class="muted">
+
+Código:
+${escapeHtml(error.code||"sem código")}
+
+</span>
+
+</div>
+`;
+
+}
+
 return;
 
 }
 
-businessHours=data||[];
+let hours=data||[];
+
+if(hours.length===0){
+
+const defaultHours=
+WEEKDAY_NAMES.map(
+(name,index)=>({
+
+day_of_week:index,
+
+day_name:name,
+
+is_open:false,
+
+open_time:"18:00",
+
+close_time:"23:00"
+
+})
+);
+
+const {
+data:created,
+error:createError
+}=await db
+.from("business_hours")
+.insert(defaultHours)
+.select("*");
+
+if(createError){
+
+console.error(
+"Erro ao criar horários:",
+createError
+);
+
+businessHours=[];
+businessHoursLoaded=false;
+
+const container=
+document.getElementById(
+"businessHoursAdmin"
+);
+
+if(container){
+
+container.innerHTML=
+`
+<div class="empty">
+
+Não foi possível criar os horários.
+
+<br><br>
+
+<span class="muted">
+
+${escapeHtml(createError.message)}
+
+</span>
+
+<br>
+
+<span class="muted">
+
+Código:
+${escapeHtml(
+createError.code||
+"sem código"
+)}
+
+</span>
+
+</div>
+`;
+
+}
+
+alert(
+"ERRO AO CRIAR HORÁRIOS:\n\n"+
+createError.message+
+"\n\nCódigo: "+
+(
+createError.code||
+"sem código"
+)
+);
+
+updateStoreStatus();
+
+return;
+
+}
+
+hours=created||defaultHours;
+
+}
+
+businessHours=
+hours.sort(
+(a,b)=>
+Number(a.day_of_week)-
+Number(b.day_of_week)
+);
 
 businessHoursLoaded=true;
 
 updateStoreStatus();
-
 updateCheckoutAvailability();
+
+renderBusinessHoursAdmin();
 
 }
 
@@ -1809,50 +2329,64 @@ if(!container)return;
 if(!businessHours.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
 Nenhum horário cadastrado.
-</div>`;
+</div>
+`;
 
 return;
 
 }
 
 container.innerHTML=
-businessHours.map(hour=>`
+businessHours.map(hour=>{
+
+const day=
+Number(hour.day_of_week);
+
+return`
 
 <div class="business-hours-row">
 
 <div class="business-hours-day">
-${escapeHtml(hour.day_name)}
+
+${getDayName(day)}
+
 </div>
 
 <label class="business-hours-toggle">
 
 <input
+id="bh-open-${day}"
 type="checkbox"
-id="bh-open-${hour.day_of_week}"
-${hour.is_open?"checked":""}
->
+${hour.is_open?"checked":""}>
 
 Aberta
 
 </label>
 
-<input
-type="time"
-id="bh-start-${hour.day_of_week}"
-value="${normalizeTime(hour.open_time)}"
->
+<div>
 
 <input
+id="bh-start-${day}"
 type="time"
-id="bh-end-${hour.day_of_week}"
-value="${normalizeTime(hour.close_time)}"
->
+value="${formatTime(hour.open_time)}">
+
+</div>
+
+<div>
+
+<input
+id="bh-end-${day}"
+type="time"
+value="${formatTime(hour.close_time)}">
+
+</div>
 
 <button
 class="btn small"
-onclick="saveBusinessHour(${hour.day_of_week})">
+onclick="saveBusinessHour(${day})">
 
 Salvar
 
@@ -1860,7 +2394,9 @@ Salvar
 
 </div>
 
-`).join("");
+`;
+
+}).join("");
 
 }
 
@@ -1910,10 +2446,7 @@ endInput.value||null;
 
 if(
 isOpen &&
-(
-!openTime ||
-!closeTime
-)
+(!openTime||!closeTime)
 ){
 
 alert(
@@ -1924,8 +2457,22 @@ return;
 
 }
 
-const {error}=
-await db
+if(
+isOpen &&
+openTime===closeTime
+){
+
+alert(
+"O horário de abertura e fechamento não pode ser igual."
+);
+
+return;
+
+}
+
+const {
+error
+}=await db
 .from("business_hours")
 .update({
 
@@ -1938,16 +2485,24 @@ close_time:closeTime
 })
 .eq(
 "day_of_week",
-day
+Number(day)
 );
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO SALVAR HORÁRIO:",
+error
+);
 
 alert(
-"Erro ao salvar horário:\n\n"+
-error.message
+"ERRO AO SALVAR HORÁRIO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -1961,70 +2516,6 @@ renderBusinessHoursAdmin();
 showToast(
 "🕐 Horário salvo!"
 );
-
-}
-
-function updateCheckoutAvailability(){
-
-const button=
-document.getElementById(
-"drawerCheckoutBtn"
-);
-
-const confirmButton=
-document.getElementById(
-"confirmOrderBtn"
-);
-
-if(!businessHoursLoaded){
-
-if(button){
-
-button.disabled=false;
-
-button.style.opacity="1";
-
-}
-
-if(confirmButton){
-
-confirmButton.disabled=false;
-
-confirmButton.style.opacity="1";
-
-}
-
-return;
-
-}
-
-const open=
-isStoreOpenNow();
-
-if(button){
-
-button.disabled=
-!open || cart.length===0;
-
-button.style.opacity=
-open?"1":".55";
-
-button.title=
-open
-?""
-:"A loja está fechada";
-
-}
-
-if(confirmButton){
-
-confirmButton.disabled=
-!open;
-
-confirmButton.style.opacity=
-open?"1":".55";
-
-}
 
 }
 
@@ -2042,19 +2533,17 @@ const categories=[
 ];
 
 const categoryIcons={
-
 "Lanches":"🍔",
 "Combos":"📦",
 "Porções":"🍟",
 "Bebidas":"🥤",
 "Sobremesas":"🍰",
 "Outros":"⭐"
-
 };
 
 function getProductCategory(product){
 
-return product.category || "Lanches";
+return product.category||"Lanches";
 
 }
 
@@ -2066,8 +2555,7 @@ document.getElementById(
 );
 
 const available=
-categories.filter(
-category=>
+categories.filter(category=>
 products.some(
 product=>
 getProductCategory(product)===category
@@ -2126,12 +2614,19 @@ renderProducts();
 
 async function loadProducts(){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("products")
 .select("*")
 .eq("active",true)
-.order("id",{ascending:true});
+.order(
+"id",
+{
+ascending:true
+}
+);
 
 if(error){
 
@@ -2140,10 +2635,13 @@ console.error(error);
 document.getElementById(
 "productsContainer"
 ).innerHTML=
+`
+<div class="empty">
 
-`<div class="empty">
 Não foi possível carregar o cardápio.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -2178,7 +2676,7 @@ String(item.id)===
 String(productId)
 );
 
-return item ? item.qty : 0;
+return item?item.qty:0;
 
 }
 
@@ -2192,9 +2690,13 @@ document.getElementById(
 if(!products.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Nenhum produto disponível no momento.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -2202,9 +2704,7 @@ return;
 
 let filtered=products;
 
-if(
-selectedCategory!=="Todos"
-){
+if(selectedCategory!=="Todos"){
 
 filtered=
 products.filter(
@@ -2218,9 +2718,13 @@ selectedCategory
 if(!filtered.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Nenhum produto nesta categoria.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -2232,17 +2736,16 @@ filtered.map(product=>{
 const qty=
 getCartQty(product.id);
 
-return `
+return`
 
 <div class="product">
 
 ${
 qty>0
 ?
-`<div class="product-qty-badge">
-${qty}
-</div>`
-:""
+`<div class="product-qty-badge">${qty}</div>`
+:
+""
 }
 
 <h3>
@@ -2261,11 +2764,9 @@ ${money(product.price)}
 
 <button
 class="btn"
-onclick="addToCart(${product.id})">
+onclick="addToCart(${JSON.stringify(String(product.id))})">
 
-${qty>0
-?"✓ Adicionado"
-:"Adicionar"}
+${qty>0?"✓ Adicionado":"Adicionar"}
 
 </button>
 
@@ -2277,21 +2778,28 @@ qty>0
 <div class="quick-qty">
 
 <button
-onclick="changeQty(${product.id},-1)">
+onclick="changeQty(${JSON.stringify(String(product.id))},-1)">
+
 −
+
 </button>
 
-<strong>${qty}</strong>
+<strong>
+${qty}
+</strong>
 
 <button
-onclick="changeQty(${product.id},1)">
+onclick="changeQty(${JSON.stringify(String(product.id))},1)">
+
 +
+
 </button>
 
 </div>
 
 `
-:""
+:
+""
 }
 
 </div>
@@ -2309,17 +2817,6 @@ CARRINHO
 ============================================================ */
 
 function addToCart(productId){
-
-if(!isStoreOpenNow()){
-
-alert(
-"A loja está fechada no momento.\n\n"+
-"Você poderá fazer o pedido quando estivermos abertos."
-);
-
-return;
-
-}
 
 const product=
 products.find(
@@ -2346,8 +2843,11 @@ existing.qty++;
 cart.push({
 
 id:product.id,
+
 name:product.name,
+
 price:Number(product.price),
+
 qty:1
 
 });
@@ -2408,8 +2908,7 @@ function getCartCount(){
 
 return cart.reduce(
 (total,item)=>
-total+
-Number(item.qty),
+total+Number(item.qty),
 0
 );
 
@@ -2449,42 +2948,36 @@ money(total);
 
 if(count>0){
 
-floating.classList.add(
-"visible"
-);
+floating.classList.add("visible");
 
 }else{
 
-floating.classList.remove(
-"visible"
-);
+floating.classList.remove("visible");
 
 }
 
 if(!cart.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Seu carrinho está vazio.
-</div>`;
 
-drawerButton.style.display=
-"none";
+</div>
+`;
 
-updateCheckoutAvailability();
+drawerButton.style.display="none";
 
 return;
 
 }
 
-drawerButton.style.display=
-"block";
+drawerButton.style.display="block";
 
 container.innerHTML=
 
-cart.map(item=>{
-
-return `
+cart.map(item=>`
 
 <div class="cart-item">
 
@@ -2507,8 +3000,10 @@ ${money(item.price*item.qty)}
 <div class="qty">
 
 <button
-onclick="changeQty(${item.id},-1)">
+onclick="changeQty(${JSON.stringify(String(item.id))},-1)">
+
 −
+
 </button>
 
 <strong>
@@ -2516,23 +3011,25 @@ ${item.qty}
 </strong>
 
 <button
-onclick="changeQty(${item.id},1)">
+onclick="changeQty(${JSON.stringify(String(item.id))},1)">
+
 +
+
 </button>
 
 </div>
 
 </div>
 
-`;
-
-}).join("")+
+`).join("")+
 
 `
 
 <div class="total">
 
-<span>Subtotal</span>
+<span>
+Subtotal
+</span>
 
 <span class="gold">
 ${money(total)}
@@ -2558,25 +3055,25 @@ return;
 
 }
 
-document.getElementById(
-"cartOverlay"
-).classList.add("active");
+document
+.getElementById("cartOverlay")
+.classList.add("active");
 
-document.getElementById(
-"cartDrawer"
-).classList.add("active");
+document
+.getElementById("cartDrawer")
+.classList.add("active");
 
 }
 
 function closeCart(){
 
-document.getElementById(
-"cartOverlay"
-).classList.remove("active");
+document
+.getElementById("cartOverlay")
+.classList.remove("active");
 
-document.getElementById(
-"cartDrawer"
-).classList.remove("active");
+document
+.getElementById("cartDrawer")
+.classList.remove("active");
 
 }
 
@@ -2591,6 +3088,8 @@ showToast(
 return;
 
 }
+
+await loadBusinessHours();
 
 if(!isStoreOpenNow()){
 
@@ -2625,19 +3124,26 @@ ENTREGA
 
 async function loadDeliveryZones(){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("delivery_zones")
 .select("*")
 .eq("active",true)
 .order(
 "neighborhood",
-{ascending:true}
+{
+ascending:true
+}
 );
 
 if(error){
 
-console.error(error);
+console.error(
+"Erro ao carregar bairros:",
+error
+);
 
 deliveryZones=[];
 
@@ -2659,19 +3165,20 @@ document.getElementById(
 if(!select)return;
 
 select.innerHTML=
-
-`<option value="">
+`
+<option value="">
 Selecione seu bairro
-</option>`+
-
-deliveryZones.map(
-zone=>
+</option>
+`+
+deliveryZones.map(zone=>
 `
 
-<option value="${zone.id}">
+<option value="${escapeHtml(String(zone.id))}">
+
 ${escapeHtml(zone.neighborhood)}
 —
 ${money(zone.fee)}
+
 </option>
 
 `
@@ -2686,10 +3193,7 @@ document.getElementById(
 "customerNeighborhood"
 );
 
-if(
-!select ||
-!select.value
-){
+if(!select||!select.value){
 
 return DEFAULT_DELIVERY_FEE;
 
@@ -2717,10 +3221,7 @@ document.getElementById(
 "customerNeighborhood"
 );
 
-if(
-!select ||
-!select.value
-)return "";
+if(!select||!select.value)return "";
 
 const zone=
 deliveryZones.find(
@@ -2732,7 +3233,8 @@ String(select.value)
 return zone
 ?
 zone.neighborhood
-:"";
+:
+"";
 
 }
 
@@ -2744,14 +3246,12 @@ document.getElementById(
 );
 
 container.innerHTML=
-
 cart.map(item=>`
 
 <div class="cart-item">
 
 <span>
-${item.qty}x
-${escapeHtml(item.name)}
+${item.qty}x ${escapeHtml(item.name)}
 </span>
 
 <strong>
@@ -2763,6 +3263,7 @@ ${money(item.price*item.qty)}
 `).join("");
 
 updateCheckoutTotal();
+
 updateStoreStatus();
 
 }
@@ -2833,11 +3334,6 @@ ENVIAR PEDIDO
 
 async function sendOrder(){
 
-/*
-VERIFICA NOVAMENTE O HORÁRIO
-ANTES DE ENVIAR.
-*/
-
 await loadBusinessHours();
 
 if(!isStoreOpenNow()){
@@ -2846,6 +3342,8 @@ alert(
 "A loja está fechada no momento.\n\n"+
 "Seu pedido não foi enviado."
 );
+
+updateStoreStatus();
 
 showScreen("menuScreen");
 
@@ -2889,10 +3387,7 @@ return;
 
 }
 
-if(
-delivery &&
-!neighborhood
-){
+if(delivery&&!neighborhood){
 
 alert(
 "Selecione seu bairro."
@@ -2902,10 +3397,7 @@ return;
 
 }
 
-if(
-delivery &&
-!address
-){
+if(delivery&&!address){
 
 alert(
 "Digite o endereço de entrega."
@@ -2973,17 +3465,27 @@ status:
 
 };
 
-const {error:orderError}=
-await db
+const {
+error:orderError
+}=await db
 .from("orders")
 .insert(orderData);
 
 if(orderError){
 
-console.error(orderError);
+console.error(
+"ERRO AO CRIAR PEDIDO:",
+orderError
+);
 
 alert(
-"Não foi possível criar o pedido."
+"ERRO AO CRIAR PEDIDO:\n\n"+
+orderError.message+
+"\n\nCódigo: "+
+(
+orderError.code||
+"sem código"
+)
 );
 
 return;
@@ -3017,17 +3519,27 @@ item.price
 })
 );
 
-const {error:itemsError}=
-await db
+const {
+error:itemsError
+}=await db
 .from("order_items")
 .insert(items);
 
 if(itemsError){
 
-console.error(itemsError);
+console.error(
+"ERRO AO SALVAR ITENS:",
+itemsError
+);
 
 alert(
-"O pedido foi criado, mas houve um erro ao salvar os itens."
+"ERRO AO SALVAR OS ITENS:\n\n"+
+itemsError.message+
+"\n\nCódigo: "+
+(
+itemsError.code||
+"sem código"
+)
 );
 
 return;
@@ -3065,10 +3577,7 @@ document.getElementById(
 "adminPassword"
 ).value;
 
-if(
-!email ||
-!password
-){
+if(!email||!password){
 
 alert(
 "Preencha e-mail e senha."
@@ -3078,10 +3587,13 @@ return;
 
 }
 
-const {data,error}=
-await db.auth.signInWithPassword({
+const {
+data,
+error
+}=await db.auth.signInWithPassword({
 
 email:email,
+
 password:password
 
 });
@@ -3128,17 +3640,13 @@ function openAdminTab(tab){
 document
 .querySelectorAll(".admin-tab")
 .forEach(button=>{
-button.classList.remove(
-"active"
-);
+button.classList.remove("active");
 });
 
 document
 .querySelectorAll(".admin-section")
 .forEach(section=>{
-section.classList.remove(
-"active"
-);
+section.classList.remove("active");
 });
 
 const button=
@@ -3150,9 +3658,7 @@ tab.slice(1)
 
 if(button){
 
-button.classList.add(
-"active"
-);
+button.classList.add("active");
 
 }
 
@@ -3170,9 +3676,7 @@ tab
 
 if(section){
 
-section.classList.add(
-"active"
-);
+section.classList.add("active");
 
 }
 
@@ -3208,9 +3712,9 @@ loadReports();
 
 if(tab==="settings"){
 
-loadDeliveryZonesAdmin();
-
 loadBusinessHoursAdmin();
+
+loadDeliveryZonesAdmin();
 
 }
 
@@ -3230,9 +3734,9 @@ await loadCashRegister();
 
 await loadReports();
 
-await loadDeliveryZonesAdmin();
-
 await loadBusinessHoursAdmin();
+
+await loadDeliveryZonesAdmin();
 
 openAdminTab(
 "dashboard"
@@ -3294,45 +3798,96 @@ container.innerHTML=`
 <div class="dashboard-grid">
 
 <div class="stat">
-<span>Faturamento</span>
-<strong>${money(total)}</strong>
+
+<span>
+Faturamento
+</span>
+
+<strong>
+${money(total)}
+</strong>
+
 </div>
 
 <div class="stat">
-<span>Pedidos</span>
-<strong>${orders.length}</strong>
+
+<span>
+Pedidos
+</span>
+
+<strong>
+${orders.length}
+</strong>
+
 </div>
 
 <div class="stat">
-<span>Ticket médio</span>
-<strong>${money(average)}</strong>
+
+<span>
+Ticket médio
+</span>
+
+<strong>
+${money(average)}
+</strong>
+
 </div>
 
 <div class="stat">
-<span>Recebidos</span>
-<strong>${received}</strong>
+
+<span>
+Recebidos
+</span>
+
+<strong>
+${received}
+</strong>
+
 </div>
 
 <div class="stat">
-<span>Preparando</span>
-<strong>${preparing}</strong>
+
+<span>
+Preparando
+</span>
+
+<strong>
+${preparing}
+</strong>
+
 </div>
 
 <div class="stat">
-<span>Prontos</span>
-<strong>${ready}</strong>
+
+<span>
+Prontos
+</span>
+
+<strong>
+${ready}
+</strong>
+
 </div>
 
 <div class="stat">
-<span>Entregues</span>
-<strong>${delivered}</strong>
+
+<span>
+Entregues
+</span>
+
+<strong>
+${delivered}
+</strong>
+
 </div>
 
 </div>
 
 <div class="card" style="margin-top:18px">
 
-<h3>🕐 Pedidos recentes</h3>
+<h3>
+🕐 Pedidos recentes
+</h3>
 
 ${
 orders.length
@@ -3343,20 +3898,31 @@ order=>`
 <div class="history-item">
 
 <strong>
-#${order.id} —
+#${order.id}
+—
 ${escapeHtml(order.customer_name)}
 </strong>
 
 <div class="muted">
-${formatDateTime(order.created_at)}
+
+${formatDateTime(
+order.created_at
+)}
+
 </div>
 
 <div>
+
 ${escapeHtml(order.status)}
+
 —
+
 <strong class="gold">
+
 ${money(order.total)}
+
 </strong>
+
 </div>
 
 </div>
@@ -3364,9 +3930,11 @@ ${money(order.total)}
 `
 ).join("")
 :
-`<div class="empty">
+`
+<div class="empty">
 Nenhum pedido ainda.
-</div>`
+</div>
+`
 }
 
 </div>
@@ -3391,13 +3959,17 @@ if(!container)return;
 container.innerHTML=
 "Carregando pedidos...";
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("orders")
 .select("*")
 .order(
 "created_at",
-{ascending:false}
+{
+ascending:false
+}
 );
 
 if(error){
@@ -3405,9 +3977,17 @@ if(error){
 console.error(error);
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Erro ao carregar pedidos.
-</div>`;
+
+<br><br>
+
+${escapeHtml(error.message)}
+
+</div>
+`;
 
 return;
 
@@ -3420,9 +4000,13 @@ renderDashboard();
 if(!adminOrders.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Nenhum pedido recebido ainda.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -3443,39 +4027,71 @@ Pedido #${order.id}
 </strong>
 
 <div class="muted">
-${formatDateTime(order.created_at)}
+
+${formatDateTime(
+order.created_at
+)}
+
 </div>
 
 </div>
 
 <span class="status">
+
 ${escapeHtml(order.status)}
+
 </span>
 
 </div>
 
 <p>
-<strong>Cliente:</strong>
-${escapeHtml(order.customer_name)}
+
+<strong>
+Cliente:
+</strong>
+
+${escapeHtml(
+order.customer_name
+)}
+
 </p>
 
 <p>
-<strong>Pedido:</strong>
+
+<strong>
+Pedido:
+</strong>
+
 ${order.delivery
 ?
 "🚚 Entrega"
 :
 "🏪 Retirada"}
+
 </p>
 
 <p>
-<strong>Endereço:</strong>
-${escapeHtml(order.address||"-")}
+
+<strong>
+Endereço:
+</strong>
+
+${escapeHtml(
+order.address||"-"
+)}
+
 </p>
 
 <p>
-<strong>Pagamento:</strong>
-${escapeHtml(order.payment)}
+
+<strong>
+Pagamento:
+</strong>
+
+${escapeHtml(
+order.payment
+)}
+
 </p>
 
 <div
@@ -3487,8 +4103,10 @@ Carregando itens...
 </div>
 
 <strong class="gold">
+
 Total:
 ${money(order.total)}
+
 </strong>
 
 <label>
@@ -3496,8 +4114,7 @@ ${money(order.total)}
 Alterar status
 
 <select
-onchange=
-"changeOrderStatus(${order.id},this.value)">
+onchange="changeOrderStatus(${JSON.stringify(String(order.id))},this.value)">
 
 ${[
 "RECEBIDO",
@@ -3505,7 +4122,8 @@ ${[
 "PRONTO",
 "SAIU PARA ENTREGA",
 "ENTREGUE"
-].map(
+]
+.map(
 status=>`
 
 <option
@@ -3523,7 +4141,8 @@ ${status}
 </option>
 
 `
-).join("")}
+)
+.join("")}
 
 </select>
 
@@ -3534,9 +4153,7 @@ ${status}
 `
 ).join("");
 
-for(
-const order of adminOrders
-){
+for(const order of adminOrders){
 
 loadOrderItems(
 order.id
@@ -3555,8 +4172,10 @@ document.getElementById(
 
 if(!container)return;
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("order_items")
 .select("*")
 .eq(
@@ -3574,10 +4193,7 @@ return;
 
 }
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
 container.textContent=
 "Nenhum item.";
@@ -3593,7 +4209,9 @@ item=>`
 ${item.qty}x
 ${escapeHtml(item.name)}
 —
-${money(item.price*item.qty)}
+${money(
+item.price*item.qty
+)}
 
 `
 ).join("<br>");
@@ -3605,8 +4223,9 @@ orderId,
 status
 ){
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("orders")
 .update({
 status:status
@@ -3621,7 +4240,13 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível alterar o status."
+"ERRO AO ALTERAR STATUS:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -3648,13 +4273,17 @@ if(!container)return;
 container.innerHTML=
 "Carregando produtos...";
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("products")
 .select("*")
 .order(
 "id",
-{ascending:true}
+{
+ascending:true
+}
 );
 
 if(error){
@@ -3662,23 +4291,28 @@ if(error){
 console.error(error);
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Erro ao carregar produtos.
-</div>`;
+
+</div>
+`;
 
 return;
 
 }
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Nenhum produto cadastrado.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -3691,13 +4325,20 @@ product=>`
 <div class="admin-product">
 
 <h3>
-${escapeHtml(product.name)}
+
+${escapeHtml(
+product.name
+)}
+
 </h3>
 
 <div class="gold">
-${categoryIcons[
+
+${
+categoryIcons[
 getProductCategory(product)
-]||"⭐"}
+]||"⭐"
+}
 
 ${escapeHtml(
 getProductCategory(product)
@@ -3706,24 +4347,33 @@ getProductCategory(product)
 </div>
 
 <p class="muted">
+
 ${escapeHtml(
 product.description||""
 )}
+
 </p>
 
 <strong class="gold">
+
 ${money(product.price)}
+
 </strong>
 
 <p>
+
 Status:
+
 <strong>
+
 ${product.active
 ?
 "ATIVO"
 :
 "INATIVO"}
+
 </strong>
+
 </p>
 
 <button
@@ -3734,8 +4384,7 @@ product.active
 :
 ""
 }"
-onclick=
-"toggleProduct(${product.id},${product.active})">
+onclick="toggleProduct(${JSON.stringify(String(product.id))},${product.active})">
 
 ${
 product.active
@@ -3788,10 +4437,7 @@ return;
 
 }
 
-if(
-!price ||
-price<=0
-){
+if(!price||price<=0){
 
 alert(
 "Digite um preço válido."
@@ -3801,15 +4447,20 @@ return;
 
 }
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("products")
 .insert({
 
 name:name,
+
 description:description,
+
 price:price,
+
 category:category,
+
 active:true
 
 });
@@ -3819,7 +4470,13 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível adicionar o produto."
+"ERRO AO ADICIONAR PRODUTO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -3853,8 +4510,9 @@ productId,
 currentActive
 ){
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("products")
 .update({
 active:!currentActive
@@ -3869,7 +4527,13 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível alterar o produto."
+"ERRO AO ALTERAR PRODUTO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -3898,8 +4562,10 @@ if(!container)return;
 container.innerHTML=
 "Carregando caixa...";
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("cash_registers")
 .select("*")
 .eq(
@@ -3908,7 +4574,9 @@ await db
 )
 .order(
 "opened_at",
-{ascending:false}
+{
+ascending:false
+}
 )
 .limit(1);
 
@@ -3917,18 +4585,19 @@ if(error){
 console.error(error);
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Erro ao carregar caixa.
-</div>`;
+
+</div>
+`;
 
 return;
 
 }
 
-if(
-data &&
-data.length
-){
+if(data&&data.length){
 
 currentCashRegister=
 data[0];
@@ -3938,6 +4607,7 @@ await renderOpenCash();
 }else{
 
 currentCashRegister=null;
+
 currentCashData=null;
 
 await renderClosedCash();
@@ -3946,12 +4616,12 @@ await renderClosedCash();
 
 }
 
-async function getCashOrders(
-openedAt
-){
+async function getCashOrders(openedAt){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("orders")
 .select(
 "id,total,payment,created_at,status"
@@ -3965,7 +4635,7 @@ if(error){
 
 console.error(error);
 
-return [];
+return[];
 
 }
 
@@ -3977,8 +4647,10 @@ async function getCashMovements(
 registerId
 ){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("cash_movements")
 .select("*")
 .eq(
@@ -3987,14 +4659,16 @@ registerId
 )
 .order(
 "created_at",
-{ascending:false}
+{
+ascending:false
+}
 );
 
 if(error){
 
 console.error(error);
 
-return [];
+return[];
 
 }
 
@@ -4020,26 +4694,28 @@ let cashSales=0;
 let pixSales=0;
 let cardSales=0;
 
-orders.forEach(
-order=>{
+orders.forEach(order=>{
 
 const amount=
 Number(order.total)||0;
 
-if(
-order.payment==="DINHEIRO"
-)
+if(order.payment==="DINHEIRO"){
+
 cashSales+=amount;
 
-else if(
+}else if(
 order.payment==="PIX"
-)
+){
+
 pixSales+=amount;
 
-else if(
+}else if(
 order.payment==="CARTAO"
-)
+){
+
 cardSales+=amount;
+
+}
 
 });
 
@@ -4054,13 +4730,17 @@ Number(movement.amount)||0;
 
 if(
 movement.type==="SUPRIMENTO"
-)
+){
+
 supplies+=amount;
 
-else if(
+}else if(
 movement.type==="SANGRIA"
-)
+){
+
 withdrawals+=amount;
+
+}
 
 });
 
@@ -4080,13 +4760,21 @@ withdrawals;
 return{
 
 orders,
+
 movements,
+
 cashSales,
+
 pixSales,
+
 cardSales,
+
 totalSales,
+
 supplies,
+
 withdrawals,
+
 expectedCash
 
 };
@@ -4117,10 +4805,12 @@ container.innerHTML=`
 </strong>
 
 <div class="muted">
+
 Aberto em:
 ${formatDateTime(
 currentCashRegister.opened_at
 )}
+
 </div>
 
 </div>
@@ -4128,74 +4818,117 @@ currentCashRegister.opened_at
 <div class="cash-grid">
 
 <div class="cash-box">
-<span>Valor de abertura</span>
+
+<span>
+Valor de abertura
+</span>
+
 <strong>
 ${money(
 currentCashRegister.opening_amount
 )}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Vendas em dinheiro</span>
+
+<span>
+Vendas em dinheiro
+</span>
+
 <strong>
 ${money(c.cashSales)}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Vendas no PIX</span>
+
+<span>
+Vendas no PIX
+</span>
+
 <strong>
 ${money(c.pixSales)}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Vendas no cartão</span>
+
+<span>
+Vendas no cartão
+</span>
+
 <strong>
 ${money(c.cardSales)}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Total de vendas</span>
+
+<span>
+Total de vendas
+</span>
+
 <strong>
 ${money(c.totalSales)}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Suprimentos</span>
+
+<span>
+Suprimentos
+</span>
+
 <strong>
 ${money(c.supplies)}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Sangrias</span>
+
+<span>
+Sangrias
+</span>
+
 <strong>
 ${money(c.withdrawals)}
 </strong>
+
 </div>
 
 <div class="cash-box">
-<span>Esperado no caixa</span>
+
+<span>
+Esperado no caixa
+</span>
+
 <strong>
 ${money(c.expectedCash)}
 </strong>
+
 </div>
 
 </div>
 
 <div class="card" style="margin-top:18px">
 
-<h3>💵 Movimentação</h3>
+<h3>
+💵 Movimentação
+</h3>
 
 <div class="movement">
 
 <div>
 
 <label>
+
 Valor
 
 <input
@@ -4211,6 +4944,7 @@ placeholder="0,00">
 <div>
 
 <label>
+
 Observação
 
 <input
@@ -4226,8 +4960,7 @@ placeholder="Ex: troco / retirada">
 
 <button
 class="btn small"
-onclick=
-"addCashMovement('SUPRIMENTO')">
+onclick="addCashMovement('SUPRIMENTO')">
 
 ➕ Suprimento
 
@@ -4235,8 +4968,7 @@ onclick=
 
 <button
 class="btn small danger"
-onclick=
-"addCashMovement('SANGRIA')">
+onclick="addCashMovement('SANGRIA')">
 
 ➖ Sangria
 
@@ -4250,9 +4982,12 @@ onclick=
 
 <div class="card">
 
-<h3>🔒 Fechar caixa</h3>
+<h3>
+🔒 Fechar caixa
+</h3>
 
 <label>
+
 Valor contado
 
 <input
@@ -4275,20 +5010,22 @@ onclick="closeCashRegister()">
 
 <div class="card">
 
-<h3>📜 Movimentações recentes</h3>
+<h3>
+📜 Movimentações recentes
+</h3>
 
 ${
 c.movements.length
 ?
 c.movements.map(
-movement=>`
+m=>`
 
 <div class="history-item">
 
 <strong>
 
 ${
-movement.type==="SUPRIMENTO"
+m.type==="SUPRIMENTO"
 ?
 "➕ Suprimento"
 :
@@ -4298,19 +5035,25 @@ movement.type==="SUPRIMENTO"
 </strong>
 
 <strong class="gold">
-${money(movement.amount)}
+
+${money(m.amount)}
+
 </strong>
 
 <div class="muted">
+
 ${escapeHtml(
-movement.note||""
+m.note||""
 )}
+
 </div>
 
 <div class="muted">
+
 ${formatDateTime(
-movement.created_at
+m.created_at
 )}
+
 </div>
 
 </div>
@@ -4318,19 +5061,25 @@ movement.created_at
 `
 ).join("")
 :
-`<div class="empty">
+`
+<div class="empty">
 Nenhuma movimentação.
-</div>`
+</div>
+`
 }
 
 </div>
 
 <div class="card">
 
-<h3>📊 Histórico de caixas</h3>
+<h3>
+📊 Histórico de caixas
+</h3>
 
 <div id="cashHistory">
+
 Carregando histórico...
+
 </div>
 
 </div>
@@ -4357,16 +5106,21 @@ container.innerHTML=`
 </strong>
 
 <div class="muted">
+
 Abra o caixa para começar.
+
 </div>
 
 </div>
 
 <div class="card" style="margin-top:18px">
 
-<h3>🟢 Abrir caixa</h3>
+<h3>
+🟢 Abrir caixa
+</h3>
 
 <label>
+
 Valor inicial
 
 <input
@@ -4389,10 +5143,14 @@ onclick="openCashRegister()">
 
 <div class="card">
 
-<h3>📜 Histórico de caixas</h3>
+<h3>
+📜 Histórico de caixas
+</h3>
 
 <div id="cashHistory">
+
 Carregando histórico...
+
 </div>
 
 </div>
@@ -4411,9 +5169,7 @@ document.getElementById(
 );
 
 const amount=
-parseMoney(
-input.value
-);
+parseMoney(input.value);
 
 if(amount<0){
 
@@ -4428,8 +5184,7 @@ return;
 const {
 data:existing,
 error:existingError
-}=
-await db
+}=await db
 .from("cash_registers")
 .select("id")
 .eq(
@@ -4450,10 +5205,7 @@ return;
 
 }
 
-if(
-existing &&
-existing.length
-){
+if(existing&&existing.length){
 
 alert(
 "Já existe um caixa aberto."
@@ -4465,16 +5217,15 @@ return;
 
 }
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("cash_registers")
 .insert({
 
-opening_amount:
-amount,
+opening_amount:amount,
 
-status:
-"ABERTO"
+status:"ABERTO"
 
 });
 
@@ -4483,7 +5234,13 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível abrir o caixa."
+"ERRO AO ABRIR CAIXA:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -4498,9 +5255,7 @@ await loadCashRegister();
 
 }
 
-async function addCashMovement(
-type
-){
+async function addCashMovement(type){
 
 if(!currentCashRegister){
 
@@ -4524,10 +5279,7 @@ document.getElementById(
 "movementNote"
 ).value.trim();
 
-if(
-!amount ||
-amount<=0
-){
+if(!amount||amount<=0){
 
 alert(
 "Digite um valor válido."
@@ -4538,8 +5290,8 @@ return;
 }
 
 if(
-type==="SANGRIA" &&
-currentCashData &&
+type==="SANGRIA"&&
+currentCashData&&
 amount>
 currentCashData.expectedCash
 ){
@@ -4552,8 +5304,9 @@ return;
 
 }
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("cash_movements")
 .insert({
 
@@ -4573,7 +5326,13 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível registrar a movimentação."
+"ERRO AO REGISTRAR MOVIMENTAÇÃO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -4611,9 +5370,7 @@ parseMoney(
 input.value
 );
 
-if(
-input.value.trim()===""
-){
+if(input.value.trim()===""){
 
 alert(
 "Informe o valor contado."
@@ -4642,8 +5399,9 @@ money(difference)
 
 if(!confirmed)return;
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("cash_registers")
 .update({
 
@@ -4689,7 +5447,12 @@ console.error(error);
 
 alert(
 "ERRO AO FECHAR CAIXA:\n\n"+
-error.message
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -4697,6 +5460,7 @@ return;
 }
 
 alert(
+
 "Caixa fechado com sucesso!\n\n"+
 "Esperado: "+
 money(cashData.expectedCash)+
@@ -4704,9 +5468,11 @@ money(cashData.expectedCash)+
 money(closingAmount)+
 "\nDiferença: "+
 money(difference)
+
 );
 
 currentCashRegister=null;
+
 currentCashData=null;
 
 await loadCashRegister();
@@ -4722,8 +5488,10 @@ document.getElementById(
 
 if(!container)return;
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("cash_registers")
 .select("*")
 .eq(
@@ -4732,7 +5500,9 @@ await db
 )
 .order(
 "closed_at",
-{ascending:false}
+{
+ascending:false
+}
 )
 .limit(10);
 
@@ -4741,23 +5511,28 @@ if(error){
 console.error(error);
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Não foi possível carregar o histórico.
-</div>`;
+
+</div>
+`;
 
 return;
 
 }
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Nenhum caixa fechado ainda.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -4772,7 +5547,7 @@ Number(
 register.difference
 )||0;
 
-return `
+return`
 
 <div class="history-item">
 
@@ -4781,20 +5556,25 @@ Caixa #${register.id}
 </strong>
 
 <div class="muted">
+
 Aberto:
 ${formatDateTime(
 register.opened_at
 )}
+
 </div>
 
 <div class="muted">
+
 Fechado:
 ${formatDateTime(
 register.closed_at
 )}
+
 </div>
 
 <p>
+
 Vendas:
 
 <strong class="gold">
@@ -4818,28 +5598,39 @@ register.card_sales
 </p>
 
 <p>
+
 Esperado:
+
 <strong>
 ${money(
 register.expected_cash
 )}
 </strong>
+
 </p>
 
 <p>
+
 Contado:
+
 <strong>
 ${money(
 register.closing_amount
 )}
 </strong>
+
 </p>
 
 <p>
+
 Diferença:
+
 <strong class="gold">
+
 ${money(difference)}
+
 </strong>
+
 </p>
 
 </div>
@@ -4867,13 +5658,17 @@ if(!container)return;
 container.innerHTML=
 "Carregando relatórios...";
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("orders")
 .select("*")
 .order(
 "created_at",
-{ascending:false}
+{
+ascending:false
+}
 );
 
 if(error){
@@ -4881,9 +5676,13 @@ if(error){
 console.error(error);
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Erro ao carregar relatórios.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -4965,66 +5764,110 @@ container.innerHTML=`
 <div class="report-grid">
 
 <div class="stat">
-<span>Faturamento total</span>
+
+<span>
+Faturamento total
+</span>
+
 <strong>
 ${money(total)}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>Total de pedidos</span>
+
+<span>
+Total de pedidos
+</span>
+
 <strong>
 ${orders.length}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>Ticket médio</span>
+
+<span>
+Ticket médio
+</span>
+
 <strong>
 ${money(average)}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>PIX</span>
+
+<span>
+PIX
+</span>
+
 <strong>
 ${money(pix)}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>Dinheiro</span>
+
+<span>
+Dinheiro
+</span>
+
 <strong>
 ${money(cash)}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>Cartão</span>
+
+<span>
+Cartão
+</span>
+
 <strong>
 ${money(card)}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>Entregas</span>
+
+<span>
+Entregas
+</span>
+
 <strong>
 ${delivery}
 </strong>
+
 </div>
 
 <div class="stat">
-<span>Retiradas</span>
+
+<span>
+Retiradas
+</span>
+
 <strong>
 ${pickup}
 </strong>
-</div>
 
 </div>
 
-<div class="card" style="margin-top:18px">
+</div>
 
-<h3>📋 Pedidos por status</h3>
+<div
+class="card"
+style="margin-top:18px">
+
+<h3>
+📋 Pedidos por status
+</h3>
 
 ${statusList.map(
 status=>`
@@ -5036,11 +5879,13 @@ ${status}
 </span>
 
 <strong class="gold">
+
 ${
 orders.filter(
 o=>o.status===status
 ).length
 }
+
 </strong>
 
 </div>
@@ -5052,27 +5897,38 @@ o=>o.status===status
 
 <div class="card">
 
-<h3>💳 Vendas por pagamento</h3>
+<h3>
+💳 Vendas por pagamento
+</h3>
 
 <div class="history-item">
+
 PIX
+
 <strong class="gold">
 ${money(pix)}
 </strong>
+
 </div>
 
 <div class="history-item">
+
 Dinheiro
+
 <strong class="gold">
 ${money(cash)}
 </strong>
+
 </div>
 
 <div class="history-item">
+
 Cartão
+
 <strong class="gold">
 ${money(card)}
 </strong>
+
 </div>
 
 </div>
@@ -5097,42 +5953,77 @@ if(!container)return;
 container.innerHTML=
 "Carregando bairros...";
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("delivery_zones")
 .select("*")
 .order(
 "neighborhood",
-{ascending:true}
+{
+ascending:true
+}
 );
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO CARREGAR BAIRROS:",
+error
+);
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Erro ao carregar bairros.
-</div>`;
+
+<br><br>
+
+<span class="muted">
+
+${escapeHtml(
+error.message
+)}
+
+</span>
+
+<br>
+
+<span class="muted">
+
+Código:
+${escapeHtml(
+error.code||
+"sem código"
+)}
+
+</span>
+
+</div>
+`;
 
 return;
 
 }
 
 deliveryZones=
-(data||[]).filter(
+(data||[])
+.filter(
 zone=>zone.active
 );
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
 container.innerHTML=
-`<div class="empty">
+`
+<div class="empty">
+
 Nenhum bairro cadastrado ainda.
-</div>`;
+
+</div>
+`;
 
 return;
 
@@ -5140,19 +6031,27 @@ return;
 
 container.innerHTML=
 data.map(
-zone=>`
+zone=>{
+
+const zoneId=
+String(zone.id);
+
+return`
 
 <div class="zone-row">
 
 <div>
 
 <strong>
+
 ${escapeHtml(
 zone.neighborhood
 )}
+
 </strong>
 
 <div class="muted">
+
 ${
 zone.active
 ?
@@ -5160,31 +6059,34 @@ zone.active
 :
 "INATIVO"
 }
+
 </div>
 
 </div>
 
 <input
-id="zone-fee-${zone.id}"
-type="number"
-step="0.01"
-value="${
-Number(zone.fee).toFixed(2)
-}">
+id="zone-fee-${escapeHtml(zoneId)}"
+type="text"
+inputmode="decimal"
+value="${Number(zone.fee).toFixed(2)}">
 
 <button
 class="btn small"
-onclick=
-"updateDeliveryZone(${zone.id})">
+onclick='updateDeliveryZone(${JSON.stringify(zoneId)})'>
 
 Salvar
 
 </button>
 
 <button
-class="btn small danger"
-onclick=
-"toggleDeliveryZone(${zone.id},${zone.active})">
+class="btn small ${
+zone.active
+?
+"danger"
+:
+""
+}"
+onclick='toggleDeliveryZone(${JSON.stringify(zoneId)},${zone.active})'>
 
 ${
 zone.active
@@ -5198,7 +6100,9 @@ zone.active
 
 </div>
 
-`
+`;
+
+}
 ).join("");
 
 }
@@ -5237,8 +6141,9 @@ return;
 
 }
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("delivery_zones")
 .insert({
 
@@ -5255,7 +6160,10 @@ true
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO ADICIONAR BAIRRO:",
+error
+);
 
 if(
 error.code==="23505"
@@ -5268,7 +6176,13 @@ alert(
 }else{
 
 alert(
-"Não foi possível adicionar o bairro."
+"ERRO AO ADICIONAR BAIRRO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 }
@@ -5302,6 +6216,16 @@ document.getElementById(
 "zone-fee-"+id
 );
 
+if(!input){
+
+alert(
+"Campo da taxa não encontrado."
+);
+
+return;
+
+}
+
 const fee=
 parseMoney(
 input.value
@@ -5317,8 +6241,9 @@ return;
 
 }
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("delivery_zones")
 .update({
 fee:fee
@@ -5330,10 +6255,19 @@ id
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO ATUALIZAR BAIRRO:",
+error
+);
 
 alert(
-"Não foi possível atualizar a taxa."
+"ERRO AO ATUALIZAR TAXA:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -5355,11 +6289,15 @@ id,
 currentActive
 ){
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("delivery_zones")
 .update({
-active:!currentActive
+
+active:
+!currentActive
+
 })
 .eq(
 "id",
@@ -5368,10 +6306,19 @@ id
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO ALTERAR BAIRRO:",
+error
+);
 
 alert(
-"Não foi possível alterar o bairro."
+"ERRO AO ALTERAR BAIRRO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(
+error.code||
+"sem código"
+)
 );
 
 return;
@@ -5382,6 +6329,14 @@ await loadDeliveryZonesAdmin();
 
 await loadDeliveryZones();
 
+showToast(
+currentActive
+?
+"📍 Bairro desativado."
+:
+"📍 Bairro ativado."
+);
+
 }
 
 /* ============================================================
@@ -5389,9 +6344,7 @@ REALTIME
 ============================================================ */
 
 db
-.channel(
-"orders-realtime"
-)
+.channel("orders-realtime")
 .on(
 "postgres_changes",
 {
@@ -5452,10 +6405,6 @@ INICIALIZAÇÃO
 
 async function init(){
 
-/*
-Carrega os horários primeiro.
-*/
-
 await loadBusinessHours();
 
 await loadProducts();
@@ -5468,30 +6417,17 @@ toggleDeliveryFields();
 
 updateStoreStatus();
 
-/*
-Atualiza o status da loja
-automaticamente a cada 30 segundos.
-*/
-
-setInterval(
-async()=>{
-await loadBusinessHours();
-updateStoreStatus();
-},
-30000
-);
-
-const {data}=
-await db.auth.getSession();
+const {
+data
+}=await db.auth.getSession();
 
 if(
-data &&
+data&&
 data.session
 ){
 
 if(
-location.pathname===
-"/admin"
+location.pathname==="/admin"
 ){
 
 await showAdminPanel();
@@ -5501,8 +6437,7 @@ await showAdminPanel();
 }else{
 
 if(
-location.pathname===
-"/admin"
+location.pathname==="/admin"
 ){
 
 showScreen(
@@ -5512,6 +6447,22 @@ showScreen(
 }
 
 }
+
+/*
+Atualiza o status da loja
+a cada 30 segundos.
+*/
+
+setInterval(
+async()=>{
+
+await loadBusinessHours();
+
+updateStoreStatus();
+
+},
+30000
+);
 
 }
 
