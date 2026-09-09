@@ -1,349 +1,630 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Burger Gold </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hambúrguer Dourado</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-*{box-sizing:border-box}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
-  color:#222;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
 
-header{
-  background:#151515;
-  color:white;
-  padding:20px;
-  text-align:center;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
+    header {
+      background: #111;
+      color: white;
+      padding: 18px;
+      text-align: center;
+    }
 
-header h1{
-  margin:0;
-  font-size:25px;
-}
+    header h1 {
+      font-size: 24px;
+    }
 
-header p{
-  margin:6px 0 0;
-  color:#ccc;
-}
+    header p {
+      margin-top: 5px;
+      color: #ccc;
+      font-size: 14px;
+    }
 
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:18px;
-}
+    .container {
+      width: 92%;
+      max-width: 1100px;
+      margin: 20px auto;
+    }
 
-h2{
-  margin-top:10px;
-}
+    .screen {
+      display: none;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:15px;
-}
+    .screen.active {
+      display: block;
+    }
 
-.card{
-  background:white;
-  border-radius:14px;
-  padding:16px;
-  box-shadow:0 3px 12px #0001;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
 
-.card h3{
-  margin:0 0 8px;
-}
+    .product {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    }
 
-.desc{
-  color:#666;
-  font-size:14px;
-  min-height:38px;
-}
+    .product h3 {
+      margin-bottom: 8px;
+    }
 
-.price{
-  font-size:20px;
-  font-weight:bold;
-  margin:12px 0;
-}
+    .product p {
+      color: #666;
+      font-size: 14px;
+      min-height: 38px;
+    }
 
-button{
-  border:0;
-  border-radius:10px;
-  padding:11px 15px;
-  background:#151515;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 12px 0;
+    }
 
-button:hover{
-  opacity:.85;
-}
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #111;
+      color: white;
+    }
 
-.add{
-  width:100%;
-}
+    button:hover {
+      opacity: .9;
+    }
 
-.cart{
-  background:white;
-  border-radius:14px;
-  padding:18px;
-  margin-top:22px;
-  box-shadow:0 3px 12px #0001;
-}
+    .primary {
+      width: 100%;
+      margin-top: 15px;
+      background: #111;
+    }
 
-.row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin:10px 0;
-}
+    .back {
+      background: #777;
+      margin-bottom: 15px;
+    }
 
-input,select{
-  width:100%;
-  padding:12px;
-  border:1px solid #ccc;
-  border-radius:9px;
-  margin:5px 0 12px;
-  font-size:16px;
-}
+    .cart-bar {
+      position: sticky;
+      bottom: 15px;
+      margin-top: 20px;
+      background: #111;
+      color: white;
+      padding: 15px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
 
-label{
-  font-weight:bold;
-}
+    .cart-bar button {
+      background: white;
+      color: #111;
+    }
 
-.total{
-  font-size:23px;
-  font-weight:bold;
-  text-align:right;
-  margin:15px 0;
-}
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.08);
+      margin-bottom: 15px;
+    }
 
-.hidden{
-  display:none;
-}
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
 
-.admin{
-  background:#fff;
-  padding:18px;
-  border-radius:14px;
-  margin-top:20px;
-}
+    .cart-item:last-child {
+      border-bottom: none;
+    }
 
-.order{
-  border:1px solid #ddd;
-  border-radius:12px;
-  padding:14px;
-  margin:10px 0;
-}
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-.status{
-  font-weight:bold;
-}
+    .qty button {
+      padding: 7px 10px;
+      border-radius: 7px;
+    }
 
-.tabs{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  margin-bottom:15px;
-}
+    .total {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 18px;
+    }
 
-.tabs button{
-  white-space:nowrap;
-}
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
 
-.danger{
-  background:#b3261e;
-}
+    input,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      font-size: 16px;
+      background: white;
+    }
 
-.success{
-  background:#16833b;
-}
+    .summary {
+      background: #f7f7f7;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+    }
 
-.muted{
-  color:#777;
-}
+    .success {
+      text-align: center;
+      padding: 35px 20px;
+    }
 
-.notice{
-  background:#fff8df;
-  border:1px solid #ead58a;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:15px;
-}
+    .success-icon {
+      font-size: 65px;
+      margin-bottom: 15px;
+    }
 
-.empty{
-  text-align:center;
-  padding:20px;
-  color:#777;
-}
-</style>
+    .order-number {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #eee;
+    }
+
+    .admin-login {
+      max-width: 450px;
+      margin: 50px auto;
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .order {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #eee;
+      font-size: 13px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .status-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .status-buttons button {
+      font-size: 12px;
+      padding: 9px;
+    }
+
+    .product-admin {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .muted {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      .cart-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cart-bar button {
+        width: 100%;
+      }
+
+      .product-admin {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-<header>
-  <h1>🍔 Hambúrguer Dourado</h1>
-  <p>Faça seu pedido online</p>
-</header>
-
-<div class="container">
 
 <!-- =========================
      ÁREA DO CLIENTE
 ========================= -->
 
-<div id="customer">
+<div id="customerApp">
 
-<h2>🍔 Cardápio</h2>
+  <header>
+    <h1>🍔 Hambúrguer Dourado</h1>
+    <p>Faça seu pedido online</p>
+  </header>
 
-<div id="products" class="grid">
-  <p>Carregando produtos...</p>
-</div>
+  <main class="container">
 
-<div class="cart">
+    <!-- CARDÁPIO -->
+    <section id="menuScreen" class="screen active">
 
-<h2>🛒 Seu pedido</h2>
+      <div class="card">
+        <h2>🍔 Cardápio</h2>
+        <p class="muted" style="margin-top:6px;">
+          Escolha seus produtos
+        </p>
+      </div>
 
-<div id="cartItems">
-  <p class="muted">Seu carrinho está vazio.</p>
-</div>
+      <div id="products" class="grid">
+        <p>Carregando cardápio...</p>
+      </div>
 
-<div class="total">
-  Total: R$ <span id="total">0,00</span>
-</div>
+      <div class="cart-bar">
+        <div>
+          🛒 <strong id="cartCount">0</strong> item(ns)
+          <br>
+          <strong id="cartTotal">R$ 0,00</strong>
+        </div>
 
-<h3>📦 Como receber?</h3>
+        <button onclick="openCart()">
+          Ver carrinho
+        </button>
+      </div>
 
-<select id="delivery">
-  <option value="true">🚴 Entrega</option>
-  <option value="false">🏪 Retirada no local</option>
-</select>
+    </section>
 
-<label>Nome</label>
-<input id="name" placeholder="Seu nome">
 
-<div id="addressBox">
+    <!-- CARRINHO -->
+    <section id="cartScreen" class="screen">
 
-<label>Endereço</label>
-<input id="address" placeholder="Rua, número, bairro">
+      <button class="back" onclick="showScreen('menuScreen')">
+        ← Voltar ao cardápio
+      </button>
 
-</div>
+      <div class="card">
+        <h2>🛒 Seu carrinho</h2>
 
-<label>Pagamento</label>
+        <div id="cartItems"></div>
 
-<select id="payment">
-  <option value="PIX">💠 Pix</option>
-  <option value="DINHEIRO">💵 Dinheiro</option>
-  <option value="CARTÃO">💳 Cartão</option>
-</select>
+        <div class="total">
+          Total: <span id="cartScreenTotal">R$ 0,00</span>
+        </div>
 
-<button class="add" onclick="sendOrder()">
-  ✅ Finalizar pedido
-</button>
+        <button class="primary" onclick="openCheckout()">
+          Continuar pedido →
+        </button>
+      </div>
 
-<p id="message"></p>
+    </section>
 
-</div>
+
+    <!-- CHECKOUT -->
+    <section id="checkoutScreen" class="screen">
+
+      <button class="back" onclick="showScreen('cartScreen')">
+        ← Voltar ao carrinho
+      </button>
+
+      <div class="card">
+
+        <h2>📦 Finalizar pedido</h2>
+
+        <label>Como deseja receber?</label>
+
+        <select id="delivery">
+          <option value="true">🚚 Entrega</option>
+          <option value="false">🏪 Retirada na loja</option>
+        </select>
+
+        <label>Seu nome</label>
+
+        <input
+          id="customerName"
+          type="text"
+          placeholder="Digite seu nome"
+        >
+
+        <div id="addressBox">
+
+          <label>Endereço para entrega</label>
+
+          <input
+            id="address"
+            type="text"
+            placeholder="Rua, número, bairro"
+          >
+
+        </div>
+
+        <label>Forma de pagamento</label>
+
+        <select id="payment">
+          <option value="PIX">Pix</option>
+          <option value="DINHEIRO">Dinheiro</option>
+          <option value="CARTAO">Cartão</option>
+        </select>
+
+        <div class="summary">
+
+          <strong>Resumo do pedido</strong>
+
+          <div id="checkoutSummary" style="margin-top:10px;"></div>
+
+          <hr style="margin:12px 0; border:none;border-top:1px solid #ddd;">
+
+          <div>
+            Subtotal:
+            <strong id="checkoutSubtotal">R$ 0,00</strong>
+          </div>
+
+          <div style="margin-top:5px;">
+            Taxa de entrega:
+            <strong id="deliveryFee">R$ 0,00</strong>
+          </div>
+
+          <div class="total">
+            Total:
+            <span id="checkoutTotal">R$ 0,00</span>
+          </div>
+
+        </div>
+
+        <button class="primary" onclick="sendOrder()">
+          ✅ Confirmar pedido
+        </button>
+
+        <div id="message" class="message hidden"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PEDIDO CONFIRMADO -->
+    <section id="successScreen" class="screen">
+
+      <div class="card success">
+
+        <div class="success-icon">
+          ✅
+        </div>
+
+        <h2>Pedido recebido!</h2>
+
+        <p style="margin-top:10px;">
+          Seu pedido foi enviado para a cozinha.
+        </p>
+
+        <div class="order-number">
+          Pedido #<span id="successOrderNumber"></span>
+        </div>
+
+        <p class="muted">
+          Aguarde enquanto preparamos seu pedido.
+        </p>
+
+        <button class="primary" onclick="newOrder()">
+          🍔 Fazer novo pedido
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
 
 </div>
 
 
 <!-- =========================
-     ÁREA DA LOJA
+     ÁREA ADMIN
 ========================= -->
 
-<hr style="margin:35px 0">
+<div id="adminApp" class="hidden">
 
-<div class="admin" style="display:none;">
+  <header>
+    <h1>🍔 Hambúrguer Dourado</h1>
+    <p>Área da loja</p>
+  </header>
 
-<h2>🔐 Área da loja</h2>
+  <main class="container">
 
-<div id="loginBox">
+    <!-- LOGIN -->
+    <section id="adminLogin" class="admin-login">
 
-<div class="notice">
-  Área exclusiva da lanchonete.
-</div>
+      <div class="card">
 
-<input
-  id="email"
-  type="email"
-  placeholder="E-mail"
->
+        <h2>🔐 Entrar na loja</h2>
 
-<input
-  id="password"
-  type="password"
-  placeholder="Senha"
->
+        <label>E-mail</label>
 
-<button onclick="login()">
-  Entrar
-</button>
+        <input
+          id="adminEmail"
+          type="email"
+          placeholder="E-mail"
+        >
 
-</div>
+        <label>Senha</label>
+
+        <input
+          id="adminPassword"
+          type="password"
+          placeholder="Senha"
+        >
+
+        <button class="primary" onclick="adminLogin()">
+          Entrar
+        </button>
+
+        <div id="loginMessage" class="message hidden"></div>
+
+      </div>
+
+    </section>
 
 
-<div id="adminPanel" class="hidden">
+    <!-- PAINEL -->
+    <section id="adminPanel" class="admin-panel">
 
-<div class="tabs">
+      <div class="admin-header">
 
-<button onclick="showOrders()">
-  📋 Pedidos
-</button>
+        <div>
+          <h2>📊 Painel da loja</h2>
+          <p class="muted">
+            Gerencie seus pedidos e produtos
+          </p>
+        </div>
 
-<button onclick="showProducts()">
-  🍔 Produtos
-</button>
+        <button onclick="adminLogout()">
+          Sair
+        </button>
 
-<button onclick="logout()">
-  🚪 Sair
-</button>
+      </div>
 
-</div>
 
-<div id="adminContent"></div>
+      <!-- PEDIDOS -->
 
-</div>
+      <div class="card">
 
-</div>
+        <h2>📦 Pedidos</h2>
+
+        <div
+          id="orders"
+          style="margin-top:15px;"
+        >
+          Carregando pedidos...
+        </div>
+
+      </div>
+
+
+      <!-- PRODUTOS -->
+
+      <div class="card">
+
+        <h2>🍔 Produtos</h2>
+
+        <label>Nome</label>
+
+        <input
+          id="productName"
+          type="text"
+          placeholder="Ex: X-Bacon"
+        >
+
+        <label>Descrição</label>
+
+        <input
+          id="productDescription"
+          type="text"
+          placeholder="Descrição do produto"
+        >
+
+        <label>Preço</label>
+
+        <input
+          id="productPrice"
+          type="number"
+          step="0.01"
+          placeholder="24.90"
+        >
+
+        <button class="primary" onclick="createProduct()">
+          + Adicionar produto
+        </button>
+
+        <div id="adminProducts" style="margin-top:20px;">
+          Carregando produtos...
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
 
 </div>
 
 
 <script>
 
-/* =====================================================
+/* ======================================
    CONFIGURAÇÃO SUPABASE
-===================================================== */
+====================================== */
 
 const SUPABASE_URL =
-"https://tliifpjfrjuxkjqyrvnw.supabase.co";
-
+  "https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
 /*
-   COLOQUE AQUI SUA CHAVE PUBLISHABLE.
-
-   NÃO COLOQUE A SECRET KEY.
-
-   Exemplo:
-
-   const SUPABASE_KEY = "sb_publishable_......";
+  COLE AQUI A NOVA PUBLISHABLE KEY
+  QUE VOCÊ GEROU NO SUPABASE.
 */
 
 const SUPABASE_KEY =
-"sb_publishable_Kls3mZ8OfPYLTyruZazc0w_sCMht1Qk";
+  "sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
 
 const db = supabase.createClient(
@@ -352,50 +633,1194 @@ const db = supabase.createClient(
 );
 
 
-/* =====================================================
+/* ======================================
    VARIÁVEIS
-===================================================== */
+====================================== */
 
 let products = [];
 let cart = [];
 
+/*
+  Por enquanto a taxa está zerada.
+  Depois vamos colocar a taxa por bairro/distância.
+*/
+const DEFAULT_DELIVERY_FEE = 0;
 
-/* =====================================================
-   CARREGAR PRODUTOS
-===================================================== */
 
-async function loadProducts(){
+/* ======================================
+   UTILIDADES
+====================================== */
 
-  const {data,error} = await db
-    .from("products")
-    .select("*")
-    .eq("active",true)
-    .order("id");if(error){
+function money(value) {
 
-    document.getElementById("products").innerHTML =
-      "<p>Erro ao carregar o cardápio.</p><p>" + error.message + "</p>";
+  return Number(value || 0).toLocaleString(
+    "pt-BR",
+    {
+      style: "currency",
+      currency: "BRL"
+    }
+  );
 
-    console.log(error);
-
-    return;
-}
-
-  products = data || [];
-
-  renderProducts();
 }
 
 
-/* =====================================================
-   MOSTRAR PRODUTOS
-===================================================== */
+function showScreen(screenId) {
 
-function renderProducts(){
+  document
+    .querySelectorAll("#customerApp .screen")
+    .forEach(screen => {
+      screen.classList.remove("active");
+    });
+
+  document
+    .getElementById(screenId)
+    .classList.add("active");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* ======================================
+   ROTEAMENTO
+====================================== */
+
+function initRoute() {
+
+  const isAdmin =
+    window.location.pathname.startsWith("/admin");
+
+  if (isAdmin) {
+
+    document
+      .getElementById("customerApp")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminApp")
+      .classList.remove("hidden");
+
+    initAdmin();
+
+  } else {
+
+    document
+      .getElementById("adminApp")
+      .classList.add("hidden");
+
+    document
+      .getElementById("customerApp")
+      .classList.remove("hidden");
+
+    initCustomer();
+
+  }
+
+}
+
+
+/* ======================================
+   CLIENTE
+====================================== */
+
+async function initCustomer() {
+
+  await loadProducts();
+
+  updateCart();
+
+  document
+    .getElementById("delivery")
+    .addEventListener("change", updateCheckout);
+
+}
+
+
+/* ======================================
+   PRODUTOS
+====================================== */
+
+async function loadProducts() {
 
   const box =
     document.getElementById("products");
 
-  if(!products.length){
+  if (!box) return;
+
+  box.innerHTML =
+    "<p>Carregando cardápio...</p>";
+
+  const {
+    data,
+    error
+  } = await db
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .order("id", {
+      ascending: true
+    });
+
+  if (error) {
+
+    box.innerHTML =
+      "<p>Não foi possível carregar o cardápio.</p>";
+
+    console.error(error);
+
+    return;
+  }
+
+  products = data || [];
+
+  renderProducts();
+
+}
+
+
+/* ======================================
+   RENDER CARDÁPIO
+====================================== */
+
+function renderProducts() {
+
+  const box =
+    document.getElementById("products");
+
+  if (!box) return;
+
+  if (!products.length) {
+
+    box.innerHTML =
+      "<p>Nenhum produto disponível.</p>";
+
+    return;
+  }
+
+  box.innerHTML =
+    products.map(product => `
+
+      <div class="product">
+
+        <h3>${escapeHtml(product.name)}</h3>
+
+        <p>
+          ${escapeHtml(product.description || "")}
+        </p>
+
+        <div class="price">
+          ${money(product.price)}
+        </div>
+
+        <button
+          onclick="addToCart(${product.id})"
+        >
+          + Adicionar
+        </button>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+/* ======================================
+   CARRINHO
+====================================== */
+
+function addToCart(productId) {
+
+  const product =
+    products.find(p => p.id === productId);
+
+  if (!product) return;
+
+  const existing =
+    cart.find(item => item.id === productId);
+
+  if (existing) {
+
+    existing.qty++;
+
+  } else {
+
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: Number(product.price),
+      qty: 1
+    });
+
+  }
+
+  updateCart();
+
+}
+
+
+function removeFromCart(productId) {
+
+  const item =
+    cart.find(item => item.id === productId);
+
+  if (!item) return;
+
+  item.qty--;
+
+  if (item.qty <= 0) {
+
+    cart =
+      cart.filter(
+        item => item.id !== productId
+      );
+
+  }
+
+  updateCart();
+
+}
+
+
+function increaseCart(productId) {
+
+  const item =
+    cart.find(item => item.id === productId);
+
+  if (!item) return;
+
+  item.qty++;
+
+  updateCart();
+
+}
+
+
+function getSubtotal() {
+
+  return cart.reduce(
+    (total, item) =>
+      total + item.price * item.qty,
+    0
+  );
+
+}
+
+
+function updateCart() {
+
+  const count =
+    cart.reduce(
+      (total, item) =>
+        total + item.qty,
+      0
+    );
+
+  const total =
+    getSubtotal();
+
+  const countBox =
+    document.getElementById("cartCount");
+
+  const totalBox =
+    document.getElementById("cartTotal");
+
+  if (countBox)
+    countBox.textContent = count;
+
+  if (totalBox)
+    totalBox.textContent = money(total);
+
+  renderCart();
+
+}
+
+
+function renderCart() {
+
+  const box =
+    document.getElementById("cartItems");
+
+  if (!box) return;
+
+  if (!cart.length) {
+
+    box.innerHTML = `
+      <p style="padding:20px 0;">
+        Seu carrinho está vazio.
+      </p>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    cart.map(item => `
+
+      <div class="cart-item">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(item.name)}
+          </strong>
+
+          <div class="muted">
+            ${money(item.price)} cada
+          </div>
+
+        </div>
+
+        <div class="qty">
+
+          <button
+            onclick="removeFromCart(${item.id})"
+          >
+            −
+          </button>
+
+          <strong>
+            ${item.qty}
+          </strong>
+
+          <button
+            onclick="increaseCart(${item.id})"
+          >
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+  const totalBox =
+    document.getElementById(
+      "cartScreenTotal"
+    );
+
+  if (totalBox)
+    totalBox.textContent = money(
+      getSubtotal()
+    );
+
+}
+
+
+function openCart() {
+
+  if (!cart.length) {
+
+    alert(
+      "Seu carrinho está vazio. Escolha algum produto primeiro!"
+    );
+
+    return;
+  }
+
+  renderCart();
+
+  showScreen("cartScreen");
+
+}
+
+
+/* ======================================
+   CHECKOUT
+====================================== */
+
+function openCheckout() {
+
+  if (!cart.length) {
+
+    alert("Seu carrinho está vazio.");
+
+    return;
+  }
+
+  renderCheckout();
+
+  showScreen("checkoutScreen");
+
+}
+
+
+function renderCheckout() {
+
+  const box =
+    document.getElementById(
+      "checkoutSummary"
+    );
+
+  if (!box) return;
+
+  box.innerHTML =
+    cart.map(item => `
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:7px;
+      ">
+
+        <span>
+          ${item.qty}x
+          ${escapeHtml(item.name)}
+        </span>
+
+        <strong>
+          ${money(item.price * item.qty)}
+        </strong>
+
+      </div>
+
+    `).join("");
+
+  updateCheckout();
+
+}
+
+
+function updateCheckout() {
+
+  const delivery =
+    document.getElementById(
+      "delivery"
+    )?.value === "true";
+
+  const addressBox =
+    document.getElementById(
+      "addressBox"
+    );
+
+  if (addressBox) {
+
+    addressBox.style.display =
+      delivery
+        ? "block"
+        : "none";
+
+  }
+
+  const fee =
+    delivery
+      ? DEFAULT_DELIVERY_FEE
+      : 0;
+
+  const subtotal =
+    getSubtotal();
+
+  const total =
+    subtotal + fee;
+
+  document
+    .getElementById("checkoutSubtotal")
+    .textContent =
+      money(subtotal);
+
+  document
+    .getElementById("deliveryFee")
+    .textContent =
+      money(fee);
+
+  document
+    .getElementById("checkoutTotal")
+    .textContent =
+      money(total);
+
+}
+
+
+/* ======================================
+   ENVIAR PEDIDO
+====================================== */
+
+async function sendOrder() {
+
+  if (!cart.length) {
+
+    alert(
+      "Seu carrinho está vazio."
+    );
+
+    return;
+  }
+
+  const customerName =
+    document
+      .getElementById("customerName")
+      .value.trim();
+
+  const delivery =
+    document
+      .getElementById("delivery")
+      .value === "true";
+
+  const address =
+    document
+      .getElementById("address")
+      .value.trim();
+
+  const payment =
+    document
+      .getElementById("payment")
+      .value;
+
+  const message =
+    document
+      .getElementById("message");
+
+
+  if (!customerName) {
+
+    showMessage(
+      "Digite seu nome.",
+      true
+    );
+
+    return;
+  }
+
+
+  if (delivery && !address) {
+
+    showMessage(
+      "Digite o endereço para entrega.",
+      true
+    );
+
+    return;
+  }
+
+
+  const subtotal =
+    getSubtotal();
+
+  const deliveryFee =
+    delivery
+      ? DEFAULT_DELIVERY_FEE
+      : 0;
+
+  const total =
+    subtotal + deliveryFee;
+
+
+  showMessage(
+    "Enviando pedido..."
+  );
+
+
+  /*
+    Como o RLS atual não permite que o cliente
+    anônimo leia a linha criada, criamos o ID
+    no navegador e enviamos explicitamente.
+
+    Isso evita o erro do .select().single()
+    que estava acontecendo anteriormente.
+  */
+
+  const orderId =
+    Date.now() * 1000 +
+    Math.floor(
+      Math.random() * 1000
+    );
+
+
+  const orderData = {
+
+    id: orderId,
+
+    customer_name:
+      customerName,
+
+    address:
+      delivery
+        ? address
+        : "RETIRADA NA LOJA",
+
+    payment:
+      payment,
+
+    delivery:
+      delivery,
+
+    total:
+      total,
+
+    status:
+      "RECEBIDO"
+
+  };
+
+
+  const {
+    error: orderError
+  } = await db
+    .from("orders")
+    .insert(orderData);
+
+
+  if (orderError) {
+
+    console.error(
+      "Erro no pedido:",
+      orderError
+    );
+
+    showMessage(
+      "Não foi possível enviar o pedido: " +
+      orderError.message,
+      true
+    );
+
+    return;
+  }
+
+
+  const items = cart.map(
+    (item, index) => ({
+
+      id:
+        orderId * 100 +
+        index + 1,
+
+      order_id:
+        orderId,
+
+      product_id:
+        item.id,
+
+      name:
+        item.name,
+
+      qty:
+        item.qty,
+
+      price:
+        item.price
+
+    })
+  );
+
+
+  const {
+    error: itemsError
+  } = await db
+    .from("order_items")
+    .insert(items);
+
+
+  if (itemsError) {
+
+    console.error(
+      "Erro nos itens:",
+      itemsError
+    );
+
+    showMessage(
+      "O pedido foi criado, mas houve um erro ao salvar os itens.",
+      true
+    );
+
+    return;
+  }
+
+
+  document
+    .getElementById(
+      "successOrderNumber"
+    )
+    .textContent =
+      orderId;
+
+
+  cart = [];
+
+  updateCart();
+
+  document
+    .getElementById("customerName")
+    .value = "";
+
+  document
+    .getElementById("address")
+    .value = "";
+
+  showScreen(
+    "successScreen"
+  );
+
+}
+
+
+/* ======================================
+   NOVO PEDIDO
+====================================== */
+
+function newOrder() {
+
+  showScreen(
+    "menuScreen"
+  );
+
+}
+
+
+/* ======================================
+   MENSAGENS
+====================================== */
+
+function showMessage(
+  text,
+  error = false
+) {
+
+  const box =
+    document.getElementById(
+      "message"
+    );
+
+  if (!box) return;
+
+  box.textContent = text;
+
+  box.classList.remove(
+    "hidden"
+  );
+
+  if (error) {
+
+    box.style.background =
+      "#ffe5e5";
+
+  } else {
+
+    box.style.background =
+      "#eee";
+
+  }
+
+}
+
+
+/* ======================================
+   ADMIN
+====================================== */
+
+async function initAdmin() {
+
+  const {
+    data
+  } =
+    await db.auth.getSession();
+
+  if (data.session) {
+
+    showAdminPanel();
+
+  } else {
+
+    showAdminLogin();
+
+  }
+
+}
+
+
+function showAdminLogin() {
+
+  document
+    .getElementById(
+      "adminLogin"
+    )
+    .style.display =
+      "block";
+
+  document
+    .getElementById(
+      "adminPanel"
+    )
+    .style.display =
+      "none";
+
+}
+
+
+function showAdminPanel() {
+
+  document
+    .getElementById(
+      "adminLogin"
+    )
+    .style.display =
+      "none";
+
+  document
+    .getElementById(
+      "adminPanel"
+    )
+    .style.display =
+      "block";
+
+  loadOrders();
+
+  loadAdminProducts();
+
+  startRealtime();
+
+}
+
+
+/* ======================================
+   LOGIN
+====================================== */
+
+async function adminLogin() {
+
+  const email =
+    document
+      .getElementById(
+        "adminEmail"
+      )
+      .value.trim();
+
+  const password =
+    document
+      .getElementById(
+        "adminPassword"
+      )
+      .value;
+
+
+  const box =
+    document
+      .getElementById(
+        "loginMessage"
+      );
+
+
+  if (!email || !password) {
+
+    box.textContent =
+      "Preencha e-mail e senha.";
+
+    box.classList.remove(
+      "hidden"
+    );
+
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await db.auth.signInWithPassword({
+
+      email:
+        email,
+
+      password:
+        password
+
+    });
+
+
+  if (error) {
+
+    box.textContent =
+      "E-mail ou senha incorretos.";
+
+    box.classList.remove(
+      "hidden"
+    );
+
+    console.error(error);
+
+    return;
+  }
+
+
+  box.classList.add(
+    "hidden"
+  );
+
+  showAdminPanel();
+
+}
+
+
+/* ======================================
+   LOGOUT
+====================================== */
+
+async function adminLogout() {
+
+  await db.auth.signOut();
+
+  showAdminLogin();
+
+}
+
+
+/* ======================================
+   PEDIDOS ADMIN
+====================================== */
+
+async function loadOrders() {
+
+  const box =
+    document.getElementById(
+      "orders"
+    );
+
+  if (!box) return;
+
+  box.innerHTML =
+    "Carregando pedidos...";
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("orders")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    box.innerHTML =
+      "Não foi possível carregar os pedidos.";
+
+    console.error(error);
+
+    return;
+  }
+
+
+  if (!data.length) {
+
+    box.innerHTML =
+      "<p>Nenhum pedido ainda.</p>";
+
+    return;
+  }
+
+
+  box.innerHTML =
+    data.map(
+      order => `
+
+      <div class="order">
+
+        <h3>
+          Pedido #${order.id}
+        </h3>
+
+        <div class="order-status">
+          ${escapeHtml(order.status)}
+        </div>
+
+        <p>
+          <strong>Cliente:</strong>
+          ${escapeHtml(order.customer_name)}
+        </p>
+
+        <p style="margin-top:5px;">
+          <strong>Tipo:</strong>
+          ${
+            order.delivery
+              ? "🚚 Entrega"
+              : "🏪 Retirada"
+          }
+        </p>
+
+        <p style="margin-top:5px;">
+          <strong>Endereço:</strong>
+          ${escapeHtml(order.address || "-")}
+        </p>
+
+        <p style="margin-top:5px;">
+          <strong>Pagamento:</strong>
+          ${escapeHtml(order.payment)}
+        </p>
+
+        <p style="margin-top:5px;">
+          <strong>Total:</strong>
+          ${money(order.total)}
+        </p>
+
+        <div class="status-buttons">
+
+          <button
+            onclick="changeOrderStatus(${order.id}, 'RECEBIDO')"
+          >
+            Recebido
+          </button>
+
+          <button
+            onclick="changeOrderStatus(${order.id}, 'PREPARANDO')"
+          >
+            Preparando
+          </button>
+
+          <button
+            onclick="changeOrderStatus(${order.id}, 'PRONTO')"
+          >
+            Pronto
+          </button>
+
+          <button
+            onclick="changeOrderStatus(${order.id}, 'SAIU_PARA_ENTREGA')"
+          >
+            Saiu
+          </button>
+
+          <button
+            onclick="changeOrderStatus(${order.id}, 'ENTREGUE')"
+          >
+            Entregue
+          </button>
+
+        </div>
+
+      </div>
+
+    `
+    ).join("");
+
+}
+
+
+/* ======================================
+   ALTERAR STATUS
+====================================== */
+
+async function changeOrderStatus(
+  id,
+  status
+) {
+
+  const {
+    error
+  } =
+    await db
+      .from("orders")
+      .update({
+        status:
+          status
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    alert(
+      "Não foi possível alterar o status."
+    );
+
+    console.error(error);
+
+    return;
+  }
+
+
+  loadOrders();
+
+}
+
+
+/* ======================================
+   REALTIME
+====================================== */
+
+let realtimeStarted = false;
+
+function startRealtime() {
+
+  if (realtimeStarted)
+    return;
+
+  realtimeStarted = true;
+
+
+  db.channel(
+    "orders-realtime"
+  )
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "orders"
+    },
+    () => {
+
+      loadOrders();
+
+    }
+  )
+  .subscribe();
+
+}
+
+
+/* ======================================
+   PRODUTOS ADMIN
+====================================== */
+
+async function loadAdminProducts() {
+
+  const box =
+    document.getElementById(
+      "adminProducts"
+    );
+
+  if (!box) return;
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("products")
+      .select("*")
+      .order(
+        "id",
+        {
+          ascending: true
+        }
+      );
+
+
+  if (error) {
+
+    box.innerHTML =
+      "Erro ao carregar produtos.";
+
+    console.error(error);
+
+    return;
+  }
+
+
+  if (!data.length) {
 
     box.innerHTML =
       "<p>Nenhum produto cadastrado.</p>";
@@ -403,671 +1828,77 @@ function renderProducts(){
     return;
   }
 
-  box.innerHTML = products.map(p => `
-
-    <div class="card">
-
-      <h3>
-        ${escapeHtml(p.name)}
-      </h3>
-
-      <div class="desc">
-        ${escapeHtml(p.description || "")}
-      </div>
-
-      <div class="price">
-        R$ ${formatMoney(p.price)}
-      </div>
-
-      <button
-        class="add"
-        onclick="addCart(${p.id})"
-      >
-        ➕ Adicionar
-      </button>
-
-    </div>
-
-  `).join("");
-}
-
-
-/* =====================================================
-   ADICIONAR AO CARRINHO
-===================================================== */
-
-function addCart(id){
-
-  const product =
-    products.find(p => p.id === id);
-
-  if(!product) return;
-
-  const item =
-    cart.find(x => x.id === id);
-
-  if(item){
-
-    item.qty++;
-
-  }else{
-
-    cart.push({
-      ...product,
-      qty:1
-    });
-
-  }
-
-  renderCart();
-}
-
-
-/* =====================================================
-   REMOVER DO CARRINHO
-===================================================== */
-
-function removeCart(id){
-
-  const item =
-    cart.find(x => x.id === id);
-
-  if(!item) return;
-
-  item.qty--;
-
-  if(item.qty <= 0){
-
-    cart =
-      cart.filter(x => x.id !== id);
-
-  }
-
-  renderCart();
-}
-
-
-/* =====================================================
-   MOSTRAR CARRINHO
-===================================================== */
-
-function renderCart(){
-
-  const box =
-    document.getElementById("cartItems");
-
-  if(!cart.length){
-
-    box.innerHTML =
-      "<p class='muted'>Seu carrinho está vazio.</p>";
-
-    document.getElementById("total")
-      .innerText = "0,00";
-
-    return;
-  }
-
-  box.innerHTML = cart.map(x => `
-
-    <div class="row">
-
-      <div>
-
-        <b>
-          ${escapeHtml(x.name)}
-        </b>
-
-        <br>
-
-        ${x.qty}x R$ ${formatMoney(x.price)}
-
-      </div>
-
-      <button
-        onclick="removeCart(${x.id})"
-      >
-        −
-      </button>
-
-    </div>
-
-  `).join("");
-
-
-  const total =
-    cart.reduce(
-      (sum,x) =>
-        sum + Number(x.price) * x.qty,
-      0
-    );
-
-
-  document.getElementById("total")
-    .innerText =
-      formatMoney(total);
-}
-
-
-/* =====================================================
-   ENTREGA / RETIRADA
-===================================================== */
-
-document
-  .getElementById("delivery")
-  .addEventListener(
-    "change",
-    function(){
-
-      document
-        .getElementById("addressBox")
-        .classList
-        .toggle(
-          "hidden",
-          this.value === "false"
-        );
-
-    }
-  );
-
-
-/* =====================================================
-   ENVIAR PEDIDO
-===================================================== */
-
-async function sendOrder(){
-
-  if(!cart.length){
-
-    alert(
-      "Adicione algum produto ao carrinho."
-    );
-
-    return;
-  }
-
-
-  const name =
-    document
-      .getElementById("name")
-      .value
-      .trim();
-
-
-  const delivery =
-    document
-      .getElementById("delivery")
-      .value === "true";
-
-
-  const address =
-    document
-      .getElementById("address")
-      .value
-      .trim();
-
-
-  const payment =
-    document
-      .getElementById("payment")
-      .value;
-
-
-  if(!name){
-
-    alert("Digite seu nome.");
-
-    return;
-  }
-
-
-  if(delivery && !address){
-
-    alert("Digite seu endereço.");
-
-    return;
-  }
-
-
-  const total =
-    cart.reduce(
-      (sum,x) =>
-        sum + Number(x.price) * x.qty,
-      0
-    );
-
-
-  const {data:order,error} =
-    await db
-      .from("orders")
-      .insert({
-
-        customer_name:name,
-
-        address:
-          delivery ? address : "",
-
-        payment:payment,
-
-        delivery:delivery,
-
-        total:total,
-
-        status:"RECEBIDO"
-
-      })
-      .select()
-      .single();
-
-
-  if(error){
-
-    console.log(error);
-
-    alert(
-      "Não foi possível enviar o pedido."
-    );
-
-    return;
-  }
-
-
-  const items =
-    cart.map(x => ({
-
-      order_id:order.id,
-
-      product_id:x.id,
-
-      name:x.name,
-
-      qty:x.qty,
-
-      price:x.price
-
-    }));
-
-
-  const {error:itemError} =
-    await db
-      .from("order_items")
-      .insert(items);
-
-
-  if(itemError){
-
-    console.log(itemError);
-
-    alert(
-      "Pedido criado, mas houve erro nos itens."
-    );
-
-    return;
-  }
-
-
-  cart = [];
-
-  renderCart();
-
-
-  document.getElementById("message")
-    .innerHTML = `
-
-      <b style="color:green">
-        ✅ Pedido enviado com sucesso!
-      </b>
-
-      <br>
-
-      Nº do pedido:
-      #${order.id}
-
-    `;
-
-
-  document.getElementById("name")
-    .value = "";
-
-  document.getElementById("address")
-    .value = "";
-}
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function login(){
-
-  const email =
-    document
-      .getElementById("email")
-      .value;
-
-
-  const password =
-    document
-      .getElementById("password")
-      .value;
-
-
-  const {data,error} =
-    await db.auth.signInWithPassword({
-
-      email,
-      password
-
-    });
-
-
-  if(error){
-
-    alert(
-      "E-mail ou senha incorretos."
-    );
-
-    return;
-  }
-
-
-  document
-    .getElementById("loginBox")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("adminPanel")
-    .classList
-    .remove("hidden");
-
-
-  showOrders();
-}
-
-
-/* =====================================================
-   PEDIDOS
-===================================================== */
-
-async function showOrders(){
-
-  const box =
-    document.getElementById(
-      "adminContent"
-    );
-
 
   box.innerHTML =
-    "<p>Carregando pedidos...</p>";
+    data.map(
+      product => `
 
+      <div class="product-admin">
 
-  const {data,error} =
-    await db
-      .from("orders")
-      .select("*")
-      .order(
-        "created_at",
-        {ascending:false}
-      );
+        <div>
 
+          <strong>
+            ${escapeHtml(product.name)}
+          </strong>
 
-  if(error){
+          <div class="muted">
+            ${money(product.price)}
+          </div>
 
-    box.innerHTML =
-      "<p>Erro ao carregar pedidos.</p>";
-
-    console.log(error);
-
-    return;
-  }
-
-
-  if(!data || !data.length){
-
-    box.innerHTML =
-      "<div class='empty'>Nenhum pedido ainda.</div>";
-
-    return;
-  }
-
-
-  box.innerHTML = `
-
-    <h3>📋 Pedidos</h3>
-
-    ${data.map(o => `
-
-      <div class="order">
-
-        <b>
-          Pedido #${o.id}
-        </b>
-
-        <p>
-          👤 ${escapeHtml(o.customer_name)}
-        </p>
-
-        <p>
-          📍 ${
-            escapeHtml(
-              o.address || "Retirada no local"
-            )
-          }
-        </p>
-
-        <p>
-          💳 ${escapeHtml(o.payment)}
-        </p>
-
-        <p>
-          💰 R$ ${formatMoney(o.total)}
-        </p>
-
-        <p class="status">
-          Status: ${escapeHtml(o.status)}
-        </p>
-
-        <select
-          onchange="changeStatus(
-            ${o.id},
-            this.value
-          )"
-        >
-
-          ${[
-            "RECEBIDO",
-            "PREPARANDO",
-            "PRONTO",
-            "SAIU PARA ENTREGA",
-            "ENTREGUE"
-          ].map(s => `
-
-            <option
-              value="${s}"
-              ${o.status === s
-                ? "selected"
-                : ""}
-            >
-              ${s}
-            </option>
-
-          `).join("")}
-
-        </select>
-
-      </div>
-
-    `).join("")}
-
-  `;
-}
-
-
-/* =====================================================
-   ALTERAR STATUS
-===================================================== */
-
-async function changeStatus(
-  id,
-  status
-){
-
-  const {error} =
-    await db
-      .from("orders")
-      .update({status})
-      .eq("id",id);
-
-
-  if(error){
-
-    alert(
-      "Erro ao atualizar o pedido."
-    );
-
-    console.log(error);
-
-    return;
-  }
-
-
-  showOrders();
-}
-
-
-/* =====================================================
-   PRODUTOS ADMIN
-===================================================== */
-
-async function showProducts(){
-
-  const box =
-    document.getElementById(
-      "adminContent"
-    );
-
-
-  const {data,error} =
-    await db
-      .from("products")
-      .select("*")
-      .order("id");
-
-
-  if(error){
-
-    box.innerHTML =
-      "<p>Erro ao carregar produtos.</p>";
-
-    return;
-  }
-
-
-  box.innerHTML = `
-
-    <h3>
-      🍔 Produtos
-    </h3>
-
-    <input
-      id="newName"
-      placeholder="Nome do produto"
-    >
-
-    <input
-      id="newDescription"
-      placeholder="Descrição"
-    >
-
-    <input
-      id="newPrice"
-      type="number"
-      step="0.01"
-      placeholder="Preço"
-    >
-
-    <button
-      onclick="createProduct()"
-    >
-      ➕ Cadastrar produto
-    </button>
-
-    <hr>
-
-    ${data.map(p => `
-
-      <div class="order">
-
-        <b>
-          ${escapeHtml(p.name)}
-        </b>
-
-        <p>
-          ${escapeHtml(
-            p.description || ""
-          )}
-        </p>
-
-        <p>
-          R$ ${formatMoney(p.price)}
-        </p>
+        </div>
 
         <button
-          class="${p.active
-            ? "danger"
-            : "success"}"
           onclick="toggleProduct(
-            ${p.id},
-            ${p.active}
+            ${product.id},
+            ${product.active}
           )"
         >
-
           ${
-            p.active
+            product.active
               ? "Desativar"
               : "Ativar"
           }
-
         </button>
 
       </div>
 
-    `).join("")}
+    `
+    ).join("");
 
-  `;
 }
 
 
-/* =====================================================
+/* ======================================
    CRIAR PRODUTO
-===================================================== */
+====================================== */
 
-async function createProduct(){
+async function createProduct() {
 
   const name =
     document
-      .getElementById("newName")
-      .value
-      .trim();
-
+      .getElementById(
+        "productName"
+      )
+      .value.trim();
 
   const description =
     document
-      .getElementById("newDescription")
-      .value
-      .trim();
-
+      .getElementById(
+        "productDescription"
+      )
+      .value.trim();
 
   const price =
     Number(
       document
-        .getElementById("newPrice")
+        .getElementById(
+          "productPrice"
+        )
         .value
     );
 
 
-  if(!name || !price){
+  if (!name || !price) {
 
     alert(
       "Preencha nome e preço."
@@ -1077,162 +1908,143 @@ async function createProduct(){
   }
 
 
-  const {error} =
+  const {
+    error
+  } =
     await db
       .from("products")
       .insert({
 
-        name:name,
+        name:
+          name,
 
-        description:description,
+        description:
+          description,
 
-        price:price,
+        price:
+          price,
 
-        active:true
+        active:
+          true
 
       });
 
 
-  if(error){
+  if (error) {
 
     alert(
-      "Erro ao cadastrar produto."
+      "Não foi possível criar o produto."
     );
 
-    console.log(error);
+    console.error(error);
 
     return;
   }
 
 
-  showProducts();
+  document
+    .getElementById(
+      "productName"
+    )
+    .value = "";
 
-  loadProducts();
+  document
+    .getElementById(
+      "productDescription"
+    )
+    .value = "";
+
+  document
+    .getElementById(
+      "productPrice"
+    )
+    .value = "";
+
+
+  loadAdminProducts();
+
 }
 
 
-/* =====================================================
+/* ======================================
    ATIVAR / DESATIVAR PRODUTO
-===================================================== */
+====================================== */
 
 async function toggleProduct(
   id,
-  active
-){
+  currentStatus
+) {
 
-  const {error} =
+  const {
+    error
+  } =
     await db
       .from("products")
       .update({
-        active:!active
+        active:
+          !currentStatus
       })
-      .eq("id",id);
+      .eq(
+        "id",
+        id
+      );
 
 
-  if(error){
+  if (error) {
 
-    alert("Erro.");
+    alert(
+      "Não foi possível alterar o produto."
+    );
 
-    console.log(error);
+    console.error(error);
 
     return;
   }
 
 
-  showProducts();
+  loadAdminProducts();
 
-  loadProducts();
 }
 
 
-/* =====================================================
-   LOGOUT
-===================================================== */
+/* ======================================
+   SEGURANÇA BÁSICA DE TEXTO
+====================================== */
 
-async function logout(){
+function escapeHtml(value) {
 
-  await db.auth.signOut();
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
-
-  document
-    .getElementById("adminPanel")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("loginBox")
-    .classList
-    .remove("hidden");
 }
 
 
-/* =====================================================
-   TEMPO REAL
-===================================================== */
-
-db.channel("pedidos")
-.on(
-  "postgres_changes",
-  {
-    event:"*",
-    schema:"public",
-    table:"orders"
-  },
-  payload => {
-
-    const panel =
-      document.getElementById(
-        "adminPanel"
-      );
-
-
-    if(
-      !panel.classList.contains("hidden")
-    ){
-
-      showOrders();
-
-    }
-
-  }
-)
-.subscribe();
-
-
-/* =====================================================
-   FUNÇÕES AUXILIARES
-===================================================== */
-
-function formatMoney(value){
-
-  return Number(value || 0)
-    .toFixed(2)
-    .replace(".",",");
-}
-
-
-function escapeHtml(text){
-
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-
-/* =====================================================
+/* ======================================
    INICIAR
-===================================================== */
-if (window.location.pathname === "/admin") {
-  document.querySelector(".admin").style.display = "block";
-} else {
-  document.querySelector(".admin").style.display = "none";
-}
+====================================== */
 
-loadProducts();
+initRoute();
 
 </script>
 
