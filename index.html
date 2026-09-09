@@ -1226,6 +1226,11 @@ function escapeHtml(text){
 /* =====================================================
    INICIAR
 ===================================================== */
+if (window.location.pathname === "/admin") {
+  document.querySelector(".admin").style.display = "block";
+} else {
+  document.querySelector(".admin").style.display = "none";
+}
 
 loadProducts();
 
