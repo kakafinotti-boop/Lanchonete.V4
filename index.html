@@ -2,623 +2,452 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>Burguer Gold</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
-html{
-    scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
 
 body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#0b0b0b;
-    color:#fff;
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:#080808;
+color:#fff;
+padding-bottom:100px
 }
 
-button,
-input,
-select{
-    font:inherit;
-}
+button,input,select{font:inherit}
 
-button{
-    cursor:pointer;
-}
+button{cursor:pointer}
 
 header{
-    position:sticky;
-    top:0;
-    z-index:999;
-    background:#090909;
-    border-bottom:1px solid #292929;
-    padding:14px 18px;
+position:sticky;
+top:0;
+z-index:1000;
+background:#090909;
+border-bottom:1px solid #292929;
+padding:14px 18px
 }
 
-.header-inner{
-    max-width:1100px;
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
+.header{
+max-width:1100px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between
 }
 
 .logo{
-    color:#d4af37;
-    font-size:25px;
-    font-weight:900;
-    letter-spacing:.5px;
+color:#d4af37;
+font-size:25px;
+font-weight:900
 }
 
-.header-buttons{
-    display:flex;
-    gap:8px;
-}
-
-.header-btn{
-    border:1px solid #d4af37;
-    background:transparent;
-    color:#d4af37;
-    padding:9px 12px;
-    border-radius:10px;
-    font-weight:bold;
-}
-
-.header-btn:hover{
-    background:#d4af37;
-    color:#000;
+.cart-header{
+background:#d4af37;
+color:#000;
+border:0;
+border-radius:10px;
+padding:10px 14px;
+font-weight:900
 }
 
 .hero{
-    min-height:330px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:55px 20px;
-    background:
-        radial-gradient(circle at center,#382d0d 0%,#121212 35%,#070707 75%);
-}
-
-.hero-content{
-    max-width:700px;
+min-height:350px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:50px 20px;
+background:
+radial-gradient(circle,#3c300d 0%,#151515 35%,#050505 80%)
 }
 
 .hero h1{
-    margin:0;
-    color:#d4af37;
-    font-size:clamp(40px,9vw,72px);
-    font-weight:900;
+margin:0;
+color:#d4af37;
+font-size:clamp(42px,10vw,76px);
+font-weight:900
 }
 
 .hero p{
-    color:#ddd;
-    font-size:18px;
-    margin:12px 0 25px;
+color:#ddd;
+font-size:18px;
+max-width:650px;
+line-height:1.5;
+margin:15px auto 25px
 }
 
 .hero-btn{
-    display:inline-block;
-    border:0;
-    background:#d4af37;
-    color:#000;
-    padding:14px 24px;
-    border-radius:12px;
-    font-weight:900;
-    text-decoration:none;
-}
-
-.hero-btn:hover{
-    background:#f1d56b;
-}
-
-.status-box{
-    max-width:1100px;
-    margin:20px auto;
-    padding:18px;
-    border-radius:15px;
-    background:#151515;
-    border:1px solid #292929;
-}
-
-.status-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
-    flex-wrap:wrap;
-}
-
-.status-title{
-    font-size:20px;
-    font-weight:900;
-}
-
-.status-open{
-    color:#48e58a;
-    font-weight:900;
-}
-
-.status-closed{
-    color:#ff5555;
-    font-weight:900;
-}
-
-.hours{
-    margin-top:12px;
-    color:#bbb;
-    line-height:1.8;
+display:inline-block;
+background:#d4af37;
+color:#000;
+padding:14px 25px;
+border-radius:12px;
+text-decoration:none;
+font-weight:900
 }
 
 .section{
-    max-width:1100px;
-    margin:35px auto;
-    padding:0 18px;
+max-width:1100px;
+margin:30px auto;
+padding:0 18px
 }
 
-.section-title{
-    color:#d4af37;
-    font-size:28px;
-    font-weight:900;
-    margin-bottom:18px;
+.title{
+font-size:29px;
+font-weight:900;
+color:#d4af37;
+margin-bottom:18px
+}
+
+.status{
+background:#151515;
+border:1px solid #292929;
+border-radius:16px;
+padding:18px;
+margin:20px auto;
+max-width:1100px
+}
+
+.status-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
+}
+
+.status-title{
+font-size:20px;
+font-weight:900
+}
+
+.open{
+color:#48e58a;
+font-weight:900
+}
+
+.closed{
+color:#ff5555;
+font-weight:900
+}
+
+.hours{
+margin-top:12px;
+color:#bbb;
+line-height:1.8
 }
 
 .categories{
-    display:flex;
-    gap:10px;
-    overflow-x:auto;
-    padding-bottom:8px;
+display:flex;
+gap:10px;
+overflow-x:auto;
+padding-bottom:10px
 }
 
-.category-btn{
-    flex:none;
-    background:#171717;
-    color:#fff;
-    border:1px solid #333;
-    border-radius:20px;
-    padding:10px 17px;
+.category{
+flex:none;
+background:#171717;
+border:1px solid #333;
+color:#fff;
+border-radius:20px;
+padding:10px 17px
 }
 
-.category-btn.active,
-.category-btn:hover{
-    background:#d4af37;
-    color:#000;
-    border-color:#d4af37;
+.category.active{
+background:#d4af37;
+color:#000;
+border-color:#d4af37
 }
 
 .products{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:16px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:16px
 }
 
 .product{
-    background:#151515;
-    border:1px solid #292929;
-    border-radius:17px;
-    padding:18px;
-    display:flex;
-    flex-direction:column;
-    min-height:210px;
+background:#151515;
+border:1px solid #292929;
+border-radius:17px;
+padding:18px;
+min-height:215px;
+display:flex;
+flex-direction:column
 }
 
 .product h3{
-    margin:0 0 8px;
-    color:#fff;
-    font-size:21px;
+margin:0 0 8px;
+font-size:21px
 }
 
-.product-description{
-    color:#aaa;
-    font-size:14px;
-    line-height:1.5;
-    flex:1;
+.description{
+color:#aaa;
+font-size:14px;
+line-height:1.5;
+flex:1
 }
 
 .product-bottom{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-top:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-top:15px
 }
 
 .price{
-    color:#d4af37;
-    font-size:20px;
-    font-weight:900;
+color:#d4af37;
+font-size:20px;
+font-weight:900
 }
 
-.add-btn{
-    background:#d4af37;
-    border:0;
-    color:#000;
-    border-radius:10px;
-    padding:10px 14px;
-    font-weight:900;
-}
-
-.add-btn:hover{
-    background:#f1d56b;
+.add{
+background:#d4af37;
+border:0;
+color:#000;
+border-radius:10px;
+padding:10px 14px;
+font-weight:900
 }
 
 .empty{
-    text-align:center;
-    padding:35px;
-    color:#aaa;
-    background:#151515;
-    border-radius:15px;
+background:#151515;
+border-radius:15px;
+padding:30px;
+text-align:center;
+color:#aaa
 }
 
 .floating-cart{
-    position:fixed;
-    left:50%;
-    bottom:18px;
-    transform:translateX(-50%);
-    width:min(500px,calc(100% - 28px));
-    z-index:999999;
-    display:none;
-    background:#d4af37;
-    color:#000;
-    border:0;
-    border-radius:15px;
-    padding:15px 18px;
-    font-weight:900;
-    box-shadow:0 10px 30px #000;
+position:fixed;
+left:50%;
+bottom:18px;
+transform:translateX(-50%);
+width:min(500px,calc(100% - 28px));
+z-index:999999;
+display:none;
+background:#d4af37;
+color:#000;
+border:0;
+border-radius:15px;
+padding:15px 18px;
+font-weight:900;
+box-shadow:0 10px 30px #000;
+justify-content:space-between;
+align-items:center
 }
 
-.floating-cart.show{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
+.floating-cart.show{display:flex}
 
-.cart-count{
-    background:#000;
-    color:#d4af37;
-    padding:4px 9px;
-    border-radius:20px;
+.count{
+background:#000;
+color:#d4af37;
+padding:4px 9px;
+border-radius:20px;
+margin-left:5px
 }
 
 .modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.82);
-    z-index:1000000;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.84);
+z-index:2000000;
+display:none;
+align-items:center;
+justify-content:center;
+padding:15px
 }
 
-.modal.show{
-    display:flex;
-}
+.modal.show{display:flex}
 
 .modal-content{
-    width:min(650px,100%);
-    max-height:92vh;
-    overflow:auto;
-    background:#111;
-    border:1px solid #333;
-    border-radius:20px;
-    padding:22px;
+width:min(650px,100%);
+max-height:92vh;
+overflow:auto;
+background:#111;
+border:1px solid #333;
+border-radius:20px;
+padding:22px
 }
 
 .modal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    margin-bottom:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px
 }
 
 .modal-header h2{
-    margin:0;
-    color:#d4af37;
+margin:0;
+color:#d4af37
 }
 
 .close{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    border:1px solid #444;
-    background:#222;
-    color:#fff;
-    font-size:20px;
+width:38px;
+height:38px;
+border-radius:50%;
+border:1px solid #444;
+background:#222;
+color:#fff;
+font-size:22px
 }
 
 .cart-item{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    padding:13px 0;
-    border-bottom:1px solid #292929;
+display:flex;
+justify-content:space-between;
+gap:10px;
+padding:14px 0;
+border-bottom:1px solid #292929
 }
 
-.cart-item-name{
-    font-weight:bold;
-}
+.cart-name{font-weight:bold}
 
-.cart-item-price{
-    color:#d4af37;
-    font-weight:bold;
+.cart-price{
+color:#d4af37;
+font-weight:bold
 }
 
 .qty{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    margin-top:7px;
+display:flex;
+align-items:center;
+gap:7px;
+margin-top:8px
 }
 
 .qty button{
-    width:30px;
-    height:30px;
-    border:0;
-    border-radius:7px;
-    background:#333;
-    color:#fff;
+width:30px;
+height:30px;
+border:0;
+border-radius:7px;
+background:#333;
+color:#fff
 }
 
 .remove{
-    color:#ff5d5d;
-    background:none!important;
-    border:0;
+background:none!important;
+color:#ff5555!important;
+width:auto!important
 }
 
 .total{
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-    padding-top:15px;
-    border-top:1px solid #333;
-    font-size:21px;
-    font-weight:900;
+display:flex;
+justify-content:space-between;
+font-size:21px;
+font-weight:900;
+padding-top:18px;
+margin-top:15px;
+border-top:1px solid #333
 }
 
-.gold{
-    color:#d4af37;
-}
+.gold{color:#d4af37}
 
-.form-group{
-    margin-top:15px;
-}
+.form-group{margin-top:15px}
 
 .form-group label{
-    display:block;
-    margin-bottom:7px;
-    color:#ddd;
-    font-weight:bold;
+display:block;
+margin-bottom:7px;
+font-weight:bold
 }
 
 .form-group input,
 .form-group select{
-    width:100%;
-    padding:13px;
-    border-radius:10px;
-    border:1px solid #3b3b3b;
-    background:#1b1b1b;
-    color:#fff;
-    outline:none;
-}
-
-.form-group input:focus,
-.form-group select:focus{
-    border-color:#d4af37;
+width:100%;
+padding:13px;
+background:#1b1b1b;
+border:1px solid #3a3a3a;
+border-radius:10px;
+color:#fff;
+outline:none
 }
 
 .radio-row{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
+display:flex;
+gap:10px
 }
 
 .radio{
-    flex:1;
-    min-width:120px;
-    border:1px solid #333;
-    background:#181818;
-    padding:13px;
-    border-radius:10px;
+flex:1;
+background:#181818;
+border:1px solid #333;
+border-radius:10px;
+padding:13px
 }
 
 .radio input{
-    width:auto;
-    margin-right:6px;
+width:auto
 }
 
-.checkout-btn{
-    width:100%;
-    margin-top:20px;
-    padding:15px;
-    border:0;
-    border-radius:12px;
-    background:#d4af37;
-    color:#000;
-    font-weight:900;
-    font-size:17px;
+.checkout{
+width:100%;
+margin-top:20px;
+padding:15px;
+border:0;
+border-radius:12px;
+background:#d4af37;
+color:#000;
+font-weight:900;
+font-size:17px
 }
 
-.checkout-btn:disabled{
-    opacity:.5;
-    cursor:not-allowed;
-}
-
-.success{
-    text-align:center;
-    padding:25px 10px;
-}
-
-.success-icon{
-    font-size:55px;
-}
-
-.success h2{
-    color:#48e58a;
-}
-
-.admin-panel{
-    max-width:1100px;
-    margin:auto;
-}
-
-.admin-tabs{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    margin-bottom:18px;
-}
-
-.admin-tab{
-    padding:10px 15px;
-    background:#222;
-    color:#fff;
-    border:1px solid #333;
-    border-radius:10px;
-    white-space:nowrap;
-}
-
-.admin-tab.active{
-    background:#d4af37;
-    color:#000;
-}
-
-.admin-section{
-    display:none;
-}
-
-.admin-section.active{
-    display:block;
-}
-
-.admin-card{
-    background:#181818;
-    border:1px solid #303030;
-    border-radius:15px;
-    padding:18px;
-    margin-bottom:15px;
-}
-
-.order-card{
-    border-left:4px solid #d4af37;
-}
-
-.order-head{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.order-number{
-    font-size:20px;
-    font-weight:900;
-    color:#d4af37;
-}
-
-.order-status{
-    padding:6px 10px;
-    border-radius:8px;
-    background:#292929;
-    font-size:12px;
-    font-weight:bold;
-}
-
-.order-items{
-    margin:12px 0;
-    color:#ccc;
-    line-height:1.7;
-}
-
-.admin-actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-.admin-actions button{
-    padding:9px 12px;
-    border-radius:9px;
-    border:1px solid #444;
-    background:#242424;
-    color:#fff;
-}
-
-.admin-actions button:hover{
-    border-color:#d4af37;
-}
-
-.product-admin-row,
-.zone-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    padding:12px 0;
-    border-bottom:1px solid #292929;
-}
-
-.small-btn{
-    border:0;
-    border-radius:8px;
-    padding:8px 10px;
-    background:#333;
-    color:#fff;
-}
-
-.delete-btn{
-    background:#7d2222!important;
+.checkout:disabled{
+opacity:.5
 }
 
 .notice{
-    background:#211d0b;
-    border:1px solid #806b1d;
-    color:#e8d994;
-    border-radius:12px;
-    padding:12px;
-    margin-top:15px;
+margin-top:12px;
+padding:12px;
+background:#211d0b;
+border:1px solid #806b1d;
+border-radius:10px;
+color:#e8d994
 }
+
+.success{
+text-align:center;
+padding:20px
+}
+
+.success-icon{
+font-size:55px
+}
+
+.success h2{color:#48e58a}
+
+.hidden{display:none!important}
 
 footer{
-    text-align:center;
-    color:#777;
-    padding:50px 20px 100px;
-}
-
-.hidden{
-    display:none!important;
+text-align:center;
+color:#777;
+padding:40px 20px
 }
 
 @media(max-width:600px){
-    .header-inner{
-        align-items:flex-start;
-    }
 
-    .logo{
-        font-size:21px;
-    }
+.header{
+gap:10px
+}
 
-    .header-buttons{
-        flex-direction:column;
-    }
+.logo{
+font-size:21px
+}
 
-    .hero{
-        min-height:290px;
-    }
+.products{
+grid-template-columns:1fr
+}
 
-    .products{
-        grid-template-columns:1fr;
-    }
+.radio-row{
+flex-direction:column
+}
+
+.hero{
+min-height:300px
+}
 }
 </style>
 </head>
@@ -626,401 +455,368 @@ footer{
 <body>
 
 <header>
-    <div class="header-inner">
-        <div class="logo">🍔 BURGUER GOLD</div>
+<div class="header">
 
-        <div class="header-buttons">
-            <button class="header-btn" onclick="openCart()">
-                🛒 Carrinho
-            </button>
+<div class="logo">
+🍔 BURGUER GOLD
+</div>
 
-            <button class="header-btn" onclick="openAdmin()">
-                🔐 Admin
-            </button>
-        </div>
-    </div>
+<button class="cart-header" onclick="openCart()">
+🛒 Carrinho
+</button>
+
+</div>
 </header>
 
 <section class="hero">
-    <div class="hero-content">
-        <h1>BURGuer GOLD</h1>
 
-        <p>
-            Hambúrguer artesanal, sabor de verdade e aquele capricho que dá vontade de pedir de novo. 🍔🔥
-        </p>
+<div>
 
-        <a href="#cardapio" class="hero-btn">
-            VER CARDÁPIO
-        </a>
-    </div>
+<h1>BURGuer GOLD</h1>
+
+<p>
+Hambúrguer artesanal, sabor de verdade e aquele capricho que dá vontade de pedir de novo. 🍔🔥
+</p>
+
+<a href="#cardapio" class="hero-btn">
+VER CARDÁPIO
+</a>
+
+</div>
+
 </section>
 
-<section class="status-box">
-    <div class="status-top">
-        <div class="status-title">
-            🕐 Horário de funcionamento
-        </div>
+<section class="status">
 
-        <div id="storeStatus">
-            Verificando...
-        </div>
-    </div>
+<div class="status-top">
 
-    <div class="hours" id="hoursList"></div>
+<div class="status-title">
+🕐 Horário de funcionamento
+</div>
+
+<div id="storeStatus">
+Verificando...
+</div>
+
+</div>
+
+<div id="hoursList" class="hours">
+Carregando horários...
+</div>
+
 </section>
 
 <section class="section" id="cardapio">
 
-    <div class="section-title">
-        🍔 Cardápio
-    </div>
+<div class="title">
+🍔 Cardápio
+</div>
 
-    <div class="categories" id="categories">
-        <button class="category-btn active" onclick="filterCategory('TODOS',this)">
-            Todos
-        </button>
-    </div>
+<div class="categories" id="categories">
 
-    <br>
+<button class="category active"
+onclick="filterCategory('TODOS',this)">
+Todos
+</button>
 
-    <div class="products" id="products">
-        <div class="empty">
-            Carregando cardápio...
-        </div>
-    </div>
+</div>
+
+<br>
+
+<div class="products" id="products">
+
+<div class="empty">
+Carregando cardápio...
+</div>
+
+</div>
 
 </section>
 
-<button class="floating-cart" id="floatingCart" onclick="openCart()">
-    <span>🛒 Ver carrinho</span>
-    <span>
-        <span id="cartTotal">R$ 0,00</span>
-        <span class="cart-count" id="cartCount">0</span>
-    </span>
+<button
+id="floatingCart"
+class="floating-cart"
+onclick="openCart()">
+
+<span>🛒 Ver carrinho</span>
+
+<span>
+<span id="cartTotal">R$ 0,00</span>
+<span class="count" id="cartCount">0</span>
+</span>
+
 </button>
+
 
 <!-- CARRINHO -->
 
 <div class="modal" id="cartModal">
-    <div class="modal-content">
 
-        <div class="modal-header">
-            <h2>🛒 Seu pedido</h2>
-            <button class="close" onclick="closeModal('cartModal')">×</button>
-        </div>
+<div class="modal-content">
 
-        <div id="cartItems"></div>
+<div class="modal-header">
 
-        <div class="total">
-            <span>Total</span>
-            <span class="gold" id="modalCartTotal">R$ 0,00</span>
-        </div>
+<h2>🛒 Seu pedido</h2>
 
-        <button class="checkout-btn" id="goCheckout" onclick="openCheckout()">
-            CONTINUAR
-        </button>
+<button
+class="close"
+onclick="closeModal('cartModal')">
+×
+</button>
 
-    </div>
 </div>
+
+<div id="cartItems"></div>
+
+<div class="total">
+
+<span>Total</span>
+
+<span class="gold" id="modalTotal">
+R$ 0,00
+</span>
+
+</div>
+
+<button
+class="checkout"
+id="continueButton"
+onclick="openCheckout()">
+
+CONTINUAR
+
+</button>
+
+</div>
+
+</div>
+
 
 <!-- CHECKOUT -->
 
 <div class="modal" id="checkoutModal">
-    <div class="modal-content">
 
-        <div class="modal-header">
-            <h2>📦 Finalizar pedido</h2>
-            <button class="close" onclick="closeModal('checkoutModal')">×</button>
-        </div>
+<div class="modal-content">
 
-        <form id="checkoutForm">
+<div class="modal-header">
 
-            <div class="form-group">
-                <label>Nome</label>
-                <input id="customerName" required placeholder="Seu nome">
-            </div>
+<h2>📦 Finalizar pedido</h2>
 
-            <div class="form-group">
-                <label>Como deseja receber?</label>
+<button
+class="close"
+onclick="closeModal('checkoutModal')">
+×
+</button>
 
-                <div class="radio-row">
-
-                    <label class="radio">
-                        <input type="radio" name="delivery" value="true" checked onchange="updateCheckout()">
-                        🛵 Entrega
-                    </label>
-
-                    <label class="radio">
-                        <input type="radio" name="delivery" value="false" onchange="updateCheckout()">
-                        🏪 Retirada
-                    </label>
-
-                </div>
-            </div>
-
-            <div id="deliveryFields">
-
-                <div class="form-group">
-                    <label>Endereço</label>
-                    <input id="address" placeholder="Rua, número, complemento">
-                </div>
-
-                <div class="form-group">
-                    <label>Bairro</label>
-                    <select id="neighborhood" onchange="updateCheckout()">
-                        <option value="">Selecione o bairro</option>
-                    </select>
-                </div>
-
-                <div class="notice" id="deliveryFeeInfo">
-                    Selecione seu bairro para calcular a taxa.
-                </div>
-
-            </div>
-
-            <div class="form-group">
-                <label>Forma de pagamento</label>
-
-                <select id="payment" onchange="updateCheckout()">
-                    <option value="PIX">PIX</option>
-                    <option value="DINHEIRO">Dinheiro</option>
-                    <option value="CARTAO">Cartão</option>
-                </select>
-            </div>
-
-            <div class="form-group hidden" id="changeField">
-                <label>Troco para quanto?</label>
-                <input id="changeFor" type="number" step="0.01" placeholder="Ex.: 50">
-            </div>
-
-            <div class="total">
-                <span>Total</span>
-                <span class="gold" id="checkoutTotal">R$ 0,00</span>
-            </div>
-
-            <button class="checkout-btn" type="submit" id="finishButton">
-                FINALIZAR PEDIDO
-            </button>
-
-        </form>
-
-    </div>
 </div>
+
+<form id="checkoutForm">
+
+<div class="form-group">
+
+<label>Nome</label>
+
+<input
+id="customerName"
+required
+placeholder="Seu nome">
+
+</div>
+
+<div class="form-group">
+
+<label>Como deseja receber?</label>
+
+<div class="radio-row">
+
+<label class="radio">
+
+<input
+type="radio"
+name="delivery"
+value="true"
+checked
+onchange="updateCheckout()">
+
+🛵 Entrega
+
+</label>
+
+<label class="radio">
+
+<input
+type="radio"
+name="delivery"
+value="false"
+onchange="updateCheckout()">
+
+🏪 Retirada
+
+</label>
+
+</div>
+
+</div>
+
+<div id="deliveryFields">
+
+<div class="form-group">
+
+<label>Endereço</label>
+
+<input
+id="address"
+placeholder="Rua, número, complemento">
+
+</div>
+
+<div class="form-group">
+
+<label>Bairro</label>
+
+<select
+id="neighborhood"
+onchange="updateCheckout()">
+
+<option value="">
+Selecione o bairro
+</option>
+
+</select>
+
+</div>
+
+<div class="notice" id="feeInfo">
+Selecione seu bairro para calcular a taxa.
+</div>
+
+</div>
+
+<div class="form-group">
+
+<label>Pagamento</label>
+
+<select
+id="payment"
+onchange="updateCheckout()">
+
+<option value="PIX">PIX</option>
+<option value="DINHEIRO">Dinheiro</option>
+<option value="CARTAO">Cartão</option>
+
+</select>
+
+</div>
+
+<div
+class="form-group hidden"
+id="changeField">
+
+<label>Troco para quanto?</label>
+
+<input
+id="changeFor"
+type="number"
+step="0.01"
+placeholder="Ex.: 50">
+
+</div>
+
+<div class="total">
+
+<span>Total</span>
+
+<span
+class="gold"
+id="checkoutTotal">
+
+R$ 0,00
+
+</span>
+
+</div>
+
+<button
+class="checkout"
+id="finishButton"
+type="submit">
+
+FINALIZAR PEDIDO
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
 
 <!-- SUCESSO -->
 
 <div class="modal" id="successModal">
-    <div class="modal-content">
 
-        <div class="success">
+<div class="modal-content">
 
-            <div class="success-icon">✅</div>
+<div class="success">
 
-            <h2>Pedido enviado!</h2>
-
-            <p>
-                Seu pedido foi recebido com sucesso.
-            </p>
-
-            <h3>
-                Pedido nº <span class="gold" id="successOrderNumber">---</span>
-            </h3>
-
-            <button class="checkout-btn" onclick="sendWhatsApp()">
-                📱 ENVIAR PELO WHATSAPP
-            </button>
-
-            <button
-                class="checkout-btn"
-                style="background:#292929;color:#fff"
-                onclick="location.reload()">
-                VOLTAR AO CARDÁPIO
-            </button>
-
-        </div>
-
-    </div>
+<div class="success-icon">
+✅
 </div>
 
-<!-- ADMIN LOGIN -->
+<h2>Pedido enviado!</h2>
 
-<div class="modal" id="adminLoginModal">
-    <div class="modal-content">
+<p>
+Seu pedido foi recebido com sucesso.
+</p>
 
-        <div class="modal-header">
-            <h2>🔐 Área Admin</h2>
-            <button class="close" onclick="closeModal('adminLoginModal')">×</button>
-        </div>
+<h3>
+Pedido nº
+<span
+class="gold"
+id="orderNumber">
+---
+</span>
+</h3>
 
-        <form id="loginForm">
+<button
+class="checkout"
+onclick="sendWhatsApp()">
 
-            <div class="form-group">
-                <label>E-mail</label>
-                <input
-                    id="adminEmail"
-                    type="email"
-                    value="goldburguer89@gmail.com"
-                    required>
-            </div>
+📱 ENVIAR PELO WHATSAPP
 
-            <div class="form-group">
-                <label>Senha</label>
-                <input
-                    id="adminPassword"
-                    type="password"
-                    required>
-            </div>
+</button>
 
-            <button class="checkout-btn">
-                ENTRAR
-            </button>
+<button
+class="checkout"
+style="background:#292929;color:#fff"
+onclick="location.reload()">
 
-            <div id="loginError" class="notice hidden"></div>
+VOLTAR AO CARDÁPIO
 
-        </form>
-
-    </div>
-</div>
-
-<!-- ADMIN -->
-
-<div class="modal" id="adminModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>⚙️ Painel Admin</h2>
-
-            <button class="close" onclick="closeModal('adminModal')">
-                ×
-            </button>
-
-        </div>
-
-        <div class="admin-panel">
-
-            <div class="admin-tabs">
-
-                <button
-                    class="admin-tab active"
-                    onclick="showAdminTab('orders',this)">
-                    📦 Pedidos
-                </button>
-
-                <button
-                    class="admin-tab"
-                    onclick="showAdminTab('productsAdmin',this)">
-                    🍔 Produtos
-                </button>
-
-                <button
-                    class="admin-tab"
-                    onclick="showAdminTab('zonesAdmin',this)">
-                    🛵 Taxas
-                </button>
-
-                <button
-                    class="admin-tab"
-                    onclick="logoutAdmin()">
-                    Sair
-                </button>
-
-            </div>
-
-            <div id="orders" class="admin-section active">
-
-                <button
-                    class="checkout-btn"
-                    onclick="loadOrders()">
-                    🔄 ATUALIZAR PEDIDOS
-                </button>
-
-                <br><br>
-
-                <div id="ordersList">
-                    Carregando...
-                </div>
-
-            </div>
-
-            <div id="productsAdmin" class="admin-section">
-
-                <div class="admin-card">
-
-                    <h3>Adicionar produto</h3>
-
-                    <div class="form-group">
-                        <label>Nome</label>
-                        <input id="newProductName">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <input id="newProductDescription">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Preço</label>
-                        <input id="newProductPrice" type="number" step="0.01">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <input id="newProductCategory" placeholder="Lanches">
-                    </div>
-
-                    <button class="checkout-btn" onclick="addProduct()">
-                        ADICIONAR PRODUTO
-                    </button>
-
-                </div>
-
-                <div id="adminProductsList"></div>
-
-            </div>
-
-            <div id="zonesAdmin" class="admin-section">
-
-                <div class="admin-card">
-
-                    <h3>Adicionar bairro</h3>
-
-                    <div class="form-group">
-                        <label>Bairro</label>
-                        <input id="newZoneName">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Taxa de entrega</label>
-                        <input id="newZoneFee" type="number" step="0.01">
-                    </div>
-
-                    <button class="checkout-btn" onclick="addZone()">
-                        ADICIONAR BAIRRO
-                    </button>
-
-                </div>
-
-                <div id="zonesList"></div>
-
-            </div>
-
-        </div>
-
-    </div>
+</button>
 
 </div>
+
+</div>
+
+</div>
+
 
 <footer>
-    <strong>BURGuer GOLD</strong><br>
-    Feito com carinho 🍔
+
+<strong>BURGuer GOLD</strong>
+<br>
+Feito com carinho 🍔
+
 </footer>
 
+
 <script>
-/* =========================================================
+
+/* ==========================================
    CONFIGURAÇÃO
-========================================================= */
+========================================== */
 
 const SUPABASE_URL =
 "https://tliifpjfrjuxkjqyrvnw.supabase.co";
@@ -1033,1551 +829,1099 @@ const WHATSAPP_NUMBER =
 
 const supabaseClient =
 window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
 
-/* =========================================================
-   HORÁRIOS
-   ALTERE AQUI SE QUISER
-========================================================= */
-
-const HORARIOS = {
-    0:{nome:"Domingo",abre:"18:00",fecha:"23:00"},
-    1:{nome:"Segunda-feira",abre:"18:00",fecha:"23:00"},
-    2:{nome:"Terça-feira",abre:"18:00",fecha:"23:00"},
-    3:{nome:"Quarta-feira",abre:"18:00",fecha:"23:00"},
-    4:{nome:"Quinta-feira",abre:"18:00",fecha:"23:00"},
-    5:{nome:"Sexta-feira",abre:"18:00",fecha:"23:00"},
-    6:{nome:"Sábado",abre:"18:00",fecha:"23:00"}
-};
-
-
-/* =========================================================
-   ESTADO
-========================================================= */
+/* ==========================================
+   VARIÁVEIS
+========================================== */
 
 let products = [];
 let cart = [];
 let deliveryZones = [];
 let selectedCategory = "TODOS";
 let currentOrder = null;
-let realtimeChannel = null;
+let storeHours = [];
 
 
-/* =========================================================
-   UTILIDADES
-========================================================= */
+/* ==========================================
+   FUNÇÕES GERAIS
+========================================== */
 
 function money(value){
-    return Number(value || 0).toLocaleString("pt-BR",{
-        style:"currency",
-        currency:"BRL"
-    });
+
+return Number(value || 0).toLocaleString(
+"pt-BR",
+{
+style:"currency",
+currency:"BRL"
 }
+);
+
+}
+
 
 function escapeHtml(text){
-    return String(text ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+
+return String(text ?? "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
 }
 
 
-/* =========================================================
+/* ==========================================
    HORÁRIOS
-========================================================= */
+========================================== */
+
+async function loadHours(){
+
+const {data,error} =
+await supabaseClient
+.from("store_hours")
+.select("*")
+.order("day_of_week");
+
+if(error){
+
+console.error(error);
+
+document.getElementById("hoursList")
+.innerHTML =
+"Não foi possível carregar os horários.";
+
+return;
+}
+
+storeHours = data || [];
+
+renderHours();
+
+checkStoreStatus();
+
+}
+
 
 function renderHours(){
 
-    const container =
-        document.getElementById("hoursList");
+const container =
+document.getElementById("hoursList");
 
-    container.innerHTML =
-        Object.values(HORARIOS)
-        .map(h =>
-            `<div>
-                <strong>${h.nome}:</strong>
-                ${h.abre} às ${h.fecha}
-            </div>`
-        )
-        .join("");
+if(!storeHours.length){
+
+container.innerHTML =
+"Horários ainda não cadastrados.";
+
+return;
 }
 
+container.innerHTML =
+storeHours.map(day => {
 
-function timeToMinutes(time){
-    const [h,m] =
-        time.split(":").map(Number);
+if(!day.is_open){
 
-    return h * 60 + m;
+return `
+<div>
+<strong>${escapeHtml(day.day_name)}:</strong>
+Fechado
+</div>
+`;
+
+}
+
+return `
+<div>
+<strong>${escapeHtml(day.day_name)}:</strong>
+${String(day.open_time).slice(0,5)}
+às
+${String(day.close_time).slice(0,5)}
+</div>
+`;
+
+}).join("");
+
 }
 
 
 function checkStoreStatus(){
 
-    const now = new Date();
+if(!storeHours.length) return;
 
-    const day = now.getDay();
+const now = new Date();
 
-    const schedule = HORARIOS[day];
+const day =
+now.getDay();
 
-    const current =
-        now.getHours() * 60 +
-        now.getMinutes();
+const schedule =
+storeHours.find(
+item => Number(item.day_of_week) === day
+);
 
-    const open =
-        timeToMinutes(schedule.abre);
+const status =
+document.getElementById("storeStatus");
 
-    const close =
-        timeToMinutes(schedule.fecha);
+if(!schedule || !schedule.is_open){
 
-    const status =
-        document.getElementById("storeStatus");
+status.textContent =
+"🔴 FECHADO AGORA";
 
-    if(current >= open && current < close){
+status.className =
+"closed";
 
-        status.textContent =
-            "🟢 ABERTO AGORA";
+return;
+}
 
-        status.className =
-            "status-open";
+const current =
+now.getHours() * 60 +
+now.getMinutes();
 
-    }else{
+const open =
+Number(String(schedule.open_time).slice(0,2)) * 60 +
+Number(String(schedule.open_time).slice(3,5));
 
-        status.textContent =
-            "🔴 FECHADO AGORA";
+const close =
+Number(String(schedule.close_time).slice(0,2)) * 60 +
+Number(String(schedule.close_time).slice(3,5));
 
-        status.className =
-            "status-closed";
-    }
+let isOpen;
+
+if(close > open){
+
+isOpen =
+current >= open &&
+current < close;
+
+}else{
+
+isOpen =
+current >= open ||
+current < close;
+
+}
+
+if(isOpen){
+
+status.textContent =
+"🟢 ABERTO AGORA";
+
+status.className =
+"open";
+
+}else{
+
+status.textContent =
+"🔴 FECHADO AGORA";
+
+status.className =
+"closed";
+
+}
+
 }
 
 
-/* =========================================================
+/* ==========================================
    PRODUTOS
-========================================================= */
+========================================== */
 
 async function loadProducts(){
 
-    const container =
-        document.getElementById("products");
+const container =
+document.getElementById("products");
 
-    container.innerHTML =
-        `<div class="empty">Carregando cardápio...</div>`;
+const {data,error} =
+await supabaseClient
+.from("products")
+.select("*")
+.eq("active",true)
+.order("id");
 
-    const {data,error} =
-        await supabaseClient
-        .from("products")
-        .select("*")
-        .order("id");
+if(error){
 
-    if(error){
+console.error(error);
 
-        console.error(error);
+container.innerHTML =
+`
+<div class="empty">
+Erro ao carregar o cardápio.
+</div>
+`;
 
-        container.innerHTML =
-            `<div class="empty">
-                Não foi possível carregar o cardápio.
-                <br><br>
-                Verifique a conexão com o Supabase.
-            </div>`;
+return;
+}
 
-        return;
-    }
+products = data || [];
 
-    products =
-        (data || [])
-        .filter(p => p.active !== false);
+renderCategories();
 
-    renderCategories();
-    renderProducts();
+renderProducts();
+
 }
 
 
 function renderCategories(){
 
-    const container =
-        document.getElementById("categories");
+const container =
+document.getElementById("categories");
 
-    const categories =
-        [...new Set(
-            products.map(p => p.category || "Outros")
-        )];
+const categories =
+[
+...new Set(
+products.map(
+p => p.category || "Outros"
+)
+)
+];
 
-    container.innerHTML =
-        `<button
-            class="category-btn ${selectedCategory==="TODOS"?"active":""}"
-            onclick="filterCategory('TODOS',this)">
-            Todos
-        </button>`;
+container.innerHTML =
+`
+<button
+class="category ${selectedCategory==="TODOS"?"active":""}"
+onclick="filterCategory('TODOS',this)">
+Todos
+</button>
+`;
 
-    categories.forEach(category => {
+categories.forEach(category => {
 
-        container.innerHTML +=
-            `<button
-                class="category-btn ${selectedCategory===category?"active":""}"
-                onclick="filterCategory('${escapeHtml(category)}',this)">
-                ${escapeHtml(category)}
-            </button>`;
-    });
+const button =
+document.createElement("button");
+
+button.className =
+"category" +
+(
+selectedCategory === category
+? " active"
+: ""
+);
+
+button.textContent = category;
+
+button.onclick = () =>
+filterCategory(category,button);
+
+container.appendChild(button);
+
+});
+
 }
 
 
 function filterCategory(category,button){
 
-    selectedCategory = category;
+selectedCategory = category;
 
-    document
-        .querySelectorAll(".category-btn")
-        .forEach(b => b.classList.remove("active"));
+document
+.querySelectorAll(".category")
+.forEach(btn =>
+btn.classList.remove("active")
+);
 
-    if(button){
-        button.classList.add("active");
-    }
+button.classList.add("active");
 
-    renderProducts();
+renderProducts();
+
 }
 
 
 function renderProducts(){
 
-    const container =
-        document.getElementById("products");
+const container =
+document.getElementById("products");
 
-    const list =
-        selectedCategory === "TODOS"
-        ? products
-        : products.filter(
-            p => p.category === selectedCategory
-        );
+const list =
+selectedCategory === "TODOS"
+? products
+: products.filter(
+p => p.category === selectedCategory
+);
 
-    if(!list.length){
+if(!list.length){
 
-        container.innerHTML =
-            `<div class="empty">
-                Nenhum produto encontrado.
-            </div>`;
+container.innerHTML =
+`
+<div class="empty">
+Nenhum produto encontrado.
+</div>
+`;
 
-        return;
-    }
+return;
+}
 
-    container.innerHTML =
-        list.map(product => {
+container.innerHTML =
+list.map(product => {
 
-            return `
-            <div class="product">
+return `
+<div class="product">
 
-                <h3>
-                    ${escapeHtml(product.name)}
-                </h3>
+<h3>
+${escapeHtml(product.name)}
+</h3>
 
-                <div class="product-description">
-                    ${escapeHtml(product.description || "")}
-                </div>
+<div class="description">
+${escapeHtml(product.description || "")}
+</div>
 
-                <div class="product-bottom">
+<div class="product-bottom">
 
-                    <div class="price">
-                        ${money(product.price)}
-                    </div>
+<div class="price">
+${money(product.price)}
+</div>
 
-                    <button
-                        class="add-btn"
-                        onclick="addToCart(${product.id})">
-                        + ADICIONAR
-                    </button>
+<button
+class="add"
+onclick="addToCart(${product.id})">
 
-                </div>
++ ADICIONAR
 
-            </div>
-            `;
+</button>
 
-        }).join("");
+</div>
+
+</div>
+`;
+
+}).join("");
+
 }
 
 
-/* =========================================================
+/* ==========================================
    CARRINHO
-========================================================= */
+========================================== */
 
-function addToCart(productId){
+function addToCart(id){
 
-    const product =
-        products.find(
-            p => Number(p.id) === Number(productId)
-        );
+const product =
+products.find(
+p => Number(p.id) === Number(id)
+);
 
-    if(!product) return;
+if(!product) return;
 
-    const existing =
-        cart.find(
-            item => Number(item.id) === Number(productId)
-        );
+const item =
+cart.find(
+i => Number(i.id) === Number(id)
+);
 
-    if(existing){
+if(item){
 
-        existing.qty++;
+item.qty++;
 
-    }else{
+}else{
 
-        cart.push({
-            id:product.id,
-            name:product.name,
-            price:Number(product.price),
-            qty:1
-        });
-    }
+cart.push({
+id:product.id,
+name:product.name,
+price:Number(product.price),
+qty:1
+});
 
-    updateCart();
+}
+
+updateCart();
+
 }
 
 
 function changeQty(id,amount){
 
-    const item =
-        cart.find(
-            i => Number(i.id) === Number(id)
-        );
+const item =
+cart.find(
+i => Number(i.id) === Number(id)
+);
 
-    if(!item) return;
+if(!item) return;
 
-    item.qty += amount;
+item.qty += amount;
 
-    if(item.qty <= 0){
+if(item.qty <= 0){
 
-        cart =
-            cart.filter(
-                i => Number(i.id) !== Number(id)
-            );
-    }
+cart =
+cart.filter(
+i => Number(i.id) !== Number(id)
+);
 
-    updateCart();
+}
+
+updateCart();
+
 }
 
 
 function removeFromCart(id){
 
-    cart =
-        cart.filter(
-            i => Number(i.id) !== Number(id)
-        );
+cart =
+cart.filter(
+i => Number(i.id) !== Number(id)
+);
 
-    updateCart();
+updateCart();
+
 }
 
 
-function getCartSubtotal(){
+function cartSubtotal(){
 
-    return cart.reduce(
-        (sum,item) =>
-            sum + item.price * item.qty,
-        0
-    );
-}
+return cart.reduce(
+(sum,item) =>
+sum + item.price * item.qty,
+0
+);
 
-
-function getDeliveryFee(){
-
-    const delivery =
-        document.querySelector(
-            'input[name="delivery"]:checked'
-        )?.value === "true";
-
-    if(!delivery) return 0;
-
-    const neighborhood =
-        document.getElementById(
-            "neighborhood"
-        )?.value;
-
-    const zone =
-        deliveryZones.find(
-            z => z.neighborhood === neighborhood
-        );
-
-    return zone
-        ? Number(zone.fee)
-        : 0;
-}
-
-
-function getFinalTotal(){
-
-    return getCartSubtotal() +
-           getDeliveryFee();
 }
 
 
 function updateCart(){
 
-    const count =
-        cart.reduce(
-            (sum,item) => sum + item.qty,
-            0
-        );
+const count =
+cart.reduce(
+(sum,item) =>
+sum + item.qty,
+0
+);
 
-    const subtotal =
-        getCartSubtotal();
+const total =
+cartSubtotal();
 
-    document.getElementById("cartCount")
-        .textContent = count;
+document.getElementById("cartCount")
+.textContent = count;
 
-    document.getElementById("cartTotal")
-        .textContent = money(subtotal);
+document.getElementById("cartTotal")
+.textContent = money(total);
 
-    document.getElementById("modalCartTotal")
-        .textContent = money(subtotal);
+document.getElementById("modalTotal")
+.textContent = money(total);
 
-    const floating =
-        document.getElementById("floatingCart");
+const floating =
+document.getElementById("floatingCart");
 
-    if(count > 0){
-        floating.classList.add("show");
-    }else{
-        floating.classList.remove("show");
-    }
+if(count > 0){
 
-    renderCart();
+floating.classList.add("show");
+
+}else{
+
+floating.classList.remove("show");
+
+}
+
+renderCart();
+
 }
 
 
 function renderCart(){
 
-    const container =
-        document.getElementById("cartItems");
+const container =
+document.getElementById("cartItems");
 
-    if(!cart.length){
+const button =
+document.getElementById("continueButton");
 
-        container.innerHTML =
-            `<div class="empty">
-                Seu carrinho está vazio.
-            </div>`;
+if(!cart.length){
 
-        document.getElementById("goCheckout")
-            .disabled = true;
+container.innerHTML =
+`
+<div class="empty">
+Seu carrinho está vazio.
+</div>
+`;
 
-        return;
-    }
+button.disabled = true;
 
-    document.getElementById("goCheckout")
-        .disabled = false;
+return;
+}
 
-    container.innerHTML =
-        cart.map(item => {
+button.disabled = false;
 
-            return `
-            <div class="cart-item">
+container.innerHTML =
+cart.map(item => {
 
-                <div>
+return `
+<div class="cart-item">
 
-                    <div class="cart-item-name">
-                        ${escapeHtml(item.name)}
-                    </div>
+<div>
 
-                    <div class="qty">
+<div class="cart-name">
+${escapeHtml(item.name)}
+</div>
 
-                        <button
-                            onclick="changeQty(${item.id},-1)">
-                            −
-                        </button>
+<div class="qty">
 
-                        <strong>
-                            ${item.qty}
-                        </strong>
+<button
+onclick="changeQty(${item.id},-1)">
+−
+</button>
 
-                        <button
-                            onclick="changeQty(${item.id},1)">
-                            +
-                        </button>
+<strong>${item.qty}</strong>
 
-                        <button
-                            class="remove"
-                            onclick="removeFromCart(${item.id})">
-                            Remover
-                        </button>
+<button
+onclick="changeQty(${item.id},1)">
++
+</button>
 
-                    </div>
+<button
+class="remove"
+onclick="removeFromCart(${item.id})">
+Remover
+</button>
 
-                </div>
+</div>
 
-                <div class="cart-item-price">
-                    ${money(item.price * item.qty)}
-                </div>
+</div>
 
-            </div>
-            `;
+<div class="cart-price">
+${money(item.price * item.qty)}
+</div>
 
-        }).join("");
+</div>
+`;
+
+}).join("");
+
 }
 
 
 function openCart(){
 
-    updateCart();
+updateCart();
 
-    openModal("cartModal");
+openModal("cartModal");
+
 }
 
 
-/* =========================================================
+/* ==========================================
    BAIRROS
-========================================================= */
+========================================== */
 
 async function loadZones(){
 
-    const {data,error} =
-        await supabaseClient
-        .from("delivery_zones")
-        .select("*")
-        .eq("active",true)
-        .order("neighborhood");
+const {data,error} =
+await supabaseClient
+.from("delivery_zones")
+.select("*")
+.eq("active",true)
+.order("neighborhood");
 
-    if(error){
+if(error){
 
-        console.error(error);
+console.error(error);
 
-        deliveryZones = [];
+return;
+}
 
-        return;
-    }
+deliveryZones = data || [];
 
-    deliveryZones = data || [];
+const select =
+document.getElementById("neighborhood");
 
-    const select =
-        document.getElementById("neighborhood");
+select.innerHTML =
+`
+<option value="">
+Selecione o bairro
+</option>
+`;
 
-    select.innerHTML =
-        `<option value="">
-            Selecione o bairro
-        </option>`;
+deliveryZones.forEach(zone => {
 
-    deliveryZones.forEach(zone => {
+const option =
+document.createElement("option");
 
-        select.innerHTML +=
-            `<option value="${escapeHtml(zone.neighborhood)}">
-                ${escapeHtml(zone.neighborhood)}
-                — ${money(zone.fee)}
-            </option>`;
-    });
+option.value =
+zone.neighborhood;
+
+option.textContent =
+`${zone.neighborhood} — ${money(zone.fee)}`;
+
+select.appendChild(option);
+
+});
+
 }
 
 
-/* =========================================================
+/* ==========================================
    CHECKOUT
-========================================================= */
+========================================== */
 
 function openCheckout(){
 
-    if(!cart.length){
+if(!cart.length){
 
-        alert("Seu carrinho está vazio.");
+alert("Seu carrinho está vazio.");
 
-        return;
-    }
+return;
+}
 
-    closeModal("cartModal");
+closeModal("cartModal");
 
-    updateCheckout();
+updateCheckout();
 
-    openModal("checkoutModal");
+openModal("checkoutModal");
+
+}
+
+
+function getDeliveryFee(){
+
+const delivery =
+document.querySelector(
+'input[name="delivery"]:checked'
+)?.value === "true";
+
+if(!delivery) return 0;
+
+const neighborhood =
+document.getElementById(
+"neighborhood"
+).value;
+
+const zone =
+deliveryZones.find(
+z => z.neighborhood === neighborhood
+);
+
+return zone
+? Number(zone.fee)
+: 0;
+
 }
 
 
 function updateCheckout(){
 
-    const delivery =
-        document.querySelector(
-            'input[name="delivery"]:checked'
-        )?.value === "true";
+const delivery =
+document.querySelector(
+'input[name="delivery"]:checked'
+)?.value === "true";
 
-    const fields =
-        document.getElementById("deliveryFields");
+const fields =
+document.getElementById(
+"deliveryFields"
+);
 
-    if(delivery){
+if(delivery){
 
-        fields.classList.remove("hidden");
+fields.classList.remove("hidden");
 
-    }else{
+}else{
 
-        fields.classList.add("hidden");
-    }
+fields.classList.add("hidden");
 
-    const payment =
-        document.getElementById("payment").value;
-
-    const change =
-        document.getElementById("changeField");
-
-    if(payment === "DINHEIRO"){
-
-        change.classList.remove("hidden");
-
-    }else{
-
-        change.classList.add("hidden");
-    }
-
-    const fee =
-        getDeliveryFee();
-
-    const total =
-        getCartSubtotal() + fee;
-
-    document.getElementById("checkoutTotal")
-        .textContent = money(total);
-
-    const feeInfo =
-        document.getElementById("deliveryFeeInfo");
-
-    if(!delivery){
-
-        feeInfo.textContent =
-            "Retirada no local: sem taxa de entrega.";
-
-    }else{
-
-        const neighborhood =
-            document.getElementById(
-                "neighborhood"
-            ).value;
-
-        if(neighborhood){
-
-            feeInfo.textContent =
-                "Taxa de entrega: " + money(fee);
-
-        }else{
-
-            feeInfo.textContent =
-                "Selecione seu bairro para calcular a taxa.";
-        }
-    }
 }
 
+const payment =
+document.getElementById("payment").value;
+
+const change =
+document.getElementById("changeField");
+
+if(payment === "DINHEIRO"){
+
+change.classList.remove("hidden");
+
+}else{
+
+change.classList.add("hidden");
+
+}
+
+const fee =
+getDeliveryFee();
+
+const total =
+cartSubtotal() + fee;
+
+document.getElementById(
+"checkoutTotal"
+).textContent =
+money(total);
+
+const feeInfo =
+document.getElementById("feeInfo");
+
+if(!delivery){
+
+feeInfo.textContent =
+"Retirada no local: sem taxa.";
+
+}else if(
+document.getElementById("neighborhood").value
+){
+
+feeInfo.textContent =
+"Taxa de entrega: " +
+money(fee);
+
+}else{
+
+feeInfo.textContent =
+"Selecione seu bairro para calcular a taxa.";
+
+}
+
+}
+
+
+/* ==========================================
+   FINALIZAR PEDIDO
+========================================== */
 
 document
 .getElementById("checkoutForm")
-.addEventListener("submit", async function(event){
+.addEventListener(
+"submit",
+async function(event){
 
-    event.preventDefault();
+event.preventDefault();
 
-    if(!cart.length){
+if(!cart.length){
 
-        alert("Seu carrinho está vazio.");
+alert("Seu carrinho está vazio.");
 
-        return;
-    }
+return;
+}
 
-    const button =
-        document.getElementById("finishButton");
+const button =
+document.getElementById("finishButton");
 
-    const name =
-        document.getElementById(
-            "customerName"
-        ).value.trim();
+const name =
+document.getElementById(
+"customerName"
+).value.trim();
 
-    const delivery =
-        document.querySelector(
-            'input[name="delivery"]:checked'
-        ).value === "true";
+const delivery =
+document.querySelector(
+'input[name="delivery"]:checked'
+).value === "true";
 
-    const address =
-        document.getElementById(
-            "address"
-        ).value.trim();
+const address =
+document.getElementById(
+"address"
+).value.trim();
 
-    const neighborhood =
-        document.getElementById(
-            "neighborhood"
-        ).value;
+const neighborhood =
+document.getElementById(
+"neighborhood"
+).value;
 
-    const payment =
-        document.getElementById(
-            "payment"
-        ).value;
+const payment =
+document.getElementById(
+"payment"
+).value;
 
-    const changeFor =
-        Number(
-            document.getElementById(
-                "changeFor"
-            ).value || 0
-        );
+const changeFor =
+Number(
+document.getElementById(
+"changeFor"
+).value || 0
+);
 
-    if(!name){
+if(!name){
 
-        alert("Digite seu nome.");
+alert("Digite seu nome.");
 
-        return;
-    }
+return;
+}
 
-    if(delivery && !address){
+if(delivery && !address){
 
-        alert("Digite seu endereço.");
+alert("Digite seu endereço.");
 
-        return;
-    }
+return;
+}
 
-    if(delivery && !neighborhood){
+if(delivery && !neighborhood){
 
-        alert("Selecione seu bairro.");
+alert("Selecione seu bairro.");
 
-        return;
-    }
+return;
+}
 
-    const fee =
-        delivery
-        ? getDeliveryFee()
-        : 0;
+const fee =
+delivery
+? getDeliveryFee()
+: 0;
 
-    const subtotal =
-        getCartSubtotal();
+const total =
+cartSubtotal() + fee;
 
-    const total =
-        subtotal + fee;
+if(
+payment === "DINHEIRO" &&
+changeFor > 0 &&
+changeFor < total
+){
 
-    if(payment === "DINHEIRO" && changeFor > 0 && changeFor < total){
+alert(
+"O valor do troco precisa ser maior que o total."
+);
 
-        alert(
-            "O valor do troco precisa ser maior ou igual ao total."
-        );
+return;
+}
 
-        return;
-    }
+button.disabled = true;
 
-    button.disabled = true;
-    button.textContent = "ENVIANDO...";
+button.textContent =
+"ENVIANDO...";
 
-    try{
+try{
 
-        const {data:order,error:orderError} =
-            await supabaseClient
-            .from("orders")
-            .insert({
-                customer_name:name,
-                address:delivery ? address : "",
-                neighborhood:delivery ? neighborhood : "",
-                payment:payment,
-                delivery:delivery,
-                delivery_fee:fee,
-                total:total,
-                status:"RECEBIDO"
-            })
-            .select()
-            .single();
+const {data:order,error} =
+await supabaseClient
+.from("orders")
+.insert({
 
-        if(orderError){
+customer_name:name,
 
-            console.error(orderError);
+address:
+delivery ? address : "",
 
-            throw new Error(
-                "Não foi possível criar o pedido."
-            );
-        }
+neighborhood:
+delivery ? neighborhood : "",
 
-        const items =
-            cart.map(item => ({
-                order_id:order.id,
-                product_id:item.id,
-                name:item.name,
-                qty:item.qty,
-                price:item.price
-            }));
+payment,
 
-        const {error:itemsError} =
-            await supabaseClient
-            .from("order_items")
-            .insert(items);
+delivery,
 
-        if(itemsError){
+delivery_fee:fee,
 
-            console.error(itemsError);
+total,
 
-            throw new Error(
-                "O pedido foi criado, mas houve erro nos itens."
-            );
-        }
+status:"RECEBIDO"
 
-        currentOrder = {
-            ...order,
-            items:[...cart],
-            changeFor
-        };
+})
+.select()
+.single();
 
-        document.getElementById(
-            "successOrderNumber"
-        ).textContent = order.id;
+if(error){
 
-        closeModal("checkoutModal");
+console.error(error);
 
-        openModal("successModal");
+throw new Error(
+"Não foi possível criar o pedido."
+);
 
-        cart = [];
+}
 
-        updateCart();
+const items =
+cart.map(item => ({
 
-    }catch(error){
+order_id:order.id,
 
-        console.error(error);
+product_id:item.id,
 
-        alert(
-            error.message ||
-            "Erro ao finalizar pedido."
-        );
+name:item.name,
 
-    }finally{
+qty:item.qty,
 
-        button.disabled = false;
+price:item.price
 
-        button.textContent =
-            "FINALIZAR PEDIDO";
-    }
+}));
+
+const {error:itemError} =
+await supabaseClient
+.from("order_items")
+.insert(items);
+
+if(itemError){
+
+console.error(itemError);
+
+throw new Error(
+"Erro ao salvar os itens do pedido."
+);
+
+}
+
+currentOrder = {
+
+...order,
+
+items:[...cart],
+
+changeFor
+
+};
+
+document.getElementById(
+"orderNumber"
+).textContent =
+order.id;
+
+closeModal("checkoutModal");
+
+openModal("successModal");
+
+cart = [];
+
+updateCart();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+error.message ||
+"Erro ao finalizar pedido."
+);
+
+}finally{
+
+button.disabled = false;
+
+button.textContent =
+"FINALIZAR PEDIDO";
+
+}
 
 });
 
 
-/* =========================================================
+/* ==========================================
    WHATSAPP
-========================================================= */
+========================================== */
 
 function sendWhatsApp(){
 
-    if(!currentOrder) return;
+if(!currentOrder) return;
 
-    let message =
-        `🍔 *BURGuer GOLD - NOVO PEDIDO*\n\n`;
+let message =
+`🍔 *BURGuer GOLD - NOVO PEDIDO*\n\n`;
 
-    message +=
-        `*Pedido:* #${currentOrder.id}\n`;
+message +=
+`*Pedido:* #${currentOrder.id}\n`;
 
-    message +=
-        `*Cliente:* ${currentOrder.customer_name}\n\n`;
+message +=
+`*Cliente:* ${currentOrder.customer_name}\n\n`;
 
-    message += `*Itens:*\n`;
+message +=
+`*Itens:*\n`;
 
-    currentOrder.items.forEach(item => {
+currentOrder.items.forEach(item => {
 
-        message +=
-            `• ${item.qty}x ${item.name} — ${money(item.price * item.qty)}\n`;
-    });
+message +=
+`• ${item.qty}x ${item.name} — ${money(item.price * item.qty)}\n`;
 
-    message += `\n`;
-
-    if(currentOrder.delivery){
-
-        message +=
-            `*Entrega:* Sim\n`;
-
-        message +=
-            `*Endereço:* ${currentOrder.address}\n`;
-
-        message +=
-            `*Bairro:* ${currentOrder.neighborhood}\n`;
-
-        message +=
-            `*Taxa:* ${money(currentOrder.delivery_fee)}\n`;
-
-    }else{
-
-        message +=
-            `*Entrega:* Retirada no local\n`;
-    }
-
-    message +=
-        `*Pagamento:* ${currentOrder.payment}\n`;
-
-    if(
-        currentOrder.payment === "DINHEIRO" &&
-        currentOrder.changeFor > 0
-    ){
-
-        message +=
-            `*Troco para:* ${money(currentOrder.changeFor)}\n`;
-    }
-
-    message +=
-        `\n*TOTAL: ${money(currentOrder.total)}*`;
-
-    const url =
-        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-
-    window.open(url,"_blank");
-}
-
-
-/* =========================================================
-   ADMIN
-========================================================= */
-
-function openAdmin(){
-
-    openModal("adminLoginModal");
-}
-
-
-document
-.getElementById("loginForm")
-.addEventListener("submit", async function(event){
-
-    event.preventDefault();
-
-    const email =
-        document.getElementById(
-            "adminEmail"
-        ).value.trim();
-
-    const password =
-        document.getElementById(
-            "adminPassword"
-        ).value;
-
-    const errorBox =
-        document.getElementById(
-            "loginError"
-        );
-
-    errorBox.classList.add("hidden");
-
-    const {data,error} =
-        await supabaseClient.auth
-        .signInWithPassword({
-            email,
-            password
-        });
-
-    if(error){
-
-        errorBox.textContent =
-            "E-mail ou senha incorretos.";
-
-        errorBox.classList.remove("hidden");
-
-        console.error(error);
-
-        return;
-    }
-
-    closeModal("adminLoginModal");
-
-    openModal("adminModal");
-
-    await loadOrders();
-
-    await loadAdminProducts();
-
-    await loadAdminZones();
-
-    startRealtime();
 });
 
+message += "\n";
 
-async function logoutAdmin(){
+if(currentOrder.delivery){
 
-    await supabaseClient.auth.signOut();
+message +=
+`*Entrega:* Sim\n`;
 
-    closeModal("adminModal");
+message +=
+`*Endereço:* ${currentOrder.address}\n`;
 
-    alert("Você saiu do painel.");
+message +=
+`*Bairro:* ${currentOrder.neighborhood}\n`;
+
+message +=
+`*Taxa:* ${money(currentOrder.delivery_fee)}\n`;
+
+}else{
+
+message +=
+`*Entrega:* Retirada no local\n`;
+
+}
+
+message +=
+`*Pagamento:* ${currentOrder.payment}\n`;
+
+if(
+currentOrder.payment === "DINHEIRO" &&
+currentOrder.changeFor > 0
+){
+
+message +=
+`*Troco para:* ${money(currentOrder.changeFor)}\n`;
+
+}
+
+message +=
+`\n*TOTAL: ${money(currentOrder.total)}*`;
+
+const url =
+"https://wa.me/" +
+WHATSAPP_NUMBER +
+"?text=" +
+encodeURIComponent(message);
+
+window.open(url,"_blank");
+
 }
 
 
-/* =========================================================
-   ADMIN - PEDIDOS
-========================================================= */
-
-async function loadOrders(){
-
-    const container =
-        document.getElementById("ordersList");
-
-    container.innerHTML =
-        `<div class="empty">Carregando pedidos...</div>`;
-
-    const {data,error} =
-        await supabaseClient
-        .from("orders")
-        .select(`
-            *,
-            order_items(*)
-        `)
-        .order("created_at",{ascending:false});
-
-    if(error){
-
-        console.error(error);
-
-        container.innerHTML =
-            `<div class="empty">
-                Erro ao carregar pedidos.
-            </div>`;
-
-        return;
-    }
-
-    if(!data || !data.length){
-
-        container.innerHTML =
-            `<div class="empty">
-                Nenhum pedido recebido ainda.
-            </div>`;
-
-        return;
-    }
-
-    container.innerHTML =
-        data.map(order => {
-
-            const items =
-                order.order_items || [];
-
-            return `
-            <div class="admin-card order-card">
-
-                <div class="order-head">
-
-                    <div>
-                        <div class="order-number">
-                            Pedido #${order.id}
-                        </div>
-
-                        <div>
-                            ${escapeHtml(order.customer_name)}
-                        </div>
-                    </div>
-
-                    <div class="order-status">
-                        ${escapeHtml(order.status)}
-                    </div>
-
-                </div>
-
-                <div class="order-items">
-
-                    ${
-                        items.map(item =>
-                            `${item.qty}x ${escapeHtml(item.name)}
-                            — ${money(item.price * item.qty)}`
-                        ).join("<br>")
-                    }
-
-                    <br><br>
-
-                    ${
-                        order.delivery
-                        ? `🛵 ${escapeHtml(order.address)}
-                           — ${escapeHtml(order.neighborhood)}
-                           <br>Taxa: ${money(order.delivery_fee)}`
-                        : `🏪 Retirada no local`
-                    }
-
-                    <br>
-
-                    💳 ${escapeHtml(order.payment)}
-
-                    <br>
-
-                    <strong class="gold">
-                        TOTAL: ${money(order.total)}
-                    </strong>
-
-                </div>
-
-                <div class="admin-actions">
-
-                    <button onclick="changeOrderStatus(${order.id},'RECEBIDO')">
-                        RECEBIDO
-                    </button>
-
-                    <button onclick="changeOrderStatus(${order.id},'EM PREPARO')">
-                        EM PREPARO
-                    </button>
-
-                    <button onclick="changeOrderStatus(${order.id},'SAIU PARA ENTREGA')">
-                        SAIU
-                    </button>
-
-                    <button onclick="changeOrderStatus(${order.id},'PRONTO PARA RETIRADA')">
-                        PRONTO
-                    </button>
-
-                    <button onclick="changeOrderStatus(${order.id},'FINALIZADO')">
-                        FINALIZADO
-                    </button>
-
-                    <button onclick="changeOrderStatus(${order.id},'CANCELADO')">
-                        CANCELAR
-                    </button>
-
-                </div>
-
-            </div>
-            `;
-
-        }).join("");
-}
-
-
-async function changeOrderStatus(id,status){
-
-    const {error} =
-        await supabaseClient
-        .from("orders")
-        .update({status})
-        .eq("id",id);
-
-    if(error){
-
-        alert("Erro ao atualizar pedido.");
-
-        console.error(error);
-
-        return;
-    }
-
-    await loadOrders();
-}
-
-
-/* =========================================================
-   ADMIN - PRODUTOS
-========================================================= */
-
-async function loadAdminProducts(){
-
-    const container =
-        document.getElementById(
-            "adminProductsList"
-        );
-
-    const {data,error} =
-        await supabaseClient
-        .from("products")
-        .select("*")
-        .order("id");
-
-    if(error){
-
-        container.innerHTML =
-            `<div class="notice">
-                Erro ao carregar produtos.
-            </div>`;
-
-        return;
-    }
-
-    container.innerHTML =
-        (data || []).map(product => {
-
-            return `
-            <div class="admin-card">
-
-                <div class="product-admin-row">
-
-                    <div>
-
-                        <strong>
-                            ${escapeHtml(product.name)}
-                        </strong>
-
-                        <br>
-
-                        <span class="gold">
-                            ${money(product.price)}
-                        </span>
-
-                        <br>
-
-                        <small>
-                            ${escapeHtml(product.category)}
-                        </small>
-
-                    </div>
-
-                    <div>
-
-                        <button
-                            class="small-btn"
-                            onclick="toggleProduct(${product.id},${!product.active})">
-                            ${product.active ? "DESATIVAR" : "ATIVAR"}
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-            `;
-
-        }).join("");
-}
-
-
-async function addProduct(){
-
-    const name =
-        document.getElementById(
-            "newProductName"
-        ).value.trim();
-
-    const description =
-        document.getElementById(
-            "newProductDescription"
-        ).value.trim();
-
-    const price =
-        Number(
-            document.getElementById(
-                "newProductPrice"
-            ).value
-        );
-
-    const category =
-        document.getElementById(
-            "newProductCategory"
-        ).value.trim() || "Lanches";
-
-    if(!name || !price){
-
-        alert("Preencha nome e preço.");
-
-        return;
-    }
-
-    const {error} =
-        await supabaseClient
-        .from("products")
-        .insert({
-            name,
-            description,
-            price,
-            category,
-            active:true
-        });
-
-    if(error){
-
-        alert("Erro ao adicionar produto.");
-
-        console.error(error);
-
-        return;
-    }
-
-    document.getElementById(
-        "newProductName"
-    ).value = "";
-
-    document.getElementById(
-        "newProductDescription"
-    ).value = "";
-
-    document.getElementById(
-        "newProductPrice"
-    ).value = "";
-
-    await loadAdminProducts();
-
-    await loadProducts();
-
-    alert("Produto adicionado!");
-}
-
-
-async function toggleProduct(id,active){
-
-    const {error} =
-        await supabaseClient
-        .from("products")
-        .update({active})
-        .eq("id",id);
-
-    if(error){
-
-        alert("Erro ao alterar produto.");
-
-        return;
-    }
-
-    await loadAdminProducts();
-
-    await loadProducts();
-}
-
-
-/* =========================================================
-   ADMIN - TAXAS
-========================================================= */
-
-async function loadAdminZones(){
-
-    const container =
-        document.getElementById(
-            "zonesList"
-        );
-
-    const {data,error} =
-        await supabaseClient
-        .from("delivery_zones")
-        .select("*")
-        .order("neighborhood");
-
-    if(error){
-
-        container.innerHTML =
-            `<div class="notice">
-                Erro ao carregar bairros.
-            </div>`;
-
-        return;
-    }
-
-    container.innerHTML =
-        (data || []).map(zone => {
-
-            return `
-            <div class="admin-card">
-
-                <div class="zone-row">
-
-                    <div>
-                        <strong>
-                            ${escapeHtml(zone.neighborhood)}
-                        </strong>
-
-                        <br>
-
-                        <span class="gold">
-                            ${money(zone.fee)}
-                        </span>
-
-                    </div>
-
-                    <button
-                        class="small-btn"
-                        onclick="toggleZone(${zone.id},${!zone.active})">
-                        ${zone.active ? "DESATIVAR" : "ATIVAR"}
-                    </button>
-
-                </div>
-
-            </div>
-            `;
-
-        }).join("");
-}
-
-
-async function addZone(){
-
-    const neighborhood =
-        document.getElementById(
-            "newZoneName"
-        ).value.trim();
-
-    const fee =
-        Number(
-            document.getElementById(
-                "newZoneFee"
-            ).value
-        );
-
-    if(!neighborhood){
-
-        alert("Digite o bairro.");
-
-        return;
-    }
-
-    const {error} =
-        await supabaseClient
-        .from("delivery_zones")
-        .insert({
-            neighborhood,
-            fee,
-            active:true
-        });
-
-    if(error){
-
-        alert(
-            error.code === "23505"
-            ? "Esse bairro já existe."
-            : "Erro ao adicionar bairro."
-        );
-
-        return;
-    }
-
-    document.getElementById(
-        "newZoneName"
-    ).value = "";
-
-    document.getElementById(
-        "newZoneFee"
-    ).value = "";
-
-    await loadAdminZones();
-
-    await loadZones();
-
-    alert("Bairro adicionado!");
-}
-
-
-async function toggleZone(id,active){
-
-    const {error} =
-        await supabaseClient
-        .from("delivery_zones")
-        .update({active})
-        .eq("id",id);
-
-    if(error){
-
-        alert("Erro ao alterar bairro.");
-
-        return;
-    }
-
-    await loadAdminZones();
-
-    await loadZones();
-}
-
-
-/* =========================================================
-   REALTIME
-========================================================= */
-
-function startRealtime(){
-
-    if(realtimeChannel){
-        return;
-    }
-
-    realtimeChannel =
-        supabaseClient
-        .channel("burguer-gold-orders")
-        .on(
-            "postgres_changes",
-            {
-                event:"INSERT",
-                schema:"public",
-                table:"orders"
-            },
-            payload => {
-
-                console.log(
-                    "Novo pedido:",
-                    payload.new
-                );
-
-                loadOrders();
-            }
-        )
-        .subscribe();
-}
-
-
-/* =========================================================
-   ABAS ADMIN
-========================================================= */
-
-function showAdminTab(tab,button){
-
-    document
-        .querySelectorAll(".admin-section")
-        .forEach(section =>
-            section.classList.remove("active")
-        );
-
-    document
-        .querySelectorAll(".admin-tab")
-        .forEach(btn =>
-            btn.classList.remove("active")
-        );
-
-    document
-        .getElementById(tab)
-        .classList.add("active");
-
-    button.classList.add("active");
-
-    if(tab === "orders"){
-        loadOrders();
-    }
-
-    if(tab === "productsAdmin"){
-        loadAdminProducts();
-    }
-
-    if(tab === "zonesAdmin"){
-        loadAdminZones();
-    }
-}
-
-
-/* =========================================================
+/* ==========================================
    MODAIS
-========================================================= */
+========================================== */
 
 function openModal(id){
 
-    document
-        .getElementById(id)
-        .classList.add("show");
-}
+document
+.getElementById(id)
+.classList.add("show");
 
+}
 
 function closeModal(id){
 
-    document
-        .getElementById(id)
-        .classList.remove("show");
-}
+document
+.getElementById(id)
+.classList.remove("show");
 
+}
 
 document
 .querySelectorAll(".modal")
 .forEach(modal => {
 
-    modal.addEventListener("click",function(event){
+modal.addEventListener(
+"click",
+function(event){
 
-        if(event.target === modal){
+if(event.target === modal){
 
-            modal.classList.remove("show");
-        }
-    });
+modal.classList.remove("show");
+
+}
+
+});
 
 });
 
 
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
+/* ==========================================
+   INICIAR
+========================================== */
 
 async function init(){
 
-    renderHours();
+await Promise.all([
+loadProducts(),
+loadZones(),
+loadHours()
+]);
 
-    checkStoreStatus();
+updateCart();
 
-    setInterval(
-        checkStoreStatus,
-        30000
-    );
-
-    await loadProducts();
-
-    await loadZones();
-
-    updateCart();
 }
 
-
 init();
+
+setInterval(
+checkStoreStatus,
+30000
+);
 
 </script>
 
