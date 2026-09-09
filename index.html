@@ -1017,7 +1017,7 @@ Carregando bairros...
 </div>
 
 
-<button id="floatingCart" class="floating-cart" onclick="openCart()">
+<button id="floatingCart" class="floating-cart" onclick="openCart">
 
 <div>
 <span id="floatingCartCount" class="cart-count">0</span>
@@ -1070,7 +1070,6 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-
 const DEFAULT_DELIVERY_FEE=0;
 
 const WEEKDAY_NAMES=[
@@ -1083,7 +1082,6 @@ const WEEKDAY_NAMES=[
 "Sábado"
 ];
 
-
 let products=[];
 let cart=[];
 let selectedCategory="Todos";
@@ -1094,7 +1092,6 @@ let currentCashRegister=null;
 let currentCashData=null;
 let adminOrders=[];
 
-
 function money(value){
 return Number(value||0).toLocaleString(
 "pt-BR",
@@ -1104,7 +1101,6 @@ currency:"BRL"
 }
 );
 }
-
 
 function parseMoney(value){
 
@@ -1129,7 +1125,6 @@ str.replace(",",".")
 return Number(str)||0;
 }
 
-
 function escapeHtml(text){
 
 return String(text??"")
@@ -1140,13 +1135,11 @@ return String(text??"")
 .replace(/'/g,"&#039;");
 }
 
-
 function formatDateTime(date){
 return date
 ?new Date(date).toLocaleString("pt-BR")
 :"-";
 }
-
 
 function showScreen(id){
 
@@ -1160,7 +1153,6 @@ if(s)s.classList.add("active");
 
 window.scrollTo(0,0);
 }
-
 
 function showToast(message){
 
@@ -1178,7 +1170,6 @@ window.toastTimer=setTimeout(
 );
 }
 
-
 const categories=[
 "Lanches",
 "Combos",
@@ -1187,7 +1178,6 @@ const categories=[
 "Sobremesas",
 "Outros"
 ];
-
 
 const categoryIcons={
 "Lanches":"🍔",
@@ -1198,11 +1188,9 @@ const categoryIcons={
 "Outros":"⭐"
 };
 
-
 function getProductCategory(p){
 return p.category||"Lanches";
 }
-
 
 function renderCategoryTabs(){
 
@@ -1237,7 +1225,6 @@ ${categoryIcons[cat]} ${cat}
 c.innerHTML=html;
 }
 
-
 function selectCategory(category){
 
 selectedCategory=category;
@@ -1246,7 +1233,6 @@ renderCategoryTabs();
 
 renderProducts();
 }
-
 
 async function loadProducts(){
 
@@ -1283,7 +1269,6 @@ renderCategoryTabs();
 renderProducts();
 }
 
-
 function getCartQty(productId){
 
 const item=cart.find(
@@ -1292,7 +1277,6 @@ i=>String(i.id)===String(productId)
 
 return item?item.qty:0;
 }
-
 
 function renderProducts(){
 
@@ -1382,7 +1366,6 @@ ${qty>0
 }).join("");
 }
 
-
 function addToCart(productId){
 
 const p=products.find(
@@ -1412,7 +1395,6 @@ renderProducts();
 showToast("🍔 Adicionado ao carrinho!");
 }
 
-
 function changeQty(productId,amount){
 
 const item=cart.find(
@@ -1435,7 +1417,6 @@ renderCart();
 renderProducts();
 }
 
-
 function getCartTotal(){
 
 return cart.reduce(
@@ -1444,7 +1425,6 @@ return cart.reduce(
 );
 }
 
-
 function getCartCount(){
 
 return cart.reduce(
@@ -1452,7 +1432,6 @@ return cart.reduce(
 0
 );
 }
-
 
 function renderCart(){
 
@@ -1542,7 +1521,6 @@ ${money(total)}
 `;
 }
 
-
 function openCart(){
 
 if(!cart.length){
@@ -1561,7 +1539,6 @@ document
 .classList.add("active");
 }
 
-
 function closeCart(){
 
 document
@@ -1572,7 +1549,6 @@ document
 .getElementById("cartDrawer")
 .classList.remove("active");
 }
-
 
 function goCheckout(){
 
@@ -1597,7 +1573,6 @@ showScreen("checkoutScreen");
 
 }
 
-
 async function loadDeliveryZones(){
 
 const {data,error}=await db
@@ -1617,7 +1592,6 @@ return;
 
 deliveryZones=data||[];
 }
-
 
 function renderNeighborhoods(){
 
@@ -1639,7 +1613,6 @@ ${escapeHtml(z.neighborhood)}
 `).join("");
 }
 
-
 function getSelectedDeliveryFee(){
 
 const s=document.getElementById(
@@ -1658,7 +1631,6 @@ return z
 :DEFAULT_DELIVERY_FEE;
 }
 
-
 function getSelectedNeighborhood(){
 
 const s=document.getElementById(
@@ -1673,7 +1645,6 @@ z=>String(z.id)===String(s.value)
 
 return z?z.neighborhood:"";
 }
-
 
 function renderCheckout(){
 
@@ -1697,7 +1668,6 @@ ${money(i.price*i.qty)}
 
 updateCheckoutTotal();
 }
-
 
 function updateCheckoutTotal(){
 
@@ -1729,7 +1699,6 @@ document.getElementById(
 "Taxa de entrega: "+money(fee);
 }
 
-
 function toggleDeliveryFields(){
 
 const type=
@@ -1747,7 +1716,7 @@ updateCheckoutTotal();
 /*
 ====================================================
 FINALIZAÇÃO DO PEDIDO
-CORRIGIDA PARA A COLUNA customer_nam
+USANDO OS NOMES EXATOS DO BANCO
 ====================================================
 */
 
@@ -1784,14 +1753,12 @@ document.getElementById("payment").value;
 const neighborhood=
 getSelectedNeighborhood();
 
-
 if(!customerName){
 
 alert("Digite seu nome.");
 
 return;
 }
-
 
 if(delivery&&!neighborhood){
 
@@ -1800,7 +1767,6 @@ alert("Selecione seu bairro.");
 return;
 }
 
-
 if(delivery&&!address){
 
 alert("Digite o endereço de entrega.");
@@ -1808,14 +1774,12 @@ alert("Digite o endereço de entrega.");
 return;
 }
 
-
 if(!cart.length){
 
 alert("Seu carrinho está vazio.");
 
 return;
 }
-
 
 if(button){
 
@@ -1826,23 +1790,15 @@ button.textContent=
 
 }
 
-
 const deliveryFee=
 delivery
 ?getSelectedDeliveryFee()
 :0;
 
-
 const total=
 getCartTotal()+deliveryFee;
 
-
-/*
-ID DO PEDIDO
-*/
-
 const orderId=Date.now();
-
 
 const finalAddress=
 delivery
@@ -1851,10 +1807,10 @@ delivery
 
 
 /*
+====================================================
 CRIAR PEDIDO
-
-IMPORTANTE:
-A coluna do banco é customer_nam.
+NOMES EXATOS DA TABELA ORDERS
+====================================================
 */
 
 const {error:orderError}=
@@ -1862,27 +1818,22 @@ await db
 .from("orders")
 .insert({
 
-id:orderId,
+Id:orderId,
 
-customer_nam:customerName,
+Costomer_nam:customerName,
 
-address:finalAddress,
+Adress:finalAddress,
 
-payment:payment,
+Payment:payment,
 
-delivery:delivery,
+Delivery:delivery,
 
-total:total,
+Total:total,
 
-status:"RECEBIDO"
+Status:"RECEBIDO"
 
 });
 
-
-/*
-SE DER ERRO NO PEDIDO,
-MOSTRA O ERRO REAL DO SUPABASE
-*/
 
 if(orderError){
 
@@ -1917,7 +1868,9 @@ return;
 
 
 /*
+====================================================
 CRIAR ITENS DO PEDIDO
+====================================================
 */
 
 const items=cart.map(
@@ -1937,7 +1890,6 @@ price:Number(item.price)
 
 })
 );
-
 
 const {error:itemsError}=
 await db
@@ -1978,20 +1930,20 @@ return;
 
 
 /*
-PEDIDO FINALIZADO COM SUCESSO
+====================================================
+PEDIDO FINALIZADO
+====================================================
 */
 
 document.getElementById(
 "successOrderId"
 ).textContent="#"+orderId;
 
-
 cart=[];
 
 renderCart();
 
 showScreen("successScreen");
-
 
 }catch(error){
 
@@ -2015,8 +1967,6 @@ button.disabled=false;
 
 button.textContent=
 "Confirmar pedido";
-
-}
 
 }
 
@@ -2075,7 +2025,6 @@ await showAdminPanel();
 
 }
 
-
 async function adminLogout(){
 
 await db.auth.signOut();
@@ -2087,7 +2036,6 @@ currentCashData=null;
 showScreen("menuScreen");
 
 }
-
 
 function openAdminTab(tab){
 
@@ -2103,7 +2051,6 @@ document
 s=>s.classList.remove("active")
 );
 
-
 const b=
 document.getElementById(
 "adminTab"+
@@ -2112,7 +2059,6 @@ tab.slice(1)
 );
 
 if(b)b.classList.add("active");
-
 
 const s=
 document.getElementById(
@@ -2125,7 +2071,6 @@ tab==="products"
 );
 
 if(s)s.classList.add("active");
-
 
 if(tab==="dashboard")
 renderDashboard();
@@ -2151,7 +2096,6 @@ loadDeliveryZonesAdmin();
 }
 
 }
-
 
 async function showAdminPanel(){
 
@@ -2192,7 +2136,7 @@ adminOrders||[];
 
 const total=
 orders.reduce(
-(s,o)=>s+Number(o.total||0),
+(s,o)=>s+Number(o.Total||0),
 0
 );
 
@@ -2208,10 +2152,9 @@ const counts=[
 "ENTREGUE"
 ].map(
 x=>orders.filter(
-o=>o.status===x
+o=>o.Status===x
 ).length
 );
-
 
 c.innerHTML=`
 
@@ -2254,7 +2197,6 @@ c.innerHTML=`
 
 </div>
 
-
 <div class="card" style="margin-top:18px">
 
 <h3>🕐 Pedidos recentes</h3>
@@ -2269,19 +2211,19 @@ orders
 <div class="history-item">
 
 <strong>
-#${o.id} —
-${escapeHtml(o.customer_nam)}
+#${o.Id} —
+${escapeHtml(o.Costomer_nam)}
 </strong>
 
 <div class="muted">
-${formatDateTime(o.created_at)}
+${formatDateTime(o.Created_at)}
 </div>
 
 <div>
-${escapeHtml(o.status)}
+${escapeHtml(o.Status)}
 —
 <strong class="gold">
-${money(o.total)}
+${money(o.Total)}
 </strong>
 </div>
 
@@ -2319,16 +2261,14 @@ if(!c)return;
 c.innerHTML=
 "Carregando pedidos...";
 
-
 const {data,error}=
 await db
 .from("orders")
 .select("*")
 .order(
-"created_at",
+"Created_at",
 {ascending:false}
 );
-
 
 if(error){
 
@@ -2351,11 +2291,9 @@ ${escapeHtml(error.message||"")}
 return;
 }
 
-
 adminOrders=data||[];
 
 renderDashboard();
-
 
 if(!adminOrders.length){
 
@@ -2370,7 +2308,6 @@ Nenhum pedido recebido ainda.
 return;
 }
 
-
 c.innerHTML=
 
 adminOrders.map(o=>`
@@ -2382,68 +2319,61 @@ adminOrders.map(o=>`
 <div>
 
 <strong>
-Pedido #${o.id}
+Pedido #${o.Id}
 </strong>
 
 <div class="muted">
-${formatDateTime(o.created_at)}
+${formatDateTime(o.Created_at)}
 </div>
 
 </div>
 
 <span class="status">
-${escapeHtml(o.status)}
+${escapeHtml(o.Status)}
 </span>
 
 </div>
 
-
 <p>
 <strong>Cliente:</strong>
-${escapeHtml(o.customer_nam)}
+${escapeHtml(o.Costomer_nam)}
 </p>
-
 
 <p>
 <strong>Pedido:</strong>
-${o.delivery
+${o.Delivery
 ?"🚚 Entrega"
 :"🏪 Retirada"}
 </p>
 
-
 <p>
 <strong>Endereço:</strong>
-${escapeHtml(o.address||"-")}
+${escapeHtml(o.Adress||"-")}
 </p>
-
 
 <p>
 <strong>Pagamento:</strong>
-${escapeHtml(o.payment||"-")}
+${escapeHtml(o.Payment||"-")}
 </p>
 
-
 <div
-id="items-${o.id}"
+id="items-${o.Id}"
 class="order-items">
 
 Carregando itens...
 
 </div>
 
-
 <strong class="gold">
-Total: ${money(o.total)}
+Total: ${money(o.Total)}
 </strong>
-
 
 <label>
 
 Alterar status
 
 <select
-onchange="changeOrderStatus(${o.id},this.value)">
+onchange="changeOrderStatus(${o.Id},this.value)">
 
 ${
 [
@@ -2457,7 +2387,7 @@ ${
 
 <option
 value="${st}"
-${o.status===st?"selected":""}>
+${o.Status===st?"selected":""}>
 ${st}
 </option>
 
@@ -2472,15 +2402,13 @@ ${st}
 
 `).join("");
 
-
 for(const o of adminOrders){
 
-loadOrderItems(o.id);
+loadOrderItems(o.Id);
 
 }
 
 }
-
 
 async function loadOrderItems(orderId){
 
@@ -2491,14 +2419,12 @@ document.getElementById(
 
 if(!c)return;
 
-
 const {data,error}=
 await db
 .from("order_items")
 .select("*")
 .eq("order_id",orderId)
 .order("id");
-
 
 if(error){
 
@@ -2508,7 +2434,6 @@ c.textContent=
 return;
 }
 
-
 if(!data||!data.length){
 
 c.textContent=
@@ -2516,7 +2441,6 @@ c.textContent=
 
 return;
 }
-
 
 c.innerHTML=
 
@@ -2531,7 +2455,6 @@ ${money(i.price*i.qty)}
 
 }
 
-
 async function changeOrderStatus(
 orderId,
 status
@@ -2540,9 +2463,10 @@ status
 const {error}=
 await db
 .from("orders")
-.update({status})
-.eq("id",orderId);
-
+.update({
+Status:status
+})
+.eq("Id",orderId);
 
 if(error){
 
@@ -2554,7 +2478,6 @@ alert(
 
 return;
 }
-
 
 await loadOrders();
 
@@ -2579,13 +2502,11 @@ if(!c)return;
 c.innerHTML=
 "Carregando produtos...";
 
-
 const {data,error}=
 await db
 .from("products")
 .select("*")
 .order("id",{ascending:true});
-
 
 if(error){
 
@@ -2602,7 +2523,6 @@ Erro ao carregar produtos.
 return;
 }
 
-
 if(!data||!data.length){
 
 c.innerHTML=`
@@ -2615,7 +2535,6 @@ Nenhum produto cadastrado.
 
 return;
 }
-
 
 c.innerHTML=
 
@@ -2661,7 +2580,6 @@ ${p.active?"Desativar":"Ativar"}
 
 }
 
-
 async function createProduct(){
 
 const name=
@@ -2686,18 +2604,15 @@ document.getElementById(
 "productCategory"
 ).value;
 
-
 if(!name)
 return alert(
 "Digite o nome do produto."
 );
 
-
 if(!price||price<=0)
 return alert(
 "Digite um preço válido."
 );
-
 
 const {error}=
 await db
@@ -2710,7 +2625,6 @@ category,
 active:true
 });
 
-
 if(error){
 
 console.error(error);
@@ -2721,7 +2635,6 @@ alert(
 
 return;
 }
-
 
 document.getElementById(
 "productName"
@@ -2735,7 +2648,6 @@ document.getElementById(
 "productPrice"
 ).value="";
 
-
 await loadAdminProducts();
 
 await loadProducts();
@@ -2745,7 +2657,6 @@ showToast(
 );
 
 }
-
 
 async function toggleProduct(
 productId,
@@ -2760,7 +2671,6 @@ active:!currentActive
 })
 .eq("id",productId);
 
-
 if(error){
 
 console.error(error);
@@ -2771,7 +2681,6 @@ alert(
 
 return;
 }
-
 
 await loadAdminProducts();
 
@@ -2798,7 +2707,6 @@ if(!c)return;
 c.innerHTML=
 "Carregando caixa...";
 
-
 const {data,error}=
 await db
 .from("cash_registers")
@@ -2809,7 +2717,6 @@ await db
 {ascending:false}
 )
 .limit(1);
-
 
 if(error){
 
@@ -2825,7 +2732,6 @@ Erro ao carregar caixa.
 
 return;
 }
-
 
 if(data&&data.length){
 
@@ -2845,20 +2751,18 @@ await renderClosedCash();
 
 }
 
-
 async function getCashOrders(openedAt){
 
 const {data,error}=
 await db
 .from("orders")
 .select(
-"id,total,payment,created_at,status"
+"Id,Total,Payment,Created_at,Status"
 )
 .gte(
-"created_at",
+"Created_at",
 openedAt
 );
-
 
 if(error){
 
@@ -2870,7 +2774,6 @@ return [];
 return data||[];
 
 }
-
 
 async function getCashMovements(
 registerId
@@ -2889,7 +2792,6 @@ registerId
 {ascending:false}
 );
 
-
 if(error){
 
 console.error(error);
@@ -2900,7 +2802,6 @@ return [];
 return data||[];
 
 }
-
 
 async function calculateCashData(
 register
@@ -2916,35 +2817,28 @@ await getCashMovements(
 register.id
 );
 
-
 let cashSales=0;
-
 let pixSales=0;
-
 let cardSales=0;
-
 
 orders.forEach(o=>{
 
 const a=
-Number(o.total)||0;
+Number(o.Total)||0;
 
-if(o.payment==="DINHEIRO")
+if(o.Payment==="DINHEIRO")
 cashSales+=a;
 
-else if(o.payment==="PIX")
+else if(o.Payment==="PIX")
 pixSales+=a;
 
-else if(o.payment==="CARTAO")
+else if(o.Payment==="CARTAO")
 cardSales+=a;
 
 });
 
-
 let supplies=0;
-
 let withdrawals=0;
-
 
 movements.forEach(m=>{
 
@@ -2959,19 +2853,16 @@ withdrawals+=a;
 
 });
 
-
 const totalSales=
 cashSales+
 pixSales+
 cardSales;
-
 
 const expectedCash=
 Number(register.opening_amount)+
 cashSales+
 supplies-
 withdrawals;
-
 
 return{
 orders,
@@ -2987,7 +2878,6 @@ expectedCash
 
 }
 
-
 async function renderOpenCash(){
 
 const c=
@@ -3000,7 +2890,6 @@ currentCashData=
 await calculateCashData(
 currentCashRegister
 );
-
 
 c.innerHTML=`
 
@@ -3018,7 +2907,6 @@ currentCashRegister.opened_at
 </div>
 
 </div>
-
 
 <div class="cash-grid">
 
@@ -3065,7 +2953,6 @@ ${money(currentCashRegister.opening_amount)}
 </div>
 
 </div>
-
 
 <div class="card" style="margin-top:18px">
 
@@ -3114,7 +3001,6 @@ onclick="addCashMovement('SANGRIA')">
 
 </div>
 
-
 <div class="card">
 
 <h3>🔒 Fechar caixa</h3>
@@ -3135,7 +3021,6 @@ onclick="closeCashRegister()">
 </button>
 
 </div>
-
 
 <div class="card">
 
@@ -3177,7 +3062,6 @@ Nenhuma movimentação.
 
 </div>
 
-
 <div class="card">
 
 <h3>📊 Histórico de caixas</h3>
@@ -3193,7 +3077,6 @@ Carregando histórico...
 await loadCashHistory();
 
 }
-
 
 async function renderClosedCash(){
 
@@ -3216,7 +3099,6 @@ Abra o caixa para começar.
 
 </div>
 
-
 <div class="card" style="margin-top:18px">
 
 <h3>🟢 Abrir caixa</h3>
@@ -3238,7 +3120,6 @@ onclick="openCashRegister()">
 
 </div>
 
-
 <div class="card">
 
 <h3>📜 Histórico de caixas</h3>
@@ -3255,7 +3136,6 @@ await loadCashHistory();
 
 }
 
-
 async function openCashRegister(){
 
 const input=
@@ -3266,12 +3146,10 @@ document.getElementById(
 const amount=
 parseMoney(input.value);
 
-
 if(amount<0)
 return alert(
 "O valor não pode ser negativo."
 );
-
 
 const {
 data:existing,
@@ -3283,7 +3161,6 @@ await db
 .eq("status","ABERTO")
 .limit(1);
 
-
 if(existingError){
 
 console.error(existingError);
@@ -3293,7 +3170,6 @@ return alert(
 );
 
 }
-
 
 if(existing&&existing.length){
 
@@ -3306,7 +3182,6 @@ await loadCashRegister();
 return;
 }
 
-
 const {error}=
 await db
 .from("cash_registers")
@@ -3314,7 +3189,6 @@ await db
 opening_amount:amount,
 status:"ABERTO"
 });
-
 
 if(error){
 
@@ -3326,13 +3200,11 @@ return alert(
 
 }
 
-
 showToast("🟢 Caixa aberto!");
 
 await loadCashRegister();
 
 }
-
 
 async function addCashMovement(type){
 
@@ -3340,7 +3212,6 @@ if(!currentCashRegister)
 return alert(
 "Não existe caixa aberto."
 );
-
 
 const amount=
 parseMoney(
@@ -3355,12 +3226,10 @@ document.getElementById(
 ).value
 .trim();
 
-
 if(!amount||amount<=0)
 return alert(
 "Digite um valor válido."
 );
-
 
 if(
 type==="SANGRIA" &&
@@ -3374,7 +3243,6 @@ return alert(
 
 }
 
-
 const {error}=
 await db
 .from("cash_movements")
@@ -3384,7 +3252,6 @@ type,
 amount,
 note
 });
-
 
 if(error){
 
@@ -3396,11 +3263,9 @@ return alert(
 
 }
 
-
 await loadCashRegister();
 
 }
-
 
 async function closeCashRegister(){
 
@@ -3409,33 +3274,27 @@ return alert(
 "Não existe caixa aberto."
 );
 
-
 const cashData=
 await calculateCashData(
 currentCashRegister
 );
-
 
 const input=
 document.getElementById(
 "closingAmount"
 );
 
-
 const closingAmount=
 parseMoney(input.value);
-
 
 if(input.value.trim()==="")
 return alert(
 "Informe o valor contado."
 );
 
-
 const difference=
 closingAmount-
 cashData.expectedCash;
-
 
 if(
 !confirm(
@@ -3448,7 +3307,6 @@ money(closingAmount)+
 money(difference)
 )
 )return;
-
 
 const {error}=
 await db
@@ -3489,7 +3347,6 @@ status:"FECHADO"
 currentCashRegister.id
 );
 
-
 if(error){
 
 console.error(error);
@@ -3500,7 +3357,6 @@ error.message
 );
 
 }
-
 
 alert(
 
@@ -3514,7 +3370,6 @@ money(difference)
 
 );
 
-
 currentCashRegister=null;
 
 currentCashData=null;
@@ -3522,7 +3377,6 @@ currentCashData=null;
 await loadCashRegister();
 
 }
-
 
 async function loadCashHistory(){
 
@@ -3532,7 +3386,6 @@ document.getElementById(
 );
 
 if(!c)return;
-
 
 const {data,error}=
 await db
@@ -3544,7 +3397,6 @@ await db
 {ascending:false}
 )
 .limit(10);
-
 
 if(error){
 
@@ -3561,7 +3413,6 @@ Não foi possível carregar o histórico.
 return;
 }
 
-
 if(!data||!data.length){
 
 c.innerHTML=`
@@ -3574,7 +3425,6 @@ Nenhum caixa fechado ainda.
 
 return;
 }
-
 
 c.innerHTML=
 
@@ -3653,16 +3503,14 @@ if(!c)return;
 c.innerHTML=
 "Carregando relatórios...";
 
-
 const {data,error}=
 await db
 .from("orders")
 .select("*")
 .order(
-"created_at",
+"Created_at",
 {ascending:false}
 );
-
 
 if(error){
 
@@ -3679,12 +3527,11 @@ Erro ao carregar relatórios.
 return;
 }
 
-
 const orders=data||[];
 
 const total=
 orders.reduce(
-(s,o)=>s+Number(o.total||0),
+(s,o)=>s+Number(o.Total||0),
 0
 );
 
@@ -3695,34 +3542,33 @@ orders.length
 
 const pix=
 orders
-.filter(o=>o.payment==="PIX")
+.filter(o=>o.Payment==="PIX")
 .reduce(
-(s,o)=>s+Number(o.total||0),
+(s,o)=>s+Number(o.Total||0),
 0
 );
 
 const cash=
 orders
-.filter(o=>o.payment==="DINHEIRO")
+.filter(o=>o.Payment==="DINHEIRO")
 .reduce(
-(s,o)=>s+Number(o.total||0),
+(s,o)=>s+Number(o.Total||0),
 0
 );
 
 const card=
 orders
-.filter(o=>o.payment==="CARTAO")
+.filter(o=>o.Payment==="CARTAO")
 .reduce(
-(s,o)=>s+Number(o.total||0),
+(s,o)=>s+Number(o.Total||0),
 0
 );
 
 const delivery=
-orders.filter(o=>o.delivery).length;
+orders.filter(o=>o.Delivery).length;
 
 const pickup=
-orders.filter(o=>!o.delivery).length;
-
+orders.filter(o=>!o.Delivery).length;
 
 const statuses=[
 "RECEBIDO",
@@ -3731,7 +3577,6 @@ const statuses=[
 "SAIU PARA ENTREGA",
 "ENTREGUE"
 ];
-
 
 c.innerHTML=`
 
@@ -3779,7 +3624,6 @@ c.innerHTML=`
 
 </div>
 
-
 <div class="card" style="margin-top:18px">
 
 <h3>📋 Pedidos por status</h3>
@@ -3793,7 +3637,7 @@ statuses.map(s=>`
 
 <strong class="gold">
 ${orders.filter(
-o=>o.status===s
+o=>o.Status===s
 ).length}
 </strong>
 
@@ -3803,7 +3647,6 @@ o=>o.status===s
 }
 
 </div>
-
 
 <div class="card">
 
@@ -3855,7 +3698,6 @@ if(!c)return;
 c.innerHTML=
 "Carregando horários...";
 
-
 const {data,error}=
 await db
 .from("business_hours")
@@ -3864,7 +3706,6 @@ await db
 "day_of_week",
 {ascending:true}
 );
-
 
 if(error){
 
@@ -3901,9 +3742,7 @@ ${escapeHtml(error.code||"sem código")}
 return;
 }
 
-
 let hours=data||[];
-
 
 if(hours.length===0){
 
@@ -3924,7 +3763,6 @@ close_time:"23:00"
 })
 );
 
-
 const {
 data:created,
 error:createError
@@ -3933,7 +3771,6 @@ await db
 .from("business_hours")
 .insert(defaults)
 .select("*");
-
 
 if(createError){
 
@@ -3972,11 +3809,9 @@ createError.code||"sem código"
 return;
 }
 
-
 hours=created||defaults;
 
 }
-
 
 businessHours=
 hours.sort(
@@ -3991,7 +3826,6 @@ renderBusinessHoursAdmin();
 
 }
 
-
 function renderBusinessHoursAdmin(){
 
 const c=
@@ -4000,7 +3834,6 @@ document.getElementById(
 );
 
 if(!c)return;
-
 
 if(!businessHours.length){
 
@@ -4015,7 +3848,6 @@ Nenhum horário cadastrado.
 return;
 }
 
-
 c.innerHTML=
 
 businessHours.map(h=>{
@@ -4028,7 +3860,6 @@ h.day_name||
 WEEKDAY_NAMES[day]||
 ("Dia "+day);
 
-
 return `
 
 <div class="hours-row">
@@ -4036,7 +3867,6 @@ return `
 <div class="day-name">
 ${escapeHtml(name)}
 </div>
-
 
 <div>
 
@@ -4051,7 +3881,6 @@ ${h.is_open
 </div>
 
 </div>
-
 
 <div class="time-field">
 
@@ -4071,7 +3900,6 @@ value="${escapeHtml(
 
 </div>
 
-
 <div class="time-field">
 
 <label>
@@ -4090,7 +3918,6 @@ value="${escapeHtml(
 
 </div>
 
-
 <div class="save-hour">
 
 <label
@@ -4106,7 +3933,6 @@ style="width:auto;margin:0">
 Aberto
 
 </label>
-
 
 <button
 class="btn small"
@@ -4125,7 +3951,6 @@ onclick="saveBusinessHour(${day})">
 }).join("");
 
 }
-
 
 function updateHourBadge(day){
 
@@ -4153,7 +3978,6 @@ checkbox.checked
 
 }
 
-
 async function saveBusinessHour(day){
 
 const openCheckbox=
@@ -4171,12 +3995,10 @@ document.getElementById(
 "bh-end-"+day
 );
 
-
 if(!openCheckbox)
 return alert(
 "Não foi possível encontrar o horário."
 );
-
 
 const isOpen=
 openCheckbox.checked;
@@ -4187,7 +4009,6 @@ startInput.value||null;
 const closeTime=
 endInput.value||null;
 
-
 if(
 isOpen&&
 (!openTime||!closeTime)
@@ -4195,7 +4016,6 @@ isOpen&&
 return alert(
 "Informe o horário de abertura e fechamento."
 );
-
 
 const {error}=
 await db
@@ -4213,7 +4033,6 @@ close_time:closeTime
 "day_of_week",
 Number(day)
 );
-
 
 if(error){
 
@@ -4233,7 +4052,6 @@ error.message+
 
 return;
 }
-
 
 await loadBusinessHours();
 
@@ -4262,7 +4080,6 @@ if(!c)return;
 c.innerHTML=
 "Carregando bairros...";
 
-
 const {data,error}=
 await db
 .from("delivery_zones")
@@ -4271,7 +4088,6 @@ await db
 "neighborhood",
 {ascending:true}
 );
-
 
 if(error){
 
@@ -4306,12 +4122,10 @@ error.code||"sem código"
 return;
 }
 
-
 deliveryZones=
 (data||[]).filter(
 z=>z.active
 );
-
 
 if(!data||!data.length){
 
@@ -4326,14 +4140,12 @@ Nenhum bairro cadastrado ainda.
 return;
 }
 
-
 c.innerHTML=
 
 data.map(z=>{
 
 const safeId=
 JSON.stringify(String(z.id));
-
 
 return `
 
@@ -4353,14 +4165,12 @@ ${z.active
 
 </div>
 
-
 <input
 id="zone-fee-${escapeHtml(String(z.id))}"
 type="number"
 step="0.01"
 min="0"
 value="${Number(z.fee||0).toFixed(2)}">
-
 
 <button
 class="btn small"
@@ -4369,7 +4179,6 @@ onclick='updateDeliveryZone(${safeId})'>
 💾 Salvar
 
 </button>
-
 
 <button
 class="btn small danger"
@@ -4388,7 +4197,6 @@ ${z.active
 }).join("");
 
 }
-
 
 async function createDeliveryZone(){
 
@@ -4409,18 +4217,15 @@ document
 .value
 );
 
-
 if(!neighborhood)
 return alert(
 "Digite o bairro."
 );
 
-
 if(fee<0)
 return alert(
 "A taxa não pode ser negativa."
 );
-
 
 const {error}=
 await db
@@ -4434,7 +4239,6 @@ fee,
 active:true
 
 });
-
 
 if(error){
 
@@ -4465,7 +4269,6 @@ error.message+
 return;
 }
 
-
 document.getElementById(
 "zoneNeighborhood"
 ).value="";
@@ -4473,7 +4276,6 @@ document.getElementById(
 document.getElementById(
 "zoneFee"
 ).value="";
-
 
 await loadDeliveryZonesAdmin();
 
@@ -4485,7 +4287,6 @@ showToast(
 
 }
 
-
 async function updateDeliveryZone(id){
 
 const input=
@@ -4493,29 +4294,24 @@ document.getElementById(
 "zone-fee-"+String(id)
 );
 
-
 if(!input)
 return alert(
 "Campo da taxa não encontrado."
 );
 
-
 const fee=
 parseMoney(input.value);
-
 
 if(fee<0)
 return alert(
 "A taxa não pode ser negativa."
 );
 
-
 const {error}=
 await db
 .from("delivery_zones")
 .update({fee})
 .eq("id",id);
-
 
 if(error){
 
@@ -4536,7 +4332,6 @@ error.message+
 return;
 }
 
-
 await loadDeliveryZonesAdmin();
 
 await loadDeliveryZones();
@@ -4546,7 +4341,6 @@ showToast(
 );
 
 }
-
 
 async function toggleDeliveryZone(
 id,
@@ -4560,7 +4354,6 @@ await db
 active:!currentActive
 })
 .eq("id",id);
-
 
 if(error){
 
@@ -4580,7 +4373,6 @@ error.message+
 
 return;
 }
-
 
 await loadDeliveryZonesAdmin();
 
@@ -4618,7 +4410,6 @@ document.getElementById(
 "adminPanel"
 );
 
-
 if(
 panel&&
 panel.classList.contains("active")
@@ -4631,7 +4422,6 @@ document.querySelector(
 ".admin-section.active"
 );
 
-
 if(
 activeSection&&
 activeSection.id==="admin-cash"
@@ -4640,7 +4430,6 @@ activeSection.id==="admin-cash"
 await loadCashRegister();
 
 }
-
 
 if(
 activeSection&&
@@ -4674,10 +4463,8 @@ renderCart();
 
 toggleDeliveryFields();
 
-
 const {data}=
 await db.auth.getSession();
-
 
 if(
 data&&
@@ -4702,10 +4489,9 @@ showScreen("adminLogin");
 
 }
 
-
 init();
 
 </script>
 
 </body>
-</html>
+</html>>
