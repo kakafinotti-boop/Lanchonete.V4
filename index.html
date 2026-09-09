@@ -2,10 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>Burguer Gold</title>
 
@@ -155,6 +152,24 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 15px;
+    }
+
+    .category-title {
+      grid-column: 1 / -1;
+      margin-top: 18px;
+      margin-bottom: -2px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #3b3219;
+    }
+
+    .category-title h2 {
+      margin: 0;
+      color: #d4af37;
+      font-size: 23px;
+    }
+
+    .category-title:first-child {
+      margin-top: 0;
     }
 
     .product {
@@ -372,16 +387,20 @@
 
       <div class="card">
         <h2>🍔 Nosso cardápio</h2>
+
         <p class="muted">
           Escolha seus lanches e monte seu pedido.
         </p>
 
         <div id="productsContainer" class="products">
-          <div class="empty">Carregando cardápio...</div>
+          <div class="empty">
+            Carregando cardápio...
+          </div>
         </div>
       </div>
 
       <div class="card">
+
         <h2>🛒 Seu carrinho</h2>
 
         <div id="cartContainer">
@@ -398,6 +417,7 @@
         >
           Continuar pedido
         </button>
+
       </div>
 
     </section>
@@ -413,49 +433,89 @@
 
         <label>
           Nome
+
           <input
             id="customerName"
             type="text"
             placeholder="Seu nome"
           />
+
         </label>
 
         <label>
           Tipo do pedido
-          <select id="deliveryType" onchange="toggleDeliveryFields()">
-            <option value="ENTREGA">Entrega</option>
-            <option value="RETIRADA">Retirada na loja</option>
+
+          <select
+            id="deliveryType"
+            onchange="toggleDeliveryFields()"
+          >
+            <option value="ENTREGA">
+              Entrega
+            </option>
+
+            <option value="RETIRADA">
+              Retirada na loja
+            </option>
           </select>
+
         </label>
 
         <div id="addressArea">
+
           <label>
             Endereço
+
             <textarea
               id="customerAddress"
               placeholder="Rua, número, bairro..."
             ></textarea>
+
           </label>
+
         </div>
 
         <label>
           Forma de pagamento
+
           <select id="payment">
-            <option value="PIX">PIX</option>
-            <option value="DINHEIRO">Dinheiro</option>
-            <option value="CARTAO">Cartão</option>
+
+            <option value="PIX">
+              PIX
+            </option>
+
+            <option value="DINHEIRO">
+              Dinheiro
+            </option>
+
+            <option value="CARTAO">
+              Cartão
+            </option>
+
           </select>
+
         </label>
 
         <div class="card" style="margin-top:20px;">
+
           <h3>Resumo</h3>
 
           <div id="checkoutItems"></div>
 
           <div class="total">
-            <span>Total</span>
-            <span id="checkoutTotal">R$ 0,00</span>
+
+            <span>
+              Total
+            </span>
+
+            <span
+              id="checkoutTotal"
+              class="gold"
+            >
+              R$ 0,00
+            </span>
+
           </div>
+
         </div>
 
         <button
@@ -483,9 +543,13 @@
 
       <div class="card success">
 
-        <div class="success-icon">✅</div>
+        <div class="success-icon">
+          ✅
+        </div>
 
-        <h2>Pedido recebido!</h2>
+        <h2>
+          Pedido recebido!
+        </h2>
 
         <p class="muted">
           Seu pedido foi enviado para a Burguer Gold.
@@ -493,7 +557,12 @@
 
         <p>
           Número do pedido:
-          <strong id="successOrderId" class="gold"></strong>
+
+          <strong
+            id="successOrderId"
+            class="gold"
+          ></strong>
+
         </p>
 
         <button
@@ -512,9 +581,14 @@
 
     <section id="adminLogin" class="screen">
 
-      <div class="card" style="max-width:450px;margin:40px auto;">
+      <div
+        class="card"
+        style="max-width:450px;margin:40px auto;"
+      >
 
-        <h2>🔐 Administração</h2>
+        <h2>
+          🔐 Administração
+        </h2>
 
         <p class="muted">
           Entre com a conta da Burguer Gold.
@@ -522,20 +596,24 @@
 
         <label>
           E-mail
+
           <input
             id="adminEmail"
             type="email"
             placeholder="E-mail"
           />
+
         </label>
 
         <label>
           Senha
+
           <input
             id="adminPassword"
             type="password"
             placeholder="Senha"
           />
+
         </label>
 
         <button
@@ -566,10 +644,15 @@
         <div class="admin-header">
 
           <div>
-            <h2>⚙️ Painel Burguer Gold</h2>
+
+            <h2>
+              ⚙️ Painel Burguer Gold
+            </h2>
+
             <p class="muted">
               Administração da loja
             </p>
+
           </div>
 
           <button
@@ -591,10 +674,15 @@
         <div class="admin-header">
 
           <div>
-            <h2>💰 Caixa</h2>
+
+            <h2>
+              💰 Caixa
+            </h2>
+
             <p class="muted">
               Controle as vendas e faça o fechamento do caixa.
             </p>
+
           </div>
 
           <button
@@ -620,10 +708,15 @@
         <div class="admin-header">
 
           <div>
-            <h2>📋 Pedidos</h2>
+
+            <h2>
+              📋 Pedidos
+            </h2>
+
             <p class="muted">
               Pedidos recebidos pela loja.
             </p>
+
           </div>
 
           <button
@@ -646,44 +739,85 @@
 
       <div class="card">
 
-        <h2>🍔 Produtos</h2>
+        <h2>
+          🍔 Produtos
+        </h2>
 
         <p class="muted">
-          Cadastre os lanches e descreva exatamente o que vem neles.
+          Cadastre os lanches e organize o cardápio por categoria.
         </p>
 
         <label>
           Nome do lanche
+
           <input
             id="productName"
             type="text"
             placeholder="Ex: X-Bacon"
           />
+
         </label>
 
         <label>
           O que vem no lanche?
+
           <textarea
             id="productDescription"
             placeholder="Ex: pão, hambúrguer, queijo, bacon e molho especial"
           ></textarea>
+
         </label>
 
         <label>
           Preço
+
           <input
             id="productPrice"
             type="number"
             step="0.01"
             placeholder="24.90"
           />
+
+        </label>
+
+        <label>
+          Categoria
+
+          <select id="productCategory">
+
+            <option value="Lanches">
+              🍔 Lanches
+            </option>
+
+            <option value="Combos">
+              📦 Combos
+            </option>
+
+            <option value="Porções">
+              🍟 Porções
+            </option>
+
+            <option value="Bebidas">
+              🥤 Bebidas
+            </option>
+
+            <option value="Sobremesas">
+              🍰 Sobremesas
+            </option>
+
+            <option value="Outros">
+              ⭐ Outros
+            </option>
+
+          </select>
+
         </label>
 
         <button
           class="btn"
           onclick="createProduct()"
         >
-          ➕ Adicionar lanche
+          ➕ Adicionar produto
         </button>
 
         <div
@@ -713,17 +847,17 @@
     "https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
   /*
-    COLE AQUI A SUA NOVA PUBLISHABLE KEY DO SUPABASE.
-    NÃO USE A CHAVE ANTIGA QUE FOI EXPOSTA.
+    MANTENHA A SUA NOVA PUBLISHABLE KEY ATUAL AQUI.
   */
 
   const SUPABASE_KEY =
     "sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
-  const db = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const db =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
 
   /* ============================================================
@@ -733,9 +867,11 @@
   const DEFAULT_DELIVERY_FEE = 0;
 
   let products = [];
+
   let cart = [];
 
   let currentCashRegister = null;
+
   let currentCashData = null;
 
 
@@ -787,9 +923,8 @@
 
     if (!date) return "-";
 
-    return new Date(date).toLocaleString(
-      "pt-BR"
-    );
+    return new Date(date)
+      .toLocaleString("pt-BR");
 
   }
 
@@ -799,21 +934,31 @@
     document
       .querySelectorAll(".screen")
       .forEach(screen => {
-        screen.classList.remove("active");
+
+        screen.classList.remove(
+          "active"
+        );
+
       });
+
 
     const screen =
       document.getElementById(id);
 
+
     if (screen) {
-      screen.classList.add("active");
+
+      screen.classList.add(
+        "active"
+      );
+
     }
 
   }
 
 
   /* ============================================================
-     CLIENTE
+     CLIENTE — PRODUTOS
   ============================================================ */
 
   async function loadProducts() {
@@ -829,6 +974,7 @@
         ascending: true
       });
 
+
     if (error) {
 
       console.error(error);
@@ -836,14 +982,19 @@
       document.getElementById(
         "productsContainer"
       ).innerHTML =
+
         `<div class="empty">
           Não foi possível carregar o cardápio.
         </div>`;
 
       return;
+
     }
 
-    products = data || [];
+
+    products =
+      data || [];
+
 
     renderProducts();
 
@@ -857,64 +1008,231 @@
         "productsContainer"
       );
 
+
     if (!products.length) {
 
       container.innerHTML =
+
         `<div class="empty">
           Nenhum produto disponível no momento.
         </div>`;
 
       return;
+
     }
 
+
+    /*
+      Ordem das categorias no cardápio.
+    */
+
+    const categories = [
+
+      "Lanches",
+
+      "Combos",
+
+      "Porções",
+
+      "Bebidas",
+
+      "Sobremesas",
+
+      "Outros"
+
+    ];
+
+
+    let html = "";
+
+
+    categories.forEach(category => {
+
+      const categoryProducts =
+        products.filter(product => {
+
+          return (
+            product.category ||
+            "Lanches"
+          ) === category;
+
+        });
+
+
+      if (!categoryProducts.length) {
+        return;
+      }
+
+
+      html += `
+
+        <div class="category-title">
+
+          <h2>
+            ${category}
+          </h2>
+
+        </div>
+
+      `;
+
+
+      html +=
+        categoryProducts
+          .map(product => {
+
+            return `
+
+              <div class="product">
+
+                <h3>
+                  ${escapeHtml(
+                    product.name
+                  )}
+                </h3>
+
+                <div class="description">
+                  ${escapeHtml(
+                    product.description || ""
+                  )}
+                </div>
+
+                <div class="price">
+                  ${money(
+                    product.price
+                  )}
+                </div>
+
+                <button
+                  class="btn"
+                  onclick="addToCart(
+                    ${product.id}
+                  )"
+                >
+                  Adicionar
+                </button>
+
+              </div>
+
+            `;
+
+          })
+          .join("");
+
+    });
+
+
+    /*
+      Segurança para produtos com alguma
+      categoria diferente das cadastradas.
+    */
+
+    const knownCategories =
+      new Set(categories);
+
+
+    const uncategorized =
+      products.filter(product => {
+
+        const category =
+          product.category ||
+          "Lanches";
+
+        return !knownCategories.has(
+          category
+        );
+
+      });
+
+
+    if (uncategorized.length) {
+
+      html += `
+
+        <div class="category-title">
+
+          <h2>
+            ⭐ Outros
+          </h2>
+
+        </div>
+
+      `;
+
+
+      html +=
+        uncategorized
+          .map(product => {
+
+            return `
+
+              <div class="product">
+
+                <h3>
+                  ${escapeHtml(
+                    product.name
+                  )}
+                </h3>
+
+                <div class="description">
+                  ${escapeHtml(
+                    product.description || ""
+                  )}
+                </div>
+
+                <div class="price">
+                  ${money(
+                    product.price
+                  )}
+                </div>
+
+                <button
+                  class="btn"
+                  onclick="addToCart(
+                    ${product.id}
+                  )"
+                >
+                  Adicionar
+                </button>
+
+              </div>
+
+            `;
+
+          })
+          .join("");
+
+    }
+
+
     container.innerHTML =
-      products.map(product => {
-
-        return `
-          <div class="product">
-
-            <h3>
-              ${escapeHtml(product.name)}
-            </h3>
-
-            <div class="description">
-              ${escapeHtml(
-                product.description || ""
-              )}
-            </div>
-
-            <div class="price">
-              ${money(product.price)}
-            </div>
-
-            <button
-              class="btn"
-              onclick="addToCart(${product.id})"
-            >
-              Adicionar
-            </button>
-
-          </div>
-        `;
-
-      }).join("");
+      html;
 
   }
 
+
+  /* ============================================================
+     CARRINHO
+  ============================================================ */
 
   function addToCart(productId) {
 
     const product =
       products.find(
-        item => item.id === productId
+        item =>
+          item.id === productId
       );
+
 
     if (!product) return;
 
+
     const existing =
       cart.find(
-        item => item.id === productId
+        item =>
+          item.id === productId
       );
+
 
     if (existing) {
 
@@ -923,38 +1241,57 @@
     } else {
 
       cart.push({
-        id: product.id,
-        name: product.name,
-        price: Number(product.price),
-        qty: 1
+
+        id:
+          product.id,
+
+        name:
+          product.name,
+
+        price:
+          Number(product.price),
+
+        qty:
+          1
+
       });
 
     }
+
 
     renderCart();
 
   }
 
 
-  function changeQty(productId, amount) {
+  function changeQty(
+    productId,
+    amount
+  ) {
 
     const item =
       cart.find(
-        item => item.id === productId
+        item =>
+          item.id === productId
       );
+
 
     if (!item) return;
 
+
     item.qty += amount;
+
 
     if (item.qty <= 0) {
 
       cart =
         cart.filter(
-          item => item.id !== productId
+          item =>
+            item.id !== productId
         );
 
     }
+
 
     renderCart();
 
@@ -965,10 +1302,13 @@
 
     return cart.reduce(
       (total, item) =>
-        total + (
+
+        total +
+        (
           Number(item.price) *
           Number(item.qty)
         ),
+
       0
     );
 
@@ -982,50 +1322,71 @@
         "cartContainer"
       );
 
+
     const checkoutButton =
       document.getElementById(
         "goCheckoutBtn"
       );
 
+
     if (!cart.length) {
 
       container.innerHTML =
+
         `<div class="empty">
           Seu carrinho está vazio.
         </div>`;
 
+
       checkoutButton.style.display =
         "none";
 
+
       return;
+
     }
+
 
     checkoutButton.style.display =
       "block";
 
+
     container.innerHTML =
+
       cart.map(item => {
 
         const subtotal =
-          item.price * item.qty;
+          item.price *
+          item.qty;
+
 
         return `
+
           <div class="cart-item">
 
             <div>
+
               <strong>
-                ${escapeHtml(item.name)}
+                ${escapeHtml(
+                  item.name
+                )}
               </strong>
 
               <div class="muted">
-                ${money(subtotal)}
+                ${money(
+                  subtotal
+                )}
               </div>
+
             </div>
 
             <div class="qty">
 
               <button
-                onclick="changeQty(${item.id}, -1)"
+                onclick="changeQty(
+                  ${item.id},
+                  -1
+                )"
               >
                 −
               </button>
@@ -1035,7 +1396,10 @@
               </strong>
 
               <button
-                onclick="changeQty(${item.id}, 1)"
+                onclick="changeQty(
+                  ${item.id},
+                  1
+                )"
               >
                 +
               </button>
@@ -1043,17 +1407,27 @@
             </div>
 
           </div>
+
         `;
 
       }).join("") +
 
       `
+
         <div class="total">
-          <span>Total</span>
-          <span class="gold">
-            ${money(getCartTotal())}
+
+          <span>
+            Total
           </span>
+
+          <span class="gold">
+            ${money(
+              getCartTotal()
+            )}
+          </span>
+
         </div>
+
       `;
 
   }
@@ -1063,12 +1437,17 @@
 
     if (!cart.length) {
 
-      alert("Seu carrinho está vazio.");
+      alert(
+        "Seu carrinho está vazio."
+      );
 
       return;
+
     }
 
+
     renderCheckout();
+
 
     showScreen(
       "checkoutScreen"
@@ -1084,31 +1463,39 @@
         "checkoutItems"
       );
 
+
     container.innerHTML =
       cart.map(item => {
 
         return `
+
           <div class="cart-item">
 
             <span>
               ${item.qty}x
-              ${escapeHtml(item.name)}
+              ${escapeHtml(
+                item.name
+              )}
             </span>
 
             <strong>
               ${money(
-                item.price * item.qty
+                item.price *
+                item.qty
               )}
             </strong>
 
           </div>
+
         `;
 
       }).join("");
 
+
     document.getElementById(
       "checkoutTotal"
     ).textContent =
+
       money(
         getCartTotal() +
         DEFAULT_DELIVERY_FEE
@@ -1124,9 +1511,11 @@
         "deliveryType"
       ).value;
 
+
     document.getElementById(
       "addressArea"
     ).style.display =
+
       type === "ENTREGA"
         ? "block"
         : "none";
@@ -1145,53 +1534,70 @@
         "customerName"
       ).value.trim();
 
+
     const deliveryType =
       document.getElementById(
         "deliveryType"
       ).value;
 
+
     const delivery =
-      deliveryType === "ENTREGA";
+      deliveryType ===
+      "ENTREGA";
+
 
     const address =
       document.getElementById(
         "customerAddress"
       ).value.trim();
 
+
     const payment =
       document.getElementById(
         "payment"
       ).value;
 
+
     if (!customerName) {
 
-      alert("Digite seu nome.");
+      alert(
+        "Digite seu nome."
+      );
 
       return;
+
     }
 
-    if (delivery && !address) {
 
-      alert("Digite o endereço de entrega.");
+    if (
+      delivery &&
+      !address
+    ) {
+
+      alert(
+        "Digite o endereço de entrega."
+      );
 
       return;
+
     }
+
 
     if (!cart.length) {
 
-      alert("Seu carrinho está vazio.");
+      alert(
+        "Seu carrinho está vazio."
+      );
 
       return;
+
     }
+
 
     const total =
       getCartTotal() +
       DEFAULT_DELIVERY_FEE;
 
-    /*
-      Geramos o ID no navegador para evitar
-      depender de SELECT após o INSERT.
-    */
 
     const orderId =
       Date.now() * 1000 +
@@ -1199,9 +1605,11 @@
         Math.random() * 1000
       );
 
+
     const orderData = {
 
-      id: orderId,
+      id:
+        orderId,
 
       customer_name:
         customerName,
@@ -1245,6 +1653,7 @@
       );
 
       return;
+
     }
 
 
@@ -1295,6 +1704,7 @@
       );
 
       return;
+
     }
 
 
@@ -1306,7 +1716,9 @@
 
     cart = [];
 
+
     renderCart();
+
 
     showScreen(
       "successScreen"
@@ -1326,33 +1738,40 @@
         "adminEmail"
       ).value.trim();
 
+
     const password =
       document.getElementById(
         "adminPassword"
       ).value;
 
-    if (!email || !password) {
+
+    if (
+      !email ||
+      !password
+    ) {
 
       alert(
         "Preencha e-mail e senha."
       );
 
       return;
+
     }
 
 
     const {
       data,
       error
-    } = await db.auth.signInWithPassword({
+    } =
+      await db.auth.signInWithPassword({
 
-      email:
-        email,
+        email:
+          email,
 
-      password:
-        password
+        password:
+          password
 
-    });
+      });
 
 
     if (error) {
@@ -1364,6 +1783,7 @@
       );
 
       return;
+
     }
 
 
@@ -1380,9 +1800,14 @@
 
     await db.auth.signOut();
 
-    currentCashRegister = null;
 
-    currentCashData = null;
+    currentCashRegister =
+      null;
+
+
+    currentCashData =
+      null;
+
 
     showScreen(
       "menuScreen"
@@ -1396,6 +1821,7 @@
     showScreen(
       "adminPanel"
     );
+
 
     await loadOrders();
 
@@ -1417,6 +1843,7 @@
         "ordersContainer"
       );
 
+
     container.innerHTML =
       "Carregando pedidos...";
 
@@ -1427,9 +1854,12 @@
     } = await db
       .from("orders")
       .select("*")
-      .order("created_at", {
-        ascending: false
-      });
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
 
 
     if (error) {
@@ -1437,22 +1867,29 @@
       console.error(error);
 
       container.innerHTML =
+
         `<div class="empty">
           Erro ao carregar pedidos.
         </div>`;
 
       return;
+
     }
 
 
-    if (!data || !data.length) {
+    if (
+      !data ||
+      !data.length
+    ) {
 
       container.innerHTML =
+
         `<div class="empty">
           Nenhum pedido recebido ainda.
         </div>`;
 
       return;
+
     }
 
 
@@ -1460,11 +1897,13 @@
       data.map(order => {
 
         return `
+
           <div class="order">
 
             <div class="order-top">
 
               <div>
+
                 <strong>
                   Pedido #${order.id}
                 </strong>
@@ -1474,6 +1913,7 @@
                     order.created_at
                   )}
                 </div>
+
               </div>
 
               <span class="status">
@@ -1485,31 +1925,53 @@
             </div>
 
             <p>
-              <strong>Cliente:</strong>
+
+              <strong>
+                Cliente:
+              </strong>
+
               ${escapeHtml(
                 order.customer_name
               )}
+
             </p>
 
             <p>
-              <strong>Pedido:</strong>
-              ${order.delivery
-                ? "🚚 Entrega"
-                : "🏪 Retirada"}
+
+              <strong>
+                Pedido:
+              </strong>
+
+              ${
+                order.delivery
+                  ? "🚚 Entrega"
+                  : "🏪 Retirada"
+              }
+
             </p>
 
             <p>
-              <strong>Endereço:</strong>
+
+              <strong>
+                Endereço:
+              </strong>
+
               ${escapeHtml(
                 order.address || "-"
               )}
+
             </p>
 
             <p>
-              <strong>Pagamento:</strong>
+
+              <strong>
+                Pagamento:
+              </strong>
+
               ${escapeHtml(
                 order.payment
               )}
+
             </p>
 
             <div
@@ -1520,11 +1982,16 @@
             </div>
 
             <strong class="gold">
+
               Total:
-              ${money(order.total)}
+              ${money(
+                order.total
+              )}
+
             </strong>
 
             <label>
+
               Alterar status
 
               <select
@@ -1534,40 +2001,50 @@
                 )"
               >
 
-                ${[
-                  "RECEBIDO",
-                  "PREPARANDO",
-                  "PRONTO",
-                  "SAIU PARA ENTREGA",
-                  "ENTREGUE"
-                ].map(status => {
+                ${
+                  [
+                    "RECEBIDO",
+                    "PREPARANDO",
+                    "PRONTO",
+                    "SAIU PARA ENTREGA",
+                    "ENTREGUE"
+                  ]
+                  .map(status => {
 
-                  return `
-                    <option
-                      value="${status}"
-                      ${
-                        order.status === status
-                          ? "selected"
-                          : ""
-                      }
-                    >
-                      ${status}
-                    </option>
-                  `;
+                    return `
 
-                }).join("")}
+                      <option
+                        value="${status}"
+                        ${
+                          order.status ===
+                          status
+                            ? "selected"
+                            : ""
+                        }
+                      >
+                        ${status}
+                      </option>
+
+                    `;
+
+                  })
+                  .join("")
+                }
 
               </select>
 
             </label>
 
           </div>
+
         `;
 
       }).join("");
 
 
-    for (const order of data) {
+    for (
+      const order of data
+    ) {
 
       loadOrderItems(
         order.id
@@ -1578,12 +2055,15 @@
   }
 
 
-  async function loadOrderItems(orderId) {
+  async function loadOrderItems(
+    orderId
+  ) {
 
     const container =
       document.getElementById(
         "items-" + orderId
       );
+
 
     if (!container) return;
 
@@ -1607,15 +2087,20 @@
         "Erro ao carregar itens.";
 
       return;
+
     }
 
 
-    if (!data || !data.length) {
+    if (
+      !data ||
+      !data.length
+    ) {
 
       container.textContent =
         "Nenhum item.";
 
       return;
+
     }
 
 
@@ -1623,11 +2108,17 @@
       data.map(item => {
 
         return `
+
           ${item.qty}x
-          ${escapeHtml(item.name)}
-          — ${money(
-            item.price * item.qty
+          ${escapeHtml(
+            item.name
           )}
+          —
+          ${money(
+            item.price *
+            item.qty
+          )}
+
         `;
 
       }).join("<br>");
@@ -1645,7 +2136,8 @@
     } = await db
       .from("orders")
       .update({
-        status: status
+        status:
+          status
       })
       .eq(
         "id",
@@ -1662,6 +2154,7 @@
       );
 
       return;
+
     }
 
 
@@ -1681,6 +2174,7 @@
         "adminProducts"
       );
 
+
     container.innerHTML =
       "Carregando produtos...";
 
@@ -1691,9 +2185,12 @@
     } = await db
       .from("products")
       .select("*")
-      .order("id", {
-        ascending: true
-      });
+      .order(
+        "id",
+        {
+          ascending: true
+        }
+      );
 
 
     if (error) {
@@ -1701,22 +2198,29 @@
       console.error(error);
 
       container.innerHTML =
+
         `<div class="empty">
           Erro ao carregar produtos.
         </div>`;
 
       return;
+
     }
 
 
-    if (!data || !data.length) {
+    if (
+      !data ||
+      !data.length
+    ) {
 
       container.innerHTML =
+
         `<div class="empty">
           Nenhum produto cadastrado.
         </div>`;
 
       return;
+
     }
 
 
@@ -1724,6 +2228,7 @@
       data.map(product => {
 
         return `
+
           <div class="admin-product">
 
             <h3>
@@ -1732,25 +2237,46 @@
               )}
             </h3>
 
-            <p class="muted">
+            <div class="gold">
+
               ${escapeHtml(
-                product.description || ""
+                product.category ||
+                "Lanches"
               )}
+
+            </div>
+
+            <p class="muted">
+
+              ${escapeHtml(
+                product.description ||
+                ""
+              )}
+
             </p>
 
             <strong class="gold">
-              ${money(product.price)}
+
+              ${money(
+                product.price
+              )}
+
             </strong>
 
             <p>
+
               Status:
+
               <strong>
+
                 ${
                   product.active
                     ? "ATIVO"
                     : "INATIVO"
                 }
+
               </strong>
+
             </p>
 
             <button
@@ -1764,14 +2290,17 @@
                 ${product.active}
               )"
             >
+
               ${
                 product.active
                   ? "Desativar"
                   : "Ativar"
               }
+
             </button>
 
           </div>
+
         `;
 
       }).join("");
@@ -1786,10 +2315,12 @@
         "productName"
       ).value.trim();
 
+
     const description =
       document.getElementById(
         "productDescription"
       ).value.trim();
+
 
     const price =
       parseMoney(
@@ -1799,23 +2330,34 @@
       );
 
 
+    const category =
+      document.getElementById(
+        "productCategory"
+      ).value;
+
+
     if (!name) {
 
       alert(
-        "Digite o nome do lanche."
+        "Digite o nome do produto."
       );
 
       return;
+
     }
 
 
-    if (!price || price <= 0) {
+    if (
+      !price ||
+      price <= 0
+    ) {
 
       alert(
         "Digite um preço válido."
       );
 
       return;
+
     }
 
 
@@ -1834,6 +2376,9 @@
         price:
           price,
 
+        category:
+          category,
+
         active:
           true
 
@@ -1849,6 +2394,7 @@
       );
 
       return;
+
     }
 
 
@@ -1856,21 +2402,30 @@
       "productName"
     ).value = "";
 
+
     document.getElementById(
       "productDescription"
     ).value = "";
+
 
     document.getElementById(
       "productPrice"
     ).value = "";
 
 
+    document.getElementById(
+      "productCategory"
+    ).value =
+      "Lanches";
+
+
     await loadAdminProducts();
 
     await loadProducts();
 
+
     alert(
-      "Lanche adicionado com sucesso!"
+      "Produto adicionado com sucesso!"
     );
 
   }
@@ -1886,8 +2441,10 @@
     } = await db
       .from("products")
       .update({
+
         active:
           !currentActive
+
       })
       .eq(
         "id",
@@ -1904,6 +2461,7 @@
       );
 
       return;
+
     }
 
 
@@ -1925,7 +2483,9 @@
         "cashContent"
       );
 
+
     if (!container) return;
+
 
     container.innerHTML =
       "Carregando caixa...";
@@ -1955,18 +2515,24 @@
       console.error(error);
 
       container.innerHTML =
+
         `<div class="empty">
           Erro ao carregar caixa.
         </div>`;
 
       return;
+
     }
 
 
-    if (data && data.length) {
+    if (
+      data &&
+      data.length
+    ) {
 
       currentCashRegister =
         data[0];
+
 
       await renderOpenCash();
 
@@ -1975,8 +2541,10 @@
       currentCashRegister =
         null;
 
+
       currentCashData =
         null;
+
 
       await renderClosedCash();
 
@@ -2010,6 +2578,7 @@
       return [];
 
     }
+
 
     return data || [];
 
@@ -2046,6 +2615,7 @@
 
     }
 
+
     return data || [];
 
   }
@@ -2060,6 +2630,7 @@
         register.opened_at
       );
 
+
     const movements =
       await getCashMovements(
         register.id
@@ -2067,14 +2638,18 @@
 
 
     let cashSales = 0;
+
     let pixSales = 0;
+
     let cardSales = 0;
 
 
     orders.forEach(order => {
 
       const amount =
-        Number(order.total) || 0;
+        Number(
+          order.total
+        ) || 0;
 
 
       if (
@@ -2082,21 +2657,24 @@
         "DINHEIRO"
       ) {
 
-        cashSales += amount;
+        cashSales +=
+          amount;
 
       } else if (
         order.payment ===
         "PIX"
       ) {
 
-        pixSales += amount;
+        pixSales +=
+          amount;
 
       } else if (
         order.payment ===
         "CARTAO"
       ) {
 
-        cardSales += amount;
+        cardSales +=
+          amount;
 
       }
 
@@ -2104,32 +2682,39 @@
 
 
     let supplies = 0;
+
     let withdrawals = 0;
 
 
-    movements.forEach(movement => {
+    movements.forEach(
+      movement => {
 
-      const amount =
-        Number(movement.amount) || 0;
+        const amount =
+          Number(
+            movement.amount
+          ) || 0;
 
 
-      if (
-        movement.type ===
-        "SUPRIMENTO"
-      ) {
+        if (
+          movement.type ===
+          "SUPRIMENTO"
+        ) {
 
-        supplies += amount;
+          supplies +=
+            amount;
 
-      } else if (
-        movement.type ===
-        "SANGRIA"
-      ) {
+        } else if (
+          movement.type ===
+          "SANGRIA"
+        ) {
 
-        withdrawals += amount;
+          withdrawals +=
+            amount;
+
+        }
 
       }
-
-    });
+    );
 
 
     const totalSales =
@@ -2199,10 +2784,12 @@
         </strong>
 
         <div class="muted">
+
           Aberto em:
           ${formatDateTime(
             currentCashRegister.opened_at
           )}
+
         </div>
 
       </div>
@@ -2211,80 +2798,152 @@
       <div class="cash-grid">
 
         <div class="cash-box">
-          <span>Valor de abertura</span>
+
+          <span>
+            Valor de abertura
+          </span>
+
           <strong>
             ${money(
-              currentCashRegister.opening_amount
+              currentCashRegister
+                .opening_amount
             )}
           </strong>
+
         </div>
 
-        <div class="cash-box">
-          <span>Vendas em dinheiro</span>
-          <strong>
-            ${money(c.cashSales)}
-          </strong>
-        </div>
 
         <div class="cash-box">
-          <span>Vendas no PIX</span>
+
+          <span>
+            Vendas em dinheiro
+          </span>
+
           <strong>
-            ${money(c.pixSales)}
+            ${money(
+              c.cashSales
+            )}
           </strong>
+
         </div>
 
-        <div class="cash-box">
-          <span>Vendas no cartão</span>
-          <strong>
-            ${money(c.cardSales)}
-          </strong>
-        </div>
 
         <div class="cash-box">
-          <span>Total de vendas</span>
+
+          <span>
+            Vendas no PIX
+          </span>
+
           <strong>
-            ${money(c.totalSales)}
+            ${money(
+              c.pixSales
+            )}
           </strong>
+
         </div>
 
-        <div class="cash-box">
-          <span>Suprimentos</span>
-          <strong>
-            ${money(c.supplies)}
-          </strong>
-        </div>
 
         <div class="cash-box">
-          <span>Sangrias</span>
+
+          <span>
+            Vendas no cartão
+          </span>
+
           <strong>
-            ${money(c.withdrawals)}
+            ${money(
+              c.cardSales
+            )}
           </strong>
+
         </div>
 
+
         <div class="cash-box">
-          <span>Esperado no caixa</span>
+
+          <span>
+            Total de vendas
+          </span>
+
           <strong>
-            ${money(c.expectedCash)}
+            ${money(
+              c.totalSales
+            )}
           </strong>
+
+        </div>
+
+
+        <div class="cash-box">
+
+          <span>
+            Suprimentos
+          </span>
+
+          <strong>
+            ${money(
+              c.supplies
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="cash-box">
+
+          <span>
+            Sangrias
+          </span>
+
+          <strong>
+            ${money(
+              c.withdrawals
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="cash-box">
+
+          <span>
+            Esperado no caixa
+          </span>
+
+          <strong>
+            ${money(
+              c.expectedCash
+            )}
+          </strong>
+
         </div>
 
       </div>
 
 
-      <div class="card" style="margin-top:18px;">
+      <div
+        class="card"
+        style="margin-top:18px;"
+      >
 
-        <h3>💵 Movimentação do caixa</h3>
+        <h3>
+          💵 Movimentação do caixa
+        </h3>
 
         <p class="muted">
-          Use suprimento quando colocar dinheiro no caixa
-          e sangria quando retirar dinheiro.
+
+          Use suprimento quando colocar
+          dinheiro no caixa e sangria
+          quando retirar dinheiro.
+
         </p>
+
 
         <div class="movement">
 
           <div>
 
             <label>
+
               Valor
 
               <input
@@ -2302,6 +2961,7 @@
           <div>
 
             <label>
+
               Observação
 
               <input
@@ -2319,14 +2979,19 @@
 
             <button
               class="btn small"
-              onclick="addCashMovement('SUPRIMENTO')"
+              onclick="addCashMovement(
+                'SUPRIMENTO'
+              )"
             >
               ➕ Suprimento
             </button>
 
+
             <button
               class="btn small danger"
-              onclick="addCashMovement('SANGRIA')"
+              onclick="addCashMovement(
+                'SANGRIA'
+              )"
             >
               ➖ Sangria
             </button>
@@ -2340,14 +3005,21 @@
 
       <div class="card">
 
-        <h3>🔒 Fechar caixa</h3>
+        <h3>
+          🔒 Fechar caixa
+        </h3>
 
         <p class="muted">
-          Conte o dinheiro físico que realmente está no caixa
-          e informe o valor abaixo.
+
+          Conte o dinheiro físico que
+          realmente está no caixa e
+          informe o valor abaixo.
+
         </p>
 
+
         <label>
+
           Valor contado
 
           <input
@@ -2358,6 +3030,7 @@
           />
 
         </label>
+
 
         <button
           class="btn"
@@ -2371,52 +3044,71 @@
 
       <div class="card">
 
-        <h3>📜 Movimentações recentes</h3>
+        <h3>
+          📜 Movimentações recentes
+        </h3>
 
         ${
           c.movements.length
+
             ? c.movements.map(
                 movement => `
 
-                  <div class="history-item">
+                  <div
+                    class="history-item"
+                  >
 
                     <strong>
+
                       ${
                         movement.type ===
                         "SUPRIMENTO"
+
                           ? "➕ Suprimento"
+
                           : "➖ Sangria"
                       }
+
                     </strong>
 
-                    <strong class="gold">
+                    <strong
+                      class="gold"
+                    >
+
                       ${money(
                         movement.amount
                       )}
+
                     </strong>
 
                     <div class="muted">
-                      ${
-                        escapeHtml(
-                          movement.note || ""
-                        )
-                      }
+
+                      ${escapeHtml(
+                        movement.note ||
+                        ""
+                      )}
+
                     </div>
 
                     <div class="muted">
+
                       ${formatDateTime(
                         movement.created_at
                       )}
+
                     </div>
 
                   </div>
 
                 `
               ).join("")
+
             : `
+
                 <div class="empty">
                   Nenhuma movimentação.
                 </div>
+
               `
         }
 
@@ -2425,7 +3117,9 @@
 
       <div class="card">
 
-        <h3>📊 Histórico de caixas</h3>
+        <h3>
+          📊 Histórico de caixas
+        </h3>
 
         <div id="cashHistory">
           Carregando histórico...
@@ -2458,17 +3152,27 @@
         </strong>
 
         <div class="muted">
-          Abra o caixa para começar a registrar as vendas.
+
+          Abra o caixa para começar
+          a registrar as vendas.
+
         </div>
 
       </div>
 
 
-      <div class="card" style="margin-top:18px;">
+      <div
+        class="card"
+        style="margin-top:18px;"
+      >
 
-        <h3>🟢 Abrir caixa</h3>
+        <h3>
+          🟢 Abrir caixa
+        </h3>
+
 
         <label>
+
           Valor inicial do caixa
 
           <input
@@ -2479,6 +3183,7 @@
           />
 
         </label>
+
 
         <button
           class="btn"
@@ -2492,7 +3197,9 @@
 
       <div class="card">
 
-        <h3>📜 Histórico de caixas</h3>
+        <h3>
+          📜 Histórico de caixas
+        </h3>
 
         <div id="cashHistory">
           Carregando histórico...
@@ -2529,6 +3236,7 @@
       );
 
       return;
+
     }
 
 
@@ -2556,10 +3264,14 @@
       );
 
       return;
+
     }
 
 
-    if (existing && existing.length) {
+    if (
+      existing &&
+      existing.length
+    ) {
 
       alert(
         "Já existe um caixa aberto."
@@ -2568,6 +3280,7 @@
       await loadCashRegister();
 
       return;
+
     }
 
 
@@ -2595,6 +3308,7 @@
       );
 
       return;
+
     }
 
 
@@ -2619,6 +3333,7 @@
       );
 
       return;
+
     }
 
 
@@ -2636,18 +3351,23 @@
       ).value.trim();
 
 
-    if (!amount || amount <= 0) {
+    if (
+      !amount ||
+      amount <= 0
+    ) {
 
       alert(
         "Digite um valor válido."
       );
 
       return;
+
     }
 
 
     if (
-      type === "SANGRIA" &&
+      type ===
+      "SANGRIA" &&
       currentCashData &&
       amount >
         currentCashData.expectedCash
@@ -2658,6 +3378,7 @@
       );
 
       return;
+
     }
 
 
@@ -2691,12 +3412,14 @@
       );
 
       return;
+
     }
 
 
     document.getElementById(
       "movementAmount"
     ).value = "";
+
 
     document.getElementById(
       "movementNote"
@@ -2717,13 +3440,9 @@
       );
 
       return;
+
     }
 
-
-    /*
-      Recalcula tudo antes do fechamento
-      para garantir os valores mais recentes.
-    */
 
     const cashData =
       await calculateCashData(
@@ -2752,16 +3471,20 @@
       );
 
       return;
+
     }
 
 
-    if (closingAmount < 0) {
+    if (
+      closingAmount < 0
+    ) {
 
       alert(
         "O valor contado não pode ser negativo."
       );
 
       return;
+
     }
 
 
@@ -2772,19 +3495,24 @@
 
     const confirmed =
       confirm(
+
         "Confirma o fechamento do caixa?\n\n" +
+
         "Esperado: " +
         money(
           cashData.expectedCash
         ) +
+
         "\nContado: " +
         money(
           closingAmount
         ) +
+
         "\nDiferença: " +
         money(
           difference
         )
+
       );
 
 
@@ -2802,7 +3530,8 @@
       .update({
 
         closed_at:
-          new Date().toISOString(),
+          new Date()
+            .toISOString(),
 
         closing_amount:
           closingAmount,
@@ -2840,36 +3569,48 @@
 
     if (error) {
 
-  console.error("ERRO AO FECHAR CAIXA:", error);
+      console.error(
+        "ERRO AO FECHAR CAIXA:",
+        error
+      );
 
-  alert(
-    "ERRO AO FECHAR CAIXA:\n\n" +
-    error.message
-  );
+      alert(
 
-  return;
-}
+        "ERRO AO FECHAR CAIXA:\n\n" +
+        error.message
+
+      );
+
+      return;
+
+    }
 
 
     alert(
+
       "Caixa fechado com sucesso!\n\n" +
+
       "Esperado: " +
       money(
         cashData.expectedCash
       ) +
+
       "\nContado: " +
       money(
         closingAmount
       ) +
+
       "\nDiferença: " +
       money(
         difference
       )
+
     );
 
 
     currentCashRegister =
       null;
+
 
     currentCashData =
       null;
@@ -2886,6 +3627,7 @@
       document.getElementById(
         "cashHistory"
       );
+
 
     if (!container) return;
 
@@ -2914,22 +3656,29 @@
       console.error(error);
 
       container.innerHTML =
+
         `<div class="empty">
           Não foi possível carregar o histórico.
         </div>`;
 
       return;
+
     }
 
 
-    if (!data || !data.length) {
+    if (
+      !data ||
+      !data.length
+    ) {
 
       container.innerHTML =
+
         `<div class="empty">
           Nenhum caixa fechado ainda.
         </div>`;
 
       return;
+
     }
 
 
@@ -2951,63 +3700,89 @@
             </strong>
 
             <div class="muted">
+
               Aberto:
               ${formatDateTime(
                 register.opened_at
               )}
+
             </div>
 
             <div class="muted">
+
               Fechado:
               ${formatDateTime(
                 register.closed_at
               )}
+
             </div>
 
             <p>
+
               Vendas:
+
               <strong class="gold">
+
                 ${money(
+
                   Number(
                     register.cash_sales
                   ) +
+
                   Number(
                     register.pix_sales
                   ) +
+
                   Number(
                     register.card_sales
                   )
+
                 )}
+
               </strong>
+
             </p>
 
             <p>
+
               Esperado:
+
               <strong>
+
                 ${money(
                   register.expected_cash
                 )}
+
               </strong>
+
             </p>
 
             <p>
+
               Contado:
+
               <strong>
+
                 ${money(
                   register.closing_amount
                 )}
+
               </strong>
+
             </p>
 
             <p>
+
               Diferença:
-              <strong
-                class="gold"
-              >
+
+              <strong class="gold">
+
                 ${money(
                   difference
                 )}
+
               </strong>
+
             </p>
 
           </div>
@@ -3041,6 +3816,7 @@
             "adminPanel"
           );
 
+
         if (
           adminPanel &&
           adminPanel.classList.contains(
@@ -3067,7 +3843,9 @@
 
     await loadProducts();
 
+
     renderCart();
+
 
     toggleDeliveryFields();
 
@@ -3083,11 +3861,6 @@
       data.session
     ) {
 
-      /*
-        Se acessar /admin já logado,
-        abre o painel.
-      */
-
       if (
         location.pathname ===
         "/admin"
@@ -3098,10 +3871,6 @@
       }
 
     } else {
-
-      /*
-        /admin sem login
-      */
 
       if (
         location.pathname ===
