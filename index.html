@@ -2840,14 +2840,15 @@
 
     if (error) {
 
-      console.error(error);
+  console.error("ERRO AO FECHAR CAIXA:", error);
 
-      alert(
-        "Não foi possível fechar o caixa."
-      );
+  alert(
+    "ERRO AO FECHAR CAIXA:\n\n" +
+    error.message
+  );
 
-      return;
-    }
+  return;
+}
 
 
     alert(
