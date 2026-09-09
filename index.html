@@ -5832,62 +5832,123 @@ showToast(
 REALTIME
 ============================================================ */
 
+/* SOM DE NOVO PEDIDO */
+
+let audioLiberado = false;
+let audioContext = null;
+
+function liberarSom(){
+  try{
+    if(!audioContext){
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if(audioContext.state === "suspended"){
+      audioContext.resume();
+    }
+
+    audioLiberado = true;
+  }catch(e){
+    console.log("Áudio não disponível:",e);
+  }
+}
+
+document.addEventListener("click",liberarSom);
+
+function tocarSomPedido(){
+  try{
+    if(!audioContext){
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if(audioContext.state === "suspended"){
+      audioContext.resume();
+    }
+
+    const agora = audioContext.currentTime;
+
+    const osc = audioContext.createOscillator();
+    const ganho = audioContext.createGain();
+
+    osc.type = "sine";
+
+    osc.frequency.setValueAtTime(880,agora);
+    osc.frequency.setValueAtTime(1100,agora+0.15);
+    osc.frequency.setValueAtTime(880,agora+0.30);
+
+    ganho.gain.setValueAtTime(0.0001,agora);
+    ganho.gain.exponentialRampToValueAtTime(0.35,agora+0.02);
+    ganho.gain.exponentialRampToValueAtTime(0.0001,agora+0.45);
+
+    osc.connect(ganho);
+    ganho.connect(audioContext.destination);
+
+    osc.start(agora);
+    osc.stop(agora+0.5);
+
+  }catch(e){
+    console.log("Não foi possível tocar o som:",e);
+  }
+}
+
+
+/* REALTIME */
+
 db
 .channel("burguer-gold-realtime")
-
 .on(
-"postgres_changes",
-{
-event:"*",
-schema:"public",
-table:"orders"
-},
-async()=>{
+  "postgres_changes",
+  {
+    event:"*",
+    schema:"public",
+    table:"orders"
+  },
+  async(payload)=>{
 
-const panel=
-document.getElementById(
-"adminPanel"
-);
+    const panel=document.getElementById("adminPanel");
 
-if(
-panel &&
-panel.classList.contains(
-"active"
+    if(
+      panel &&
+      panel.classList.contains("active")
+    ){
+
+      /* SOMENTE PEDIDO NOVO */
+      if(payload.eventType==="INSERT"){
+        tocarSomPedido();
+      }
+
+      /* ATUALIZA PEDIDOS */
+      await loadOrders();
+
+      const active=
+        document.querySelector(".admin-section.active");
+
+      /* ATUALIZA CAIXA */
+      if(
+        active &&
+        active.id==="admin-cash"
+      ){
+        await loadCashRegister();
+      }
+
+      /* ATUALIZA RELATÓRIOS */
+      if(
+        active &&
+        active.id==="admin-reports"
+      ){
+        await loadReports();
+      }
+
+    }
+
+  }
 )
-){
-
-await loadOrders();
-
-const active=
-document.querySelector(
-".admin-section.active"
-);
-
-if(
-active &&
-active.id==="admin-cash"
-){
-
-await loadCashRegister();
-
-}
-
-if(
-active &&
-active.id==="admin-reports"
-){
-
-await loadReports();
-
-}
-
-}
-
-}
-)
-
 .subscribe();
 
+
+/* ATIVA O ÁUDIO AO ENTRAR/INTERAGIR NO ADMIN */
+
+document.addEventListener("touchstart",liberarSom,{passive:true});
 /* ============================================================
 ATUALIZAÇÃO DO HORÁRIO
 ============================================================ */
