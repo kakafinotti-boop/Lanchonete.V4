@@ -110,6 +110,113 @@ label{
   color:#ddd;
 }
 
+/* ================= HORÁRIO ================= */
+
+.store-status{
+  margin:0 0 18px;
+  padding:15px 17px;
+  border-radius:14px;
+  background:#121212;
+  border:1px solid #292929;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.store-status-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.store-dot{
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:#777;
+  flex-shrink:0;
+}
+
+.store-dot.open{
+  background:#36c96f;
+  box-shadow:0 0 10px rgba(54,201,111,.7);
+}
+
+.store-dot.closed{
+  background:#d33;
+  box-shadow:0 0 10px rgba(211,51,51,.5);
+}
+
+.store-status strong{
+  font-size:15px;
+}
+
+.store-hours-text{
+  color:#aaa;
+  font-size:14px;
+}
+
+.closed-message{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border-radius:10px;
+  background:#251414;
+  border:1px solid #642525;
+  color:#ddd;
+}
+
+.closed-message.show{
+  display:block;
+}
+
+/* ================= PIX ================= */
+
+.pix-box{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  border-radius:13px;
+  background:#17150d;
+  border:1px solid #d4af37;
+}
+
+.pix-box.show{
+  display:block;
+}
+
+.pix-box h4{
+  margin:0 0 8px;
+  color:#d4af37;
+}
+
+.pix-key{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-top:10px;
+}
+
+.pix-key-value{
+  flex:1;
+  padding:11px;
+  border-radius:9px;
+  background:#090909;
+  border:1px solid #333;
+  word-break:break-all;
+  color:#fff;
+  font-size:14px;
+}
+
+.pix-copy{
+  width:auto;
+  margin:0;
+  padding:10px 12px;
+  white-space:nowrap;
+}
+
 /* ================= CLIENTE ================= */
 
 .category-tabs{
@@ -578,6 +685,19 @@ label{
   main{width:94%}
   .movement{grid-template-columns:1fr}
   .zone-row{grid-template-columns:1fr 1fr}
+
+  .store-status{
+    align-items:flex-start;
+  }
+
+  .pix-key{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .pix-copy{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -594,6 +714,33 @@ label{
 <main>
 
 <section id="menuScreen" class="screen active">
+
+<!-- ================= HORÁRIO VISÍVEL ================= -->
+
+<div class="store-status">
+
+  <div class="store-status-left">
+
+    <span id="storeStatusDot" class="store-dot"></span>
+
+    <div>
+      <strong id="storeStatusText">
+        Verificando horário...
+      </strong>
+
+      <div id="storeHoursText" class="store-hours-text">
+        Carregando horário...
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="closedMessage" class="closed-message">
+  🔒 A Burguer Gold está fechada no momento.
+  Você poderá fazer pedidos novamente dentro do horário de funcionamento.
+</div>
 
 <div class="card">
 
@@ -618,6 +765,26 @@ Escolha seus lanches e monte seu pedido.
 <div class="card">
 
 <h2>📦 Finalizar pedido</h2>
+
+<div id="checkoutStoreStatus" class="store-status">
+
+  <div class="store-status-left">
+
+    <span id="checkoutStatusDot" class="store-dot"></span>
+
+    <div>
+      <strong id="checkoutStatusText">
+        Verificando horário...
+      </strong>
+
+      <div id="checkoutHoursText" class="store-hours-text">
+        Carregando horário...
+      </div>
+    </div>
+
+  </div>
+
+</div>
 
 <label>
 Nome
@@ -656,12 +823,41 @@ Taxa de entrega: R$ 0,00
 
 <label>
 Forma de pagamento
-<select id="payment">
+
+<select id="payment" onchange="togglePixBox()">
 <option value="PIX">PIX</option>
 <option value="DINHEIRO">Dinheiro</option>
 <option value="CARTAO">Cartão</option>
 </select>
+
 </label>
+
+<!-- ================= PIX ================= -->
+
+<div id="pixBox" class="pix-box show">
+
+<h4>💳 Pagamento via Pix</h4>
+
+<div class="muted">
+Faça o Pix para a chave abaixo e envie o comprovante pelo WhatsApp da loja, se solicitado.
+</div>
+
+<div class="pix-key">
+
+<div id="pixKeyDisplay" class="pix-key-value">
+Carregando chave Pix...
+</div>
+
+<button
+type="button"
+class="btn pix-copy"
+onclick="copyPixKey()">
+Copiar
+</button>
+
+</div>
+
+</div>
 
 <div class="card" style="margin-top:20px">
 
@@ -686,7 +882,10 @@ Forma de pagamento
 
 </div>
 
-<button class="btn" onclick="sendOrder()">
+<button
+id="confirmOrderBtn"
+class="btn"
+onclick="sendOrder()">
 Confirmar pedido
 </button>
 
@@ -1082,7 +1281,50 @@ SUPABASE_KEY
 );
 
 /* ============================================================
-CONFIGURAÇÕES
+CONFIGURAÇÕES DA LOJA
+============================================================ */
+
+/*
+   ⚠️ ALTERE SOMENTE ESTAS CONFIGURAÇÕES
+*/
+
+/* SUA CHAVE PIX */
+
+const PIX_KEY =
+"COLOQUE_SUA_CHAVE_PIX_AQUI";
+
+
+/*
+   HORÁRIOS
+
+   0 = Domingo
+   1 = Segunda
+   2 = Terça
+   3 = Quarta
+   4 = Quinta
+   5 = Sexta
+   6 = Sábado
+
+   Exemplo abaixo:
+   Todos os dias das 18:00 às 23:00.
+
+   Você pode mudar depois.
+*/
+
+const STORE_HOURS = {
+
+0:{open:"18:00",close:"23:00"},
+1:{open:"18:00",close:"23:00"},
+2:{open:"18:00",close:"23:00"},
+3:{open:"18:00",close:"23:00"},
+4:{open:"18:00",close:"23:00"},
+5:{open:"18:00",close:"23:00"},
+6:{open:"18:00",close:"23:00"}
+
+};
+
+/* ============================================================
+CONFIGURAÇÕES NORMAIS
 ============================================================ */
 
 const DEFAULT_DELIVERY_FEE = 0;
@@ -1097,6 +1339,282 @@ let currentCashRegister = null;
 let currentCashData = null;
 
 let adminOrders = [];
+
+/* ============================================================
+HORÁRIO DE FUNCIONAMENTO
+============================================================ */
+
+function getStoreHoursToday(){
+
+const now = new Date();
+
+const day =
+now.getDay();
+
+return STORE_HOURS[day] || null;
+
+}
+
+function isStoreOpen(){
+
+const now =
+new Date();
+
+const hours =
+getStoreHoursToday();
+
+if(!hours || !hours.open || !hours.close){
+
+return false;
+
+}
+
+const currentMinutes =
+now.getHours()*60+
+now.getMinutes();
+
+const openParts =
+hours.open.split(":");
+
+const closeParts =
+hours.close.split(":");
+
+const openMinutes =
+Number(openParts[0])*60+
+Number(openParts[1]);
+
+const closeMinutes =
+Number(closeParts[0])*60+
+Number(closeParts[1]);
+
+/*
+   Caso o horário passe da meia-noite.
+*/
+
+if(closeMinutes < openMinutes){
+
+return (
+currentMinutes >= openMinutes ||
+currentMinutes < closeMinutes
+);
+
+}
+
+return (
+currentMinutes >= openMinutes &&
+currentMinutes < closeMinutes
+);
+
+}
+
+function getTodayHoursText(){
+
+const hours =
+getStoreHoursToday();
+
+if(!hours){
+
+return "Fechado hoje";
+
+}
+
+return `Hoje: ${hours.open} às ${hours.close}`;
+
+}
+
+function updateStoreStatus(){
+
+const open =
+isStoreOpen();
+
+const hours =
+getStoreHoursToday();
+
+const statusText =
+document.getElementById("storeStatusText");
+
+const hoursText =
+document.getElementById("storeHoursText");
+
+const dot =
+document.getElementById("storeStatusDot");
+
+const closedMessage =
+document.getElementById("closedMessage");
+
+if(statusText){
+
+statusText.textContent =
+open
+?
+"🟢 Estamos abertos"
+:
+"🔴 Estamos fechados";
+
+}
+
+if(hoursText){
+
+hoursText.textContent =
+getTodayHoursText();
+
+}
+
+if(dot){
+
+dot.classList.remove("open","closed");
+
+dot.classList.add(
+open ? "open" : "closed"
+);
+
+}
+
+if(closedMessage){
+
+closedMessage.classList.toggle(
+"show",
+!open
+);
+
+}
+
+/* CHECKOUT */
+
+const checkoutStatusText =
+document.getElementById("checkoutStatusText");
+
+const checkoutHoursText =
+document.getElementById("checkoutHoursText");
+
+const checkoutDot =
+document.getElementById("checkoutStatusDot");
+
+if(checkoutStatusText){
+
+checkoutStatusText.textContent =
+open
+?
+"🟢 Estamos abertos"
+:
+"🔴 Estamos fechados";
+
+}
+
+if(checkoutHoursText){
+
+checkoutHoursText.textContent =
+getTodayHoursText();
+
+}
+
+if(checkoutDot){
+
+checkoutDot.classList.remove(
+"open",
+"closed"
+);
+
+checkoutDot.classList.add(
+open ? "open" : "closed"
+);
+
+}
+
+const confirmButton =
+document.getElementById("confirmOrderBtn");
+
+if(confirmButton){
+
+confirmButton.disabled =
+!open;
+
+confirmButton.style.opacity =
+open ? "1" : ".5";
+
+confirmButton.style.cursor =
+open ? "pointer" : "not-allowed";
+
+}
+
+}
+
+/* Atualiza o horário automaticamente */
+
+setInterval(
+updateStoreStatus,
+30000
+);
+
+/* ============================================================
+PIX
+============================================================ */
+
+function togglePixBox(){
+
+const payment =
+document.getElementById("payment");
+
+const pixBox =
+document.getElementById("pixBox");
+
+if(!payment || !pixBox)return;
+
+pixBox.classList.toggle(
+"show",
+payment.value==="PIX"
+);
+
+}
+
+function renderPixKey(){
+
+const display =
+document.getElementById("pixKeyDisplay");
+
+if(!display)return;
+
+display.textContent =
+PIX_KEY;
+
+}
+
+async function copyPixKey(){
+
+if(
+!PIX_KEY ||
+PIX_KEY==="COLOQUE_SUA_CHAVE_PIX_AQUI"
+){
+
+showToast(
+"Configure sua chave Pix primeiro."
+);
+
+return;
+
+}
+
+try{
+
+await navigator.clipboard.writeText(
+PIX_KEY
+);
+
+showToast(
+"💳 Chave Pix copiada!"
+);
+
+}catch(error){
+
+console.error(error);
+
+showToast(
+"Não foi possível copiar."
+);
+
+}
+
+}
 
 /* ============================================================
 UTILIDADES
@@ -1160,6 +1678,8 @@ screen.classList.add("active");
 }
 
 window.scrollTo(0,0);
+
+updateStoreStatus();
 
 }
 
@@ -1406,6 +1926,16 @@ CARRINHO
 
 function addToCart(productId){
 
+if(!isStoreOpen()){
+
+showToast(
+"🔒 A Burguer Gold está fechada."
+);
+
+return;
+
+}
+
 const product=products.find(
 item=>String(item.id)===String(productId)
 );
@@ -1518,9 +2048,6 @@ getCartCount();
 const total =
 getCartTotal();
 
-
-/* CONTADOR */
-
 if(floatingCount){
 
 floatingCount.textContent =
@@ -1528,18 +2055,12 @@ count;
 
 }
 
-
-/* TOTAL */
-
 if(floatingTotal){
 
 floatingTotal.textContent =
 money(total);
 
 }
-
-
-/* BOTÃO FLUTUANTE */
 
 if(count > 0){
 
@@ -1587,9 +2108,6 @@ floating.style.setProperty(
 
 }
 
-
-/* CONTEÚDO */
-
 if(!container){
 
 return;
@@ -1617,14 +2135,12 @@ return;
 
 }
 
-
 if(drawerButton){
 
 drawerButton.style.display =
 "block";
 
 }
-
 
 container.innerHTML =
 
@@ -1741,6 +2257,16 @@ function goCheckout(){
 if(!cart.length){
 
 showToast("Seu carrinho está vazio.");
+
+return;
+
+}
+
+if(!isStoreOpen()){
+
+showToast(
+"🔒 A Burguer Gold está fechada."
+);
 
 return;
 
@@ -1865,6 +2391,9 @@ ${money(item.price*item.qty)}
 `).join("");
 
 updateCheckoutTotal();
+updateStoreStatus();
+renderPixKey();
+togglePixBox();
 
 }
 
@@ -1914,6 +2443,19 @@ ENVIAR PEDIDO
 
 async function sendOrder(){
 
+if(!isStoreOpen()){
+
+alert(
+"A Burguer Gold está fechada no momento.\n\n"+
+getTodayHoursText()
+);
+
+updateStoreStatus();
+
+return;
+
+}
+
 const customerName=
 document.getElementById("customerName")
 .value.trim();
@@ -1958,6 +2500,22 @@ return;
 if(!cart.length){
 
 alert("Seu carrinho está vazio.");
+return;
+
+}
+
+if(
+payment==="PIX" &&
+(
+!PIX_KEY ||
+PIX_KEY==="COLOQUE_SUA_CHAVE_PIX_AQUI"
+)
+){
+
+alert(
+"Configure a chave Pix da Burguer Gold antes de receber pedidos via Pix."
+);
+
 return;
 
 }
@@ -3843,6 +4401,12 @@ await loadDeliveryZones();
 renderCart();
 
 toggleDeliveryFields();
+
+renderPixKey();
+
+togglePixBox();
+
+updateStoreStatus();
 
 const {data}=await db.auth.getSession();
 
