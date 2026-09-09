@@ -3,44 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Burger Gold</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
+    /* =====================================
+       BURGER GOLD — IDENTIDADE VISUAL
+    ===================================== */
+
+    :root {
+      --gold: #D4AF37;
+      --gold-light: #F4D76A;
+      --gold-dark: #9E7C18;
+      --black: #050505;
+      --black-soft: #0d0d0d;
+      --card: #111111;
+      --card-2: #171717;
+      --border: rgba(212, 175, 55, 0.35);
+      --text: #ffffff;
+      --muted: #aaa;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #222;
+    html {
+      background: var(--black);
     }
 
+    body {
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(
+          circle at top,
+          #191400 0%,
+          var(--black) 38%
+        );
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* =====================================
+       HEADER
+    ===================================== */
+
     header {
-      background: #111;
-      color: white;
-      padding: 18px;
+      background: #000;
+      color: var(--gold);
+      padding: 22px 18px;
       text-align: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,.5);
     }
 
     header h1 {
-      font-size: 24px;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 1px;
     }
 
     header p {
-      margin-top: 5px;
-      color: #ccc;
+      margin-top: 6px;
+      color: #ddd;
       font-size: 14px;
     }
+
+    /* =====================================
+       CONTAINER
+    ===================================== */
 
     .container {
       width: 92%;
       max-width: 1100px;
-      margin: 20px auto;
+      margin: 25px auto;
     }
 
     .screen {
@@ -51,98 +92,215 @@
       display: block;
     }
 
+    /* =====================================
+       CARDS
+    ===================================== */
+
+    .card {
+      background:
+        linear-gradient(
+          145deg,
+          #151515,
+          #0b0b0b
+        );
+
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow:
+        0 8px 25px rgba(0,0,0,.45),
+        inset 0 0 20px rgba(212,175,55,.025);
+
+      margin-bottom: 18px;
+    }
+
+    .card h2 {
+      color: var(--gold);
+    }
+
+    /* =====================================
+       CARDÁPIO
+    ===================================== */
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 15px;
+      grid-template-columns:
+        repeat(auto-fit, minmax(230px, 1fr));
+
+      gap: 16px;
       margin-top: 20px;
     }
 
     .product {
-      background: white;
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.08);
+      background:
+        linear-gradient(
+          145deg,
+          #171717,
+          #0c0c0c
+        );
+
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+
+      box-shadow:
+        0 7px 20px rgba(0,0,0,.4);
+
+      transition:
+        transform .2s,
+        border-color .2s;
+    }
+
+    .product:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold);
     }
 
     .product h3 {
-      margin-bottom: 8px;
+      color: var(--gold);
+      margin-bottom: 9px;
+      font-size: 19px;
     }
 
     .product p {
-      color: #666;
+      color: var(--muted);
       font-size: 14px;
       min-height: 38px;
+      line-height: 1.4;
     }
 
     .price {
-      font-size: 20px;
+      color: var(--gold-light);
+      font-size: 21px;
       font-weight: bold;
-      margin: 12px 0;
+      margin: 14px 0;
     }
 
+    /* =====================================
+       BOTÕES
+    ===================================== */
+
     button {
-      border: none;
+      border: 1px solid var(--gold);
       border-radius: 10px;
       padding: 12px 16px;
+
       font-weight: bold;
+      font-size: 14px;
+
       cursor: pointer;
-      background: #111;
-      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--gold-light),
+          var(--gold)
+        );
+
+      color: #000;
+
+      transition:
+        transform .15s,
+        filter .15s;
     }
 
     button:hover {
-      opacity: .9;
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: scale(.98);
     }
 
     .primary {
       width: 100%;
       margin-top: 15px;
-      background: #111;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--gold-light),
+          var(--gold-dark)
+        );
+
+      color: #000;
     }
 
     .back {
-      background: #777;
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--border);
       margin-bottom: 15px;
     }
+
+    /* =====================================
+       BARRA DO CARRINHO
+    ===================================== */
 
     .cart-bar {
       position: sticky;
       bottom: 15px;
+
       margin-top: 20px;
-      background: #111;
+
+      background:
+        linear-gradient(
+          135deg,
+          #171300,
+          #080808
+        );
+
       color: white;
-      padding: 15px;
-      border-radius: 14px;
+
+      border: 1px solid var(--gold);
+
+      padding: 16px;
+
+      border-radius: 16px;
+
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       gap: 10px;
+
+      box-shadow:
+        0 8px 30px rgba(0,0,0,.6);
+    }
+
+    .cart-bar strong {
+      color: var(--gold-light);
     }
 
     .cart-bar button {
-      background: white;
-      color: #111;
+      background: var(--gold);
+      color: #000;
     }
 
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.08);
-      margin-bottom: 15px;
-    }
+    /* =====================================
+       CARRINHO
+    ===================================== */
 
     .cart-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+
       gap: 10px;
-      padding: 14px 0;
-      border-bottom: 1px solid #eee;
+
+      padding: 16px 0;
+
+      border-bottom:
+        1px solid rgba(212,175,55,.15);
     }
 
     .cart-item:last-child {
       border-bottom: none;
+    }
+
+    .cart-item strong {
+      color: var(--gold-light);
     }
 
     .qty {
@@ -153,61 +311,140 @@
 
     .qty button {
       padding: 7px 10px;
-      border-radius: 7px;
+      min-width: 36px;
     }
 
     .total {
+      color: var(--gold);
       font-size: 22px;
       font-weight: bold;
       margin-top: 18px;
     }
 
+    /* =====================================
+       FORMULÁRIOS
+    ===================================== */
+
     label {
       display: block;
+      color: var(--gold);
       font-weight: bold;
-      margin-top: 15px;
-      margin-bottom: 6px;
+
+      margin-top: 16px;
+      margin-bottom: 7px;
     }
 
     input,
     select {
       width: 100%;
+
       padding: 13px;
-      border: 1px solid #ccc;
+
+      border: 1px solid #444;
       border-radius: 9px;
+
       font-size: 16px;
-      background: white;
+
+      background: #080808;
+      color: white;
+
+      outline: none;
     }
 
-    .summary {
-      background: #f7f7f7;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 15px;
+    input:focus,
+    select:focus {
+      border-color: var(--gold);
+
+      box-shadow:
+        0 0 0 2px
+        rgba(212,175,55,.12);
     }
+
+    input::placeholder {
+      color: #666;
+    }
+
+    option {
+      background: #111;
+      color: white;
+    }
+
+    /* =====================================
+       RESUMO
+    ===================================== */
+
+    .summary {
+      background: #090909;
+
+      border: 1px solid
+        rgba(212,175,55,.2);
+
+      border-radius: 12px;
+
+      padding: 16px;
+
+      margin-top: 18px;
+    }
+
+    .summary > strong {
+      color: var(--gold);
+    }
+
+    .summary hr {
+      border-color:
+        rgba(212,175,55,.2) !important;
+    }
+
+    /* =====================================
+       PEDIDO CONFIRMADO
+    ===================================== */
 
     .success {
       text-align: center;
-      padding: 35px 20px;
+      padding: 45px 20px;
     }
 
     .success-icon {
-      font-size: 65px;
-      margin-bottom: 15px;
+      font-size: 70px;
+      margin-bottom: 18px;
+    }
+
+    .success h2 {
+      color: var(--gold);
+      font-size: 28px;
+    }
+
+    .success p {
+      color: #ddd;
     }
 
     .order-number {
-      font-size: 24px;
+      color: var(--gold-light);
+      font-size: 25px;
       font-weight: bold;
-      margin: 15px 0;
+      margin: 18px 0;
     }
+
+    /* =====================================
+       MENSAGENS
+    ===================================== */
 
     .message {
       margin-top: 15px;
       padding: 12px;
+
       border-radius: 8px;
-      background: #eee;
+
+      background: #151515;
+      color: white;
+
+      border: 1px solid
+        rgba(212,175,55,.25);
     }
+
+    /* =====================================
+       ADMIN
+    ===================================== */
 
     .admin-login {
       max-width: 450px;
@@ -220,36 +457,84 @@
 
     .admin-header {
       display: flex;
+
       justify-content: space-between;
       align-items: center;
+
       gap: 10px;
+
       margin-bottom: 20px;
+
       flex-wrap: wrap;
     }
 
+    .admin-header h2 {
+      color: var(--gold);
+    }
+
+    /* =====================================
+       PEDIDOS ADMIN
+    ===================================== */
+
     .order {
-      background: white;
-      border-radius: 14px;
+      background:
+        linear-gradient(
+          145deg,
+          #151515,
+          #0b0b0b
+        );
+
+      border: 1px solid var(--border);
+
+      border-radius: 15px;
+
       padding: 18px;
+
       margin-bottom: 15px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.08);
+
+      box-shadow:
+        0 5px 18px rgba(0,0,0,.35);
+    }
+
+    .order h3 {
+      color: var(--gold-light);
+    }
+
+    .order p {
+      color: #ddd;
     }
 
     .order-status {
       display: inline-block;
-      padding: 6px 10px;
+
+      padding: 7px 11px;
+
       border-radius: 20px;
-      background: #eee;
+
+      background:
+        rgba(212,175,55,.12);
+
+      border:
+        1px solid
+        rgba(212,175,55,.35);
+
+      color: var(--gold);
+
       font-size: 13px;
+
       font-weight: bold;
-      margin: 8px 0;
+
+      margin: 9px 0;
     }
 
     .status-buttons {
       display: flex;
+
       flex-wrap: wrap;
+
       gap: 7px;
-      margin-top: 12px;
+
+      margin-top: 14px;
     }
 
     .status-buttons button {
@@ -257,17 +542,35 @@
       padding: 9px;
     }
 
+    /* =====================================
+       PRODUTOS ADMIN
+    ===================================== */
+
     .product-admin {
       display: flex;
+
       justify-content: space-between;
       align-items: center;
+
       gap: 15px;
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
+
+      padding: 14px 0;
+
+      border-bottom:
+        1px solid
+        rgba(212,175,55,.15);
     }
 
+    .product-admin strong {
+      color: var(--gold-light);
+    }
+
+    /* =====================================
+       TEXTOS
+    ===================================== */
+
     .muted {
-      color: #777;
+      color: #888;
       font-size: 14px;
     }
 
@@ -275,7 +578,21 @@
       display: none !important;
     }
 
+    /* =====================================
+       MOBILE
+    ===================================== */
+
     @media (max-width: 600px) {
+
+      header h1 {
+        font-size: 25px;
+      }
+
+      .container {
+        width: 94%;
+        margin: 18px auto;
+      }
+
       .cart-bar {
         flex-direction: column;
         align-items: stretch;
@@ -289,97 +606,186 @@
         align-items: flex-start;
         flex-direction: column;
       }
+
+      .status-buttons button {
+        flex: 1;
+        min-width: 90px;
+      }
+
     }
+
   </style>
 </head>
 
 <body>
 
-<!-- =========================
+
+<!-- =====================================
      ÁREA DO CLIENTE
-========================= -->
+===================================== -->
 
 <div id="customerApp">
 
   <header>
-    <h1>🍔 Hambúrguer Dourado</h1>
-    <p>Faça seu pedido online</p>
+
+    <h1>🍔 Burger Gold</h1>
+
+    <p>Sabor que vale ouro.</p>
+
   </header>
+
 
   <main class="container">
 
+
     <!-- CARDÁPIO -->
-    <section id="menuScreen" class="screen active">
+
+    <section
+      id="menuScreen"
+      class="screen active"
+    >
 
       <div class="card">
+
         <h2>🍔 Cardápio</h2>
-        <p class="muted" style="margin-top:6px;">
+
+        <p
+          class="muted"
+          style="margin-top:6px;"
+        >
           Escolha seus produtos
         </p>
+
       </div>
 
-      <div id="products" class="grid">
-        <p>Carregando cardápio...</p>
+
+      <div
+        id="products"
+        class="grid"
+      >
+
+        <p>
+          Carregando cardápio...
+        </p>
+
       </div>
+
 
       <div class="cart-bar">
+
         <div>
-          🛒 <strong id="cartCount">0</strong> item(ns)
+
+          🛒
+          <strong id="cartCount">
+            0
+          </strong>
+          item(ns)
+
           <br>
-          <strong id="cartTotal">R$ 0,00</strong>
+
+          <strong id="cartTotal">
+            R$ 0,00
+          </strong>
+
         </div>
+
 
         <button onclick="openCart()">
           Ver carrinho
         </button>
+
       </div>
 
     </section>
 
 
     <!-- CARRINHO -->
-    <section id="cartScreen" class="screen">
 
-      <button class="back" onclick="showScreen('menuScreen')">
+    <section
+      id="cartScreen"
+      class="screen"
+    >
+
+      <button
+        class="back"
+        onclick="showScreen('menuScreen')"
+      >
         ← Voltar ao cardápio
       </button>
 
+
       <div class="card">
+
         <h2>🛒 Seu carrinho</h2>
+
 
         <div id="cartItems"></div>
 
+
         <div class="total">
-          Total: <span id="cartScreenTotal">R$ 0,00</span>
+
+          Total:
+          <span id="cartScreenTotal">
+            R$ 0,00
+          </span>
+
         </div>
 
-        <button class="primary" onclick="openCheckout()">
+
+        <button
+          class="primary"
+          onclick="openCheckout()"
+        >
           Continuar pedido →
         </button>
+
       </div>
 
     </section>
 
 
     <!-- CHECKOUT -->
-    <section id="checkoutScreen" class="screen">
 
-      <button class="back" onclick="showScreen('cartScreen')">
+    <section
+      id="checkoutScreen"
+      class="screen"
+    >
+
+      <button
+        class="back"
+        onclick="showScreen('cartScreen')"
+      >
         ← Voltar ao carrinho
       </button>
+
 
       <div class="card">
 
         <h2>📦 Finalizar pedido</h2>
 
-        <label>Como deseja receber?</label>
+
+        <label>
+          Como deseja receber?
+        </label>
+
 
         <select id="delivery">
-          <option value="true">🚚 Entrega</option>
-          <option value="false">🏪 Retirada na loja</option>
+
+          <option value="true">
+            🚚 Entrega
+          </option>
+
+          <option value="false">
+            🏪 Retirada na loja
+          </option>
+
         </select>
 
-        <label>Seu nome</label>
+
+        <label>
+          Seu nome
+        </label>
+
 
         <input
           id="customerName"
@@ -387,9 +793,13 @@
           placeholder="Digite seu nome"
         >
 
+
         <div id="addressBox">
 
-          <label>Endereço para entrega</label>
+          <label>
+            Endereço para entrega
+          </label>
+
 
           <input
             id="address"
@@ -399,44 +809,102 @@
 
         </div>
 
-        <label>Forma de pagamento</label>
+
+        <label>
+          Forma de pagamento
+        </label>
+
 
         <select id="payment">
-          <option value="PIX">Pix</option>
-          <option value="DINHEIRO">Dinheiro</option>
-          <option value="CARTAO">Cartão</option>
+
+          <option value="PIX">
+            Pix
+          </option>
+
+          <option value="DINHEIRO">
+            Dinheiro
+          </option>
+
+          <option value="CARTAO">
+            Cartão
+          </option>
+
         </select>
+
 
         <div class="summary">
 
-          <strong>Resumo do pedido</strong>
+          <strong>
+            Resumo do pedido
+          </strong>
 
-          <div id="checkoutSummary" style="margin-top:10px;"></div>
 
-          <hr style="margin:12px 0; border:none;border-top:1px solid #ddd;">
+          <div
+            id="checkoutSummary"
+            style="margin-top:10px;"
+          ></div>
+
+
+          <hr
+            style="
+              margin:12px 0;
+              border:none;
+              border-top:1px solid #333;
+            "
+          >
+
 
           <div>
+
             Subtotal:
-            <strong id="checkoutSubtotal">R$ 0,00</strong>
+
+            <strong
+              id="checkoutSubtotal"
+            >
+              R$ 0,00
+            </strong>
+
           </div>
 
-          <div style="margin-top:5px;">
+
+          <div style="margin-top:7px;">
+
             Taxa de entrega:
-            <strong id="deliveryFee">R$ 0,00</strong>
+
+            <strong
+              id="deliveryFee"
+            >
+              R$ 0,00
+            </strong>
+
           </div>
+
 
           <div class="total">
+
             Total:
-            <span id="checkoutTotal">R$ 0,00</span>
+
+            <span id="checkoutTotal">
+              R$ 0,00
+            </span>
+
           </div>
 
         </div>
 
-        <button class="primary" onclick="sendOrder()">
+
+        <button
+          class="primary"
+          onclick="sendOrder()"
+        >
           ✅ Confirmar pedido
         </button>
 
-        <div id="message" class="message hidden"></div>
+
+        <div
+          id="message"
+          class="message hidden"
+        ></div>
 
       </div>
 
@@ -444,29 +912,49 @@
 
 
     <!-- PEDIDO CONFIRMADO -->
-    <section id="successScreen" class="screen">
+
+    <section
+      id="successScreen"
+      class="screen"
+    >
 
       <div class="card success">
 
         <div class="success-icon">
-          ✅
+          🏆
         </div>
 
-        <h2>Pedido recebido!</h2>
+
+        <h2>
+          Pedido recebido!
+        </h2>
+
 
         <p style="margin-top:10px;">
           Seu pedido foi enviado para a cozinha.
         </p>
 
+
         <div class="order-number">
-          Pedido #<span id="successOrderNumber"></span>
+
+          Pedido #
+
+          <span
+            id="successOrderNumber"
+          ></span>
+
         </div>
+
 
         <p class="muted">
           Aguarde enquanto preparamos seu pedido.
         </p>
 
-        <button class="primary" onclick="newOrder()">
+
+        <button
+          class="primary"
+          onclick="newOrder()"
+        >
           🍔 Fazer novo pedido
         </button>
 
@@ -479,27 +967,45 @@
 </div>
 
 
-<!-- =========================
+<!-- =====================================
      ÁREA ADMIN
-========================= -->
+===================================== -->
 
-<div id="adminApp" class="hidden">
+<div
+  id="adminApp"
+  class="hidden"
+>
 
   <header>
-    <h1>🍔 Hambúrguer Dourado</h1>
-    <p>Área da loja</p>
+
+    <h1>🍔 Burger Gold</h1>
+
+    <p>
+      Painel da loja
+    </p>
+
   </header>
+
 
   <main class="container">
 
+
     <!-- LOGIN -->
-    <section id="adminLogin" class="admin-login">
+
+    <section
+      id="adminLogin"
+      class="admin-login"
+    >
 
       <div class="card">
 
         <h2>🔐 Entrar na loja</h2>
 
-        <label>E-mail</label>
+
+        <label>
+          E-mail
+        </label>
+
 
         <input
           id="adminEmail"
@@ -507,7 +1013,11 @@
           placeholder="E-mail"
         >
 
-        <label>Senha</label>
+
+        <label>
+          Senha
+        </label>
+
 
         <input
           id="adminPassword"
@@ -515,11 +1025,19 @@
           placeholder="Senha"
         >
 
-        <button class="primary" onclick="adminLogin()">
+
+        <button
+          class="primary"
+          onclick="adminLogin()"
+        >
           Entrar
         </button>
 
-        <div id="loginMessage" class="message hidden"></div>
+
+        <div
+          id="loginMessage"
+          class="message hidden"
+        ></div>
 
       </div>
 
@@ -527,18 +1045,34 @@
 
 
     <!-- PAINEL -->
-    <section id="adminPanel" class="admin-panel">
+
+    <section
+      id="adminPanel"
+      class="admin-panel"
+    >
+
 
       <div class="admin-header">
 
         <div>
-          <h2>📊 Painel da loja</h2>
-          <p class="muted">
-            Gerencie seus pedidos e produtos
+
+          <h2>
+            📊 Painel da Burger Gold
+          </h2>
+
+          <p
+            class="muted"
+            style="margin-top:5px;"
+          >
+            Gerencie pedidos e produtos
           </p>
+
         </div>
 
-        <button onclick="adminLogout()">
+
+        <button
+          onclick="adminLogout()"
+        >
           Sair
         </button>
 
@@ -549,7 +1083,10 @@
 
       <div class="card">
 
-        <h2>📦 Pedidos</h2>
+        <h2>
+          📦 Pedidos
+        </h2>
+
 
         <div
           id="orders"
@@ -565,9 +1102,15 @@
 
       <div class="card">
 
-        <h2>🍔 Produtos</h2>
+        <h2>
+          🍔 Produtos
+        </h2>
 
-        <label>Nome</label>
+
+        <label>
+          Nome
+        </label>
+
 
         <input
           id="productName"
@@ -575,7 +1118,11 @@
           placeholder="Ex: X-Bacon"
         >
 
-        <label>Descrição</label>
+
+        <label>
+          Descrição
+        </label>
+
 
         <input
           id="productDescription"
@@ -583,7 +1130,11 @@
           placeholder="Descrição do produto"
         >
 
-        <label>Preço</label>
+
+        <label>
+          Preço
+        </label>
+
 
         <input
           id="productPrice"
@@ -592,11 +1143,19 @@
           placeholder="24.90"
         >
 
-        <button class="primary" onclick="createProduct()">
+
+        <button
+          class="primary"
+          onclick="createProduct()"
+        >
           + Adicionar produto
         </button>
 
-        <div id="adminProducts" style="margin-top:20px;">
+
+        <div
+          id="adminProducts"
+          style="margin-top:20px;"
+        >
           Carregando produtos...
         </div>
 
@@ -611,49 +1170,55 @@
 
 <script>
 
-/* ======================================
-   CONFIGURAÇÃO SUPABASE
-====================================== */
+
+/* =====================================
+   SUPABASE
+===================================== */
 
 const SUPABASE_URL =
   "https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
+
 /*
+  IMPORTANTE:
   COLE AQUI A NOVA PUBLISHABLE KEY
   QUE VOCÊ GEROU NO SUPABASE.
+
+  Não use uma chave secreta/service_role.
 */
 
 const SUPABASE_KEY =
   "sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
 
-const db = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const db =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
 
-/* ======================================
+/* =====================================
    VARIÁVEIS
-====================================== */
+===================================== */
 
 let products = [];
+
 let cart = [];
 
-/*
-  Por enquanto a taxa está zerada.
-  Depois vamos colocar a taxa por bairro/distância.
-*/
+
 const DEFAULT_DELIVERY_FEE = 0;
 
 
-/* ======================================
-   UTILIDADES
-====================================== */
+/* =====================================
+   DINHEIRO
+===================================== */
 
 function money(value) {
 
-  return Number(value || 0).toLocaleString(
+  return Number(
+    value || 0
+  ).toLocaleString(
     "pt-BR",
     {
       style: "currency",
@@ -664,17 +1229,33 @@ function money(value) {
 }
 
 
+/* =====================================
+   TELAS
+===================================== */
+
 function showScreen(screenId) {
 
   document
-    .querySelectorAll("#customerApp .screen")
+    .querySelectorAll(
+      "#customerApp .screen"
+    )
     .forEach(screen => {
-      screen.classList.remove("active");
+
+      screen.classList.remove(
+        "active"
+      );
+
     });
 
+
   document
-    .getElementById(screenId)
-    .classList.add("active");
+    .getElementById(
+      screenId
+    )
+    .classList.add(
+      "active"
+    );
+
 
   window.scrollTo({
     top: 0,
@@ -684,36 +1265,60 @@ function showScreen(screenId) {
 }
 
 
-/* ======================================
-   ROTEAMENTO
-====================================== */
+/* =====================================
+   ROTA
+===================================== */
 
 function initRoute() {
 
   const isAdmin =
-    window.location.pathname.startsWith("/admin");
+    window.location.pathname
+      .startsWith("/admin");
+
 
   if (isAdmin) {
 
     document
-      .getElementById("customerApp")
-      .classList.add("hidden");
+      .getElementById(
+        "customerApp"
+      )
+      .classList.add(
+        "hidden"
+      );
+
 
     document
-      .getElementById("adminApp")
-      .classList.remove("hidden");
+      .getElementById(
+        "adminApp"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
 
     initAdmin();
 
-  } else {
+  }
+
+  else {
 
     document
-      .getElementById("adminApp")
-      .classList.add("hidden");
+      .getElementById(
+        "adminApp"
+      )
+      .classList.add(
+        "hidden"
+      );
+
 
     document
-      .getElementById("customerApp")
-      .classList.remove("hidden");
+      .getElementById(
+        "customerApp"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
 
     initCustomer();
 
@@ -722,9 +1327,9 @@ function initRoute() {
 }
 
 
-/* ======================================
+/* =====================================
    CLIENTE
-====================================== */
+===================================== */
 
 async function initCustomer() {
 
@@ -732,37 +1337,54 @@ async function initCustomer() {
 
   updateCart();
 
+
   document
-    .getElementById("delivery")
-    .addEventListener("change", updateCheckout);
+    .getElementById(
+      "delivery"
+    )
+    .addEventListener(
+      "change",
+      updateCheckout
+    );
 
 }
 
 
-/* ======================================
-   PRODUTOS
-====================================== */
+/* =====================================
+   CARREGAR PRODUTOS
+===================================== */
 
 async function loadProducts() {
 
   const box =
-    document.getElementById("products");
+    document.getElementById(
+      "products"
+    );
 
-  if (!box) return;
+
+  if (!box)
+    return;
+
 
   box.innerHTML =
     "<p>Carregando cardápio...</p>";
 
+
   const {
     data,
     error
-  } = await db
-    .from("products")
-    .select("*")
-    .eq("active", true)
-    .order("id", {
-      ascending: true
-    });
+  } =
+    await db
+      .from("products")
+      .select("*")
+      .eq("active", true)
+      .order(
+        "id",
+        {
+          ascending: true
+        }
+      );
+
 
   if (error) {
 
@@ -772,25 +1394,34 @@ async function loadProducts() {
     console.error(error);
 
     return;
+
   }
 
-  products = data || [];
+
+  products =
+    data || [];
+
 
   renderProducts();
 
 }
 
 
-/* ======================================
-   RENDER CARDÁPIO
-====================================== */
+/* =====================================
+   RENDER PRODUTOS
+===================================== */
 
 function renderProducts() {
 
   const box =
-    document.getElementById("products");
+    document.getElementById(
+      "products"
+    );
 
-  if (!box) return;
+
+  if (!box)
+    return;
+
 
   if (!products.length) {
 
@@ -798,117 +1429,181 @@ function renderProducts() {
       "<p>Nenhum produto disponível.</p>";
 
     return;
+
   }
 
+
   box.innerHTML =
-    products.map(product => `
+    products
+      .map(product => `
 
-      <div class="product">
+        <div class="product">
 
-        <h3>${escapeHtml(product.name)}</h3>
+          <h3>
+            ${escapeHtml(
+              product.name
+            )}
+          </h3>
 
-        <p>
-          ${escapeHtml(product.description || "")}
-        </p>
+          <p>
+            ${escapeHtml(
+              product.description || ""
+            )}
+          </p>
 
-        <div class="price">
-          ${money(product.price)}
+          <div class="price">
+            ${money(product.price)}
+          </div>
+
+          <button
+            onclick="addToCart(${product.id})"
+          >
+            + Adicionar
+          </button>
+
         </div>
 
-        <button
-          onclick="addToCart(${product.id})"
-        >
-          + Adicionar
-        </button>
-
-      </div>
-
-    `).join("");
+      `)
+      .join("");
 
 }
 
 
-/* ======================================
+/* =====================================
    CARRINHO
-====================================== */
+===================================== */
 
 function addToCart(productId) {
 
   const product =
-    products.find(p => p.id === productId);
+    products.find(
+      p => p.id === productId
+    );
 
-  if (!product) return;
+
+  if (!product)
+    return;
+
 
   const existing =
-    cart.find(item => item.id === productId);
+    cart.find(
+      item => item.id === productId
+    );
+
 
   if (existing) {
 
     existing.qty++;
 
-  } else {
+  }
+
+  else {
 
     cart.push({
-      id: product.id,
-      name: product.name,
-      price: Number(product.price),
-      qty: 1
+
+      id:
+        product.id,
+
+      name:
+        product.name,
+
+      price:
+        Number(product.price),
+
+      qty:
+        1
+
     });
 
   }
+
 
   updateCart();
 
 }
 
 
+/* =====================================
+   REMOVER
+===================================== */
+
 function removeFromCart(productId) {
 
   const item =
-    cart.find(item => item.id === productId);
+    cart.find(
+      item => item.id === productId
+    );
 
-  if (!item) return;
+
+  if (!item)
+    return;
+
 
   item.qty--;
+
 
   if (item.qty <= 0) {
 
     cart =
       cart.filter(
-        item => item.id !== productId
+        item =>
+          item.id !== productId
       );
 
   }
 
+
   updateCart();
 
 }
 
+
+/* =====================================
+   AUMENTAR
+===================================== */
 
 function increaseCart(productId) {
 
   const item =
-    cart.find(item => item.id === productId);
+    cart.find(
+      item => item.id === productId
+    );
 
-  if (!item) return;
+
+  if (!item)
+    return;
+
 
   item.qty++;
+
 
   updateCart();
 
 }
 
+
+/* =====================================
+   SUBTOTAL
+===================================== */
 
 function getSubtotal() {
 
   return cart.reduce(
     (total, item) =>
-      total + item.price * item.qty,
+
+      total +
+      item.price *
+      item.qty,
+
     0
   );
 
 }
 
+
+/* =====================================
+   ATUALIZAR CARRINHO
+===================================== */
 
 function updateCart() {
 
@@ -919,32 +1614,53 @@ function updateCart() {
       0
     );
 
+
   const total =
     getSubtotal();
 
+
   const countBox =
-    document.getElementById("cartCount");
+    document.getElementById(
+      "cartCount"
+    );
+
 
   const totalBox =
-    document.getElementById("cartTotal");
+    document.getElementById(
+      "cartTotal"
+    );
+
 
   if (countBox)
-    countBox.textContent = count;
+    countBox.textContent =
+      count;
+
 
   if (totalBox)
-    totalBox.textContent = money(total);
+    totalBox.textContent =
+      money(total);
+
 
   renderCart();
 
 }
 
 
+/* =====================================
+   RENDER CARRINHO
+===================================== */
+
 function renderCart() {
 
   const box =
-    document.getElementById("cartItems");
+    document.getElementById(
+      "cartItems"
+    );
 
-  if (!box) return;
+
+  if (!box)
+    return;
+
 
   if (!cart.length) {
 
@@ -955,61 +1671,78 @@ function renderCart() {
     `;
 
     return;
+
   }
 
+
   box.innerHTML =
-    cart.map(item => `
+    cart
+      .map(item => `
 
-      <div class="cart-item">
+        <div class="cart-item">
 
-        <div>
+          <div>
 
-          <strong>
-            ${escapeHtml(item.name)}
-          </strong>
+            <strong>
+              ${escapeHtml(
+                item.name
+              )}
+            </strong>
 
-          <div class="muted">
-            ${money(item.price)} cada
+            <div class="muted">
+              ${money(
+                item.price
+              )}
+              cada
+            </div>
+
+          </div>
+
+
+          <div class="qty">
+
+            <button
+              onclick="removeFromCart(${item.id})"
+            >
+              −
+            </button>
+
+            <strong>
+              ${item.qty}
+            </strong>
+
+            <button
+              onclick="increaseCart(${item.id})"
+            >
+              +
+            </button>
+
           </div>
 
         </div>
 
-        <div class="qty">
+      `)
+      .join("");
 
-          <button
-            onclick="removeFromCart(${item.id})"
-          >
-            −
-          </button>
-
-          <strong>
-            ${item.qty}
-          </strong>
-
-          <button
-            onclick="increaseCart(${item.id})"
-          >
-            +
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
 
   const totalBox =
     document.getElementById(
       "cartScreenTotal"
     );
 
+
   if (totalBox)
-    totalBox.textContent = money(
-      getSubtotal()
-    );
+    totalBox.textContent =
+      money(
+        getSubtotal()
+      );
 
 }
 
+
+/* =====================================
+   ABRIR CARRINHO
+===================================== */
 
 function openCart() {
 
@@ -1020,34 +1753,48 @@ function openCart() {
     );
 
     return;
+
   }
+
 
   renderCart();
 
-  showScreen("cartScreen");
+  showScreen(
+    "cartScreen"
+  );
 
 }
 
 
-/* ======================================
+/* =====================================
    CHECKOUT
-====================================== */
+===================================== */
 
 function openCheckout() {
 
   if (!cart.length) {
 
-    alert("Seu carrinho está vazio.");
+    alert(
+      "Seu carrinho está vazio."
+    );
 
     return;
+
   }
+
 
   renderCheckout();
 
-  showScreen("checkoutScreen");
+  showScreen(
+    "checkoutScreen"
+  );
 
 }
 
+
+/* =====================================
+   RESUMO CHECKOUT
+===================================== */
 
 function renderCheckout() {
 
@@ -1056,46 +1803,65 @@ function renderCheckout() {
       "checkoutSummary"
     );
 
-  if (!box) return;
+
+  if (!box)
+    return;
+
 
   box.innerHTML =
-    cart.map(item => `
+    cart
+      .map(item => `
 
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        margin-bottom:7px;
-      ">
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:8px;
+        ">
 
-        <span>
-          ${item.qty}x
-          ${escapeHtml(item.name)}
-        </span>
+          <span>
+            ${item.qty}x
+            ${escapeHtml(
+              item.name
+            )}
+          </span>
 
-        <strong>
-          ${money(item.price * item.qty)}
-        </strong>
+          <strong>
+            ${money(
+              item.price *
+              item.qty
+            )}
+          </strong>
 
-      </div>
+        </div>
 
-    `).join("");
+      `)
+      .join("");
+
 
   updateCheckout();
 
 }
 
 
+/* =====================================
+   ATUALIZAR CHECKOUT
+===================================== */
+
 function updateCheckout() {
 
   const delivery =
-    document.getElementById(
-      "delivery"
-    )?.value === "true";
+    document
+      .getElementById(
+        "delivery"
+      )
+      ?.value === "true";
+
 
   const addressBox =
     document.getElementById(
       "addressBox"
     );
+
 
   if (addressBox) {
 
@@ -1106,38 +1872,50 @@ function updateCheckout() {
 
   }
 
+
   const fee =
     delivery
       ? DEFAULT_DELIVERY_FEE
       : 0;
 
+
   const subtotal =
     getSubtotal();
+
 
   const total =
     subtotal + fee;
 
+
   document
-    .getElementById("checkoutSubtotal")
+    .getElementById(
+      "checkoutSubtotal"
+    )
     .textContent =
       money(subtotal);
 
+
   document
-    .getElementById("deliveryFee")
+    .getElementById(
+      "deliveryFee"
+    )
     .textContent =
       money(fee);
 
+
   document
-    .getElementById("checkoutTotal")
+    .getElementById(
+      "checkoutTotal"
+    )
     .textContent =
       money(total);
 
 }
 
 
-/* ======================================
+/* =====================================
    ENVIAR PEDIDO
-====================================== */
+===================================== */
 
 async function sendOrder() {
 
@@ -1148,31 +1926,42 @@ async function sendOrder() {
     );
 
     return;
+
   }
+
 
   const customerName =
     document
-      .getElementById("customerName")
-      .value.trim();
+      .getElementById(
+        "customerName"
+      )
+      .value
+      .trim();
+
 
   const delivery =
     document
-      .getElementById("delivery")
+      .getElementById(
+        "delivery"
+      )
       .value === "true";
+
 
   const address =
     document
-      .getElementById("address")
-      .value.trim();
+      .getElementById(
+        "address"
+      )
+      .value
+      .trim();
+
 
   const payment =
     document
-      .getElementById("payment")
+      .getElementById(
+        "payment"
+      )
       .value;
-
-  const message =
-    document
-      .getElementById("message");
 
 
   if (!customerName) {
@@ -1183,10 +1972,14 @@ async function sendOrder() {
     );
 
     return;
+
   }
 
 
-  if (delivery && !address) {
+  if (
+    delivery &&
+    !address
+  ) {
 
     showMessage(
       "Digite o endereço para entrega.",
@@ -1194,34 +1987,29 @@ async function sendOrder() {
     );
 
     return;
+
   }
 
 
   const subtotal =
     getSubtotal();
 
+
   const deliveryFee =
     delivery
       ? DEFAULT_DELIVERY_FEE
       : 0;
 
+
   const total =
-    subtotal + deliveryFee;
+    subtotal +
+    deliveryFee;
 
 
   showMessage(
     "Enviando pedido..."
   );
 
-
-  /*
-    Como o RLS atual não permite que o cliente
-    anônimo leia a linha criada, criamos o ID
-    no navegador e enviamos explicitamente.
-
-    Isso evita o erro do .select().single()
-    que estava acontecendo anteriormente.
-  */
 
   const orderId =
     Date.now() * 1000 +
@@ -1232,7 +2020,8 @@ async function sendOrder() {
 
   const orderData = {
 
-    id: orderId,
+    id:
+      orderId,
 
     customer_name:
       customerName,
@@ -1259,9 +2048,12 @@ async function sendOrder() {
 
   const {
     error: orderError
-  } = await db
-    .from("orders")
-    .insert(orderData);
+  } =
+    await db
+      .from("orders")
+      .insert(
+        orderData
+      );
 
 
   if (orderError) {
@@ -1271,6 +2063,7 @@ async function sendOrder() {
       orderError
     );
 
+
     showMessage(
       "Não foi possível enviar o pedido: " +
       orderError.message,
@@ -1278,40 +2071,47 @@ async function sendOrder() {
     );
 
     return;
+
   }
 
 
-  const items = cart.map(
-    (item, index) => ({
+  const items =
+    cart.map(
+      (item, index) => ({
 
-      id:
-        orderId * 100 +
-        index + 1,
+        id:
+          orderId *
+          100 +
+          index +
+          1,
 
-      order_id:
-        orderId,
+        order_id:
+          orderId,
 
-      product_id:
-        item.id,
+        product_id:
+          item.id,
 
-      name:
-        item.name,
+        name:
+          item.name,
 
-      qty:
-        item.qty,
+        qty:
+          item.qty,
 
-      price:
-        item.price
+        price:
+          item.price
 
-    })
-  );
+      })
+    );
 
 
   const {
     error: itemsError
-  } = await db
-    .from("order_items")
-    .insert(items);
+  } =
+    await db
+      .from("order_items")
+      .insert(
+        items
+      );
 
 
   if (itemsError) {
@@ -1321,12 +2121,14 @@ async function sendOrder() {
       itemsError
     );
 
+
     showMessage(
       "O pedido foi criado, mas houve um erro ao salvar os itens.",
       true
     );
 
     return;
+
   }
 
 
@@ -1340,15 +2142,23 @@ async function sendOrder() {
 
   cart = [];
 
+
   updateCart();
 
-  document
-    .getElementById("customerName")
-    .value = "";
 
   document
-    .getElementById("address")
+    .getElementById(
+      "customerName"
+    )
     .value = "";
+
+
+  document
+    .getElementById(
+      "address"
+    )
+    .value = "";
+
 
   showScreen(
     "successScreen"
@@ -1357,9 +2167,9 @@ async function sendOrder() {
 }
 
 
-/* ======================================
+/* =====================================
    NOVO PEDIDO
-====================================== */
+===================================== */
 
 function newOrder() {
 
@@ -1370,9 +2180,9 @@ function newOrder() {
 }
 
 
-/* ======================================
-   MENSAGENS
-====================================== */
+/* =====================================
+   MENSAGEM
+===================================== */
 
 function showMessage(
   text,
@@ -1384,32 +2194,31 @@ function showMessage(
       "message"
     );
 
-  if (!box) return;
 
-  box.textContent = text;
+  if (!box)
+    return;
+
+
+  box.textContent =
+    text;
+
 
   box.classList.remove(
     "hidden"
   );
 
-  if (error) {
 
-    box.style.background =
-      "#ffe5e5";
-
-  } else {
-
-    box.style.background =
-      "#eee";
-
-  }
+  box.style.background =
+    error
+      ? "#261010"
+      : "#151515";
 
 }
 
 
-/* ======================================
+/* =====================================
    ADMIN
-====================================== */
+===================================== */
 
 async function initAdmin() {
 
@@ -1418,11 +2227,14 @@ async function initAdmin() {
   } =
     await db.auth.getSession();
 
+
   if (data.session) {
 
     showAdminPanel();
 
-  } else {
+  }
+
+  else {
 
     showAdminLogin();
 
@@ -1430,6 +2242,10 @@ async function initAdmin() {
 
 }
 
+
+/* =====================================
+   LOGIN ADMIN
+===================================== */
 
 function showAdminLogin() {
 
@@ -1440,6 +2256,7 @@ function showAdminLogin() {
     .style.display =
       "block";
 
+
   document
     .getElementById(
       "adminPanel"
@@ -1449,6 +2266,10 @@ function showAdminLogin() {
 
 }
 
+
+/* =====================================
+   PAINEL ADMIN
+===================================== */
 
 function showAdminPanel() {
 
@@ -1459,12 +2280,14 @@ function showAdminPanel() {
     .style.display =
       "none";
 
+
   document
     .getElementById(
       "adminPanel"
     )
     .style.display =
       "block";
+
 
   loadOrders();
 
@@ -1475,9 +2298,9 @@ function showAdminPanel() {
 }
 
 
-/* ======================================
+/* =====================================
    LOGIN
-====================================== */
+===================================== */
 
 async function adminLogin() {
 
@@ -1486,7 +2309,9 @@ async function adminLogin() {
       .getElementById(
         "adminEmail"
       )
-      .value.trim();
+      .value
+      .trim();
+
 
   const password =
     document
@@ -1503,7 +2328,10 @@ async function adminLogin() {
       );
 
 
-  if (!email || !password) {
+  if (
+    !email ||
+    !password
+  ) {
 
     box.textContent =
       "Preencha e-mail e senha.";
@@ -1513,21 +2341,23 @@ async function adminLogin() {
     );
 
     return;
+
   }
 
 
   const {
     error
   } =
-    await db.auth.signInWithPassword({
+    await db.auth
+      .signInWithPassword({
 
-      email:
-        email,
+        email:
+          email,
 
-      password:
-        password
+        password:
+          password
 
-    });
+      });
 
 
   if (error) {
@@ -1539,9 +2369,12 @@ async function adminLogin() {
       "hidden"
     );
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
@@ -1549,14 +2382,15 @@ async function adminLogin() {
     "hidden"
   );
 
+
   showAdminPanel();
 
 }
 
 
-/* ======================================
+/* =====================================
    LOGOUT
-====================================== */
+===================================== */
 
 async function adminLogout() {
 
@@ -1567,9 +2401,9 @@ async function adminLogout() {
 }
 
 
-/* ======================================
-   PEDIDOS ADMIN
-====================================== */
+/* =====================================
+   PEDIDOS
+===================================== */
 
 async function loadOrders() {
 
@@ -1578,7 +2412,10 @@ async function loadOrders() {
       "orders"
     );
 
-  if (!box) return;
+
+  if (!box)
+    return;
+
 
   box.innerHTML =
     "Carregando pedidos...";
@@ -1604,9 +2441,12 @@ async function loadOrders() {
     box.innerHTML =
       "Não foi possível carregar os pedidos.";
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
@@ -1616,97 +2456,160 @@ async function loadOrders() {
       "<p>Nenhum pedido ainda.</p>";
 
     return;
+
   }
 
 
   box.innerHTML =
-    data.map(
-      order => `
+    data
+      .map(
+        order => `
 
-      <div class="order">
+        <div class="order">
 
-        <h3>
-          Pedido #${order.id}
-        </h3>
+          <h3>
+            Pedido #${order.id}
+          </h3>
 
-        <div class="order-status">
-          ${escapeHtml(order.status)}
+
+          <div class="order-status">
+            ${escapeHtml(
+              order.status
+            )}
+          </div>
+
+
+          <p>
+            <strong>
+              Cliente:
+            </strong>
+
+            ${escapeHtml(
+              order.customer_name
+            )}
+          </p>
+
+
+          <p style="margin-top:6px;">
+
+            <strong>
+              Tipo:
+            </strong>
+
+            ${
+              order.delivery
+                ? "🚚 Entrega"
+                : "🏪 Retirada"
+            }
+
+          </p>
+
+
+          <p style="margin-top:6px;">
+
+            <strong>
+              Endereço:
+            </strong>
+
+            ${escapeHtml(
+              order.address ||
+              "-"
+            )}
+
+          </p>
+
+
+          <p style="margin-top:6px;">
+
+            <strong>
+              Pagamento:
+            </strong>
+
+            ${escapeHtml(
+              order.payment
+            )}
+
+          </p>
+
+
+          <p style="margin-top:6px;">
+
+            <strong>
+              Total:
+            </strong>
+
+            ${money(
+              order.total
+            )}
+
+          </p>
+
+
+          <div class="status-buttons">
+
+            <button
+              onclick="changeOrderStatus(
+                ${order.id},
+                'RECEBIDO'
+              )"
+            >
+              Recebido
+            </button>
+
+
+            <button
+              onclick="changeOrderStatus(
+                ${order.id},
+                'PREPARANDO'
+              )"
+            >
+              Preparando
+            </button>
+
+
+            <button
+              onclick="changeOrderStatus(
+                ${order.id},
+                'PRONTO'
+              )"
+            >
+              Pronto
+            </button>
+
+
+            <button
+              onclick="changeOrderStatus(
+                ${order.id},
+                'SAIU_PARA_ENTREGA'
+              )"
+            >
+              Saiu
+            </button>
+
+
+            <button
+              onclick="changeOrderStatus(
+                ${order.id},
+                'ENTREGUE'
+              )"
+            >
+              Entregue
+            </button>
+
+          </div>
+
         </div>
 
-        <p>
-          <strong>Cliente:</strong>
-          ${escapeHtml(order.customer_name)}
-        </p>
-
-        <p style="margin-top:5px;">
-          <strong>Tipo:</strong>
-          ${
-            order.delivery
-              ? "🚚 Entrega"
-              : "🏪 Retirada"
-          }
-        </p>
-
-        <p style="margin-top:5px;">
-          <strong>Endereço:</strong>
-          ${escapeHtml(order.address || "-")}
-        </p>
-
-        <p style="margin-top:5px;">
-          <strong>Pagamento:</strong>
-          ${escapeHtml(order.payment)}
-        </p>
-
-        <p style="margin-top:5px;">
-          <strong>Total:</strong>
-          ${money(order.total)}
-        </p>
-
-        <div class="status-buttons">
-
-          <button
-            onclick="changeOrderStatus(${order.id}, 'RECEBIDO')"
-          >
-            Recebido
-          </button>
-
-          <button
-            onclick="changeOrderStatus(${order.id}, 'PREPARANDO')"
-          >
-            Preparando
-          </button>
-
-          <button
-            onclick="changeOrderStatus(${order.id}, 'PRONTO')"
-          >
-            Pronto
-          </button>
-
-          <button
-            onclick="changeOrderStatus(${order.id}, 'SAIU_PARA_ENTREGA')"
-          >
-            Saiu
-          </button>
-
-          <button
-            onclick="changeOrderStatus(${order.id}, 'ENTREGUE')"
-          >
-            Entregue
-          </button>
-
-        </div>
-
-      </div>
-
-    `
-    ).join("");
+      `
+      )
+      .join("");
 
 }
 
 
-/* ======================================
+/* =====================================
    ALTERAR STATUS
-====================================== */
+===================================== */
 
 async function changeOrderStatus(
   id,
@@ -1719,8 +2622,10 @@ async function changeOrderStatus(
     await db
       .from("orders")
       .update({
+
         status:
           status
+
       })
       .eq(
         "id",
@@ -1734,9 +2639,12 @@ async function changeOrderStatus(
       "Não foi possível alterar o status."
     );
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
@@ -1745,44 +2653,48 @@ async function changeOrderStatus(
 }
 
 
-/* ======================================
+/* =====================================
    REALTIME
-====================================== */
+===================================== */
 
-let realtimeStarted = false;
+let realtimeStarted =
+  false;
+
 
 function startRealtime() {
 
   if (realtimeStarted)
     return;
 
-  realtimeStarted = true;
+
+  realtimeStarted =
+    true;
 
 
   db.channel(
     "orders-realtime"
   )
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "orders"
-    },
-    () => {
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "orders"
+      },
+      () => {
 
-      loadOrders();
+        loadOrders();
 
-    }
-  )
-  .subscribe();
+      }
+    )
+    .subscribe();
 
 }
 
 
-/* ======================================
+/* =====================================
    PRODUTOS ADMIN
-====================================== */
+===================================== */
 
 async function loadAdminProducts() {
 
@@ -1791,7 +2703,9 @@ async function loadAdminProducts() {
       "adminProducts"
     );
 
-  if (!box) return;
+
+  if (!box)
+    return;
 
 
   const {
@@ -1814,9 +2728,12 @@ async function loadAdminProducts() {
     box.innerHTML =
       "Erro ao carregar produtos.";
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
@@ -1826,51 +2743,61 @@ async function loadAdminProducts() {
       "<p>Nenhum produto cadastrado.</p>";
 
     return;
+
   }
 
 
   box.innerHTML =
-    data.map(
-      product => `
+    data
+      .map(
+        product => `
 
-      <div class="product-admin">
+        <div class="product-admin">
 
-        <div>
+          <div>
 
-          <strong>
-            ${escapeHtml(product.name)}
-          </strong>
+            <strong>
+              ${escapeHtml(
+                product.name
+              )}
+            </strong>
 
-          <div class="muted">
-            ${money(product.price)}
+            <div class="muted">
+              ${money(
+                product.price
+              )}
+            </div>
+
           </div>
+
+
+          <button
+            onclick="toggleProduct(
+              ${product.id},
+              ${product.active}
+            )"
+          >
+
+            ${
+              product.active
+                ? "Desativar"
+                : "Ativar"
+            }
+
+          </button>
 
         </div>
 
-        <button
-          onclick="toggleProduct(
-            ${product.id},
-            ${product.active}
-          )"
-        >
-          ${
-            product.active
-              ? "Desativar"
-              : "Ativar"
-          }
-        </button>
-
-      </div>
-
-    `
-    ).join("");
+      `
+      )
+      .join("");
 
 }
 
 
-/* ======================================
+/* =====================================
    CRIAR PRODUTO
-====================================== */
+===================================== */
 
 async function createProduct() {
 
@@ -1879,14 +2806,18 @@ async function createProduct() {
       .getElementById(
         "productName"
       )
-      .value.trim();
+      .value
+      .trim();
+
 
   const description =
     document
       .getElementById(
         "productDescription"
       )
-      .value.trim();
+      .value
+      .trim();
+
 
   const price =
     Number(
@@ -1898,13 +2829,17 @@ async function createProduct() {
     );
 
 
-  if (!name || !price) {
+  if (
+    !name ||
+    !price
+  ) {
 
     alert(
       "Preencha nome e preço."
     );
 
     return;
+
   }
 
 
@@ -1936,9 +2871,12 @@ async function createProduct() {
       "Não foi possível criar o produto."
     );
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
@@ -1948,11 +2886,13 @@ async function createProduct() {
     )
     .value = "";
 
+
   document
     .getElementById(
       "productDescription"
     )
     .value = "";
+
 
   document
     .getElementById(
@@ -1966,9 +2906,9 @@ async function createProduct() {
 }
 
 
-/* ======================================
-   ATIVAR / DESATIVAR PRODUTO
-====================================== */
+/* =====================================
+   ATIVAR / DESATIVAR
+===================================== */
 
 async function toggleProduct(
   id,
@@ -1981,8 +2921,10 @@ async function toggleProduct(
     await db
       .from("products")
       .update({
+
         active:
           !currentStatus
+
       })
       .eq(
         "id",
@@ -1996,9 +2938,12 @@ async function toggleProduct(
       "Não foi possível alterar o produto."
     );
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
@@ -2007,31 +2952,38 @@ async function toggleProduct(
 }
 
 
-/* ======================================
-   SEGURANÇA BÁSICA DE TEXTO
-====================================== */
+/* =====================================
+   ESCAPE HTML
+===================================== */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(
     value ?? ""
   )
+
     .replaceAll(
       "&",
       "&amp;"
     )
+
     .replaceAll(
       "<",
       "&lt;"
     )
+
     .replaceAll(
       ">",
       "&gt;"
     )
+
     .replaceAll(
       '"',
       "&quot;"
     )
+
     .replaceAll(
       "'",
       "&#039;"
@@ -2040,9 +2992,9 @@ function escapeHtml(value) {
 }
 
 
-/* ======================================
+/* =====================================
    INICIAR
-====================================== */
+===================================== */
 
 initRoute();
 
