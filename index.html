@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-
 <title>Burguer Gold</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,10 +11,10 @@
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#090909;
-  color:#fff;
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:#090909;
+color:#fff;
 }
 
 button,input,textarea,select{font:inherit}
@@ -24,42 +23,42 @@ button{cursor:pointer}
 .app{min-height:100vh}
 
 header{
-  background:linear-gradient(135deg,#111,#050505);
-  border-bottom:1px solid #d4af37;
-  padding:22px 18px;
-  text-align:center;
-  position:sticky;
-  top:0;
-  z-index:50;
+background:linear-gradient(135deg,#111,#050505);
+border-bottom:1px solid #d4af37;
+padding:22px 18px;
+text-align:center;
+position:sticky;
+top:0;
+z-index:50;
 }
 
 header h1{
-  margin:0;
-  color:#d4af37;
-  font-size:30px;
+margin:0;
+color:#d4af37;
+font-size:30px;
 }
 
 header p{
-  margin:6px 0 0;
-  color:#aaa;
+margin:6px 0 0;
+color:#aaa;
 }
 
 main{
-  width:min(1100px,94%);
-  margin:25px auto;
-  padding-bottom:110px;
+width:min(1100px,94%);
+margin:25px auto;
+padding-bottom:110px;
 }
 
 .screen{display:none}
 .screen.active{display:block}
 
 .card{
-  background:#121212;
-  border:1px solid #292929;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 8px 25px rgba(0,0,0,.25);
+background:#121212;
+border:1px solid #292929;
+border-radius:16px;
+padding:18px;
+margin-bottom:18px;
+box-shadow:0 8px 25px rgba(0,0,0,.25);
 }
 
 .gold{color:#d4af37}
@@ -67,14 +66,14 @@ main{
 .center{text-align:center}
 
 .btn{
-  width:100%;
-  border:0;
-  border-radius:12px;
-  padding:14px 18px;
-  font-weight:bold;
-  background:#d4af37;
-  color:#000;
-  margin-top:10px;
+width:100%;
+border:0;
+border-radius:12px;
+padding:14px 18px;
+font-weight:bold;
+background:#d4af37;
+color:#000;
+margin-top:10px;
 }
 
 .btn:hover{filter:brightness(1.08)}
@@ -82,410 +81,375 @@ main{
 .btn.danger{background:#8e2525;color:#fff}
 
 .btn.small{
-  width:auto;
-  padding:9px 13px;
-  margin:0;
-  font-size:13px;
+width:auto;
+padding:9px 13px;
+margin:0;
+font-size:13px;
 }
 
 .btn:disabled{
-  cursor:not-allowed;
-  opacity:.55;
+cursor:not-allowed;
+opacity:.55;
 }
 
 input,textarea,select{
-  width:100%;
-  padding:13px;
-  border-radius:10px;
-  border:1px solid #383838;
-  background:#0b0b0b;
-  color:#fff;
-  outline:none;
-  margin-top:7px;
+width:100%;
+padding:13px;
+border-radius:10px;
+border:1px solid #383838;
+background:#0b0b0b;
+color:#fff;
+outline:none;
+margin-top:7px;
 }
 
 textarea{
-  min-height:90px;
-  resize:vertical;
+min-height:90px;
+resize:vertical;
 }
 
 label{
-  display:block;
-  margin-top:13px;
-  font-weight:bold;
-  color:#ddd;
+display:block;
+margin-top:13px;
+font-weight:bold;
+color:#ddd;
 }
 
-/* ================= STATUS DA LOJA ================= */
+/* STATUS */
 
 .store-status{
-  margin:14px 0;
-  padding:12px 14px;
-  border-radius:12px;
-  text-align:center;
-  font-weight:800;
+margin:14px 0;
+padding:12px 14px;
+border-radius:12px;
+text-align:center;
+font-weight:800;
 }
 
 .store-open{
-  background:rgba(34,197,94,.12);
-  border:1px solid rgba(34,197,94,.35);
-  color:#4ade80;
+background:rgba(34,197,94,.12);
+border:1px solid rgba(34,197,94,.35);
+color:#4ade80;
 }
 
 .store-closed{
-  background:rgba(239,68,68,.12);
-  border:1px solid rgba(239,68,68,.35);
-  color:#f87171;
+background:rgba(239,68,68,.12);
+border:1px solid rgba(239,68,68,.35);
+color:#f87171;
 }
 
 .store-hours{
-  font-size:13px;
-  font-weight:600;
-  margin-top:4px;
-  opacity:.9;
+font-size:13px;
+font-weight:600;
+margin-top:4px;
+opacity:.9;
 }
 
-/* ================= HORÁRIOS ADMIN ================= */
+/* HORÁRIOS */
 
 .business-hours-row{
-  display:grid;
-  grid-template-columns:1.2fr .8fr 1fr 1fr auto;
-  gap:10px;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid #292929;
+display:grid;
+grid-template-columns:1.2fr .8fr 1fr 1fr auto;
+gap:10px;
+align-items:center;
+padding:10px 0;
+border-bottom:1px solid #292929;
 }
 
-.business-hours-day{
-  font-weight:700;
-}
+.business-hours-day{font-weight:700}
 
 .business-hours-toggle{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin:0;
+display:flex;
+align-items:center;
+gap:8px;
+margin:0;
 }
 
 .business-hours-toggle input{
-  width:18px;
-  height:18px;
-  margin:0;
+width:18px;
+height:18px;
+margin:0;
 }
 
 .business-hours-row input[type="time"]{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #383838;
-  background:#0b0b0b;
-  color:#fff;
-  margin:0;
+width:100%;
+padding:10px;
+border-radius:10px;
+border:1px solid #383838;
+background:#0b0b0b;
+color:#fff;
+margin:0;
 }
 
-@media(max-width:700px){
-
-.business-hours-row{
-  grid-template-columns:1fr 1fr;
-}
-
-.business-hours-day{
-  grid-column:1/-1;
-}
-
-.business-hours-row .btn{
-  width:100%;
-}
-
-}
-
-/* ================= CLIENTE ================= */
+/* CLIENTE */
 
 .category-tabs{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:4px 2px 12px;
-  margin:15px 0;
-  scrollbar-width:none;
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:4px 2px 12px;
+margin:15px 0;
+scrollbar-width:none;
 }
 
 .category-tabs::-webkit-scrollbar{display:none}
 
 .category-tab{
-  flex:0 0 auto;
-  border:1px solid #393939;
-  background:#181818;
-  color:#ccc;
-  border-radius:999px;
-  padding:10px 14px;
-  font-weight:bold;
-  white-space:nowrap;
+flex:0 0 auto;
+border:1px solid #393939;
+background:#181818;
+color:#ccc;
+border-radius:999px;
+padding:10px 14px;
+font-weight:bold;
+white-space:nowrap;
 }
 
 .category-tab.active{
-  background:#d4af37;
-  color:#000;
-  border-color:#d4af37;
+background:#d4af37;
+color:#000;
+border-color:#d4af37;
 }
 
 .products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:15px;
 }
 
 .product{
-  position:relative;
-  background:#151515;
-  border:1px solid #2d2d2d;
-  border-radius:15px;
-  padding:17px;
-  transition:.2s;
+position:relative;
+background:#151515;
+border:1px solid #2d2d2d;
+border-radius:15px;
+padding:17px;
+transition:.2s;
 }
 
 .product:hover{
-  border-color:#d4af37;
-  transform:translateY(-2px);
+border-color:#d4af37;
+transform:translateY(-2px);
 }
 
-.product h3{
-  margin:0 0 7px;
-}
+.product h3{margin:0 0 7px}
 
 .product .description{
-  min-height:42px;
-  color:#999;
-  font-size:14px;
-  line-height:1.4;
+min-height:42px;
+color:#999;
+font-size:14px;
+line-height:1.4;
 }
 
 .price{
-  color:#d4af37;
-  font-size:21px;
-  font-weight:bold;
-  margin:13px 0;
+color:#d4af37;
+font-size:21px;
+font-weight:bold;
+margin:13px 0;
 }
 
 .product-qty-badge{
-  position:absolute;
-  top:12px;
-  right:12px;
-  background:#d4af37;
-  color:#000;
-  border-radius:999px;
-  min-width:28px;
-  height:28px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:bold;
+position:absolute;
+top:12px;
+right:12px;
+background:#d4af37;
+color:#000;
+border-radius:999px;
+min-width:28px;
+height:28px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-weight:bold;
 }
 
 .product-actions{
-  display:flex;
-  gap:8px;
-  align-items:center;
+display:flex;
+gap:8px;
+align-items:center;
 }
 
-.product-actions .btn{
-  margin:0;
-}
+.product-actions .btn{margin:0}
 
 .quick-qty{
-  display:flex;
-  align-items:center;
-  gap:6px;
+display:flex;
+align-items:center;
+gap:6px;
 }
 
 .quick-qty button{
-  width:38px;
-  height:42px;
-  border:0;
-  border-radius:10px;
-  background:#292929;
-  color:#fff;
-  font-size:20px;
-}
-
-.category-title{
-  grid-column:1/-1;
-  margin-top:10px;
-  padding-bottom:8px;
-  border-bottom:1px solid #3b3219;
-}
-
-.category-title h2{
-  margin:0;
-  color:#d4af37;
-  font-size:22px;
+width:38px;
+height:42px;
+border:0;
+border-radius:10px;
+background:#292929;
+color:#fff;
+font-size:20px;
 }
 
 .empty{
-  text-align:center;
-  padding:25px;
-  color:#888;
+text-align:center;
+padding:25px;
+color:#888;
 }
 
-/* ================= CARRINHO ================= */
+/* ================= CARRINHO CORRIGIDO ================= */
 
 .floating-cart{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  width:min(500px,calc(100% - 28px));
-  z-index:100;
-  display:none;
-  background:#d4af37;
-  color:#000;
-  border:0;
-  border-radius:16px;
-  padding:15px 18px;
-  box-shadow:0 10px 35px rgba(0,0,0,.55);
-  font-weight:bold;
-  justify-content:space-between;
-  align-items:center;
+position:fixed !important;
+left:50% !important;
+bottom:18px !important;
+transform:translateX(-50%) !important;
+width:min(500px,calc(100% - 28px)) !important;
+z-index:9999 !important;
+display:none !important;
+background:#d4af37 !important;
+color:#000 !important;
+border:0 !important;
+border-radius:16px !important;
+padding:15px 18px !important;
+box-shadow:0 10px 35px rgba(0,0,0,.55) !important;
+font-weight:bold;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
+visibility:visible !important;
 }
 
 .floating-cart.visible{
-  display:flex;
+display:flex !important;
+}
+
+.floating-cart.hidden{
+display:none !important;
 }
 
 .cart-count{
-  background:#000;
-  color:#d4af37;
-  border-radius:999px;
-  padding:4px 9px;
-  margin-right:7px;
+background:#000;
+color:#d4af37;
+border-radius:999px;
+padding:4px 9px;
+margin-right:7px;
 }
 
 .overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.72);
-  z-index:110;
-  display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.72);
+z-index:110;
+display:none;
 }
 
 .overlay.active{display:block}
 
 .cart-drawer{
-  position:fixed;
-  z-index:120;
-  right:0;
-  top:0;
-  width:min(430px,100%);
-  height:100%;
-  background:#111;
-  border-left:1px solid #d4af37;
-  transform:translateX(100%);
-  transition:.25s;
-  padding:20px;
-  overflow-y:auto;
+position:fixed;
+z-index:120;
+right:0;
+top:0;
+width:min(430px,100%);
+height:100%;
+background:#111;
+border-left:1px solid #d4af37;
+transform:translateX(100%);
+transition:.25s;
+padding:20px;
+overflow-y:auto;
 }
 
-.cart-drawer.active{
-  transform:translateX(0);
-}
+.cart-drawer.active{transform:translateX(0)}
 
 .cart-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  border-bottom:1px solid #292929;
-  padding-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+border-bottom:1px solid #292929;
+padding-bottom:15px;
 }
 
 .close-cart{
-  background:#292929;
-  color:#fff;
-  border:0;
-  border-radius:10px;
-  width:40px;
-  height:40px;
-  font-size:20px;
+background:#292929;
+color:#fff;
+border:0;
+border-radius:10px;
+width:40px;
+height:40px;
+font-size:20px;
 }
 
 .cart-item{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:14px 0;
-  border-bottom:1px solid #292929;
+display:flex;
+justify-content:space-between;
+gap:12px;
+padding:14px 0;
+border-bottom:1px solid #292929;
 }
 
 .qty{
-  display:flex;
-  align-items:center;
-  gap:8px;
+display:flex;
+align-items:center;
+gap:8px;
 }
 
 .qty button{
-  width:32px;
-  height:32px;
-  border-radius:8px;
-  border:0;
-  background:#d4af37;
-  font-weight:bold;
+width:32px;
+height:32px;
+border-radius:8px;
+border:0;
+background:#d4af37;
+font-weight:bold;
 }
 
-/* ================= CHECKOUT ================= */
-
 .total{
-  display:flex;
-  justify-content:space-between;
-  font-size:21px;
-  font-weight:bold;
-  padding-top:15px;
+display:flex;
+justify-content:space-between;
+font-size:21px;
+font-weight:bold;
+padding-top:15px;
 }
 
 .checkout-line{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
+display:flex;
+justify-content:space-between;
+padding:8px 0;
 }
 
-.checkout-delivery{
-  color:#aaa;
-}
+.checkout-delivery{color:#aaa}
 
-/* ================= ADMIN ================= */
+/* ADMIN */
 
 .admin-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap;
 }
 
 .admin-tabs{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:3px;
-  margin-bottom:18px;
-  scrollbar-width:none;
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:3px;
+margin-bottom:18px;
+scrollbar-width:none;
 }
 
 .admin-tabs::-webkit-scrollbar{display:none}
 
 .admin-tab{
-  flex:0 0 auto;
-  background:#181818;
-  color:#bbb;
-  border:1px solid #333;
-  border-radius:12px;
-  padding:12px 15px;
-  font-weight:bold;
+flex:0 0 auto;
+background:#181818;
+color:#bbb;
+border:1px solid #333;
+border-radius:12px;
+padding:12px 15px;
+font-weight:bold;
 }
 
 .admin-tab.active{
-  background:#d4af37;
-  color:#000;
-  border-color:#d4af37;
+background:#d4af37;
+color:#000;
+border-color:#d4af37;
 }
 
 .admin-section{display:none}
@@ -493,212 +457,206 @@ label{
 
 .dashboard-grid,
 .report-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:12px;
 }
 
 .stat{
-  background:#0c0c0c;
-  border:1px solid #2b2b2b;
-  border-radius:14px;
-  padding:17px;
+background:#0c0c0c;
+border:1px solid #2b2b2b;
+border-radius:14px;
+padding:17px;
 }
 
 .stat span{
-  display:block;
-  color:#999;
-  font-size:13px;
-  margin-bottom:8px;
+display:block;
+color:#999;
+font-size:13px;
+margin-bottom:8px;
 }
 
 .stat strong{
-  font-size:23px;
-  color:#d4af37;
+font-size:23px;
+color:#d4af37;
 }
 
 .order{
-  border:1px solid #303030;
-  border-radius:13px;
-  padding:15px;
-  margin-top:12px;
-  background:#101010;
+border:1px solid #303030;
+border-radius:13px;
+padding:15px;
+margin-top:12px;
+background:#101010;
 }
 
 .order-top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
 }
 
 .status{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#d4af37;
-  color:#000;
-  font-size:12px;
-  font-weight:bold;
+display:inline-block;
+padding:6px 10px;
+border-radius:999px;
+background:#d4af37;
+color:#000;
+font-size:12px;
+font-weight:bold;
 }
 
 .order-items{
-  margin:12px 0;
-  color:#bbb;
-  line-height:1.6;
+margin:12px 0;
+color:#bbb;
+line-height:1.6;
 }
 
 .admin-products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:12px;
 }
 
 .admin-product{
-  background:#0d0d0d;
-  border:1px solid #292929;
-  padding:14px;
-  border-radius:12px;
+background:#0d0d0d;
+border:1px solid #292929;
+padding:14px;
+border-radius:12px;
 }
 
 .cash-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:12px;
-  margin-top:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:12px;
+margin-top:15px;
 }
 
 .cash-box{
-  background:#0c0c0c;
-  border:1px solid #2b2b2b;
-  border-radius:13px;
-  padding:15px;
+background:#0c0c0c;
+border:1px solid #2b2b2b;
+border-radius:13px;
+padding:15px;
 }
 
 .cash-box span{
-  display:block;
-  color:#999;
-  font-size:13px;
-  margin-bottom:7px;
+display:block;
+color:#999;
+font-size:13px;
+margin-bottom:7px;
 }
 
 .cash-box strong{
-  font-size:21px;
-  color:#d4af37;
+font-size:21px;
+color:#d4af37;
 }
 
 .cash-status{
-  border-radius:12px;
-  padding:13px;
-  background:#161616;
-  border:1px solid #d4af37;
-  margin-top:15px;
+border-radius:12px;
+padding:13px;
+background:#161616;
+border:1px solid #d4af37;
+margin-top:15px;
 }
 
 .movement{
-  display:grid;
-  grid-template-columns:150px 1fr auto;
-  gap:10px;
-  align-items:end;
+display:grid;
+grid-template-columns:150px 1fr auto;
+gap:10px;
+align-items:end;
 }
 
 .history-item{
-  padding:13px 0;
-  border-bottom:1px solid #292929;
+padding:13px 0;
+border-bottom:1px solid #292929;
 }
 
-.history-item:last-child{
-  border-bottom:0;
-}
+.history-item:last-child{border-bottom:0}
 
 .zone-row{
-  display:grid;
-  grid-template-columns:1fr 130px auto auto;
-  gap:8px;
-  align-items:end;
-  padding:12px 0;
-  border-bottom:1px solid #292929;
+display:grid;
+grid-template-columns:1fr 130px auto auto;
+gap:8px;
+align-items:end;
+padding:12px 0;
+border-bottom:1px solid #292929;
 }
 
 .toast{
-  position:fixed;
-  left:50%;
-  top:85px;
-  transform:translate(-50%,-15px);
-  background:#d4af37;
-  color:#000;
-  padding:12px 18px;
-  border-radius:12px;
-  font-weight:bold;
-  z-index:200;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
+position:fixed;
+left:50%;
+top:85px;
+transform:translate(-50%,-15px);
+background:#d4af37;
+color:#000;
+padding:12px 18px;
+border-radius:12px;
+font-weight:bold;
+z-index:200;
+opacity:0;
+pointer-events:none;
+transition:.25s;
 }
 
 .toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
+opacity:1;
+transform:translate(-50%,0);
 }
 
 .success{
-  padding:25px;
-  text-align:center;
+padding:25px;
+text-align:center;
 }
 
-.success-icon{
-  font-size:55px;
-}
-
-@media(max-width:600px){
-
-header h1{
-  font-size:25px;
-}
-
-main{
-  width:94%;
-}
-
-.movement{
-  grid-template-columns:1fr;
-}
-
-.zone-row{
-  grid-template-columns:1fr 1fr;
-}
-
-}
-
-@media(max-width:430px){
-
-.product-actions{
-  flex-direction:column;
-  align-items:stretch;
-}
-
-.product-actions .btn{
-  width:100%;
-}
-
-.quick-qty{
-  justify-content:center;
-}
-
-.zone-row{
-  grid-template-columns:1fr;
-}
-
-}
-
-/* ================= FOCO ================= */
+.success-icon{font-size:55px}
 
 input:focus,
 textarea:focus,
 select:focus{
-  border-color:#d4af37;
+border-color:#d4af37;
 }
 
+@media(max-width:700px){
+.business-hours-row{
+grid-template-columns:1fr 1fr;
+}
+
+.business-hours-day{
+grid-column:1/-1;
+}
+
+.business-hours-row .btn{
+width:100%;
+}
+}
+
+@media(max-width:600px){
+header h1{font-size:25px}
+main{width:94%}
+
+.movement{
+grid-template-columns:1fr;
+}
+}
+
+@media(max-width:430px){
+.product-actions{
+flex-direction:column;
+align-items:stretch;
+}
+
+.product-actions .btn{
+width:100%;
+}
+
+.quick-qty{
+justify-content:center;
+}
+
+.zone-row{
+grid-template-columns:1fr;
+}
+}
 </style>
 </head>
 
@@ -707,16 +665,13 @@ select:focus{
 <div class="app">
 
 <header>
-
 <h1>🍔 Burguer Gold</h1>
-
 <p>Sabor que vale ouro.</p>
-
 </header>
 
 <main>
 
-<!-- ================= MENU ================= -->
+<!-- MENU -->
 
 <section id="menuScreen" class="screen active">
 
@@ -735,18 +690,14 @@ Escolha seus lanches e monte seu pedido.
 <div id="categoryTabs" class="category-tabs"></div>
 
 <div id="productsContainer" class="products">
-
-<div class="empty">
-Carregando cardápio...
-</div>
-
+<div class="empty">Carregando cardápio...</div>
 </div>
 
 </div>
 
 </section>
 
-<!-- ================= CHECKOUT ================= -->
+<!-- CHECKOUT -->
 
 <section id="checkoutScreen" class="screen">
 
@@ -760,32 +711,16 @@ Carregando cardápio...
 
 <label>
 Nome
-
-<input
-id="customerName"
-type="text"
-placeholder="Seu nome"
-autocomplete="name">
-
+<input id="customerName" type="text" placeholder="Seu nome" autocomplete="name">
 </label>
 
 <label>
 Tipo do pedido
 
-<select
-id="deliveryType"
-onchange="toggleDeliveryFields()">
-
-<option value="ENTREGA">
-Entrega
-</option>
-
-<option value="RETIRADA">
-Retirada na loja
-</option>
-
+<select id="deliveryType" onchange="toggleDeliveryFields()">
+<option value="ENTREGA">Entrega</option>
+<option value="RETIRADA">Retirada na loja</option>
 </select>
-
 </label>
 
 <div id="addressArea">
@@ -793,16 +728,9 @@ Retirada na loja
 <label>
 Bairro
 
-<select
-id="customerNeighborhood"
-onchange="updateCheckoutTotal()">
-
-<option value="">
-Selecione seu bairro
-</option>
-
+<select id="customerNeighborhood" onchange="updateCheckoutTotal()">
+<option value="">Selecione seu bairro</option>
 </select>
-
 </label>
 
 <label>
@@ -815,12 +743,8 @@ autocomplete="street-address"></textarea>
 
 </label>
 
-<div
-id="deliveryFeePreview"
-class="checkout-delivery">
-
+<div id="deliveryFeePreview" class="checkout-delivery">
 Taxa de entrega: R$ 0,00
-
 </div>
 
 </div>
@@ -829,21 +753,10 @@ Taxa de entrega: R$ 0,00
 Forma de pagamento
 
 <select id="payment">
-
-<option value="PIX">
-PIX
-</option>
-
-<option value="DINHEIRO">
-Dinheiro
-</option>
-
-<option value="CARTAO">
-Cartão
-</option>
-
+<option value="PIX">PIX</option>
+<option value="DINHEIRO">Dinheiro</option>
+<option value="CARTAO">Cartão</option>
 </select>
-
 </label>
 
 <div class="card" style="margin-top:20px">
@@ -853,75 +766,43 @@ Cartão
 <div id="checkoutItems"></div>
 
 <div class="checkout-line">
-
 <span>Subtotal</span>
-
-<strong id="checkoutSubtotal">
-R$ 0,00
-</strong>
-
+<strong id="checkoutSubtotal">R$ 0,00</strong>
 </div>
 
 <div class="checkout-line">
-
 <span>Entrega</span>
-
-<strong id="checkoutDelivery">
-R$ 0,00
-</strong>
-
+<strong id="checkoutDelivery">R$ 0,00</strong>
 </div>
 
 <div class="total">
-
 <span>Total</span>
-
-<span
-id="checkoutTotal"
-class="gold">
-
-R$ 0,00
-
-</span>
-
+<span id="checkoutTotal" class="gold">R$ 0,00</span>
 </div>
 
 </div>
 
-<button
-id="confirmOrderBtn"
-class="btn"
-onclick="sendOrder()">
-
+<button id="confirmOrderBtn" class="btn" onclick="sendOrder()">
 Confirmar pedido
-
 </button>
 
-<button
-class="btn secondary"
-onclick="showScreen('menuScreen')">
-
+<button class="btn secondary" onclick="showScreen('menuScreen')">
 Voltar
-
 </button>
 
 </div>
 
 </section>
 
-<!-- ================= SUCESSO ================= -->
+<!-- SUCESSO -->
 
 <section id="successScreen" class="screen">
 
 <div class="card success">
 
-<div class="success-icon">
-✅
-</div>
+<div class="success-icon">✅</div>
 
-<h2>
-Pedido recebido!
-</h2>
+<h2>Pedido recebido!</h2>
 
 <p class="muted">
 Seu pedido foi enviado para a Burguer Gold.
@@ -929,36 +810,24 @@ Seu pedido foi enviado para a Burguer Gold.
 
 <p>
 Número do pedido:
-
-<strong
-id="successOrderId"
-class="gold"></strong>
-
+<strong id="successOrderId" class="gold"></strong>
 </p>
 
-<button
-class="btn"
-onclick="location.reload()">
-
+<button class="btn" onclick="location.reload()">
 Fazer novo pedido
-
 </button>
 
 </div>
 
 </section>
 
-<!-- ================= LOGIN ADMIN ================= -->
+<!-- LOGIN -->
 
 <section id="adminLogin" class="screen">
 
-<div
-class="card"
-style="max-width:450px;margin:40px auto">
+<div class="card" style="max-width:450px;margin:40px auto">
 
-<h2>
-🔐 Administração
-</h2>
+<h2>🔐 Administração</h2>
 
 <p class="muted">
 Entre com a conta da Burguer Gold.
@@ -966,47 +835,25 @@ Entre com a conta da Burguer Gold.
 
 <label>
 E-mail
-
-<input
-id="adminEmail"
-type="email"
-placeholder="E-mail"
-autocomplete="username">
-
+<input id="adminEmail" type="email" placeholder="E-mail" autocomplete="username">
 </label>
 
 <label>
 Senha
-
-<input
-id="adminPassword"
-type="password"
-placeholder="Senha"
-autocomplete="current-password">
-
+<input id="adminPassword" type="password" placeholder="Senha" autocomplete="current-password">
 </label>
 
-<button
-class="btn"
-onclick="adminLogin()">
+<button class="btn" onclick="adminLogin()">Entrar</button>
 
-Entrar
-
-</button>
-
-<button
-class="btn secondary"
-onclick="showScreen('menuScreen')">
-
+<button class="btn secondary" onclick="showScreen('menuScreen')">
 Voltar
-
 </button>
 
 </div>
 
 </section>
 
-<!-- ================= ADMIN ================= -->
+<!-- ADMIN -->
 
 <section id="adminPanel" class="screen">
 
@@ -1015,23 +862,12 @@ Voltar
 <div class="admin-header">
 
 <div>
-
-<h2>
-⚙️ Painel Burguer Gold
-</h2>
-
-<p class="muted">
-Administração da loja
-</p>
-
+<h2>⚙️ Painel Burguer Gold</h2>
+<p class="muted">Administração da loja</p>
 </div>
 
-<button
-class="btn small secondary"
-onclick="adminLogout()">
-
+<button class="btn small secondary" onclick="adminLogout()">
 Sair
-
 </button>
 
 </div>
@@ -1040,73 +876,39 @@ Sair
 
 <div class="admin-tabs">
 
-<button
-id="adminTabDashboard"
-class="admin-tab active"
-onclick="openAdminTab('dashboard')">
-
+<button id="adminTabDashboard" class="admin-tab active" onclick="openAdminTab('dashboard')">
 📊 Visão geral
-
 </button>
 
-<button
-id="adminTabOrders"
-class="admin-tab"
-onclick="openAdminTab('orders')">
-
+<button id="adminTabOrders" class="admin-tab" onclick="openAdminTab('orders')">
 📋 Pedidos
-
 </button>
 
-<button
-id="adminTabProducts"
-class="admin-tab"
-onclick="openAdminTab('products')">
-
+<button id="adminTabProducts" class="admin-tab" onclick="openAdminTab('products')">
 🍔 Produtos
-
 </button>
 
-<button
-id="adminTabCash"
-class="admin-tab"
-onclick="openAdminTab('cash')">
-
+<button id="adminTabCash" class="admin-tab" onclick="openAdminTab('cash')">
 💰 Caixa
-
 </button>
 
-<button
-id="adminTabReports"
-class="admin-tab"
-onclick="openAdminTab('reports')">
-
+<button id="adminTabReports" class="admin-tab" onclick="openAdminTab('reports')">
 📈 Relatórios
-
 </button>
 
-<button
-id="adminTabSettings"
-class="admin-tab"
-onclick="openAdminTab('settings')">
-
+<button id="adminTabSettings" class="admin-tab" onclick="openAdminTab('settings')">
 ⚙️ Configurações
-
 </button>
 
 </div>
 
 <!-- DASHBOARD -->
 
-<div
-id="admin-dashboard"
-class="admin-section active">
+<div id="admin-dashboard" class="admin-section active">
 
 <div class="card">
 
-<h2>
-📊 Visão geral
-</h2>
+<h2>📊 Visão geral</h2>
 
 <div id="dashboardContent">
 Carregando...
@@ -1118,32 +920,19 @@ Carregando...
 
 <!-- PEDIDOS -->
 
-<div
-id="admin-orders"
-class="admin-section">
+<div id="admin-orders" class="admin-section">
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-
-<h2>
-📋 Pedidos
-</h2>
-
-<p class="muted">
-Pedidos recebidos pela loja.
-</p>
-
+<h2>📋 Pedidos</h2>
+<p class="muted">Pedidos recebidos pela loja.</p>
 </div>
 
-<button
-class="btn small secondary"
-onclick="loadOrders()">
-
+<button class="btn small secondary" onclick="loadOrders()">
 ↻ Atualizar
-
 </button>
 
 </div>
@@ -1158,15 +947,11 @@ Carregando pedidos...
 
 <!-- PRODUTOS -->
 
-<div
-id="admin-products-section"
-class="admin-section">
+<div id="admin-products-section" class="admin-section">
 
 <div class="card">
 
-<h2>
-🍔 Produtos
-</h2>
+<h2>🍔 Produtos</h2>
 
 <p class="muted">
 Cadastre os produtos e organize o cardápio.
@@ -1174,89 +959,45 @@ Cadastre os produtos e organize o cardápio.
 
 <label>
 Nome do produto
-
-<input
-id="productName"
-type="text"
-placeholder="Ex: X-Bacon">
-
+<input id="productName" type="text" placeholder="Ex: X-Bacon">
 </label>
 
 <label>
 O que vem no produto?
-
-<textarea
-id="productDescription"
-placeholder="Ex: pão, hambúrguer, queijo, bacon..."></textarea>
-
+<textarea id="productDescription" placeholder="Ex: pão, hambúrguer, queijo, bacon..."></textarea>
 </label>
 
 <label>
 Preço
-
-<input
-id="productPrice"
-type="text"
-inputmode="decimal"
-placeholder="24,90">
-
+<input id="productPrice" type="text" inputmode="decimal" placeholder="24,90">
 </label>
 
 <label>
 Categoria
 
 <select id="productCategory">
-
-<option value="Lanches">
-🍔 Lanches
-</option>
-
-<option value="Combos">
-📦 Combos
-</option>
-
-<option value="Porções">
-🍟 Porções
-</option>
-
-<option value="Bebidas">
-🥤 Bebidas
-</option>
-
-<option value="Sobremesas">
-🍰 Sobremesas
-</option>
-
-<option value="Outros">
-⭐ Outros
-</option>
-
+<option value="Lanches">🍔 Lanches</option>
+<option value="Combos">📦 Combos</option>
+<option value="Porções">🍟 Porções</option>
+<option value="Bebidas">🥤 Bebidas</option>
+<option value="Sobremesas">🍰 Sobremesas</option>
+<option value="Outros">⭐ Outros</option>
 </select>
 
 </label>
 
-<button
-class="btn"
-onclick="createProduct()">
-
+<button class="btn" onclick="createProduct()">
 ➕ Adicionar produto
-
 </button>
 
 </div>
 
 <div class="card">
 
-<h3>
-Produtos cadastrados
-</h3>
+<h3>Produtos cadastrados</h3>
 
-<div
-id="adminProducts"
-class="admin-products">
-
+<div id="adminProducts" class="admin-products">
 Carregando produtos...
-
 </div>
 
 </div>
@@ -1265,32 +1006,19 @@ Carregando produtos...
 
 <!-- CAIXA -->
 
-<div
-id="admin-cash"
-class="admin-section">
+<div id="admin-cash" class="admin-section">
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-
-<h2>
-💰 Caixa
-</h2>
-
-<p class="muted">
-Controle as vendas e faça o fechamento.
-</p>
-
+<h2>💰 Caixa</h2>
+<p class="muted">Controle as vendas e faça o fechamento.</p>
 </div>
 
-<button
-class="btn small secondary"
-onclick="loadCashRegister()">
-
+<button class="btn small secondary" onclick="loadCashRegister()">
 ↻ Atualizar
-
 </button>
 
 </div>
@@ -1305,32 +1033,19 @@ Carregando caixa...
 
 <!-- RELATÓRIOS -->
 
-<div
-id="admin-reports"
-class="admin-section">
+<div id="admin-reports" class="admin-section">
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-
-<h2>
-📈 Relatórios
-</h2>
-
-<p class="muted">
-Resumo das vendas da Burguer Gold.
-</p>
-
+<h2>📈 Relatórios</h2>
+<p class="muted">Resumo das vendas da Burguer Gold.</p>
 </div>
 
-<button
-class="btn small secondary"
-onclick="loadReports()">
-
+<button class="btn small secondary" onclick="loadReports()">
 ↻ Atualizar
-
 </button>
 
 </div>
@@ -1345,82 +1060,51 @@ Carregando relatórios...
 
 <!-- CONFIGURAÇÕES -->
 
-<div
-id="admin-settings"
-class="admin-section">
-
-<!-- HORÁRIOS -->
+<div id="admin-settings" class="admin-section">
 
 <div class="card">
 
-<h2>
-🕐 Horário de funcionamento
-</h2>
+<h2>🕐 Horário de funcionamento</h2>
 
 <p class="muted">
 Defina os dias e horários em que a loja aceita pedidos.
 </p>
 
 <div id="businessHoursAdmin">
-
 Carregando horários...
-
 </div>
 
 </div>
-
-<!-- BAIRROS -->
 
 <div class="card">
 
-<h2>
-📍 Bairros e taxas de entrega
-</h2>
+<h2>📍 Bairros e taxas de entrega</h2>
 
 <p class="muted">
-Cadastre os bairros e defina a taxa de entrega de cada região.
+Cadastre os bairros e defina a taxa de entrega.
 </p>
 
 <div class="card">
 
-<h3>
-➕ Novo bairro
-</h3>
+<h3>➕ Novo bairro</h3>
 
 <label>
 Bairro
-
-<input
-id="zoneNeighborhood"
-type="text"
-placeholder="Ex: Vila Santa Cecília">
-
+<input id="zoneNeighborhood" type="text" placeholder="Ex: Vila Santa Cecília">
 </label>
 
 <label>
 Taxa de entrega
-
-<input
-id="zoneFee"
-type="text"
-inputmode="decimal"
-placeholder="5,00">
-
+<input id="zoneFee" type="text" inputmode="decimal" placeholder="5,00">
 </label>
 
-<button
-class="btn"
-onclick="createDeliveryZone()">
-
+<button class="btn" onclick="createDeliveryZone()">
 ➕ Adicionar bairro
-
 </button>
 
 </div>
 
-<h3>
-📍 Bairros cadastrados
-</h3>
+<h3>📍 Bairros cadastrados</h3>
 
 <div id="zonesContainer">
 Carregando bairros...
@@ -1433,28 +1117,15 @@ Carregando bairros...
 </section>
 
 </main>
-
 </div>
 
-<!-- ================= CARRINHO ================= -->
+<!-- CARRINHO -->
 
-<button
-id="floatingCart"
-class="floating-cart"
-onclick="openCart()">
+<button id="floatingCart" class="floating-cart hidden" onclick="openCart()">
 
 <div>
-
-<span
-id="floatingCartCount"
-class="cart-count">
-
-0
-
-</span>
-
+<span id="floatingCartCount" class="cart-count">0</span>
 itens
-
 </div>
 
 <div id="floatingCartTotal">
@@ -1463,51 +1134,27 @@ R$ 0,00
 
 </button>
 
-<div
-id="cartOverlay"
-class="overlay"
-onclick="closeCart()">
-</div>
+<div id="cartOverlay" class="overlay" onclick="closeCart()"></div>
 
-<div
-id="cartDrawer"
-class="cart-drawer">
+<div id="cartDrawer" class="cart-drawer">
 
 <div class="cart-header">
 
 <div>
-
-<h2>
-🛒 Seu carrinho
-</h2>
-
-<p class="muted">
-Confira seu pedido.
-</p>
-
+<h2>🛒 Seu carrinho</h2>
+<p class="muted">Confira seu pedido.</p>
 </div>
 
-<button
-class="close-cart"
-onclick="closeCart()"
-aria-label="Fechar carrinho">
-
+<button class="close-cart" onclick="closeCart()" aria-label="Fechar carrinho">
 ×
-
 </button>
 
 </div>
 
 <div id="cartContainer"></div>
 
-<button
-id="drawerCheckoutBtn"
-class="btn"
-onclick="goCheckout()"
-style="display:none">
-
+<button id="drawerCheckoutBtn" class="btn" onclick="goCheckout()" style="display:none">
 Continuar pedido
-
 </button>
 
 </div>
@@ -1520,14 +1167,11 @@ Continuar pedido
 SUPABASE
 ============================================================ */
 
-const SUPABASE_URL =
-"https://tliifpjfrjuxkjqyrvnw.supabase.co";
+const SUPABASE_URL="https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
-const SUPABASE_KEY =
-"sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
+const SUPABASE_KEY="sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
-const db =
-supabase.createClient(
+const db=supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
@@ -1538,8 +1182,7 @@ CONFIGURAÇÕES
 
 const DEFAULT_DELIVERY_FEE=0;
 
-const STORE_TIMEZONE=
-"America/Sao_Paulo";
+const STORE_TIMEZONE="America/Sao_Paulo";
 
 const WEEKDAY_NAMES=[
 "Domingo",
@@ -1551,17 +1194,31 @@ const WEEKDAY_NAMES=[
 "Sábado"
 ];
 
+const categories=[
+"Lanches",
+"Combos",
+"Porções",
+"Bebidas",
+"Sobremesas",
+"Outros"
+];
+
+const categoryIcons={
+"Lanches":"🍔",
+"Combos":"📦",
+"Porções":"🍟",
+"Bebidas":"🥤",
+"Sobremesas":"🍰",
+"Outros":"⭐"
+};
+
 let products=[];
 let cart=[];
 let selectedCategory="Todos";
-
 let deliveryZones=[];
-
 let currentCashRegister=null;
 let currentCashData=null;
-
 let adminOrders=[];
-
 let businessHours=[];
 let businessHoursLoaded=false;
 
@@ -1569,67 +1226,37 @@ let businessHoursLoaded=false;
 UTILIDADES
 ============================================================ */
 
-function money(value){
-
-const number=Number(value);
-
-return Number.isFinite(number)
-?
-number.toLocaleString(
-"pt-BR",
-{
-style:"currency",
-currency:"BRL"
-}
-)
-:
-"R$ 0,00";
-
-}
-
 function parseMoney(value){
 
 if(typeof value==="number"){
-
-return Number.isFinite(value)
-?
-value
-:
-0;
-
+return Number.isFinite(value)?value:0;
 }
 
-const str=
-String(value??"")
-.trim();
+const str=String(value??"").trim();
 
-if(!str){
-return 0;
-}
+if(!str)return 0;
 
-if(
-str.includes(",") &&
-str.includes(".")
-){
-
-return Number(
-str
-.replace(/\./g,"")
-.replace(",",".")
-)||0;
-
+if(str.includes(",")&&str.includes(".")){
+return Number(str.replace(/\./g,"").replace(",", "."))||0;
 }
 
 if(str.includes(",")){
-
-return Number(
-str.replace(",",".")
-)||0;
-
+return Number(str.replace(",", "."))||0;
 }
 
 return Number(str)||0;
+}
 
+function money(value){
+
+const number=parseMoney(value);
+
+return Number.isFinite(number)
+?number.toLocaleString("pt-BR",{
+style:"currency",
+currency:"BRL"
+})
+:"R$ 0,00";
 }
 
 function escapeHtml(text){
@@ -1640,55 +1267,37 @@ return String(text??"")
 .replace(/>/g,"&gt;")
 .replace(/"/g,"&quot;")
 .replace(/'/g,"&#039;");
-
 }
 
 function formatDateTime(date){
 
 if(!date)return "-";
 
-const parsed=
-new Date(date);
+const parsed=new Date(date);
 
-if(
-Number.isNaN(parsed.getTime())
-){
+if(Number.isNaN(parsed.getTime()))return "-";
 
-return "-";
-
-}
-
-return parsed.toLocaleString(
-"pt-BR"
-);
-
+return parsed.toLocaleString("pt-BR",{
+timeZone:STORE_TIMEZONE
+});
 }
 
 function showScreen(id){
 
-document
-.querySelectorAll(".screen")
-.forEach(screen=>{
+document.querySelectorAll(".screen").forEach(screen=>{
 screen.classList.remove("active");
 });
 
-const screen=
-document.getElementById(id);
+const screen=document.getElementById(id);
 
-if(screen){
-
-screen.classList.add("active");
-
-}
+if(screen)screen.classList.add("active");
 
 window.scrollTo(0,0);
-
 }
 
 function showToast(message){
 
-const toast=
-document.getElementById("toast");
+const toast=document.getElementById("toast");
 
 if(!toast)return;
 
@@ -1698,71 +1307,43 @@ toast.classList.add("show");
 
 clearTimeout(window.toastTimer);
 
-window.toastTimer=
-setTimeout(()=>{
+window.toastTimer=setTimeout(()=>{
 toast.classList.remove("show");
 },1800);
-
 }
 
 /* ============================================================
-HORÁRIO DE FUNCIONAMENTO
+HORÁRIOS
 ============================================================ */
 
 function normalizeTime(time){
-
-if(!time){
-return null;
-}
-
-return String(time).slice(0,5);
-
+return time?String(time).slice(0,5):null;
 }
 
 function formatTime(time){
-
 return normalizeTime(time)||"--:--";
-
 }
 
 function timeToMinutes(time){
 
 if(!time)return null;
 
-const parts=
-String(time)
-.substring(0,5)
-.split(":")
-.map(Number);
+const parts=String(time).substring(0,5).split(":").map(Number);
 
-if(
-parts.length<2 ||
-parts.some(
-value=>!Number.isFinite(value)
-)
-){
-
-return null;
-
-}
+if(parts.length<2||parts.some(v=>!Number.isFinite(v)))return null;
 
 return parts[0]*60+parts[1];
-
 }
 
 function getStoreNow(){
 
-const parts=
-new Intl.DateTimeFormat(
-"en-US",
-{
+const parts=new Intl.DateTimeFormat("en-US",{
 timeZone:STORE_TIMEZONE,
 weekday:"short",
 hour:"2-digit",
 minute:"2-digit",
 hourCycle:"h23"
-}
-).formatToParts(new Date());
+}).formatToParts(new Date());
 
 const result={};
 
@@ -1781,1196 +1362,545 @@ Sat:6
 };
 
 return{
-
-day:
-weekdayMap[result.weekday],
-
-minutes:
-Number(result.hour)*60+
-Number(result.minute)
-
+day:weekdayMap[result.weekday],
+minutes:Number(result.hour)*60+Number(result.minute)
 };
-
 }
 
 function getBusinessHour(day){
 
-return businessHours.find(
-hour=>
-Number(hour.day_of_week)===
-Number(day)
+return businessHours.find(hour=>
+Number(hour.day_of_week)===Number(day)
 );
-
 }
 
-function intervalOpen(
-hour,
-currentMinutes
-){
+function intervalOpen(hour,currentMinutes){
 
-if(
-!hour ||
-!hour.is_open ||
-!hour.open_time ||
-!hour.close_time
-){
+if(!hour||!hour.is_open||!hour.open_time||!hour.close_time)return false;
 
-return false;
+const open=timeToMinutes(hour.open_time);
+const close=timeToMinutes(hour.close_time);
 
-}
-
-const open=
-timeToMinutes(
-hour.open_time
-);
-
-const close=
-timeToMinutes(
-hour.close_time
-);
-
-if(
-open===null ||
-close===null
-){
-
-return false;
-
-}
-
-if(open===close){
-
-return false;
-
-}
+if(open===null||close===null||open===close)return false;
 
 if(open<close){
-
-return(
-currentMinutes>=open &&
-currentMinutes<close
-);
-
+return currentMinutes>=open&&currentMinutes<close;
 }
 
-return(
-currentMinutes>=open ||
-currentMinutes<close
-);
-
+return currentMinutes>=open||currentMinutes<close;
 }
 
 function isStoreOpenNow(){
 
-if(!businessHoursLoaded){
+if(!businessHoursLoaded||!businessHours.length)return true;
 
+const now=getStoreNow();
+
+const today=getBusinessHour(now.day);
+
+if(today&&intervalOpen(today,now.minutes))return true;
+
+const previousDay=(now.day+6)%7;
+const previous=getBusinessHour(previousDay);
+
+if(previous&&previous.is_open&&previous.open_time&&previous.close_time){
+
+const open=timeToMinutes(previous.open_time);
+const close=timeToMinutes(previous.close_time);
+
+if(open!==null&&close!==null&&open>close&&now.minutes<close){
 return true;
-
 }
-
-if(!businessHours.length){
-
-return true;
-
-}
-
-const now=
-getStoreNow();
-
-const today=
-getBusinessHour(
-now.day
-);
-
-if(
-today &&
-intervalOpen(
-today,
-now.minutes
-)
-){
-
-return true;
-
-}
-
-const previousDay=
-(now.day+6)%7;
-
-const previous=
-getBusinessHour(
-previousDay
-);
-
-if(
-previous &&
-previous.is_open &&
-previous.open_time &&
-previous.close_time
-){
-
-const open=
-timeToMinutes(
-previous.open_time
-);
-
-const close=
-timeToMinutes(
-previous.close_time
-);
-
-if(
-open!==null &&
-close!==null &&
-open>close &&
-now.minutes<close
-){
-
-return true;
-
-}
-
 }
 
 return false;
-
 }
 
 function getCurrentBusinessHour(){
 
-const now=
-getStoreNow();
+const now=getStoreNow();
 
-const today=
-getBusinessHour(
-now.day
-);
+const today=getBusinessHour(now.day);
 
-if(
-today &&
-intervalOpen(
-today,
-now.minutes
-)
-){
+if(today&&intervalOpen(today,now.minutes))return today;
 
-return today;
+const previousDay=(now.day+6)%7;
+const previous=getBusinessHour(previousDay);
 
-}
+if(previous&&previous.is_open&&previous.open_time&&previous.close_time){
 
-const previousDay=
-(now.day+6)%7;
+const open=timeToMinutes(previous.open_time);
+const close=timeToMinutes(previous.close_time);
 
-const previous=
-getBusinessHour(
-previousDay
-);
-
-if(
-previous &&
-previous.is_open &&
-previous.open_time &&
-previous.close_time
-){
-
-const open=
-timeToMinutes(
-previous.open_time
-);
-
-const close=
-timeToMinutes(
-previous.close_time
-);
-
-if(
-open!==null &&
-close!==null &&
-open>close &&
-now.minutes<close
-){
-
+if(open!==null&&close!==null&&open>close&&now.minutes<close){
 return previous;
-
 }
-
 }
 
 return null;
-
 }
 
 function getNextOpening(){
 
-if(!businessHours.length){
+if(!businessHours.length)return null;
 
-return null;
+const now=getStoreNow();
 
-}
+for(let offset=0;offset<8;offset++){
 
-const now=
-getStoreNow();
+const day=(now.day+offset)%7;
+const hour=getBusinessHour(day);
 
-for(
-let offset=0;
-offset<8;
-offset++
-){
+if(!hour||!hour.is_open||!hour.open_time||!hour.close_time)continue;
 
-const day=
-(now.day+offset)%7;
+const open=timeToMinutes(hour.open_time);
+const close=timeToMinutes(hour.close_time);
 
-const hour=
-getBusinessHour(day);
-
-if(
-!hour ||
-!hour.is_open ||
-!hour.open_time ||
-!hour.close_time
-){
-
-continue;
-
-}
-
-const open=
-timeToMinutes(
-hour.open_time
-);
-
-const close=
-timeToMinutes(
-hour.close_time
-);
-
-if(open===null){
-
-continue;
-
-}
+if(open===null)continue;
 
 if(offset===0){
 
-if(
-now.minutes<open &&
-open!==close
-){
-
-return{
-day:day,
-time:hour.open_time
-};
-
+if(now.minutes<open&&open!==close){
+return{day,time:hour.open_time};
 }
 
 }else{
 
-return{
-day:day,
-time:hour.open_time
-};
+return{day,time:hour.open_time};
 
 }
-
 }
 
 return null;
-
 }
 
 function getDayName(day){
-
-return WEEKDAY_NAMES[
-Number(day)
-]||"";
-
+return WEEKDAY_NAMES[Number(day)]||"";
 }
 
 function updateStoreStatus(){
 
-const menuStatus=
-document.getElementById(
-"storeStatus"
-);
+const menuStatus=document.getElementById("storeStatus");
+const checkoutStatus=document.getElementById("checkoutStoreStatus");
 
-const checkoutStatus=
-document.getElementById(
-"checkoutStoreStatus"
-);
-
-const open=
-isStoreOpenNow();
+const open=isStoreOpenNow();
 
 let html="";
 
 if(!businessHoursLoaded){
 
-html=`
-🕐 Verificando horário...
-`;
+html="🕐 Verificando horário...";
 
 }else if(open){
 
-const current=
-getCurrentBusinessHour();
+const current=getCurrentBusinessHour();
 
 html=`
-
 🟢 A loja está ABERTA
-
 <div class="store-hours">
-
-${
-current
-?
-`Atendimento até ${formatTime(current.close_time)}`
-:
-"Recebendo pedidos agora"
-}
-
+${current?`Atendimento até ${formatTime(current.close_time)}`:"Recebendo pedidos agora"}
 </div>
-
 `;
 
 }else{
 
-const next=
-getNextOpening();
+const next=getNextOpening();
 
 html=`
-
 🔴 A loja está FECHADA
-
 <div class="store-hours">
-
-${
-next
-?
-`Próxima abertura: ${getDayName(next.day)} às ${formatTime(next.time)}`
-:
-"Consulte nossos horários."
-}
-
+${next
+?`Próxima abertura: ${getDayName(next.day)} às ${formatTime(next.time)}`
+:"Consulte nossos horários."}
 </div>
-
 `;
 
 }
 
 if(menuStatus){
 
-menuStatus.className=
-"store-status "+
-(
-open
-?
-"store-open"
-:
-"store-closed"
-);
-
+menuStatus.className="store-status "+(open?"store-open":"store-closed");
 menuStatus.innerHTML=html;
 
 }
 
 if(checkoutStatus){
 
-checkoutStatus.className=
-"store-status "+
-(
-open
-?
-"store-open"
-:
-"store-closed"
-);
-
+checkoutStatus.className="store-status "+(open?"store-open":"store-closed");
 checkoutStatus.innerHTML=html;
 
 }
 
 updateCheckoutAvailability();
-
 }
 
 function updateCheckoutAvailability(){
 
-const button=
-document.getElementById(
-"drawerCheckoutBtn"
-);
+const button=document.getElementById("drawerCheckoutBtn");
+const confirmButton=document.getElementById("confirmOrderBtn");
 
-const confirmButton=
-document.getElementById(
-"confirmOrderBtn"
-);
-
-if(!businessHoursLoaded){
+const open=isStoreOpenNow();
 
 if(button){
 
-button.disabled=
-cart.length===0;
+button.disabled=!open||cart.length===0;
 
-button.style.opacity=
-cart.length===0
-?
-".55"
-:
-"1";
+button.style.opacity=open&&cart.length>0?"1":".55";
 
 }
 
 if(confirmButton){
 
-confirmButton.disabled=
-cart.length===0;
+confirmButton.disabled=!open||cart.length===0;
 
-confirmButton.style.opacity=
-cart.length===0
-?
-".55"
-:
-"1";
+confirmButton.style.opacity=open&&cart.length>0?"1":".55";
 
 }
-
-return;
-
-}
-
-const open=
-isStoreOpenNow();
-
-if(button){
-
-button.disabled=
-!open ||
-cart.length===0;
-
-button.style.opacity=
-open && cart.length>0
-?
-"1"
-:
-".55";
-
-button.title=
-open
-?
-""
-:
-"A loja está fechada";
-
-}
-
-if(confirmButton){
-
-confirmButton.disabled=
-!open ||
-cart.length===0;
-
-confirmButton.style.opacity=
-open && cart.length>0
-?
-"1"
-:
-".55";
-
-}
-
 }
 
 async function loadBusinessHours(){
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("business_hours")
 .select("*")
-.order(
-"day_of_week",
-{
-ascending:true
-}
-);
+.order("day_of_week",{ascending:true});
 
 if(error){
 
-console.error(
-"Erro ao carregar horários:",
-error
-);
+console.error("Erro ao carregar horários:",error);
 
 businessHours=[];
 businessHoursLoaded=false;
 
 updateStoreStatus();
 
-const container=
-document.getElementById(
-"businessHoursAdmin"
-);
+const container=document.getElementById("businessHoursAdmin");
 
 if(container){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Erro ao carregar horários.
-
 <br><br>
-
-<span class="muted">
-
-${escapeHtml(error.message)}
-
-</span>
-
+<span class="muted">${escapeHtml(error.message)}</span>
 <br>
-
-<span class="muted">
-
-Código:
-${escapeHtml(
-error.code||"sem código"
-)}
-
-</span>
-
+Código: ${escapeHtml(error.code||"sem código")}
 </div>
 `;
 
 }
 
 return false;
-
 }
 
-let hours=
-Array.isArray(data)
-?
-data
-:
-[];
+let hours=Array.isArray(data)?data:[];
 
 if(hours.length===0){
 
-const defaultHours=
-WEEKDAY_NAMES.map(
-(name,index)=>({
-
+const defaultHours=WEEKDAY_NAMES.map((name,index)=>({
 day_of_week:index,
-
 day_name:name,
-
 is_open:false,
-
 open_time:"18:00",
-
 close_time:"23:00"
+}));
 
-})
-);
-
-const {
-data:created,
-error:createError
-}=await db
+const{data:created,error:createError}=await db
 .from("business_hours")
 .insert(defaultHours)
 .select("*");
 
 if(createError){
 
-console.error(
-"Erro ao criar horários:",
-createError
-);
+console.error("Erro ao criar horários:",createError);
 
 businessHours=[];
 businessHoursLoaded=false;
-
-const container=
-document.getElementById(
-"businessHoursAdmin"
-);
-
-if(container){
-
-container.innerHTML=
-`
-<div class="empty">
-
-Não foi possível criar os horários.
-
-<br><br>
-
-<span class="muted">
-
-${escapeHtml(
-createError.message
-)}
-
-</span>
-
-<br>
-
-<span class="muted">
-
-Código:
-${escapeHtml(
-createError.code||
-"sem código"
-)}
-
-</span>
-
-</div>
-`;
-
-}
 
 alert(
 "ERRO AO CRIAR HORÁRIOS:\n\n"+
 createError.message+
 "\n\nCódigo: "+
-(
-createError.code||
-"sem código"
-)
+(createError.code||"sem código")
 );
 
-updateStoreStatus();
-
 return false;
-
 }
 
-hours=
-created||defaultHours;
-
+hours=created||defaultHours;
 }
 
-businessHours=
-hours.sort(
-(a,b)=>
-Number(a.day_of_week)-
-Number(b.day_of_week)
+businessHours=hours.sort(
+(a,b)=>Number(a.day_of_week)-Number(b.day_of_week)
 );
 
 businessHoursLoaded=true;
 
 updateStoreStatus();
-
 renderBusinessHoursAdmin();
 
 return true;
-
 }
 
 function renderBusinessHoursAdmin(){
 
-const container=
-document.getElementById(
-"businessHoursAdmin"
-);
+const container=document.getElementById("businessHoursAdmin");
 
 if(!container)return;
 
 if(!businessHours.length){
 
-container.innerHTML=
-`
-<div class="empty">
-Nenhum horário cadastrado.
-</div>
+container.innerHTML=`
+<div class="empty">Nenhum horário cadastrado.</div>
 `;
 
 return;
-
 }
 
-container.innerHTML=
-businessHours.map(
-hour=>{
+container.innerHTML=businessHours.map(hour=>{
 
-const day=
-Number(hour.day_of_week);
+const day=Number(hour.day_of_week);
 
 return`
-
 <div class="business-hours-row">
 
 <div class="business-hours-day">
-
 ${getDayName(day)}
-
 </div>
 
 <label class="business-hours-toggle">
-
-<input
-id="bh-open-${day}"
-type="checkbox"
-${hour.is_open?"checked":""}>
-
+<input id="bh-open-${day}" type="checkbox" ${hour.is_open?"checked":""}>
 Aberta
-
 </label>
 
 <div>
-
-<input
-id="bh-start-${day}"
-type="time"
-value="${formatTime(hour.open_time)}">
-
+<input id="bh-start-${day}" type="time" value="${formatTime(hour.open_time)}">
 </div>
 
 <div>
-
-<input
-id="bh-end-${day}"
-type="time"
-value="${formatTime(hour.close_time)}">
-
+<input id="bh-end-${day}" type="time" value="${formatTime(hour.close_time)}">
 </div>
 
-<button
-class="btn small"
-onclick="saveBusinessHour(${day})">
-
+<button class="btn small" onclick="saveBusinessHour(${day})">
 Salvar
-
 </button>
 
 </div>
-
 `;
 
-}
-).join("");
-
+}).join("");
 }
 
 async function loadBusinessHoursAdmin(){
-
 await loadBusinessHours();
-
 renderBusinessHoursAdmin();
-
 }
 
 async function saveBusinessHour(day){
 
-const openCheckbox=
-document.getElementById(
-"bh-open-"+day
-);
+const openCheckbox=document.getElementById("bh-open-"+day);
+const startInput=document.getElementById("bh-start-"+day);
+const endInput=document.getElementById("bh-end-"+day);
 
-const startInput=
-document.getElementById(
-"bh-start-"+day
-);
+if(!openCheckbox||!startInput||!endInput){
 
-const endInput=
-document.getElementById(
-"bh-end-"+day
-);
-
-if(
-!openCheckbox ||
-!startInput ||
-!endInput
-){
-
-alert(
-"Não foi possível encontrar o horário."
-);
-
+alert("Não foi possível encontrar o horário.");
 return;
-
 }
 
-const isOpen=
-openCheckbox.checked;
+const isOpen=openCheckbox.checked;
+const openTime=startInput.value||null;
+const closeTime=endInput.value||null;
 
-const openTime=
-startInput.value||null;
+if(isOpen&&(!openTime||!closeTime)){
 
-const closeTime=
-endInput.value||null;
-
-if(
-isOpen &&
-(!openTime||!closeTime)
-){
-
-alert(
-"Informe o horário de abertura e fechamento."
-);
-
+alert("Informe o horário de abertura e fechamento.");
 return;
-
 }
 
-if(
-isOpen &&
-openTime===closeTime
-){
+if(isOpen&&openTime===closeTime){
 
-alert(
-"O horário de abertura e fechamento não pode ser igual."
-);
-
+alert("O horário de abertura e fechamento não pode ser igual.");
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("business_hours")
 .update({
-
 is_open:isOpen,
-
 open_time:openTime,
-
 close_time:closeTime
-
 })
-.eq(
-"day_of_week",
-Number(day)
-);
+.eq("day_of_week",Number(day));
 
 if(error){
-
-console.error(
-"ERRO AO SALVAR HORÁRIO:",
-error
-);
 
 alert(
 "ERRO AO SALVAR HORÁRIO:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 await loadBusinessHours();
-
-renderBusinessHoursAdmin();
-
-showToast(
-"🕐 Horário salvo!"
-);
-
+showToast("🕐 Horário salvo!");
 }
 
 /* ============================================================
-CATEGORIAS
+PRODUTOS
 ============================================================ */
 
-const categories=[
-"Lanches",
-"Combos",
-"Porções",
-"Bebidas",
-"Sobremesas",
-"Outros"
-];
-
-const categoryIcons={
-
-"Lanches":"🍔",
-
-"Combos":"📦",
-
-"Porções":"🍟",
-
-"Bebidas":"🥤",
-
-"Sobremesas":"🍰",
-
-"Outros":"⭐"
-
-};
-
 function getProductCategory(product){
-
 return product.category||"Lanches";
-
 }
 
 function renderCategoryTabs(){
 
-const container=
-document.getElementById(
-"categoryTabs"
-);
+const container=document.getElementById("categoryTabs");
 
 if(!container)return;
 
-const available=
-categories.filter(
-category=>
-products.some(
-product=>
-getProductCategory(product)===
-category
-)
+const available=categories.filter(category=>
+products.some(product=>getProductCategory(product)===category)
 );
 
 let html=`
-
-<button
-class="category-tab ${
-selectedCategory==="Todos"
-?
-"active"
-:
-""
-}"
+<button class="category-tab ${selectedCategory==="Todos"?"active":""}"
 onclick="selectCategory('Todos')">
-
 🍽️ Todos
-
 </button>
-
 `;
 
-available.forEach(
-category=>{
+available.forEach(category=>{
 
 html+=`
-
-<button
-class="category-tab ${
-selectedCategory===category
-?
-"active"
-:
-""
-}"
+<button class="category-tab ${selectedCategory===category?"active":""}"
 onclick="selectCategory(${JSON.stringify(category)})">
-
-${categoryIcons[category]}
-${category}
-
+${categoryIcons[category]} ${category}
 </button>
-
 `;
 
 });
 
 container.innerHTML=html;
-
 }
 
 function selectCategory(category){
 
 selectedCategory=
-categories.includes(category) ||
-category==="Todos"
-?
-category
-:
-"Todos";
+categories.includes(category)||category==="Todos"
+?category
+:"Todos";
 
 renderCategoryTabs();
-
 renderProducts();
-
 }
 
 async function loadProducts(){
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("products")
 .select("*")
 .eq("active",true)
-.order(
-"id",
-{
-ascending:true
-}
-);
+.order("id",{ascending:true});
 
 if(error){
 
-console.error(
-"Erro ao carregar produtos:",
-error
-);
+console.error("Erro ao carregar produtos:",error);
 
-const container=
-document.getElementById(
-"productsContainer"
-);
+const container=document.getElementById("productsContainer");
 
 if(container){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Não foi possível carregar o cardápio.
-
 <br><br>
-
-<span class="muted">
-
-${escapeHtml(error.message)}
-
-</span>
-
+<span class="muted">${escapeHtml(error.message)}</span>
 </div>
 `;
 
 }
 
 return false;
-
 }
 
-products=
-Array.isArray(data)
-?
-data
-:
-[];
+products=Array.isArray(data)?data:[];
 
 if(
 selectedCategory!=="Todos" &&
-!products.some(
-p=>
-getProductCategory(p)===
-selectedCategory
-)
+!products.some(p=>getProductCategory(p)===selectedCategory)
 ){
 
 selectedCategory="Todos";
-
 }
 
 renderCategoryTabs();
-
 renderProducts();
 
 return true;
-
 }
 
 function getCartQty(productId){
 
-const item=
-cart.find(
-item=>
-String(item.id)===
-String(productId)
+const item=cart.find(item=>
+String(item.id)===String(productId)
 );
 
-return item
-?
-Number(item.qty)||0
-:
-0;
-
+return item?Number(item.qty)||0:0;
 }
 
 function renderProducts(){
 
-const container=
-document.getElementById(
-"productsContainer"
-);
+const container=document.getElementById("productsContainer");
 
 if(!container)return;
 
 if(!products.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Nenhum produto disponível no momento.
-
 </div>
 `;
 
 return;
-
 }
 
-let filtered=
-products;
+let filtered=products;
 
-if(
-selectedCategory!=="Todos"
-){
+if(selectedCategory!=="Todos"){
 
-filtered=
-products.filter(
-product=>
-getProductCategory(product)===
-selectedCategory
+filtered=products.filter(product=>
+getProductCategory(product)===selectedCategory
 );
 
 }
 
 if(!filtered.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Nenhum produto nesta categoria.
-
 </div>
 `;
 
 return;
-
 }
 
-container.innerHTML=
-filtered.map(
-product=>{
+container.innerHTML=filtered.map(product=>{
 
-const qty=
-getCartQty(product.id);
+const qty=getCartQty(product.id);
 
 return`
-
 <div class="product">
 
-${
-qty>0
-?
-`<div class="product-qty-badge">${qty}</div>`
-:
-""
-}
+${qty>0?`<div class="product-qty-badge">${qty}</div>`:""}
 
-<h3>
-${escapeHtml(product.name)}
-</h3>
+<h3>${escapeHtml(product.name)}</h3>
 
 <div class="description">
 ${escapeHtml(product.description||"")}
@@ -2982,85 +1912,65 @@ ${money(product.price)}
 
 <div class="product-actions">
 
-<button
-class="btn"
+<button class="btn"
 onclick="addToCart(${JSON.stringify(String(product.id))})">
 
 ${qty>0?"✓ Adicionado":"Adicionar"}
 
 </button>
 
-${
-qty>0
-?
-`
+${qty>0?`
 
 <div class="quick-qty">
 
-<button
-onclick="changeQty(${JSON.stringify(String(product.id))},-1)">
-
+<button onclick="changeQty(${JSON.stringify(String(product.id))},-1)">
 −
-
 </button>
 
-<strong>
-${qty}
-</strong>
+<strong>${qty}</strong>
 
-<button
-onclick="changeQty(${JSON.stringify(String(product.id))},1)">
-
+<button onclick="changeQty(${JSON.stringify(String(product.id))},1)">
 +
-
 </button>
 
 </div>
 
-`
-:
-""
-}
+`:""}
 
 </div>
 
 </div>
-
 `;
 
-}
-).join("");
-
+}).join("");
 }
 
 /* ============================================================
-CARRINHO
+CARRINHO — CORRIGIDO
 ============================================================ */
 
 function addToCart(productId){
 
-const product=
-products.find(
-item=>
-String(item.id)===
-String(productId)
+console.log("🍔 Adicionando produto:",productId);
+
+const product=products.find(item=>
+String(item.id)===String(productId)
 );
 
 if(!product){
 
-showToast(
-"Produto não encontrado."
+console.error(
+"❌ Produto não encontrado:",
+productId,
+products
 );
 
+showToast("Produto não encontrado.");
 return;
-
 }
 
-const existing=
-cart.find(
-item=>
-String(item.id)===
-String(productId)
+const existing=cart.find(item=>
+String(item.id)===String(productId)
 );
 
 if(existing){
@@ -3070,39 +1980,26 @@ existing.qty++;
 }else{
 
 cart.push({
-
 id:product.id,
-
 name:product.name,
-
-price:Number(product.price)||0,
-
+price:parseMoney(product.price),
 qty:1
-
 });
 
 }
 
-renderCart();
+console.log("🛒 CARRINHO:",cart);
 
+renderCart();
 renderProducts();
 
-showToast(
-"🍔 Adicionado ao carrinho!"
-);
-
+showToast("🍔 Adicionado ao carrinho!");
 }
 
-function changeQty(
-productId,
-amount
-){
+function changeQty(productId,amount){
 
-const item=
-cart.find(
-item=>
-String(item.id)===
-String(productId)
+const item=cart.find(item=>
+String(item.id)===String(productId)
 );
 
 if(!item)return;
@@ -3111,19 +2008,14 @@ item.qty+=Number(amount)||0;
 
 if(item.qty<=0){
 
-cart=
-cart.filter(
-item=>
-String(item.id)!==
-String(productId)
+cart=cart.filter(item=>
+String(item.id)!==String(productId)
 );
 
 }
 
 renderCart();
-
 renderProducts();
-
 }
 
 function getCartTotal(){
@@ -3131,150 +2023,103 @@ function getCartTotal(){
 return cart.reduce(
 (total,item)=>
 total+
-(
-Number(item.price)||0
-)*
-(
-Number(item.qty)||0
-),
+parseMoney(item.price)*
+(Number(item.qty)||0),
 0
 );
-
 }
 
 function getCartCount(){
 
 return cart.reduce(
 (total,item)=>
-total+
-(
-Number(item.qty)||0
-),
+total+(Number(item.qty)||0),
 0
 );
-
 }
 
 /* ============================================================
-CARRINHO CORRIGIDO
+RENDER CART
 ============================================================ */
 
 function renderCart(){
 
-const container=
-document.getElementById(
-"cartContainer"
-);
+const container=document.getElementById("cartContainer");
+const floating=document.getElementById("floatingCart");
+const drawerButton=document.getElementById("drawerCheckoutBtn");
+const floatingCount=document.getElementById("floatingCartCount");
+const floatingTotal=document.getElementById("floatingCartTotal");
 
-const floating=
-document.getElementById(
-"floatingCart"
-);
+if(!container||!floating||!drawerButton){
 
-const drawerButton=
-document.getElementById(
-"drawerCheckoutBtn"
-);
-
-const floatingCount=
-document.getElementById(
-"floatingCartCount"
-);
-
-const floatingTotal=
-document.getElementById(
-"floatingCartTotal"
-);
-
-if(
-!container ||
-!floating ||
-!drawerButton
-){
-
+console.error("❌ Elementos do carrinho não encontrados.");
 return;
-
 }
 
-const count=
-getCartCount();
+const count=getCartCount();
+const total=getCartTotal();
 
-const total=
-getCartTotal();
+console.log("🛒 QUANTIDADE:",count,"TOTAL:",total);
 
 if(floatingCount){
-
-floatingCount.textContent=
-count;
-
+floatingCount.textContent=String(count);
 }
 
 if(floatingTotal){
-
-floatingTotal.textContent=
-money(total);
-
+floatingTotal.textContent=money(total);
 }
 
-/* ================= CARRINHO FLUTUANTE ================= */
+/* BOTÃO FLUTUANTE */
 
 if(count>0){
 
-floating.classList.add(
-"visible"
-);
+floating.classList.remove("hidden");
+floating.classList.add("visible");
 
-floating.style.display=
-"flex";
-
-floating.style.opacity=
-"1";
+floating.style.setProperty("display","flex","important");
+floating.style.setProperty("visibility","visible","important");
+floating.style.setProperty("opacity","1","important");
+floating.style.setProperty("pointer-events","auto","important");
 
 }else{
 
-floating.classList.remove(
-"visible"
-);
+floating.classList.remove("visible");
+floating.classList.add("hidden");
 
-floating.style.display=
-"none";
-
-floating.style.opacity=
-"1";
-
+floating.style.setProperty("display","none","important");
 }
 
-/* ================= CARRINHO VAZIO ================= */
+/* CARRINHO VAZIO */
 
 if(!cart.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Seu carrinho está vazio.
-
 </div>
 `;
 
-drawerButton.style.display=
-"none";
+drawerButton.style.setProperty(
+"display",
+"none",
+"important"
+);
 
 updateCheckoutAvailability();
-
 return;
-
 }
 
-/* ================= CARRINHO COM ITENS ================= */
+/* ITENS */
 
-drawerButton.style.display=
-"block";
+drawerButton.style.setProperty(
+"display",
+"block",
+"important"
+);
 
 container.innerHTML=
 
-cart.map(
-item=>`
+cart.map(item=>`
 
 <div class="cart-item">
 
@@ -3290,8 +2135,8 @@ ${money(item.price)} cada
 
 <div class="gold">
 ${money(
-Number(item.price)*
-Number(item.qty)
+parseMoney(item.price)*
+(Number(item.qty)||0)
 )}
 </div>
 
@@ -3323,8 +2168,7 @@ aria-label="Aumentar quantidade">
 
 </div>
 
-`
-).join("")+
+`).join("")+
 
 `
 
@@ -3343,61 +2187,32 @@ ${money(total)}
 `;
 
 updateCheckoutAvailability();
-
 }
 
 function openCart(){
 
 if(!cart.length){
 
-showToast(
-"Seu carrinho está vazio."
-);
-
+showToast("Seu carrinho está vazio.");
 return;
-
 }
 
-document
-.getElementById(
-"cartOverlay"
-)
-.classList.add("active");
-
-document
-.getElementById(
-"cartDrawer"
-)
-.classList.add("active");
-
+document.getElementById("cartOverlay").classList.add("active");
+document.getElementById("cartDrawer").classList.add("active");
 }
 
 function closeCart(){
 
-document
-.getElementById(
-"cartOverlay"
-)
-.classList.remove("active");
-
-document
-.getElementById(
-"cartDrawer"
-)
-.classList.remove("active");
-
+document.getElementById("cartOverlay").classList.remove("active");
+document.getElementById("cartDrawer").classList.remove("active");
 }
 
 async function goCheckout(){
 
 if(!cart.length){
 
-showToast(
-"Seu carrinho está vazio."
-);
-
+showToast("Seu carrinho está vazio.");
 return;
-
 }
 
 await loadBusinessHours();
@@ -3410,9 +2225,7 @@ alert(
 );
 
 updateStoreStatus();
-
 return;
-
 }
 
 closeCart();
@@ -3420,13 +2233,9 @@ closeCart();
 await loadDeliveryZones();
 
 renderNeighborhoods();
-
 renderCheckout();
 
-showScreen(
-"checkoutScreen"
-);
-
+showScreen("checkoutScreen");
 }
 
 /* ============================================================
@@ -3435,288 +2244,160 @@ ENTREGA
 
 async function loadDeliveryZones(){
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("delivery_zones")
 .select("*")
 .eq("active",true)
-.order(
-"neighborhood",
-{
-ascending:true
-}
-);
+.order("neighborhood",{ascending:true});
 
 if(error){
 
-console.error(
-"Erro ao carregar bairros:",
-error
-);
+console.error("Erro ao carregar bairros:",error);
 
 deliveryZones=[];
-
 return false;
-
 }
 
-deliveryZones=
-Array.isArray(data)
-?
-data
-:
-[];
+deliveryZones=Array.isArray(data)?data:[];
 
 return true;
-
 }
 
 function renderNeighborhoods(){
 
-const select=
-document.getElementById(
-"customerNeighborhood"
-);
+const select=document.getElementById("customerNeighborhood");
 
 if(!select)return;
 
-select.innerHTML=
-`
+select.innerHTML=`
 <option value="">
 Selecione seu bairro
 </option>
 `+
-deliveryZones.map(
-zone=>`
+deliveryZones.map(zone=>`
 
-<option
-value="${escapeHtml(String(zone.id))}">
-
-${escapeHtml(zone.neighborhood)}
-—
-${money(zone.fee)}
-
+<option value="${escapeHtml(String(zone.id))}">
+${escapeHtml(zone.neighborhood)} — ${money(zone.fee)}
 </option>
 
-`
-).join("");
-
+`).join("");
 }
 
 function getSelectedDeliveryFee(){
 
-const select=
-document.getElementById(
-"customerNeighborhood"
+const select=document.getElementById("customerNeighborhood");
+
+if(!select||!select.value)return DEFAULT_DELIVERY_FEE;
+
+const zone=deliveryZones.find(zone=>
+String(zone.id)===String(select.value)
 );
 
-if(
-!select ||
-!select.value
-){
-
-return DEFAULT_DELIVERY_FEE;
-
-}
-
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
-);
-
-return zone
-?
-Number(zone.fee)||0
-:
-DEFAULT_DELIVERY_FEE;
-
+return zone?parseMoney(zone.fee):DEFAULT_DELIVERY_FEE;
 }
 
 function getSelectedNeighborhood(){
 
-const select=
-document.getElementById(
-"customerNeighborhood"
+const select=document.getElementById("customerNeighborhood");
+
+if(!select||!select.value)return "";
+
+const zone=deliveryZones.find(zone=>
+String(zone.id)===String(select.value)
 );
 
-if(
-!select ||
-!select.value
-){
-
-return "";
-
-}
-
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
-);
-
-return zone
-?
-String(zone.neighborhood||"")
-:
-"";
-
+return zone?String(zone.neighborhood||""):"";
 }
 
 function renderCheckout(){
 
-const container=
-document.getElementById(
-"checkoutItems"
-);
+const container=document.getElementById("checkoutItems");
 
 if(!container)return;
 
-container.innerHTML=
-cart.map(
-item=>`
+container.innerHTML=cart.map(item=>`
 
 <div class="cart-item">
 
 <span>
-${item.qty}x
-${escapeHtml(item.name)}
+${item.qty}x ${escapeHtml(item.name)}
 </span>
 
 <strong>
 ${money(
-Number(item.price)*
-Number(item.qty)
+parseMoney(item.price)*
+(Number(item.qty)||0)
 )}
 </strong>
 
 </div>
 
-`
-).join("");
+`).join("");
 
 updateCheckoutTotal();
-
 updateStoreStatus();
-
 }
 
 function updateCheckoutTotal(){
 
-const subtotal=
-getCartTotal();
+const subtotal=getCartTotal();
 
-const deliveryType=
-document.getElementById(
-"deliveryType"
-);
+const deliveryType=document.getElementById("deliveryType");
 
 if(!deliveryType)return;
 
 const fee=
 deliveryType.value==="ENTREGA"
-?
-getSelectedDeliveryFee()
-:
-0;
+?getSelectedDeliveryFee()
+:0;
 
-const subtotalElement=
-document.getElementById(
-"checkoutSubtotal"
-);
-
-const deliveryElement=
-document.getElementById(
-"checkoutDelivery"
-);
-
-const totalElement=
-document.getElementById(
-"checkoutTotal"
-);
-
-const previewElement=
-document.getElementById(
-"deliveryFeePreview"
-);
+const subtotalElement=document.getElementById("checkoutSubtotal");
+const deliveryElement=document.getElementById("checkoutDelivery");
+const totalElement=document.getElementById("checkoutTotal");
+const previewElement=document.getElementById("deliveryFeePreview");
 
 if(subtotalElement){
-
-subtotalElement.textContent=
-money(subtotal);
-
+subtotalElement.textContent=money(subtotal);
 }
 
 if(deliveryElement){
-
-deliveryElement.textContent=
-money(fee);
-
+deliveryElement.textContent=money(fee);
 }
 
 if(totalElement){
-
-totalElement.textContent=
-money(
-subtotal+fee
-);
-
+totalElement.textContent=money(subtotal+fee);
 }
 
 if(previewElement){
-
-previewElement.textContent=
-"Taxa de entrega: "+
-money(fee);
-
+previewElement.textContent="Taxa de entrega: "+money(fee);
 }
-
 }
 
 function toggleDeliveryFields(){
 
-const type=
-document.getElementById(
-"deliveryType"
-);
-
-const area=
-document.getElementById(
-"addressArea"
-);
+const type=document.getElementById("deliveryType");
+const area=document.getElementById("addressArea");
 
 if(!type||!area)return;
 
 area.style.display=
 type.value==="ENTREGA"
-?
-"block"
-:
-"none";
+?"block"
+:"none";
 
 updateCheckoutTotal();
-
 }
 
 /* ============================================================
-ENVIAR PEDIDO
+PEDIDO
 ============================================================ */
 
 async function sendOrder(){
 
-const confirmButton=
-document.getElementById(
-"confirmOrderBtn"
-);
+const confirmButton=document.getElementById("confirmOrderBtn");
 
 if(confirmButton){
-
 confirmButton.disabled=true;
-
 }
 
 try{
@@ -3731,132 +2412,91 @@ alert(
 );
 
 updateStoreStatus();
-
-showScreen(
-"menuScreen"
-);
-
+showScreen("menuScreen");
 return;
-
 }
 
-const customerName=
-document.getElementById(
-"customerName"
-).value.trim();
+const customerName=document
+.getElementById("customerName")
+.value
+.trim();
 
-const deliveryType=
-document.getElementById(
-"deliveryType"
-).value;
+const deliveryType=document
+.getElementById("deliveryType")
+.value;
 
-const delivery=
-deliveryType==="ENTREGA";
+const delivery=deliveryType==="ENTREGA";
 
-const address=
-document.getElementById(
-"customerAddress"
-).value.trim();
+const address=document
+.getElementById("customerAddress")
+.value
+.trim();
 
-const payment=
-document.getElementById(
-"payment"
-).value;
+const payment=document
+.getElementById("payment")
+.value;
 
-const neighborhood=
-getSelectedNeighborhood();
+const neighborhood=getSelectedNeighborhood();
 
 if(!customerName){
 
-alert(
-"Digite seu nome."
-);
-
+alert("Digite seu nome.");
 return;
-
 }
 
 if(delivery&&!neighborhood){
 
-alert(
-"Selecione seu bairro."
-);
-
+alert("Selecione seu bairro.");
 return;
-
 }
 
 if(delivery&&!address){
 
-alert(
-"Digite o endereço de entrega."
-);
-
+alert("Digite o endereço de entrega.");
 return;
-
 }
 
 if(!cart.length){
 
-alert(
-"Seu carrinho está vazio."
-);
-
+alert("Seu carrinho está vazio.");
 return;
-
 }
 
 const deliveryFee=
 delivery
-?
-getSelectedDeliveryFee()
-:
-0;
+?getSelectedDeliveryFee()
+:0;
 
-const total=
-getCartTotal()+
-deliveryFee;
+const total=getCartTotal()+deliveryFee;
 
 const orderId=
 Date.now()*1000+
-Math.floor(
-Math.random()*1000
-);
+Math.floor(Math.random()*1000);
 
 const finalAddress=
 delivery
-?
-`${address} — Bairro: ${neighborhood}`
-:
-"RETIRADA NA LOJA";
+?`${address} — Bairro: ${neighborhood}`
+:"RETIRADA NA LOJA";
 
 const orderData={
 
 id:orderId,
 
-customer_name:
-customerName,
+customer_name:customerName,
 
-address:
-finalAddress,
+address:finalAddress,
 
-payment:
-payment,
+payment:payment,
 
-delivery:
-delivery,
+delivery:delivery,
 
-total:
-total,
+total:total,
 
-status:
-"RECEBIDO"
+status:"RECEBIDO"
 
 };
 
-const {
-error:orderError
-}=await db
+const{error:orderError}=await db
 .from("orders")
 .insert(orderData);
 
@@ -3871,52 +2511,27 @@ alert(
 "ERRO AO CRIAR PEDIDO:\n\n"+
 orderError.message+
 "\n\nCódigo: "+
-(
-orderError.code||
-"sem código"
-)
+(orderError.code||"sem código")
 );
 
 return;
-
 }
 
-/*
-Usamos IDs únicos para os itens sem depender
-de multiplicação de números grandes.
-*/
+const items=cart.map(item=>({
 
-const items=
-cart.map(
-item=>({
+order_id:orderId,
 
-order_id:
-orderId,
+product_id:item.id,
 
-product_id:
-item.id,
+name:item.name,
 
-name:
-item.name,
+qty:item.qty,
 
-qty:
-item.qty,
+price:item.price
 
-price:
-item.price
+}));
 
-})
-);
-
-/*
-Se a coluna "id" de order_items for obrigatória
-e não tiver default no Supabase, o banco deverá
-gerá-la automaticamente.
-*/
-
-const {
-error:itemsError
-}=await db
+const{error:itemsError}=await db
 .from("order_items")
 .insert(items);
 
@@ -3931,35 +2546,23 @@ alert(
 "ERRO AO SALVAR OS ITENS:\n\n"+
 itemsError.message+
 "\n\nCódigo: "+
-(
-itemsError.code||
-"sem código"
-)
+(itemsError.code||"sem código")
 );
 
 return;
-
 }
 
-const successId=
-document.getElementById(
-"successOrderId"
-);
+const successId=document.getElementById("successOrderId");
 
 if(successId){
-
-successId.textContent=
-"#"+orderId;
-
+successId.textContent="#"+orderId;
 }
 
 cart=[];
 
 renderCart();
 
-showScreen(
-"successScreen"
-);
+showScreen("successScreen");
 
 }catch(error){
 
@@ -3970,10 +2573,7 @@ error
 
 alert(
 "Ocorreu um erro inesperado ao enviar o pedido.\n\n"+
-(
-error?.message||
-"Erro desconhecido."
-)
+(error?.message||"Erro desconhecido.")
 );
 
 }finally{
@@ -3981,13 +2581,12 @@ error?.message||
 if(confirmButton){
 
 confirmButton.disabled=
-!isStoreOpenNow() ||
+!isStoreOpenNow()||
 cart.length===0;
 
 }
 
 }
-
 }
 
 /* ============================================================
@@ -3996,58 +2595,32 @@ LOGIN
 
 async function adminLogin(){
 
-const email=
-document.getElementById(
-"adminEmail"
-).value.trim();
-
-const password=
-document.getElementById(
-"adminPassword"
-).value;
+const email=document.getElementById("adminEmail").value.trim();
+const password=document.getElementById("adminPassword").value;
 
 if(!email||!password){
 
-alert(
-"Preencha e-mail e senha."
-);
-
+alert("Preencha e-mail e senha.");
 return;
-
 }
 
-const {
-data,
-error
-}=await db.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
+const{data,error}=await db.auth.signInWithPassword({
+email,
+password
 });
 
 if(error){
 
-console.error(
-"Erro de login:",
-error
-);
+console.error("Erro de login:",error);
 
-alert(
-"E-mail ou senha incorretos."
-);
-
+alert("E-mail ou senha incorretos.");
 return;
-
 }
 
 if(data&&data.session){
 
 await showAdminPanel();
-
 }
-
 }
 
 async function adminLogout(){
@@ -4055,140 +2628,67 @@ async function adminLogout(){
 await db.auth.signOut();
 
 currentCashRegister=null;
-
 currentCashData=null;
-
 adminOrders=[];
 
-showScreen(
-"menuScreen"
-);
-
+showScreen("menuScreen");
 }
 
 /* ============================================================
-ABAS ADMIN
+ADMIN
 ============================================================ */
 
 function openAdminTab(tab){
 
-document
-.querySelectorAll(".admin-tab")
-.forEach(
-button=>{
-button.classList.remove(
-"active"
-);
-}
-);
+document.querySelectorAll(".admin-tab").forEach(button=>{
+button.classList.remove("active");
+});
 
-document
-.querySelectorAll(".admin-section")
-.forEach(
-section=>{
-section.classList.remove(
-"active"
-);
-}
-);
+document.querySelectorAll(".admin-section").forEach(section=>{
+section.classList.remove("active");
+});
 
-const button=
-document.getElementById(
+const button=document.getElementById(
 "adminTab"+
 tab.charAt(0).toUpperCase()+
 tab.slice(1)
 );
 
-if(button){
+if(button)button.classList.add("active");
 
-button.classList.add(
-"active"
-);
-
-}
-
-const section=
-document.getElementById(
+const section=document.getElementById(
 "admin-"+
-(
-tab==="products"
-?
-"products-section"
-:
-tab
-)
+(tab==="products"?"products-section":tab)
 );
 
-if(section){
+if(section)section.classList.add("active");
 
-section.classList.add(
-"active"
-);
-
-}
-
-if(tab==="dashboard"){
-
-renderDashboard();
-
-}
-
-if(tab==="orders"){
-
-loadOrders();
-
-}
-
-if(tab==="products"){
-
-loadAdminProducts();
-
-}
-
-if(tab==="cash"){
-
-loadCashRegister();
-
-}
-
-if(tab==="reports"){
-
-loadReports();
-
-}
+if(tab==="dashboard")renderDashboard();
+if(tab==="orders")loadOrders();
+if(tab==="products")loadAdminProducts();
+if(tab==="cash")loadCashRegister();
+if(tab==="reports")loadReports();
 
 if(tab==="settings"){
 
 loadBusinessHoursAdmin();
-
 loadDeliveryZonesAdmin();
 
 }
-
 }
 
 async function showAdminPanel(){
 
-showScreen(
-"adminPanel"
-);
+showScreen("adminPanel");
 
 await loadOrders();
-
 await loadAdminProducts();
-
 await loadCashRegister();
-
 await loadReports();
-
 await loadBusinessHoursAdmin();
-
 await loadDeliveryZonesAdmin();
 
-openAdminTab(
-"dashboard"
-);
-
+openAdminTab("dashboard");
 }
 
 /* ============================================================
@@ -4197,191 +2697,97 @@ DASHBOARD
 
 function renderDashboard(){
 
-const container=
-document.getElementById(
-"dashboardContent"
-);
+const container=document.getElementById("dashboardContent");
 
 if(!container)return;
 
-const orders=
-adminOrders||[];
+const orders=adminOrders||[];
 
-const total=
-orders.reduce(
-(sum,order)=>
-sum+
-Number(order.total||0),
+const total=orders.reduce(
+(sum,order)=>sum+parseMoney(order.total),
 0
 );
 
-const average=
-orders.length
-?
-total/orders.length
-:
-0;
+const average=orders.length?total/orders.length:0;
 
-const received=
-orders.filter(
-o=>o.status==="RECEBIDO"
-).length;
-
-const preparing=
-orders.filter(
-o=>o.status==="PREPARANDO"
-).length;
-
-const ready=
-orders.filter(
-o=>o.status==="PRONTO"
-).length;
-
-const delivered=
-orders.filter(
-o=>o.status==="ENTREGUE"
-).length;
+const received=orders.filter(o=>o.status==="RECEBIDO").length;
+const preparing=orders.filter(o=>o.status==="PREPARANDO").length;
+const ready=orders.filter(o=>o.status==="PRONTO").length;
+const delivered=orders.filter(o=>o.status==="ENTREGUE").length;
 
 container.innerHTML=`
 
 <div class="dashboard-grid">
 
 <div class="stat">
-
-<span>
-Faturamento
-</span>
-
-<strong>
-${money(total)}
-</strong>
-
+<span>Faturamento</span>
+<strong>${money(total)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Pedidos
-</span>
-
-<strong>
-${orders.length}
-</strong>
-
+<span>Pedidos</span>
+<strong>${orders.length}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Ticket médio
-</span>
-
-<strong>
-${money(average)}
-</strong>
-
+<span>Ticket médio</span>
+<strong>${money(average)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Recebidos
-</span>
-
-<strong>
-${received}
-</strong>
-
+<span>Recebidos</span>
+<strong>${received}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Preparando
-</span>
-
-<strong>
-${preparing}
-</strong>
-
+<span>Preparando</span>
+<strong>${preparing}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Prontos
-</span>
-
-<strong>
-${ready}
-</strong>
-
+<span>Prontos</span>
+<strong>${ready}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Entregues
-</span>
-
-<strong>
-${delivered}
-</strong>
-
+<span>Entregues</span>
+<strong>${delivered}</strong>
 </div>
 
 </div>
 
 <div class="card" style="margin-top:18px">
 
-<h3>
-🕐 Pedidos recentes
-</h3>
+<h3>🕐 Pedidos recentes</h3>
 
 ${
 orders.length
 ?
-orders.slice(0,5).map(
-order=>`
+orders.slice(0,5).map(order=>`
 
 <div class="history-item">
 
 <strong>
-#${order.id}
+#${escapeHtml(String(order.id))}
 —
-${escapeHtml(
-order.customer_name
-)}
+${escapeHtml(order.customer_name)}
 </strong>
 
 <div class="muted">
-
-${formatDateTime(
-order.created_at
-)}
-
+${formatDateTime(order.created_at)}
 </div>
 
 <div>
-
-${escapeHtml(
-order.status
-)}
-
+${escapeHtml(order.status)}
 —
-
 <strong class="gold">
-
 ${money(order.total)}
-
 </strong>
-
 </div>
 
 </div>
 
-`
-).join("")
+`).join("")
 :
 `
 <div class="empty">
@@ -4393,89 +2799,56 @@ Nenhum pedido ainda.
 </div>
 
 `;
-
 }
 
 /* ============================================================
-PEDIDOS
+PEDIDOS ADMIN
 ============================================================ */
 
 async function loadOrders(){
 
-const container=
-document.getElementById(
-"ordersContainer"
-);
+const container=document.getElementById("ordersContainer");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando pedidos...";
+container.innerHTML="Carregando pedidos...";
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("orders")
 .select("*")
-.order(
-"created_at",
-{
-ascending:false
-}
-);
+.order("created_at",{ascending:false});
 
 if(error){
 
-console.error(
-"Erro ao carregar pedidos:",
-error
-);
+console.error("Erro ao carregar pedidos:",error);
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Erro ao carregar pedidos.
-
 <br><br>
-
 ${escapeHtml(error.message)}
-
 </div>
 `;
 
 return;
-
 }
 
-adminOrders=
-Array.isArray(data)
-?
-data
-:
-[];
+adminOrders=Array.isArray(data)?data:[];
 
 renderDashboard();
 
 if(!adminOrders.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Nenhum pedido recebido ainda.
-
 </div>
 `;
 
 return;
-
 }
 
-container.innerHTML=
-adminOrders.map(
-order=>`
+container.innerHTML=adminOrders.map(order=>`
 
 <div class="order">
 
@@ -4484,100 +2857,55 @@ order=>`
 <div>
 
 <strong>
-Pedido #${order.id}
+Pedido #${escapeHtml(String(order.id))}
 </strong>
 
 <div class="muted">
-
-${formatDateTime(
-order.created_at
-)}
-
+${formatDateTime(order.created_at)}
 </div>
 
 </div>
 
 <span class="status">
-
-${escapeHtml(
-order.status
-)}
-
+${escapeHtml(order.status)}
 </span>
 
 </div>
 
 <p>
-
-<strong>
-Cliente:
-</strong>
-
-${escapeHtml(
-order.customer_name
-)}
-
+<strong>Cliente:</strong>
+${escapeHtml(order.customer_name)}
 </p>
 
 <p>
-
-<strong>
-Pedido:
-</strong>
-
-${order.delivery
-?
-"🚚 Entrega"
-:
-"🏪 Retirada"}
-
+<strong>Pedido:</strong>
+${order.delivery?"🚚 Entrega":"🏪 Retirada"}
 </p>
 
 <p>
-
-<strong>
-Endereço:
-</strong>
-
-${escapeHtml(
-order.address||"-"
-)}
-
+<strong>Endereço:</strong>
+${escapeHtml(order.address||"-")}
 </p>
 
 <p>
-
-<strong>
-Pagamento:
-</strong>
-
-${escapeHtml(
-order.payment
-)}
-
+<strong>Pagamento:</strong>
+${escapeHtml(order.payment||"-")}
 </p>
 
 <div
 id="items-${escapeHtml(String(order.id))}"
 class="order-items">
-
 Carregando itens...
-
 </div>
 
 <strong class="gold">
-
-Total:
-${money(order.total)}
-
+Total: ${money(order.total)}
 </strong>
 
 <label>
-
 Alterar status
 
-<select
-onchange="changeOrderStatus(${JSON.stringify(String(order.id))},this.value)">
+<select onchange="changeOrderStatus(${JSON.stringify(String(order.id))},this.value)">
 
 ${[
 "RECEBIDO",
@@ -4585,27 +2913,15 @@ ${[
 "PRONTO",
 "SAIU PARA ENTREGA",
 "ENTREGUE"
-]
-.map(
-status=>`
+].map(status=>`
 
 <option
 value="${escapeHtml(status)}"
-${
-order.status===status
-?
-"selected"
-:
-""
-}>
-
+${order.status===status?"selected":""}>
 ${escapeHtml(status)}
-
 </option>
 
-`
-)
-.join("")}
+`).join("")}
 
 </select>
 
@@ -4613,84 +2929,53 @@ ${escapeHtml(status)}
 
 </div>
 
-`
-).join("");
+`).join("");
 
-for(
-const order of adminOrders
-){
-
-loadOrderItems(
-order.id
-);
-
+for(const order of adminOrders){
+loadOrderItems(order.id);
 }
-
 }
 
 async function loadOrderItems(orderId){
 
-const container=
-document.getElementById(
+const container=document.getElementById(
 "items-"+String(orderId)
 );
 
 if(!container)return;
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("order_items")
 .select("*")
-.eq(
-"order_id",
-orderId
-)
+.eq("order_id",orderId)
 .order("id");
 
 if(error){
 
-container.textContent=
-"Erro ao carregar itens.";
-
+container.textContent="Erro ao carregar itens.";
 return;
-
 }
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
-container.textContent=
-"Nenhum item.";
-
+container.textContent="Nenhum item.";
 return;
-
 }
 
-container.innerHTML=
-data.map(
-item=>`
+container.innerHTML=data.map(item=>`
 
 ${Number(item.qty)||0}x
 ${escapeHtml(item.name)}
 —
 ${money(
-(Number(item.price)||0)*
+parseMoney(item.price)*
 (Number(item.qty)||0)
 )}
 
-`
-).join("<br>");
-
+`).join("<br>");
 }
 
-async function changeOrderStatus(
-orderId,
-status
-){
+async function changeOrderStatus(orderId,status){
 
 const allowedStatuses=[
 "RECEBIDO",
@@ -4700,53 +2985,30 @@ const allowedStatuses=[
 "ENTREGUE"
 ];
 
-if(
-!allowedStatuses.includes(status)
-){
+if(!allowedStatuses.includes(status)){
 
-alert(
-"Status inválido."
-);
-
+alert("Status inválido.");
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("orders")
-.update({
-status:status
-})
-.eq(
-"id",
-orderId
-);
+.update({status})
+.eq("id",orderId);
 
 if(error){
-
-console.error(
-"ERRO AO ALTERAR STATUS:",
-error
-);
 
 alert(
 "ERRO AO ALTERAR STATUS:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 await loadOrders();
-
 }
 
 /* ============================================================
@@ -4755,308 +3017,164 @@ PRODUTOS ADMIN
 
 async function loadAdminProducts(){
 
-const container=
-document.getElementById(
-"adminProducts"
-);
+const container=document.getElementById("adminProducts");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando produtos...";
+container.innerHTML="Carregando produtos...";
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("products")
 .select("*")
-.order(
-"id",
-{
-ascending:true
-}
-);
+.order("id",{ascending:true});
 
 if(error){
 
-console.error(
-"Erro ao carregar produtos:",
-error
-);
-
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Erro ao carregar produtos.
-
 <br><br>
-
-${escapeHtml(
-error.message
-)}
-
+${escapeHtml(error.message)}
 </div>
 `;
 
 return;
-
 }
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Nenhum produto cadastrado.
-
 </div>
 `;
 
 return;
-
 }
 
-container.innerHTML=
-data.map(
-product=>`
+container.innerHTML=data.map(product=>`
 
 <div class="admin-product">
 
 <h3>
-
-${escapeHtml(
-product.name
-)}
-
+${escapeHtml(product.name)}
 </h3>
 
 <div class="gold">
-
-${
-categoryIcons[
-getProductCategory(product)
-]||"⭐"
-}
-
-${escapeHtml(
-getProductCategory(product)
-)}
-
+${categoryIcons[getProductCategory(product)]||"⭐"}
+${escapeHtml(getProductCategory(product))}
 </div>
 
 <p class="muted">
-
-${escapeHtml(
-product.description||""
-)}
-
+${escapeHtml(product.description||"")}
 </p>
 
 <strong class="gold">
-
 ${money(product.price)}
-
 </strong>
 
 <p>
-
 Status:
-
 <strong>
-
-${product.active
-?
-"ATIVO"
-:
-"INATIVO"}
-
+${product.active?"ATIVO":"INATIVO"}
 </strong>
-
 </p>
 
 <button
-class="btn small ${
-product.active
-?
-"danger"
-:
-""
-}"
+class="btn small ${product.active?"danger":""}"
 onclick="toggleProduct(${JSON.stringify(String(product.id))},${Boolean(product.active)})">
 
-${
-product.active
-?
-"Desativar"
-:
-"Ativar"
-}
+${product.active?"Desativar":"Ativar"}
 
 </button>
 
 </div>
 
-`
-).join("");
-
+`).join("");
 }
 
 async function createProduct(){
 
-const name=
-document.getElementById(
-"productName"
-).value.trim();
+const name=document.getElementById("productName").value.trim();
 
-const description=
-document.getElementById(
-"productDescription"
-).value.trim();
+const description=document
+.getElementById("productDescription")
+.value
+.trim();
 
-const price=
-parseMoney(
-document.getElementById(
-"productPrice"
-).value
+const price=parseMoney(
+document.getElementById("productPrice").value
 );
 
-const category=
-document.getElementById(
-"productCategory"
-).value;
+const category=document.getElementById("productCategory").value;
 
 if(!name){
 
-alert(
-"Digite o nome do produto."
-);
-
+alert("Digite o nome do produto.");
 return;
-
 }
 
-if(
-!Number.isFinite(price) ||
-price<=0
-){
+if(!Number.isFinite(price)||price<=0){
 
-alert(
-"Digite um preço válido."
-);
-
+alert("Digite um preço válido.");
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("products")
 .insert({
-
-name:name,
-
-description:description,
-
-price:price,
-
-category:category,
-
+name,
+description,
+price,
+category,
 active:true
-
 });
 
 if(error){
-
-console.error(
-"ERRO AO ADICIONAR PRODUTO:",
-error
-);
 
 alert(
 "ERRO AO ADICIONAR PRODUTO:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
-document.getElementById(
-"productName"
-).value="";
-
-document.getElementById(
-"productDescription"
-).value="";
-
-document.getElementById(
-"productPrice"
-).value="";
+document.getElementById("productName").value="";
+document.getElementById("productDescription").value="";
+document.getElementById("productPrice").value="";
 
 await loadAdminProducts();
-
 await loadProducts();
 
-showToast(
-"✅ Produto adicionado!"
-);
-
+showToast("✅ Produto adicionado!");
 }
 
-async function toggleProduct(
-productId,
-currentActive
-){
+async function toggleProduct(productId,currentActive){
 
-const {
-error
-}=await db
+const{error}=await db
 .from("products")
 .update({
 active:!Boolean(currentActive)
 })
-.eq(
-"id",
-productId
-);
+.eq("id",productId);
 
 if(error){
-
-console.error(
-"ERRO AO ALTERAR PRODUTO:",
-error
-);
 
 alert(
 "ERRO AO ALTERAR PRODUTO:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 await loadAdminProducts();
-
 await loadProducts();
-
 }
 
 /* ============================================================
@@ -5065,334 +3183,167 @@ CAIXA
 
 async function loadCashRegister(){
 
-const container=
-document.getElementById(
-"cashContent"
-);
+const container=document.getElementById("cashContent");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando caixa...";
+container.innerHTML="Carregando caixa...";
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("cash_registers")
 .select("*")
-.eq(
-"status",
-"ABERTO"
-)
-.order(
-"opened_at",
-{
-ascending:false
-}
-)
+.eq("status","ABERTO")
+.order("opened_at",{ascending:false})
 .limit(1);
 
 if(error){
 
-console.error(
-"Erro ao carregar caixa:",
-error
-);
-
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Erro ao carregar caixa.
-
 <br><br>
-
-${escapeHtml(
-error.message
-)}
-
+${escapeHtml(error.message)}
 </div>
 `;
 
 return;
-
 }
 
-if(
-data &&
-data.length
-){
+if(data&&data.length){
 
-currentCashRegister=
-data[0];
+currentCashRegister=data[0];
 
 await renderOpenCash();
 
 }else{
 
-currentCashRegister=
-null;
-
-currentCashData=
-null;
+currentCashRegister=null;
+currentCashData=null;
 
 await renderClosedCash();
-
+}
 }
 
-}
+async function getCashOrders(openedAt){
 
-async function getCashOrders(
-openedAt
-){
-
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("orders")
-.select(
-"id,total,payment,created_at,status"
-)
-.gte(
-"created_at",
-openedAt
-);
+.select("id,total,payment,created_at,status")
+.gte("created_at",openedAt);
 
 if(error){
 
-console.error(
-"Erro ao carregar vendas do caixa:",
-error
-);
-
+console.error(error);
 return[];
-
 }
 
 return data||[];
-
 }
 
-async function getCashMovements(
-registerId
-){
+async function getCashMovements(registerId){
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("cash_movements")
 .select("*")
-.eq(
-"cash_register_id",
-registerId
-)
-.order(
-"created_at",
-{
-ascending:false
-}
-);
+.eq("cash_register_id",registerId)
+.order("created_at",{ascending:false});
 
 if(error){
 
-console.error(
-"Erro ao carregar movimentações:",
-error
-);
-
+console.error(error);
 return[];
-
 }
 
 return data||[];
-
 }
 
-async function calculateCashData(
-register
-){
+async function calculateCashData(register){
 
 if(!register){
 
 return{
-
 orders:[],
-
 movements:[],
-
 cashSales:0,
-
 pixSales:0,
-
 cardSales:0,
-
 totalSales:0,
-
 supplies:0,
-
 withdrawals:0,
-
 expectedCash:0
-
 };
-
 }
 
-const orders=
-await getCashOrders(
-register.opened_at
-);
-
-const movements=
-await getCashMovements(
-register.id
-);
+const orders=await getCashOrders(register.opened_at);
+const movements=await getCashMovements(register.id);
 
 let cashSales=0;
-
 let pixSales=0;
-
 let cardSales=0;
 
-orders.forEach(
-order=>{
+orders.forEach(order=>{
 
-const amount=
-Number(order.total)||0;
+const amount=parseMoney(order.total);
 
-if(
-order.payment==="DINHEIRO"
-){
+if(order.payment==="DINHEIRO")cashSales+=amount;
+else if(order.payment==="PIX")pixSales+=amount;
+else if(order.payment==="CARTAO")cardSales+=amount;
 
-cashSales+=amount;
-
-}else if(
-order.payment==="PIX"
-){
-
-pixSales+=amount;
-
-}else if(
-order.payment==="CARTAO"
-){
-
-cardSales+=amount;
-
-}
-
-}
-);
+});
 
 let supplies=0;
-
 let withdrawals=0;
 
-movements.forEach(
-movement=>{
+movements.forEach(movement=>{
 
-const amount=
-Number(movement.amount)||0;
+const amount=parseMoney(movement.amount);
 
-if(
-movement.type==="SUPRIMENTO"
-){
+if(movement.type==="SUPRIMENTO")supplies+=amount;
+else if(movement.type==="SANGRIA")withdrawals+=amount;
 
-supplies+=amount;
+});
 
-}else if(
-movement.type==="SANGRIA"
-){
+const totalSales=cashSales+pixSales+cardSales;
 
-withdrawals+=amount;
-
-}
-
-}
-);
-
-const totalSales=
-cashSales+
-pixSales+
-cardSales;
-
-const expectedCash=
-Number(
-register.opening_amount
-)||0;
-
-const finalExpectedCash=
-expectedCash+
+const expected=
+parseMoney(register.opening_amount)+
 cashSales+
 supplies-
 withdrawals;
 
 return{
-
 orders,
-
 movements,
-
 cashSales,
-
 pixSales,
-
 cardSales,
-
 totalSales,
-
 supplies,
-
 withdrawals,
-
-expectedCash:
-finalExpectedCash
-
+expectedCash:expected
 };
-
 }
 
 async function renderOpenCash(){
 
-const container=
-document.getElementById(
-"cashContent"
-);
+const container=document.getElementById("cashContent");
 
-if(
-!container ||
-!currentCashRegister
-){
-
-return;
-
-}
+if(!container||!currentCashRegister)return;
 
 currentCashData=
-await calculateCashData(
-currentCashRegister
-);
+await calculateCashData(currentCashRegister);
 
-const c=
-currentCashData;
+const c=currentCashData;
 
 container.innerHTML=`
 
 <div class="cash-status">
 
-<strong>
-🟢 CAIXA ABERTO
-</strong>
+<strong>🟢 CAIXA ABERTO</strong>
 
 <div class="muted">
-
 Aberto em:
-${formatDateTime(
-currentCashRegister.opened_at
-)}
-
+${formatDateTime(currentCashRegister.opened_at)}
 </div>
 
 </div>
@@ -5400,117 +3351,56 @@ currentCashRegister.opened_at
 <div class="cash-grid">
 
 <div class="cash-box">
-
-<span>
-Valor de abertura
-</span>
-
-<strong>
-${money(
-currentCashRegister.opening_amount
-)}
-</strong>
-
+<span>Valor de abertura</span>
+<strong>${money(currentCashRegister.opening_amount)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Vendas em dinheiro
-</span>
-
-<strong>
-${money(c.cashSales)}
-</strong>
-
+<span>Vendas em dinheiro</span>
+<strong>${money(c.cashSales)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Vendas no PIX
-</span>
-
-<strong>
-${money(c.pixSales)}
-</strong>
-
+<span>Vendas no PIX</span>
+<strong>${money(c.pixSales)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Vendas no cartão
-</span>
-
-<strong>
-${money(c.cardSales)}
-</strong>
-
+<span>Vendas no cartão</span>
+<strong>${money(c.cardSales)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Total de vendas
-</span>
-
-<strong>
-${money(c.totalSales)}
-</strong>
-
+<span>Total de vendas</span>
+<strong>${money(c.totalSales)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Suprimentos
-</span>
-
-<strong>
-${money(c.supplies)}
-</strong>
-
+<span>Suprimentos</span>
+<strong>${money(c.supplies)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Sangrias
-</span>
-
-<strong>
-${money(c.withdrawals)}
-</strong>
-
+<span>Sangrias</span>
+<strong>${money(c.withdrawals)}</strong>
 </div>
 
 <div class="cash-box">
-
-<span>
-Esperado no caixa
-</span>
-
-<strong>
-${money(c.expectedCash)}
-</strong>
-
+<span>Esperado no caixa</span>
+<strong>${money(c.expectedCash)}</strong>
 </div>
 
 </div>
 
 <div class="card" style="margin-top:18px">
 
-<h3>
-💵 Movimentação
-</h3>
+<h3>💵 Movimentação</h3>
 
 <div class="movement">
 
 <div>
 
 <label>
-
 Valor
 
 <input
@@ -5518,7 +3408,6 @@ id="movementAmount"
 type="text"
 inputmode="decimal"
 placeholder="0,00">
-
 </label>
 
 </div>
@@ -5526,14 +3415,12 @@ placeholder="0,00">
 <div>
 
 <label>
-
 Observação
 
 <input
 id="movementNote"
 type="text"
 placeholder="Ex: troco / retirada">
-
 </label>
 
 </div>
@@ -5543,17 +3430,13 @@ placeholder="Ex: troco / retirada">
 <button
 class="btn small"
 onclick="addCashMovement('SUPRIMENTO')">
-
 ➕ Suprimento
-
 </button>
 
 <button
 class="btn small danger"
 onclick="addCashMovement('SANGRIA')">
-
 ➖ Sangria
-
 </button>
 
 </div>
@@ -5564,12 +3447,9 @@ onclick="addCashMovement('SANGRIA')">
 
 <div class="card">
 
-<h3>
-🔒 Fechar caixa
-</h3>
+<h3>🔒 Fechar caixa</h3>
 
 <label>
-
 Valor contado
 
 <input
@@ -5577,75 +3457,48 @@ id="closingAmount"
 type="text"
 inputmode="decimal"
 placeholder="0,00">
-
 </label>
 
-<button
-class="btn"
-onclick="closeCashRegister()">
-
+<button class="btn" onclick="closeCashRegister()">
 🔒 Fechar caixa
-
 </button>
 
 </div>
 
 <div class="card">
 
-<h3>
-📜 Movimentações recentes
-</h3>
+<h3>📜 Movimentações recentes</h3>
 
 ${
 c.movements.length
 ?
-c.movements.map(
-m=>`
+c.movements.map(m=>`
 
 <div class="history-item">
 
 <div>
 
 <strong>
-
-${
-m.type==="SUPRIMENTO"
-?
-"➕ Suprimento"
-:
-"➖ Sangria"
-}
-
+${m.type==="SUPRIMENTO"?"➕ Suprimento":"➖ Sangria"}
 </strong>
 
 <strong class="gold">
-
 ${money(m.amount)}
-
 </strong>
 
 </div>
 
 <div class="muted">
-
-${escapeHtml(
-m.note||""
-)}
-
+${escapeHtml(m.note||"")}
 </div>
 
 <div class="muted">
-
-${formatDateTime(
-m.created_at
-)}
-
+${formatDateTime(m.created_at)}
 </div>
 
 </div>
 
-`
-).join("")
+`).join("")
 :
 `
 <div class="empty">
@@ -5658,30 +3511,21 @@ Nenhuma movimentação.
 
 <div class="card">
 
-<h3>
-📊 Histórico de caixas
-</h3>
+<h3>📊 Histórico de caixas</h3>
 
 <div id="cashHistory">
-
 Carregando histórico...
-
 </div>
 
 </div>
-
 `;
 
 await loadCashHistory();
-
 }
 
 async function renderClosedCash(){
 
-const container=
-document.getElementById(
-"cashContent"
-);
+const container=document.getElementById("cashContent");
 
 if(!container)return;
 
@@ -5689,26 +3533,19 @@ container.innerHTML=`
 
 <div class="cash-status">
 
-<strong>
-🔴 CAIXA FECHADO
-</strong>
+<strong>🔴 CAIXA FECHADO</strong>
 
 <div class="muted">
-
 Abra o caixa para começar.
-
 </div>
 
 </div>
 
 <div class="card" style="margin-top:18px">
 
-<h3>
-🟢 Abrir caixa
-</h3>
+<h3>🟢 Abrir caixa</h3>
 
 <label>
-
 Valor inicial
 
 <input
@@ -5716,207 +3553,111 @@ id="openingAmount"
 type="text"
 inputmode="decimal"
 placeholder="100,00">
-
 </label>
 
-<button
-class="btn"
-onclick="openCashRegister()">
-
+<button class="btn" onclick="openCashRegister()">
 🟢 Abrir caixa
-
 </button>
 
 </div>
 
 <div class="card">
 
-<h3>
-📜 Histórico de caixas
-</h3>
+<h3>📜 Histórico de caixas</h3>
 
 <div id="cashHistory">
-
 Carregando histórico...
-
 </div>
 
 </div>
-
 `;
 
 await loadCashHistory();
-
 }
 
 async function openCashRegister(){
 
-const input=
-document.getElementById(
-"openingAmount"
-);
+const input=document.getElementById("openingAmount");
 
 if(!input)return;
 
-const amount=
-parseMoney(input.value);
+const amount=parseMoney(input.value);
 
-if(
-!Number.isFinite(amount) ||
-amount<0
-){
+if(!Number.isFinite(amount)||amount<0){
 
-alert(
-"O valor não pode ser negativo."
-);
-
+alert("O valor não pode ser negativo.");
 return;
-
 }
 
-const {
-data:existing,
-error:existingError
-}=await db
+const{data:existing,error:existingError}=await db
 .from("cash_registers")
 .select("id")
-.eq(
-"status",
-"ABERTO"
-)
+.eq("status","ABERTO")
 .limit(1);
 
 if(existingError){
 
-console.error(
-existingError
-);
-
-alert(
-"Não foi possível verificar o caixa."
-);
-
+alert("Não foi possível verificar o caixa.");
 return;
-
 }
 
-if(
-existing &&
-existing.length
-){
+if(existing&&existing.length){
 
-alert(
-"Já existe um caixa aberto."
-);
-
+alert("Já existe um caixa aberto.");
 await loadCashRegister();
-
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("cash_registers")
 .insert({
-
-opening_amount:
-amount,
-
-status:
-"ABERTO"
-
+opening_amount:amount,
+status:"ABERTO"
 });
 
 if(error){
-
-console.error(
-"ERRO AO ABRIR CAIXA:",
-error
-);
 
 alert(
 "ERRO AO ABRIR CAIXA:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
-showToast(
-"🟢 Caixa aberto!"
-);
+showToast("🟢 Caixa aberto!");
 
 await loadCashRegister();
-
 }
 
-async function addCashMovement(
-type
-){
+async function addCashMovement(type){
 
 if(!currentCashRegister){
 
-alert(
-"Não existe caixa aberto."
-);
-
+alert("Não existe caixa aberto.");
 return;
-
 }
 
-const amountInput=
-document.getElementById(
-"movementAmount"
-);
+const amountInput=document.getElementById("movementAmount");
+const noteInput=document.getElementById("movementNote");
 
-const noteInput=
-document.getElementById(
-"movementNote"
-);
+if(!amountInput||!noteInput)return;
 
-if(
-!amountInput ||
-!noteInput
-){
+const amount=parseMoney(amountInput.value);
+const note=noteInput.value.trim();
 
+if(!Number.isFinite(amount)||amount<=0){
+
+alert("Digite um valor válido.");
 return;
-
-}
-
-const amount=
-parseMoney(
-amountInput.value
-);
-
-const note=
-noteInput.value.trim();
-
-if(
-!Number.isFinite(amount) ||
-amount<=0
-){
-
-alert(
-"Digite um valor válido."
-);
-
-return;
-
 }
 
 if(
 type==="SANGRIA" &&
 currentCashData &&
-amount>
-currentCashData.expectedCash
+amount>currentCashData.expectedCash
 ){
 
 alert(
@@ -5924,404 +3665,225 @@ alert(
 );
 
 return;
-
 }
 
-if(
-type!=="SANGRIA" &&
-type!=="SUPRIMENTO"
-){
+if(type!=="SANGRIA"&&type!=="SUPRIMENTO"){
 
-alert(
-"Tipo de movimentação inválido."
-);
-
+alert("Tipo de movimentação inválido.");
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("cash_movements")
 .insert({
-
-cash_register_id:
-currentCashRegister.id,
-
-type:type,
-
-amount:amount,
-
-note:note
-
+cash_register_id:currentCashRegister.id,
+type,
+amount,
+note
 });
 
 if(error){
-
-console.error(
-"ERRO AO REGISTRAR MOVIMENTAÇÃO:",
-error
-);
 
 alert(
 "ERRO AO REGISTRAR MOVIMENTAÇÃO:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 await loadCashRegister();
-
 }
 
 async function closeCashRegister(){
 
 if(!currentCashRegister){
 
-alert(
-"Não existe caixa aberto."
-);
-
+alert("Não existe caixa aberto.");
 return;
-
 }
 
-const cashData=
-await calculateCashData(
-currentCashRegister
-);
+const cashData=await calculateCashData(currentCashRegister);
 
-const input=
-document.getElementById(
-"closingAmount"
-);
+const input=document.getElementById("closingAmount");
 
 if(!input){
 
-alert(
-"Campo de fechamento não encontrado."
-);
-
+alert("Campo de fechamento não encontrado.");
 return;
-
 }
 
-if(
-input.value.trim()===""
-){
+if(input.value.trim()===""){
 
-alert(
-"Informe o valor contado."
-);
-
+alert("Informe o valor contado.");
 return;
-
 }
 
-const closingAmount=
-parseMoney(
-input.value
-);
+const closingAmount=parseMoney(input.value);
 
-if(
-!Number.isFinite(closingAmount) ||
-closingAmount<0
-){
+if(!Number.isFinite(closingAmount)||closingAmount<0){
 
-alert(
-"Informe um valor contado válido."
-);
-
+alert("Informe um valor contado válido.");
 return;
-
 }
 
 const difference=
 closingAmount-
 cashData.expectedCash;
 
-const confirmed=
-confirm(
-
+const confirmed=confirm(
 "Confirma o fechamento?\n\n"+
-"Esperado: "+
-money(cashData.expectedCash)+
-"\nContado: "+
-money(closingAmount)+
-"\nDiferença: "+
-money(difference)
-
+"Esperado: "+money(cashData.expectedCash)+
+"\nContado: "+money(closingAmount)+
+"\nDiferença: "+money(difference)
 );
 
 if(!confirmed)return;
 
-const {
-error
-}=await db
+const{error}=await db
 .from("cash_registers")
 .update({
 
-closed_at:
-new Date().toISOString(),
+closed_at:new Date().toISOString(),
 
-closing_amount:
-closingAmount,
+closing_amount:closingAmount,
 
-cash_sales:
-cashData.cashSales,
+cash_sales:cashData.cashSales,
 
-pix_sales:
-cashData.pixSales,
+pix_sales:cashData.pixSales,
 
-card_sales:
-cashData.cardSales,
+card_sales:cashData.cardSales,
 
-supplies:
-cashData.supplies,
+supplies:cashData.supplies,
 
-withdrawals:
-cashData.withdrawals,
+withdrawals:cashData.withdrawals,
 
-expected_cash:
-cashData.expectedCash,
+expected_cash:cashData.expectedCash,
 
-difference:
-difference,
+difference:difference,
 
-status:
-"FECHADO"
+status:"FECHADO"
 
 })
-.eq(
-"id",
-currentCashRegister.id
-);
+.eq("id",currentCashRegister.id);
 
 if(error){
-
-console.error(
-"ERRO AO FECHAR CAIXA:",
-error
-);
 
 alert(
 "ERRO AO FECHAR CAIXA:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 alert(
-
 "Caixa fechado com sucesso!\n\n"+
-"Esperado: "+
-money(cashData.expectedCash)+
-"\nContado: "+
-money(closingAmount)+
-"\nDiferença: "+
-money(difference)
-
+"Esperado: "+money(cashData.expectedCash)+
+"\nContado: "+money(closingAmount)+
+"\nDiferença: "+money(difference)
 );
 
-currentCashRegister=
-null;
-
-currentCashData=
-null;
+currentCashRegister=null;
+currentCashData=null;
 
 await loadCashRegister();
-
 }
 
 async function loadCashHistory(){
 
-const container=
-document.getElementById(
-"cashHistory"
-);
+const container=document.getElementById("cashHistory");
 
 if(!container)return;
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("cash_registers")
 .select("*")
-.eq(
-"status",
-"FECHADO"
-)
-.order(
-"closed_at",
-{
-ascending:false
-}
-)
+.eq("status","FECHADO")
+.order("closed_at",{ascending:false})
 .limit(10);
 
 if(error){
 
-console.error(
-"ERRO AO CARREGAR HISTÓRICO:",
-error
-);
-
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Não foi possível carregar o histórico.
-
 <br><br>
-
-${escapeHtml(
-error.message
-)}
-
+${escapeHtml(error.message)}
 </div>
 `;
 
 return;
-
 }
 
-if(
-!data ||
-!data.length
-){
+if(!data||!data.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Nenhum caixa fechado ainda.
-
 </div>
 `;
 
 return;
-
 }
 
-container.innerHTML=
-data.map(
-register=>{
+container.innerHTML=data.map(register=>{
 
-const difference=
-Number(
-register.difference
-)||0;
+const difference=parseMoney(register.difference);
 
 const totalSales=
-(
-Number(register.cash_sales)||0
-)+
-(
-Number(register.pix_sales)||0
-)+
-(
-Number(register.card_sales)||0
-);
+parseMoney(register.cash_sales)+
+parseMoney(register.pix_sales)+
+parseMoney(register.card_sales);
 
 return`
 
 <div class="history-item">
 
 <strong>
-Caixa #${escapeHtml(
-String(register.id)
-)}
+Caixa #${escapeHtml(String(register.id))}
 </strong>
 
 <div class="muted">
-
 Aberto:
-${formatDateTime(
-register.opened_at
-)}
-
+${formatDateTime(register.opened_at)}
 </div>
 
 <div class="muted">
-
 Fechado:
-${formatDateTime(
-register.closed_at
-)}
-
+${formatDateTime(register.closed_at)}
 </div>
 
 <p>
-
 Vendas:
-
 <strong class="gold">
-
 ${money(totalSales)}
-
 </strong>
-
 </p>
 
 <p>
-
 Esperado:
-
-<strong>
-${money(
-register.expected_cash
-)}
-</strong>
-
+<strong>${money(register.expected_cash)}</strong>
 </p>
 
 <p>
-
 Contado:
-
-<strong>
-${money(
-register.closing_amount
-)}
-</strong>
-
+<strong>${money(register.closing_amount)}</strong>
 </p>
 
 <p>
-
 Diferença:
-
-<strong class="gold">
-
-${money(difference)}
-
-</strong>
-
+<strong class="gold">${money(difference)}</strong>
 </p>
 
 </div>
-
 `;
 
-}
-).join("");
-
+}).join("");
 }
 
 /* ============================================================
@@ -6330,122 +3892,53 @@ RELATÓRIOS
 
 async function loadReports(){
 
-const container=
-document.getElementById(
-"reportsContent"
-);
+const container=document.getElementById("reportsContent");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando relatórios...";
+container.innerHTML="Carregando relatórios...";
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("orders")
 .select("*")
-.order(
-"created_at",
-{
-ascending:false
-}
-);
+.order("created_at",{ascending:false});
 
 if(error){
 
-console.error(
-"ERRO AO CARREGAR RELATÓRIOS:",
-error
-);
-
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Erro ao carregar relatórios.
-
 <br><br>
-
-${escapeHtml(
-error.message
-)}
-
+${escapeHtml(error.message)}
 </div>
 `;
 
 return;
-
 }
 
-const orders=
-Array.isArray(data)
-?
-data
-:
-[];
+const orders=Array.isArray(data)?data:[];
 
-const total=
-orders.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
+const total=orders.reduce(
+(sum,o)=>sum+parseMoney(o.total),
 0
 );
 
-const average=
-orders.length
-?
-total/orders.length
-:
-0;
+const average=orders.length?total/orders.length:0;
 
-const pix=
-orders
-.filter(
-o=>o.payment==="PIX"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
+const pix=orders
+.filter(o=>o.payment==="PIX")
+.reduce((sum,o)=>sum+parseMoney(o.total),0);
 
-const cash=
-orders
-.filter(
-o=>o.payment==="DINHEIRO"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
+const cash=orders
+.filter(o=>o.payment==="DINHEIRO")
+.reduce((sum,o)=>sum+parseMoney(o.total),0);
 
-const card=
-orders
-.filter(
-o=>o.payment==="CARTAO"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
+const card=orders
+.filter(o=>o.payment==="CARTAO")
+.reduce((sum,o)=>sum+parseMoney(o.total),0);
 
-const delivery=
-orders.filter(
-o=>Boolean(o.delivery)
-).length;
-
-const pickup=
-orders.filter(
-o=>!Boolean(o.delivery)
-).length;
+const delivery=orders.filter(o=>Boolean(o.delivery)).length;
+const pickup=orders.filter(o=>!Boolean(o.delivery)).length;
 
 const statusList=[
 "RECEBIDO",
@@ -6460,113 +3953,52 @@ container.innerHTML=`
 <div class="report-grid">
 
 <div class="stat">
-
-<span>
-Faturamento total
-</span>
-
-<strong>
-${money(total)}
-</strong>
-
+<span>Faturamento total</span>
+<strong>${money(total)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Total de pedidos
-</span>
-
-<strong>
-${orders.length}
-</strong>
-
+<span>Total de pedidos</span>
+<strong>${orders.length}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Ticket médio
-</span>
-
-<strong>
-${money(average)}
-</strong>
-
+<span>Ticket médio</span>
+<strong>${money(average)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-PIX
-</span>
-
-<strong>
-${money(pix)}
-</strong>
-
+<span>PIX</span>
+<strong>${money(pix)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Dinheiro
-</span>
-
-<strong>
-${money(cash)}
-</strong>
-
+<span>Dinheiro</span>
+<strong>${money(cash)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Cartão
-</span>
-
-<strong>
-${money(card)}
-</strong>
-
+<span>Cartão</span>
+<strong>${money(card)}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Entregas
-</span>
-
-<strong>
-${delivery}
-</strong>
-
+<span>Entregas</span>
+<strong>${delivery}</strong>
 </div>
 
 <div class="stat">
-
-<span>
-Retiradas
-</span>
-
-<strong>
-${pickup}
-</strong>
-
+<span>Retiradas</span>
+<strong>${pickup}</strong>
 </div>
 
 </div>
 
-<div
-class="card"
-style="margin-top:18px">
+<div class="card" style="margin-top:18px">
 
-<h3>
-📋 Pedidos por status
-</h3>
+<h3>📋 Pedidos por status</h3>
 
-${statusList.map(
-status=>`
+${statusList.map(status=>`
 
 <div class="history-item">
 
@@ -6575,177 +4007,88 @@ ${escapeHtml(status)}
 </span>
 
 <strong class="gold">
-
-${
-orders.filter(
-o=>o.status===status
-).length
-}
-
+${orders.filter(o=>o.status===status).length}
 </strong>
 
 </div>
 
-`
-).join("")}
+`).join("")}
 
 </div>
 
 <div class="card">
 
-<h3>
-💳 Vendas por pagamento
-</h3>
+<h3>💳 Vendas por pagamento</h3>
 
 <div class="history-item">
-
-<span>
-PIX
-</span>
-
-<strong class="gold">
-${money(pix)}
-</strong>
-
+<span>PIX</span>
+<strong class="gold">${money(pix)}</strong>
 </div>
 
 <div class="history-item">
-
-<span>
-Dinheiro
-</span>
-
-<strong class="gold">
-${money(cash)}
-</strong>
-
+<span>Dinheiro</span>
+<strong class="gold">${money(cash)}</strong>
 </div>
 
 <div class="history-item">
-
-<span>
-Cartão
-</span>
-
-<strong class="gold">
-${money(card)}
-</strong>
-
+<span>Cartão</span>
+<strong class="gold">${money(card)}</strong>
 </div>
 
 </div>
-
 `;
-
 }
 
 /* ============================================================
-BAIRROS / TAXAS
+BAIRROS
 ============================================================ */
 
 async function loadDeliveryZonesAdmin(){
 
-const container=
-document.getElementById(
-"zonesContainer"
-);
+const container=document.getElementById("zonesContainer");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando bairros...";
+container.innerHTML="Carregando bairros...";
 
-const {
-data,
-error
-}=await db
+const{data,error}=await db
 .from("delivery_zones")
 .select("*")
-.order(
-"neighborhood",
-{
-ascending:true
-}
-);
+.order("neighborhood",{ascending:true});
 
 if(error){
 
-console.error(
-"ERRO AO CARREGAR BAIRROS:",
-error
-);
-
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Erro ao carregar bairros.
-
 <br><br>
-
-<span class="muted">
-
-${escapeHtml(
-error.message
-)}
-
-</span>
-
+${escapeHtml(error.message)}
 <br>
-
-<span class="muted">
-
-Código:
-${escapeHtml(
-error.code||
-"sem código"
-)}
-
-</span>
-
+Código: ${escapeHtml(error.code||"sem código")}
 </div>
 `;
 
 return;
-
 }
 
-const allZones=
-Array.isArray(data)
-?
-data
-:
-[];
+const allZones=Array.isArray(data)?data:[];
 
-deliveryZones=
-allZones.filter(
-zone=>Boolean(zone.active)
-);
+deliveryZones=allZones.filter(zone=>Boolean(zone.active));
 
 if(!allZones.length){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
-
 Nenhum bairro cadastrado ainda.
-
 </div>
 `;
 
 return;
-
 }
 
-container.innerHTML=
-allZones.map(
-zone=>{
+container.innerHTML=allZones.map(zone=>{
 
-const zoneId=
-String(zone.id);
-
-const feeInputId=
-"zone-fee-"+zoneId;
+const zoneId=String(zone.id);
 
 return`
 
@@ -6754,138 +4097,77 @@ return`
 <div>
 
 <strong>
-
-${escapeHtml(
-zone.neighborhood
-)}
-
+${escapeHtml(zone.neighborhood)}
 </strong>
 
 <div class="muted">
-
-${
-zone.active
-?
-"ATIVO"
-:
-"INATIVO"
-}
-
+${zone.active?"ATIVO":"INATIVO"}
 </div>
 
 </div>
 
 <input
-id="${escapeHtml(feeInputId)}"
+id="zone-fee-${escapeHtml(zoneId)}"
 type="text"
 inputmode="decimal"
-value="${Number(zone.fee||0).toFixed(2)}">
+value="${parseMoney(zone.fee).toFixed(2).replace(".",",")}">
 
 <button
 class="btn small"
 onclick='updateDeliveryZone(${JSON.stringify(zoneId)})'>
-
 Salvar
-
 </button>
 
 <button
-class="btn small ${
-zone.active
-?
-"danger"
-:
-""
-}"
+class="btn small ${zone.active?"danger":""}"
 onclick='toggleDeliveryZone(${JSON.stringify(zoneId)},${Boolean(zone.active)})'>
 
-${
-zone.active
-?
-"Desativar"
-:
-"Ativar"
-}
+${zone.active?"Desativar":"Ativar"}
 
 </button>
 
 </div>
-
 `;
 
-}
-).join("");
-
+}).join("");
 }
 
 async function createDeliveryZone(){
 
-const neighborhood=
-document.getElementById(
-"zoneNeighborhood"
-).value.trim();
+const neighborhood=document
+.getElementById("zoneNeighborhood")
+.value
+.trim();
 
-const fee=
-parseMoney(
-document.getElementById(
-"zoneFee"
-).value
+const fee=parseMoney(
+document.getElementById("zoneFee").value
 );
 
 if(!neighborhood){
 
-alert(
-"Digite o bairro."
-);
-
+alert("Digite o bairro.");
 return;
-
 }
 
-if(
-!Number.isFinite(fee) ||
-fee<0
-){
+if(!Number.isFinite(fee)||fee<0){
 
-alert(
-"A taxa não pode ser negativa."
-);
-
+alert("A taxa não pode ser negativa.");
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("delivery_zones")
 .insert({
-
-neighborhood:
 neighborhood,
-
-fee:
 fee,
-
-active:
-true
-
+active:true
 });
 
 if(error){
 
-console.error(
-"ERRO AO ADICIONAR BAIRRO:",
-error
-);
+if(error.code==="23505"){
 
-if(
-error.code==="23505"
-){
-
-alert(
-"Esse bairro já está cadastrado."
-);
+alert("Esse bairro já está cadastrado.");
 
 }else{
 
@@ -6893,175 +4175,102 @@ alert(
 "ERRO AO ADICIONAR BAIRRO:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 }
 
 return;
-
 }
 
-document.getElementById(
-"zoneNeighborhood"
-).value="";
-
-document.getElementById(
-"zoneFee"
-).value="";
+document.getElementById("zoneNeighborhood").value="";
+document.getElementById("zoneFee").value="";
 
 await loadDeliveryZonesAdmin();
-
 await loadDeliveryZones();
 
-showToast(
-"📍 Bairro adicionado!"
-);
-
+showToast("📍 Bairro adicionado!");
 }
 
 async function updateDeliveryZone(id){
 
-const input=
-document.getElementById(
+const input=document.getElementById(
 "zone-fee-"+String(id)
 );
 
 if(!input){
 
-alert(
-"Campo da taxa não encontrado."
-);
-
+alert("Campo da taxa não encontrado.");
 return;
-
 }
 
-const fee=
-parseMoney(
-input.value
-);
+const fee=parseMoney(input.value);
 
-if(
-!Number.isFinite(fee) ||
-fee<0
-){
+if(!Number.isFinite(fee)||fee<0){
 
-alert(
-"A taxa não pode ser negativa."
-);
-
+alert("A taxa não pode ser negativa.");
 return;
-
 }
 
-const {
-error
-}=await db
+const{error}=await db
 .from("delivery_zones")
-.update({
-fee:fee
-})
-.eq(
-"id",
-id
-);
+.update({fee})
+.eq("id",id);
 
 if(error){
-
-console.error(
-"ERRO AO ATUALIZAR BAIRRO:",
-error
-);
 
 alert(
 "ERRO AO ATUALIZAR TAXA:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 await loadDeliveryZonesAdmin();
-
 await loadDeliveryZones();
 
-showToast(
-"💰 Taxa atualizada!"
-);
-
+showToast("💰 Taxa atualizada!");
 }
 
-async function toggleDeliveryZone(
-id,
-currentActive
-){
+async function toggleDeliveryZone(id,currentActive){
 
-const {
-error
-}=await db
+const{error}=await db
 .from("delivery_zones")
 .update({
-
-active:
-!Boolean(currentActive)
-
+active:!Boolean(currentActive)
 })
-.eq(
-"id",
-id
-);
+.eq("id",id);
 
 if(error){
-
-console.error(
-"ERRO AO ALTERAR BAIRRO:",
-error
-);
 
 alert(
 "ERRO AO ALTERAR BAIRRO:\n\n"+
 error.message+
 "\n\nCódigo: "+
-(
-error.code||
-"sem código"
-)
+(error.code||"sem código")
 );
 
 return;
-
 }
 
 await loadDeliveryZonesAdmin();
-
 await loadDeliveryZones();
 
 showToast(
 currentActive
-?
-"📍 Bairro desativado."
-:
-"📍 Bairro ativado."
+?"📍 Bairro desativado."
+:"📍 Bairro ativado."
 );
-
 }
 
 /* ============================================================
 REALTIME
 ============================================================ */
 
-db
-.channel("orders-realtime")
+db.channel("orders-realtime")
 .on(
 "postgres_changes",
 {
@@ -7071,43 +4280,33 @@ table:"orders"
 },
 async()=>{
 
-const panel=
-document.getElementById(
-"adminPanel"
-);
+const panel=document.getElementById("adminPanel");
 
 if(
-panel &&
-panel.classList.contains(
-"active"
-)
+panel&&
+panel.classList.contains("active")
 ){
 
 await loadOrders();
 
-const activeSection=
-document.querySelector(
+const activeSection=document.querySelector(
 ".admin-section.active"
 );
 
 if(
-activeSection &&
-activeSection.id===
-"admin-cash"
+activeSection&&
+activeSection.id==="admin-cash"
 ){
 
 await loadCashRegister();
-
 }
 
 if(
-activeSection &&
-activeSection.id===
-"admin-reports"
+activeSection&&
+activeSection.id==="admin-reports"
 ){
 
 await loadReports();
-
 }
 
 }
@@ -7117,21 +4316,27 @@ await loadReports();
 .subscribe();
 
 /* ============================================================
-TECLA ESC FECHA O CARRINHO
+ESC
 ============================================================ */
 
-document.addEventListener(
-"keydown",
-event=>{
+document.addEventListener("keydown",event=>{
 
 if(event.key==="Escape"){
-
 closeCart();
-
 }
 
+});
+
+/* ============================================================
+ROTA ADMIN
+============================================================ */
+
+function isAdminRoute(){
+
+const path=location.pathname.replace(/\/+$/,"");
+
+return path==="/admin"||path.endsWith("/admin");
 }
-);
 
 /* ============================================================
 INICIALIZAÇÃO
@@ -7142,9 +4347,7 @@ async function init(){
 try{
 
 await loadBusinessHours();
-
 await loadProducts();
-
 await loadDeliveryZones();
 
 renderCart();
@@ -7153,52 +4356,29 @@ toggleDeliveryFields();
 
 updateStoreStatus();
 
-const {
-data
-}=await db.auth.getSession();
+const{data}=await db.auth.getSession();
 
-if(
-data &&
-data.session
-){
+if(data&&data.session){
 
-if(
-location.pathname==="/admin"
-){
-
+if(isAdminRoute()){
 await showAdminPanel();
-
 }
 
 }else{
 
-if(
-location.pathname==="/admin"
-){
-
-showScreen(
-"adminLogin"
-);
-
+if(isAdminRoute()){
+showScreen("adminLogin");
 }
 
 }
 
-/*
-Atualiza o status da loja
-a cada 30 segundos.
-*/
-
-setInterval(
-async()=>{
+setInterval(async()=>{
 
 await loadBusinessHours();
 
 updateStoreStatus();
 
-},
-30000
-);
+},30000);
 
 }catch(error){
 
@@ -7207,15 +4387,13 @@ console.error(
 error
 );
 
-const container=
-document.getElementById(
+const container=document.getElementById(
 "productsContainer"
 );
 
 if(container){
 
-container.innerHTML=
-`
+container.innerHTML=`
 <div class="empty">
 
 Não foi possível carregar o sistema.
