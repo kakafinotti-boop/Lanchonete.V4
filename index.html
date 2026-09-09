@@ -3,74 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-
 <title>Burguer Gold</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
-
-html{scroll-behavior:smooth}
-
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#090909;
-  color:#fff;
-}
-
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#090909;color:#fff}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
 
 .app{min-height:100vh}
 
 header{
-  background:linear-gradient(135deg,#111,#050505);
-  border-bottom:1px solid #d4af37;
-  padding:20px 18px;
-  text-align:center;
-  position:sticky;
-  top:0;
-  z-index:50;
+background:linear-gradient(135deg,#111,#050505);
+border-bottom:1px solid #d4af37;
+padding:22px 18px;
+text-align:center;
+position:sticky;
+top:0;
+z-index:50
 }
 
-header h1{
-  margin:0;
-  color:#d4af37;
-  font-size:30px;
-}
-
-header p{
-  margin:6px 0 0;
-  color:#aaa;
-}
-
-.store-status{
-  margin-top:10px;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.status-open{color:#50d890}
-.status-closed{color:#ff6969}
+header h1{margin:0;color:#d4af37;font-size:30px}
+header p{margin:6px 0 0;color:#aaa}
 
 main{
-  width:min(1100px,94%);
-  margin:25px auto;
-  padding-bottom:120px;
+width:min(1100px,94%);
+margin:25px auto;
+padding-bottom:110px
 }
 
 .screen{display:none}
 .screen.active{display:block}
 
 .card{
-  background:#121212;
-  border:1px solid #292929;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 8px 25px rgba(0,0,0,.25);
+background:#121212;
+border:1px solid #292929;
+border-radius:16px;
+padding:18px;
+margin-bottom:18px;
+box-shadow:0 8px 25px rgba(0,0,0,.25)
 }
 
 .gold{color:#d4af37}
@@ -78,377 +51,319 @@ main{
 .center{text-align:center}
 
 .btn{
-  width:100%;
-  border:0;
-  border-radius:12px;
-  padding:14px 18px;
-  font-weight:bold;
-  background:#d4af37;
-  color:#000;
-  margin-top:10px;
+width:100%;
+border:0;
+border-radius:12px;
+padding:14px 18px;
+font-weight:bold;
+background:#d4af37;
+color:#000;
+margin-top:10px
 }
 
 .btn:hover{filter:brightness(1.08)}
-
-.btn.secondary{
-  background:#292929;
-  color:#fff;
-}
-
-.btn.danger{
-  background:#8e2525;
-  color:#fff;
-}
-
-.btn.whatsapp{
-  background:#25D366;
-  color:#000;
-}
+.btn.secondary{background:#292929;color:#fff}
+.btn.danger{background:#8e2525;color:#fff}
 
 .btn.small{
-  width:auto;
-  padding:9px 13px;
-  margin:0;
-  font-size:13px;
+width:auto;
+padding:9px 13px;
+margin:0;
+font-size:13px
 }
 
 input,textarea,select{
-  width:100%;
-  padding:13px;
-  border-radius:10px;
-  border:1px solid #383838;
-  background:#0b0b0b;
-  color:#fff;
-  outline:none;
-  margin-top:7px;
+width:100%;
+padding:13px;
+border-radius:10px;
+border:1px solid #383838;
+background:#0b0b0b;
+color:#fff;
+outline:none;
+margin-top:7px
 }
 
 textarea{
-  min-height:90px;
-  resize:vertical;
+min-height:90px;
+resize:vertical
 }
 
 label{
-  display:block;
-  margin-top:13px;
-  font-weight:bold;
-  color:#ddd;
+display:block;
+margin-top:13px;
+font-weight:bold;
+color:#ddd
 }
 
-/* ================= CLIENTE ================= */
-
 .category-tabs{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:4px 2px 12px;
-  margin:15px 0;
-  scrollbar-width:none;
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:4px 2px 12px;
+margin:15px 0;
+scrollbar-width:none
 }
 
 .category-tabs::-webkit-scrollbar{display:none}
 
 .category-tab{
-  flex:0 0 auto;
-  border:1px solid #393939;
-  background:#181818;
-  color:#ccc;
-  border-radius:999px;
-  padding:10px 14px;
-  font-weight:bold;
-  white-space:nowrap;
+flex:0 0 auto;
+border:1px solid #393939;
+background:#181818;
+color:#ccc;
+border-radius:999px;
+padding:10px 14px;
+font-weight:bold;
+white-space:nowrap
 }
 
 .category-tab.active{
-  background:#d4af37;
-  color:#000;
-  border-color:#d4af37;
+background:#d4af37;
+color:#000;
+border-color:#d4af37
 }
 
 .products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:15px
 }
 
 .product{
-  position:relative;
-  background:#151515;
-  border:1px solid #2d2d2d;
-  border-radius:15px;
-  padding:17px;
-  transition:.2s;
+position:relative;
+background:#151515;
+border:1px solid #2d2d2d;
+border-radius:15px;
+padding:17px;
+transition:.2s
 }
 
 .product:hover{
-  border-color:#d4af37;
-  transform:translateY(-2px);
+border-color:#d4af37;
+transform:translateY(-2px)
 }
 
-.product h3{
-  margin:0 0 7px;
-}
+.product h3{margin:0 0 7px}
 
 .product .description{
-  min-height:42px;
-  color:#999;
-  font-size:14px;
-  line-height:1.4;
+min-height:42px;
+color:#999;
+font-size:14px;
+line-height:1.4
 }
 
 .price{
-  color:#d4af37;
-  font-size:21px;
-  font-weight:bold;
-  margin:13px 0;
+color:#d4af37;
+font-size:21px;
+font-weight:bold;
+margin:13px 0
 }
 
 .product-qty-badge{
-  position:absolute;
-  top:12px;
-  right:12px;
-  background:#d4af37;
-  color:#000;
-  border-radius:999px;
-  min-width:28px;
-  height:28px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:bold;
+position:absolute;
+top:12px;
+right:12px;
+background:#d4af37;
+color:#000;
+border-radius:999px;
+min-width:28px;
+height:28px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-weight:bold
 }
 
 .product-actions{
-  display:flex;
-  gap:8px;
-  align-items:center;
+display:flex;
+gap:8px;
+align-items:center
 }
 
-.product-actions .btn{
-  margin:0;
-}
+.product-actions .btn{margin:0}
 
 .quick-qty{
-  display:flex;
-  align-items:center;
-  gap:6px;
+display:flex;
+align-items:center;
+gap:6px
 }
 
 .quick-qty button{
-  width:38px;
-  height:42px;
-  border:0;
-  border-radius:10px;
-  background:#292929;
-  color:#fff;
-  font-size:20px;
+width:38px;
+height:42px;
+border:0;
+border-radius:10px;
+background:#292929;
+color:#fff;
+font-size:20px
+}
+
+.category-title{
+grid-column:1/-1;
+margin-top:10px;
+padding-bottom:8px;
+border-bottom:1px solid #3b3219
+}
+
+.category-title h2{
+margin:0;
+color:#d4af37;
+font-size:22px
 }
 
 .empty{
-  text-align:center;
-  padding:25px;
-  color:#888;
+text-align:center;
+padding:25px;
+color:#888
 }
-
-/* ================= AVISOS ================= */
-
-.store-notice{
-  border:1px solid #d4af37;
-  background:#17140a;
-  border-radius:13px;
-  padding:14px;
-  margin-bottom:18px;
-}
-
-.store-notice strong{
-  color:#d4af37;
-}
-
-.closed-box{
-  border:1px solid #8e2525;
-  background:#190d0d;
-  color:#ff8d8d;
-}
-
-/* ================= CARRINHO ================= */
 
 .floating-cart{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  width:min(500px,calc(100% - 28px));
-  z-index:100;
-  display:none;
-  background:#d4af37;
-  color:#000;
-  border:0;
-  border-radius:16px;
-  padding:15px 18px;
-  box-shadow:0 10px 35px rgba(0,0,0,.55);
-  font-weight:bold;
-  justify-content:space-between;
-  align-items:center;
+position:fixed;
+left:50%;
+bottom:18px;
+transform:translateX(-50%);
+width:min(500px,calc(100% - 28px));
+z-index:100;
+display:none;
+background:#d4af37;
+color:#000;
+border:0;
+border-radius:16px;
+padding:15px 18px;
+box-shadow:0 10px 35px rgba(0,0,0,.55);
+font-weight:bold;
+justify-content:space-between;
+align-items:center
 }
 
-.floating-cart.visible{
-  display:flex;
-}
+.floating-cart.visible{display:flex}
 
 .cart-count{
-  background:#000;
-  color:#d4af37;
-  border-radius:999px;
-  padding:4px 9px;
-  margin-right:7px;
+background:#000;
+color:#d4af37;
+border-radius:999px;
+padding:4px 9px;
+margin-right:7px
 }
 
 .overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.72);
-  z-index:110;
-  display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.72);
+z-index:110;
+display:none
 }
 
 .overlay.active{display:block}
 
 .cart-drawer{
-  position:fixed;
-  z-index:120;
-  right:0;
-  top:0;
-  width:min(430px,100%);
-  height:100%;
-  background:#111;
-  border-left:1px solid #d4af37;
-  transform:translateX(100%);
-  transition:.25s;
-  padding:20px;
-  overflow-y:auto;
+position:fixed;
+z-index:120;
+right:0;
+top:0;
+width:min(430px,100%);
+height:100%;
+background:#111;
+border-left:1px solid #d4af37;
+transform:translateX(100%);
+transition:.25s;
+padding:20px;
+overflow-y:auto
 }
 
-.cart-drawer.active{
-  transform:translateX(0);
-}
+.cart-drawer.active{transform:translateX(0)}
 
 .cart-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  border-bottom:1px solid #292929;
-  padding-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+border-bottom:1px solid #292929;
+padding-bottom:15px
 }
 
 .close-cart{
-  background:#292929;
-  color:#fff;
-  border:0;
-  border-radius:10px;
-  width:40px;
-  height:40px;
-  font-size:20px;
+background:#292929;
+color:#fff;
+border:0;
+border-radius:10px;
+width:40px;
+height:40px;
+font-size:20px
 }
 
 .cart-item{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:14px 0;
-  border-bottom:1px solid #292929;
+display:flex;
+justify-content:space-between;
+gap:12px;
+padding:14px 0;
+border-bottom:1px solid #292929
 }
 
 .qty{
-  display:flex;
-  align-items:center;
-  gap:8px;
+display:flex;
+align-items:center;
+gap:8px
 }
 
 .qty button{
-  width:32px;
-  height:32px;
-  border-radius:8px;
-  border:0;
-  background:#d4af37;
-  font-weight:bold;
+width:32px;
+height:32px;
+border-radius:8px;
+border:0;
+background:#d4af37;
+font-weight:bold
 }
 
-/* ================= CHECKOUT ================= */
-
 .total{
-  display:flex;
-  justify-content:space-between;
-  font-size:21px;
-  font-weight:bold;
-  padding-top:15px;
+display:flex;
+justify-content:space-between;
+font-size:21px;
+font-weight:bold;
+padding-top:15px
 }
 
 .checkout-line{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
+display:flex;
+justify-content:space-between;
+padding:8px 0
 }
 
-.checkout-delivery{
-  color:#aaa;
-  padding:8px 0;
-}
-
-.pix-box{
-  display:none;
-  margin-top:15px;
-  background:#0b0b0b;
-  border:1px solid #d4af37;
-  border-radius:13px;
-  padding:15px;
-}
-
-.pix-key{
-  background:#171717;
-  padding:12px;
-  border-radius:9px;
-  word-break:break-all;
-  margin:10px 0;
-  color:#d4af37;
-  font-weight:bold;
-}
-
-/* ================= ADMIN ================= */
+.checkout-delivery{color:#aaa}
 
 .admin-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
 }
 
 .admin-tabs{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:3px;
-  margin-bottom:18px;
-  scrollbar-width:none;
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:3px;
+margin-bottom:18px;
+scrollbar-width:none
 }
 
 .admin-tabs::-webkit-scrollbar{display:none}
 
 .admin-tab{
-  flex:0 0 auto;
-  background:#181818;
-  color:#bbb;
-  border:1px solid #333;
-  border-radius:12px;
-  padding:12px 15px;
-  font-weight:bold;
+flex:0 0 auto;
+background:#181818;
+color:#bbb;
+border:1px solid #333;
+border-radius:12px;
+padding:12px 15px;
+font-weight:bold
 }
 
 .admin-tab.active{
-  background:#d4af37;
-  color:#000;
-  border-color:#d4af37;
+background:#d4af37;
+color:#000;
+border-color:#d4af37
 }
 
 .admin-section{display:none}
@@ -456,209 +371,228 @@ label{
 
 .dashboard-grid,
 .report-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:12px
 }
 
 .stat{
-  background:#0c0c0c;
-  border:1px solid #2b2b2b;
-  border-radius:14px;
-  padding:17px;
+background:#0c0c0c;
+border:1px solid #2b2b2b;
+border-radius:14px;
+padding:17px
 }
 
 .stat span{
-  display:block;
-  color:#999;
-  font-size:13px;
-  margin-bottom:8px;
+display:block;
+color:#999;
+font-size:13px;
+margin-bottom:8px
 }
 
 .stat strong{
-  font-size:23px;
-  color:#d4af37;
+font-size:23px;
+color:#d4af37
 }
 
 .order{
-  border:1px solid #303030;
-  border-radius:13px;
-  padding:15px;
-  margin-top:12px;
-  background:#101010;
+border:1px solid #303030;
+border-radius:13px;
+padding:15px;
+margin-top:12px;
+background:#101010
 }
 
 .order-top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap
 }
 
 .status{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#d4af37;
-  color:#000;
-  font-size:12px;
-  font-weight:bold;
+display:inline-block;
+padding:6px 10px;
+border-radius:999px;
+background:#d4af37;
+color:#000;
+font-size:12px;
+font-weight:bold
 }
 
 .order-items{
-  margin:12px 0;
-  color:#bbb;
-  line-height:1.6;
+margin:12px 0;
+color:#bbb;
+line-height:1.6
 }
 
 .admin-products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:12px
 }
 
 .admin-product{
-  background:#0d0d0d;
-  border:1px solid #292929;
-  padding:14px;
-  border-radius:12px;
+background:#0d0d0d;
+border:1px solid #292929;
+padding:14px;
+border-radius:12px
 }
 
 .cash-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:12px;
-  margin-top:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:12px;
+margin-top:15px
 }
 
 .cash-box{
-  background:#0c0c0c;
-  border:1px solid #2b2b2b;
-  border-radius:13px;
-  padding:15px;
+background:#0c0c0c;
+border:1px solid #2b2b2b;
+border-radius:13px;
+padding:15px
 }
 
 .cash-box span{
-  display:block;
-  color:#999;
-  font-size:13px;
-  margin-bottom:7px;
+display:block;
+color:#999;
+font-size:13px;
+margin-bottom:7px
 }
 
 .cash-box strong{
-  font-size:21px;
-  color:#d4af37;
+font-size:21px;
+color:#d4af37
 }
 
 .cash-status{
-  border-radius:12px;
-  padding:13px;
-  background:#161616;
-  border:1px solid #d4af37;
-  margin-top:15px;
+border-radius:12px;
+padding:13px;
+background:#161616;
+border:1px solid #d4af37;
+margin-top:15px
 }
 
 .movement{
-  display:grid;
-  grid-template-columns:150px 1fr auto;
-  gap:10px;
-  align-items:end;
+display:grid;
+grid-template-columns:150px 1fr auto;
+gap:10px;
+align-items:end
 }
 
 .history-item{
-  padding:13px 0;
-  border-bottom:1px solid #292929;
+padding:13px 0;
+border-bottom:1px solid #292929
 }
 
-.history-item:last-child{
-  border-bottom:0;
-}
+.history-item:last-child{border-bottom:0}
 
 .zone-row{
-  display:grid;
-  grid-template-columns:1fr 130px auto auto;
-  gap:8px;
-  align-items:end;
-  padding:12px 0;
-  border-bottom:1px solid #292929;
+display:grid;
+grid-template-columns:1fr 130px auto auto;
+gap:8px;
+align-items:end;
+padding:12px 0;
+border-bottom:1px solid #292929
 }
 
-.setting-box{
-  background:#0c0c0c;
-  border:1px solid #292929;
-  border-radius:14px;
-  padding:15px;
-  margin-top:15px;
+.hours-row{
+display:grid;
+grid-template-columns:1fr 90px 120px 120px auto;
+gap:10px;
+align-items:end;
+padding:12px 0;
+border-bottom:1px solid #292929
 }
 
-.day-row{
-  display:grid;
-  grid-template-columns:120px 1fr 1fr 100px;
-  gap:8px;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid #292929;
+.hours-row:last-child,
+.zone-row:last-child{
+border-bottom:0
 }
 
-.day-name{
-  font-weight:bold;
-  color:#d4af37;
+.day-name{font-weight:bold}
+
+.open-badge{
+font-size:12px;
+padding:5px 8px;
+border-radius:999px;
+background:#292929;
+color:#aaa;
+text-align:center
+}
+
+.open-badge.on{
+background:#d4af37;
+color:#000
+}
+
+.settings-note{
+padding:12px;
+border:1px solid #3a3219;
+border-radius:12px;
+background:#0e0e0e;
+color:#aaa;
+margin-bottom:15px;
+line-height:1.5
 }
 
 .toast{
-  position:fixed;
-  left:50%;
-  top:85px;
-  transform:translate(-50%,-15px);
-  background:#d4af37;
-  color:#000;
-  padding:12px 18px;
-  border-radius:12px;
-  font-weight:bold;
-  z-index:200;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-  text-align:center;
-  max-width:90%;
+position:fixed;
+left:50%;
+top:85px;
+transform:translate(-50%,-15px);
+background:#d4af37;
+color:#000;
+padding:12px 18px;
+border-radius:12px;
+font-weight:bold;
+z-index:200;
+opacity:0;
+pointer-events:none;
+transition:.25s
 }
 
 .toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
+opacity:1;
+transform:translate(-50%,0)
 }
 
 .success{
-  padding:25px;
-  text-align:center;
+padding:25px;
+text-align:center
 }
 
-.success-icon{
-  font-size:55px;
-}
+.success-icon{font-size:55px}
 
 @media(max-width:700px){
+.hours-row{
+grid-template-columns:1fr 85px
+}
 
-  header h1{font-size:25px}
+.hours-row .time-field{
+grid-column:1
+}
 
-  main{width:94%}
+.hours-row .save-hour{
+grid-column:2
+}
 
-  .movement{
-    grid-template-columns:1fr;
-  }
+.movement{
+grid-template-columns:1fr
+}
 
-  .zone-row{
-    grid-template-columns:1fr 1fr;
-  }
+.zone-row{
+grid-template-columns:1fr 1fr
+}
 
-  .day-row{
-    grid-template-columns:1fr 1fr;
-  }
+.zone-row button{
+width:100%
+}
+}
 
-  .product-actions{
-    flex-wrap:wrap;
-  }
-
+@media(max-width:600px){
+header h1{font-size:25px}
+main{width:94%}
 }
 </style>
 </head>
@@ -668,24 +602,13 @@ label{
 <div class="app">
 
 <header>
-
 <h1>🍔 Burguer Gold</h1>
-
 <p>Sabor que vale ouro.</p>
-
-<div id="storeStatus" class="store-status">
-Verificando horário...
-</div>
-
 </header>
 
 <main>
 
-<!-- ================= MENU ================= -->
-
 <section id="menuScreen" class="screen active">
-
-<div id="storeNotice"></div>
 
 <div class="card">
 
@@ -705,7 +628,6 @@ Escolha seus lanches e monte seu pedido.
 
 </section>
 
-<!-- ================= CHECKOUT ================= -->
 
 <section id="checkoutScreen" class="screen">
 
@@ -715,15 +637,31 @@ Escolha seus lanches e monte seu pedido.
 
 <label>
 Nome
-<input id="customerName" type="text" placeholder="Seu nome">
+<input
+id="customerName"
+type="text"
+placeholder="Seu nome"
+>
 </label>
 
 <label>
 Tipo do pedido
-<select id="deliveryType" onchange="toggleDeliveryFields()">
-<option value="ENTREGA">Entrega</option>
-<option value="RETIRADA">Retirada na loja</option>
+
+<select
+id="deliveryType"
+onchange="toggleDeliveryFields()"
+>
+
+<option value="ENTREGA">
+Entrega
+</option>
+
+<option value="RETIRADA">
+Retirada na loja
+</option>
+
 </select>
+
 </label>
 
 <div id="addressArea">
@@ -731,59 +669,60 @@ Tipo do pedido
 <label>
 Bairro
 
-<select id="customerNeighborhood" onchange="updateCheckoutTotal()">
-<option value="">Selecione seu bairro</option>
+<select
+id="customerNeighborhood"
+onchange="updateCheckoutTotal()"
+>
+
+<option value="">
+Selecione seu bairro
+</option>
+
 </select>
 
 </label>
 
 <label>
 Endereço completo
-<textarea id="customerAddress" placeholder="Rua, número, complemento..."></textarea>
+
+<textarea
+id="customerAddress"
+placeholder="Rua, número, complemento..."
+></textarea>
+
 </label>
 
-<div id="deliveryFeePreview" class="checkout-delivery">
+<div
+id="deliveryFeePreview"
+class="checkout-delivery"
+>
 Taxa de entrega: R$ 0,00
 </div>
 
-<div id="deliveryEstimatePreview" class="checkout-delivery">
-⏱️ Estimativa: -
 </div>
 
-</div>
 
 <label>
 Forma de pagamento
 
-<select id="payment" onchange="updatePaymentBox()">
-<option value="PIX">PIX</option>
-<option value="DINHEIRO">Dinheiro</option>
-<option value="CARTAO">Cartão</option>
+<select id="payment">
+
+<option value="PIX">
+PIX
+</option>
+
+<option value="DINHEIRO">
+Dinheiro
+</option>
+
+<option value="CARTAO">
+Cartão
+</option>
+
 </select>
 
 </label>
 
-<div id="pixBox" class="pix-box">
-
-<strong>💳 Pagamento via PIX</strong>
-
-<p class="muted">
-Faça o PIX usando a chave abaixo.
-</p>
-
-<div id="pixKeyDisplay" class="pix-key">
-PIX não configurado.
-</div>
-
-<button class="btn small" onclick="copyPixKey()">
-📋 Copiar chave PIX
-</button>
-
-<p class="muted">
-Após pagar, envie o comprovante pelo WhatsApp se necessário.
-</p>
-
-</div>
 
 <div class="card" style="margin-top:20px">
 
@@ -793,12 +732,16 @@ Após pagar, envie o comprovante pelo WhatsApp se necessário.
 
 <div class="checkout-line">
 <span>Subtotal</span>
-<strong id="checkoutSubtotal">R$ 0,00</strong>
+<strong id="checkoutSubtotal">
+R$ 0,00
+</strong>
 </div>
 
 <div class="checkout-line">
 <span>Entrega</span>
-<strong id="checkoutDelivery">R$ 0,00</strong>
+<strong id="checkoutDelivery">
+R$ 0,00
+</strong>
 </div>
 
 <div class="total">
@@ -810,11 +753,18 @@ R$ 0,00
 
 </div>
 
-<button class="btn" onclick="sendOrder()">
-✅ Confirmar pedido
+
+<button
+class="btn"
+onclick="sendOrder()"
+>
+Confirmar pedido
 </button>
 
-<button class="btn secondary" onclick="showScreen('menuScreen')">
+<button
+class="btn secondary"
+onclick="showScreen('menuScreen')"
+>
 Voltar
 </button>
 
@@ -822,15 +772,18 @@ Voltar
 
 </section>
 
-<!-- ================= SUCESSO ================= -->
 
 <section id="successScreen" class="screen">
 
 <div class="card success">
 
-<div class="success-icon">✅</div>
+<div class="success-icon">
+✅
+</div>
 
-<h2>Pedido recebido!</h2>
+<h2>
+Pedido recebido!
+</h2>
 
 <p class="muted">
 Seu pedido foi enviado para a Burguer Gold.
@@ -838,18 +791,16 @@ Seu pedido foi enviado para a Burguer Gold.
 
 <p>
 Número do pedido:
-<strong id="successOrderId" class="gold"></strong>
+<strong
+id="successOrderId"
+class="gold"
+></strong>
 </p>
 
-<div id="successInfo"></div>
-
-<button id="successWhatsappBtn"
-class="btn whatsapp"
-onclick="openOrderWhatsapp()">
-📱 Enviar pedido pelo WhatsApp
-</button>
-
-<button class="btn" onclick="location.reload()">
+<button
+class="btn"
+onclick="location.reload()"
+>
 Fazer novo pedido
 </button>
 
@@ -857,11 +808,13 @@ Fazer novo pedido
 
 </section>
 
-<!-- ================= LOGIN ADMIN ================= -->
 
 <section id="adminLogin" class="screen">
 
-<div class="card" style="max-width:450px;margin:40px auto">
+<div
+class="card"
+style="max-width:450px;margin:40px auto"
+>
 
 <h2>🔐 Administração</h2>
 
@@ -871,19 +824,37 @@ Entre com a conta da Burguer Gold.
 
 <label>
 E-mail
-<input id="adminEmail" type="email" placeholder="E-mail">
+
+<input
+id="adminEmail"
+type="email"
+placeholder="E-mail"
+>
+
 </label>
 
 <label>
 Senha
-<input id="adminPassword" type="password" placeholder="Senha">
+
+<input
+id="adminPassword"
+type="password"
+placeholder="Senha"
+>
+
 </label>
 
-<button class="btn" onclick="adminLogin()">
+<button
+class="btn"
+onclick="adminLogin()"
+>
 Entrar
 </button>
 
-<button class="btn secondary" onclick="showScreen('menuScreen')">
+<button
+class="btn secondary"
+onclick="showScreen('menuScreen')"
+>
 Voltar
 </button>
 
@@ -891,7 +862,6 @@ Voltar
 
 </section>
 
-<!-- ================= ADMIN ================= -->
 
 <section id="adminPanel" class="screen">
 
@@ -900,11 +870,21 @@ Voltar
 <div class="admin-header">
 
 <div>
-<h2>⚙️ Painel Burguer Gold</h2>
-<p class="muted">Administração da loja</p>
+
+<h2>
+⚙️ Painel Burguer Gold
+</h2>
+
+<p class="muted">
+Administração da loja
+</p>
+
 </div>
 
-<button class="btn small secondary" onclick="adminLogout()">
+<button
+class="btn small secondary"
+onclick="adminLogout()"
+>
 Sair
 </button>
 
@@ -912,53 +892,70 @@ Sair
 
 </div>
 
+
 <div class="admin-tabs">
 
-<button id="adminTabDashboard"
+<button
+id="adminTabDashboard"
 class="admin-tab active"
-onclick="openAdminTab('dashboard')">
+onclick="openAdminTab('dashboard')"
+>
 📊 Visão geral
 </button>
 
-<button id="adminTabOrders"
+<button
+id="adminTabOrders"
 class="admin-tab"
-onclick="openAdminTab('orders')">
+onclick="openAdminTab('orders')"
+>
 📋 Pedidos
 </button>
 
-<button id="adminTabProducts"
+<button
+id="adminTabProducts"
 class="admin-tab"
-onclick="openAdminTab('products')">
+onclick="openAdminTab('products')"
+>
 🍔 Produtos
 </button>
 
-<button id="adminTabCash"
+<button
+id="adminTabCash"
 class="admin-tab"
-onclick="openAdminTab('cash')">
+onclick="openAdminTab('cash')"
+>
 💰 Caixa
 </button>
 
-<button id="adminTabReports"
+<button
+id="adminTabReports"
 class="admin-tab"
-onclick="openAdminTab('reports')">
+onclick="openAdminTab('reports')"
+>
 📈 Relatórios
 </button>
 
-<button id="adminTabSettings"
+<button
+id="adminTabSettings"
 class="admin-tab"
-onclick="openAdminTab('settings')">
+onclick="openAdminTab('settings')"
+>
 ⚙️ Configurações
 </button>
 
 </div>
 
-<!-- DASHBOARD -->
 
-<div id="admin-dashboard" class="admin-section active">
+<div
+id="admin-dashboard"
+class="admin-section active"
+>
 
 <div class="card">
 
-<h2>📊 Visão geral</h2>
+<h2>
+📊 Visão geral
+</h2>
 
 <div id="dashboardContent">
 Carregando...
@@ -968,20 +965,32 @@ Carregando...
 
 </div>
 
-<!-- PEDIDOS -->
 
-<div id="admin-orders" class="admin-section">
+<div
+id="admin-orders"
+class="admin-section"
+>
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-<h2>📋 Pedidos</h2>
-<p class="muted">Pedidos recebidos pela loja.</p>
+
+<h2>
+📋 Pedidos
+</h2>
+
+<p class="muted">
+Pedidos recebidos pela loja.
+</p>
+
 </div>
 
-<button class="btn small secondary" onclick="loadOrders()">
+<button
+class="btn small secondary"
+onclick="loadOrders()"
+>
 ↻ Atualizar
 </button>
 
@@ -995,13 +1004,17 @@ Carregando pedidos...
 
 </div>
 
-<!-- PRODUTOS -->
 
-<div id="admin-products-section" class="admin-section">
+<div
+id="admin-products-section"
+class="admin-section"
+>
 
 <div class="card">
 
-<h2>🍔 Produtos</h2>
+<h2>
+🍔 Produtos
+</h2>
 
 <p class="muted">
 Cadastre os produtos e organize o cardápio.
@@ -1009,45 +1022,90 @@ Cadastre os produtos e organize o cardápio.
 
 <label>
 Nome do produto
-<input id="productName" type="text" placeholder="Ex: X-Bacon">
+
+<input
+id="productName"
+type="text"
+placeholder="Ex: X-Bacon"
+>
+
 </label>
 
 <label>
 O que vem no produto?
-<textarea id="productDescription"
-placeholder="Ex: pão, hambúrguer, queijo, bacon..."></textarea>
+
+<textarea
+id="productDescription"
+placeholder="Ex: pão, hambúrguer, queijo, bacon..."
+></textarea>
+
 </label>
 
 <label>
 Preço
-<input id="productPrice" type="number" step="0.01" placeholder="24.90">
+
+<input
+id="productPrice"
+type="number"
+step="0.01"
+placeholder="24.90"
+>
+
 </label>
 
 <label>
 Categoria
 
 <select id="productCategory">
-<option value="Lanches">🍔 Lanches</option>
-<option value="Combos">📦 Combos</option>
-<option value="Porções">🍟 Porções</option>
-<option value="Bebidas">🥤 Bebidas</option>
-<option value="Sobremesas">🍰 Sobremesas</option>
-<option value="Outros">⭐ Outros</option>
+
+<option value="Lanches">
+🍔 Lanches
+</option>
+
+<option value="Combos">
+📦 Combos
+</option>
+
+<option value="Porções">
+🍟 Porções
+</option>
+
+<option value="Bebidas">
+🥤 Bebidas
+</option>
+
+<option value="Sobremesas">
+🍰 Sobremesas
+</option>
+
+<option value="Outros">
+⭐ Outros
+</option>
+
 </select>
 
 </label>
 
-<button class="btn" onclick="createProduct()">
+<button
+class="btn"
+onclick="createProduct()"
+>
 ➕ Adicionar produto
 </button>
 
 </div>
 
+
 <div class="card">
 
-<h3>Produtos cadastrados</h3>
+<h3>
+Produtos cadastrados
+</h3>
 
-<div id="adminProducts" class="admin-products">
+<div
+id="adminProducts"
+class="admin-products"
+>
 Carregando produtos...
 </div>
 
@@ -1055,16 +1113,21 @@ Carregando produtos...
 
 </div>
 
-<!-- CAIXA -->
 
-<div id="admin-cash" class="admin-section">
+<div
+id="admin-cash"
+class="admin-section"
+>
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-<h2>💰 Caixa</h2>
+
+<h2>
+💰 Caixa
+</h2>
 
 <p class="muted">
 Controle as vendas e faça o fechamento.
@@ -1072,8 +1135,10 @@ Controle as vendas e faça o fechamento.
 
 </div>
 
-<button class="btn small secondary"
-onclick="loadCashRegister()">
+<button
+class="btn small secondary"
+onclick="loadCashRegister()"
+>
 ↻ Atualizar
 </button>
 
@@ -1087,16 +1152,21 @@ Carregando caixa...
 
 </div>
 
-<!-- RELATÓRIOS -->
 
-<div id="admin-reports" class="admin-section">
+<div
+id="admin-reports"
+class="admin-section"
+>
 
 <div class="card">
 
 <div class="admin-header">
 
 <div>
-<h2>📈 Relatórios</h2>
+
+<h2>
+📈 Relatórios
+</h2>
 
 <p class="muted">
 Resumo das vendas da Burguer Gold.
@@ -1104,8 +1174,10 @@ Resumo das vendas da Burguer Gold.
 
 </div>
 
-<button class="btn small secondary"
-onclick="loadReports()">
+<button
+class="btn small secondary"
+onclick="loadReports()"
+>
 ↻ Atualizar
 </button>
 
@@ -1119,170 +1191,94 @@ Carregando relatórios...
 
 </div>
 
-<!-- CONFIGURAÇÕES -->
 
-<div id="admin-settings" class="admin-section">
+<div
+id="admin-settings"
+class="admin-section"
+>
 
 <div class="card">
 
-<h2>⚙️ Configurações da loja</h2>
+<h2>
+⚙️ Configurações da loja
+</h2>
 
 <p class="muted">
-Tudo aqui é salvo online no Supabase e vale para todos os clientes.
+Controle os horários de funcionamento e as taxas de entrega.
 </p>
 
-<!-- HORÁRIOS -->
+<div class="settings-note">
 
-<div class="setting-box">
+💡 <strong>Como funciona:</strong>
+dias marcados como abertos ficam disponíveis conforme o horário configurado.
+Bairros inativos não aparecem para o cliente.
+As alterações ficam salvas no Supabase.
 
-<h3>🕐 Horários de funcionamento</h3>
+</div>
+
+
+<div class="card">
+
+<h3>
+🕐 Horários de funcionamento
+</h3>
 
 <p class="muted">
-Defina o horário de abertura e fechamento de cada dia.
+Ative cada dia e defina a abertura e o fechamento.
 </p>
 
-<div id="openingHoursContainer">
+<div id="businessHoursContainer">
 Carregando horários...
 </div>
 
-<button class="btn" onclick="saveOpeningHours()">
-💾 Salvar horários
-</button>
-
 </div>
 
-<!-- ESTIMATIVA -->
 
-<div class="setting-box">
+<div class="card">
 
-<h3>🚚 Estimativa de entrega</h3>
-
-<p class="muted">
-Esse tempo será mostrado ao cliente durante o pedido.
-</p>
+<h3>
+📍 Novo bairro
+</h3>
 
 <label>
-Tempo mínimo (minutos)
-<input id="deliveryMin" type="number" min="1">
-</label>
+Bairro
 
-<label>
-Tempo máximo (minutos)
-<input id="deliveryMax" type="number" min="1">
-</label>
-
-<button class="btn" onclick="saveDeliveryEstimate()">
-💾 Salvar estimativa
-</button>
-
-</div>
-
-<!-- PIX -->
-
-<div class="setting-box">
-
-<h3>💳 PIX</h3>
-
-<p class="muted">
-Cadastre a chave PIX que aparecerá para os clientes.
-</p>
-
-<label>
-Chave PIX
-<input id="pixKeyInput"
+<input
+id="zoneNeighborhood"
 type="text"
-placeholder="CPF, telefone, e-mail ou chave aleatória">
-</label>
+placeholder="Ex: Vila Santa Cecília"
+>
 
-<button class="btn" onclick="savePixKey()">
-💾 Salvar PIX
-</button>
-
-</div>
-
-<!-- WHATSAPP -->
-
-<div class="setting-box">
-
-<h3>📱 WhatsApp</h3>
-
-<p class="muted">
-Número que receberá os pedidos pelo WhatsApp.
-</p>
-
-<label>
-Número do WhatsApp
-<input id="whatsappInput"
-type="tel"
-placeholder="Ex: 5524999999999">
-</label>
-
-<p class="muted">
-Use o formato internacional, por exemplo:
-<strong>5524999999999</strong>
-</p>
-
-<button class="btn whatsapp"
-onclick="saveWhatsapp()">
-💾 Salvar WhatsApp
-</button>
-
-</div>
-
-<!-- TAXA PADRÃO -->
-
-<div class="setting-box">
-
-<h3>💰 Taxa padrão</h3>
-
-<p class="muted">
-Caso o bairro não possua uma taxa específica.
-</p>
-
-<label>
-Taxa padrão
-<input id="defaultDeliveryFee"
-type="number"
-step="0.01"
-min="0">
-</label>
-
-<button class="btn" onclick="saveDefaultDeliveryFee()">
-💾 Salvar taxa padrão
-</button>
-
-</div>
-
-<!-- BAIRROS -->
-
-<div class="setting-box">
-
-<h3>📍 Taxas por bairro</h3>
-
-<p class="muted">
-Cada bairro pode ter sua própria taxa.
-</p>
-
-<label>
-Novo bairro
-<input id="zoneNeighborhood"
-type="text"
-placeholder="Ex: Vila Santa Cecília">
 </label>
 
 <label>
 Taxa de entrega
-<input id="zoneFee"
+
+<input
+id="zoneFee"
 type="number"
 step="0.01"
-placeholder="5.00">
+min="0"
+placeholder="5.00"
+>
+
 </label>
 
-<button class="btn" onclick="createDeliveryZone()">
+<button
+class="btn"
+onclick="createDeliveryZone()"
+>
 ➕ Adicionar bairro
 </button>
 
-<h3>📍 Bairros cadastrados</h3>
+</div>
+
+
+<div class="card">
+
+<h3>
+📍 Bairros cadastrados
+</h3>
 
 <div id="zonesContainer">
 Carregando bairros...
@@ -1300,18 +1296,24 @@ Carregando bairros...
 
 </div>
 
-<!-- ================= CARRINHO ================= -->
 
-<button id="floatingCart"
+<button
+id="floatingCart"
 class="floating-cart"
-onclick="openCart()">
+onclick="openCart()"
+>
 
 <div>
-<span id="floatingCartCount"
-class="cart-count">
+
+<span
+id="floatingCartCount"
+class="cart-count"
+>
 0
 </span>
+
 itens
+
 </div>
 
 <div id="floatingCartTotal">
@@ -1320,25 +1322,37 @@ R$ 0,00
 
 </button>
 
-<div id="cartOverlay"
-class="overlay"
-onclick="closeCart()">
-</div>
 
-<div id="cartDrawer"
-class="cart-drawer">
+<div
+id="cartOverlay"
+class="overlay"
+onclick="closeCart()"
+></div>
+
+
+<div
+id="cartDrawer"
+class="cart-drawer"
+>
 
 <div class="cart-header">
 
 <div>
-<h2>🛒 Seu carrinho</h2>
+
+<h2>
+🛒 Seu carrinho
+</h2>
+
 <p class="muted">
 Confira seu pedido.
 </p>
+
 </div>
 
-<button class="close-cart"
-onclick="closeCart()">
+<button
+class="close-cart"
+onclick="closeCart()"
+>
 ×
 </button>
 
@@ -1346,76 +1360,70 @@ onclick="closeCart()">
 
 <div id="cartContainer"></div>
 
-<button id="drawerCheckoutBtn"
+<button
+id="drawerCheckoutBtn"
 class="btn"
 onclick="goCheckout()"
-style="display:none">
+style="display:none"
+>
 Continuar pedido
 </button>
 
 </div>
 
-<div id="toast" class="toast"></div>
+
+<div
+id="toast"
+class="toast"
+></div>
+
 
 <script>
 
-/* ============================================================
-SUPABASE
-============================================================ */
-
-const SUPABASE_URL =
-"https://tliifpjfrjuxkjqyrvnw.supabase.co";
+const SUPABASE_URL="https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
 /*
- COLE AQUI A SUA PUBLISHABLE KEY DO SUPABASE
+  IMPORTANTE:
+  MANTENHA A MESMA SUPABASE_KEY QUE JÁ ESTÁ
+  NO SEU HTML ATUAL.
 */
-const SUPABASE_KEY =
-"sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
+const SUPABASE_KEY="sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
-const db =
-supabase.createClient(
+const db=supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
-/* ============================================================
-CONFIGURAÇÕES
-============================================================ */
 
-const DEFAULT_DELIVERY_FEE = 0;
+const DEFAULT_DELIVERY_FEE=0;
 
-let deliveryFee = DEFAULT_DELIVERY_FEE;
+const WEEKDAY_NAMES=[
+"Domingo",
+"Segunda-feira",
+"Terça-feira",
+"Quarta-feira",
+"Quinta-feira",
+"Sexta-feira",
+"Sábado"
+];
 
-let deliveryMin = 30;
-let deliveryMax = 60;
 
-let pixKey = "";
+let products=[];
+let cart=[];
+let selectedCategory="Todos";
+let deliveryZones=[];
 
-let whatsappNumber = "";
+let businessHours=[];
+let businessHoursLoaded=false;
 
-let openingHours = {};
+let currentCashRegister=null;
+let currentCashData=null;
+let adminOrders=[];
 
-let products = [];
-let cart = [];
-
-let selectedCategory = "Todos";
-
-let deliveryZones = [];
-
-let currentCashRegister = null;
-let currentCashData = null;
-
-let adminOrders = [];
-
-let lastOrderForWhatsapp = null;
-
-/* ============================================================
-UTILIDADES
-============================================================ */
 
 function money(value){
 
-return Number(value || 0).toLocaleString(
+return Number(value||0).toLocaleString(
 "pt-BR",
 {
 style:"currency",
@@ -1425,23 +1433,38 @@ currency:"BRL"
 
 }
 
+
 function parseMoney(value){
 
-if(typeof value === "number"){
+if(typeof value==="number")
 return value;
-}
+
+const str=String(value??"").trim();
+
+if(!str)
+return 0;
+
+if(str.includes(",")&&str.includes("."))
 
 return Number(
-String(value)
-.replace(/\./g,"")
+str.replace(/\./g,"")
 .replace(",",".")
 )||0;
 
+if(str.includes(","))
+
+return Number(
+str.replace(",",".")
+)||0;
+
+return Number(str)||0;
+
 }
+
 
 function escapeHtml(text){
 
-return String(text ?? "")
+return String(text??"")
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
@@ -1450,58 +1473,49 @@ return String(text ?? "")
 
 }
 
+
 function formatDateTime(date){
 
-if(!date)return "-";
-
-return new Date(date)
-.toLocaleString("pt-BR");
+return date
+?new Date(date).toLocaleString("pt-BR")
+:"-";
 
 }
+
 
 function showScreen(id){
 
 document
 .querySelectorAll(".screen")
-.forEach(screen=>{
-screen.classList.remove("active");
-});
+.forEach(s=>s.classList.remove("active"));
 
-const screen=document.getElementById(id);
+const s=document.getElementById(id);
 
-if(screen){
-screen.classList.add("active");
-}
-
-if(id!=="menuScreen"){
-closeCart();
-}
+if(s)
+s.classList.add("active");
 
 window.scrollTo(0,0);
 
 }
 
+
 function showToast(message){
 
-const toast=
-document.getElementById("toast");
+const t=document.getElementById("toast");
 
-toast.textContent=message;
+t.textContent=message;
 
-toast.classList.add("show");
+t.classList.add("show");
 
 clearTimeout(window.toastTimer);
 
-window.toastTimer=
-setTimeout(()=>{
-toast.classList.remove("show");
-},2000);
+window.toastTimer=setTimeout(
+()=>t.classList.remove("show"),
+1800
+);
 
 }
 
-/* ============================================================
-CATEGORIAS
-============================================================ */
 
 const categories=[
 "Lanches",
@@ -1512,6 +1526,7 @@ const categories=[
 "Outros"
 ];
 
+
 const categoryIcons={
 "Lanches":"🍔",
 "Combos":"📦",
@@ -1521,56 +1536,49 @@ const categoryIcons={
 "Outros":"⭐"
 };
 
-function getProductCategory(product){
 
-return product.category || "Lanches";
+function getProductCategory(p){
+
+return p.category||"Lanches";
 
 }
+
 
 function renderCategoryTabs(){
 
-const container=
-document.getElementById("categoryTabs");
+const c=document.getElementById("categoryTabs");
 
-const available=
-categories.filter(category=>
-products.some(product=>
-getProductCategory(product)===category
+const available=categories.filter(
+cat=>products.some(
+p=>getProductCategory(p)===cat
 )
 );
 
-let html=`
-
-<button
-class="category-tab ${selectedCategory==="Todos"?"active":""}"
-onclick="selectCategory('Todos')">
-
+let html=
+`<button class="category-tab ${
+selectedCategory==="Todos"?"active":""
+}" onclick="selectCategory('Todos')">
 🍽️ Todos
+</button>`;
 
-</button>
+available.forEach(cat=>{
 
-`;
-
-available.forEach(category=>{
-
-html+=`
-
-<button
-class="category-tab ${selectedCategory===category?"active":""}"
-onclick="selectCategory('${category}')">
-
-${categoryIcons[category]}
-${category}
-
-</button>
-
-`;
+html+=
+`<button
+class="category-tab ${
+selectedCategory===cat?"active":""
+}"
+onclick="selectCategory('${cat}')"
+>
+${categoryIcons[cat]} ${cat}
+</button>`;
 
 });
 
-container.innerHTML=html;
+c.innerHTML=html;
 
 }
+
 
 function selectCategory(category){
 
@@ -1582,9 +1590,13 @@ renderProducts();
 
 }
 
+
 async function loadProducts(){
 
-const {data,error}=await db
+const {
+data,
+error
+}=await db
 .from("products")
 .select("*")
 .eq("active",true)
@@ -1597,7 +1609,6 @@ console.error(error);
 document.getElementById(
 "productsContainer"
 ).innerHTML=
-
 `<div class="empty">
 Não foi possível carregar o cardápio.
 </div>`;
@@ -1613,11 +1624,9 @@ selectedCategory!=="Todos" &&
 !products.some(
 p=>getProductCategory(p)===selectedCategory
 )
-){
+)
 
 selectedCategory="Todos";
-
-}
 
 renderCategoryTabs();
 
@@ -1625,27 +1634,27 @@ renderProducts();
 
 }
 
+
 function getCartQty(productId){
 
-const item=
-cart.find(item=>
-String(item.id)===String(productId)
+const item=cart.find(
+i=>String(i.id)===String(productId)
 );
 
-return item ? item.qty : 0;
+return item?item.qty:0;
 
 }
 
+
 function renderProducts(){
 
-const container=
-document.getElementById(
+const c=document.getElementById(
 "productsContainer"
 );
 
 if(!products.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Nenhum produto disponível no momento.
 </div>`;
@@ -1654,20 +1663,16 @@ return;
 
 }
 
-let filtered=products;
-
-if(selectedCategory!=="Todos"){
-
-filtered=
-products.filter(product=>
-getProductCategory(product)===selectedCategory
+let filtered=
+selectedCategory==="Todos"
+?products
+:products.filter(
+p=>getProductCategory(p)===selectedCategory
 );
-
-}
 
 if(!filtered.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Nenhum produto nesta categoria.
 </div>`;
@@ -1676,63 +1681,60 @@ return;
 
 }
 
-container.innerHTML=
-filtered.map(product=>{
+c.innerHTML=filtered.map(p=>{
 
-const qty=
-getCartQty(product.id);
+const qty=getCartQty(p.id);
 
 return `
-
 <div class="product">
 
-${qty>0?
-`<div class="product-qty-badge">${qty}</div>`
-:""}
+${
+qty>0
+?`<div class="product-qty-badge">${qty}</div>`
+:""
+}
 
 <h3>
-${escapeHtml(product.name)}
+${escapeHtml(p.name)}
 </h3>
 
 <div class="description">
-${escapeHtml(product.description||"")}
+${escapeHtml(p.description||"")}
 </div>
 
 <div class="price">
-${money(product.price)}
+${money(p.price)}
 </div>
 
 <div class="product-actions">
 
 <button
 class="btn"
-onclick="addToCart(${product.id})">
-
+onclick="addToCart(${p.id})"
+>
 ${qty>0?"✓ Adicionado":"Adicionar"}
-
 </button>
 
 ${
 qty>0
-?
-`
-
+?`
 <div class="quick-qty">
 
 <button
-onclick="changeQty(${product.id},-1)">
+onclick="changeQty(${p.id},-1)"
+>
 −
 </button>
 
 <strong>${qty}</strong>
 
 <button
-onclick="changeQty(${product.id},1)">
+onclick="changeQty(${p.id},1)"
+>
 +
 </button>
 
 </div>
-
 `
 :""
 }
@@ -1740,81 +1742,59 @@ onclick="changeQty(${product.id},1)">
 </div>
 
 </div>
-
 `;
 
 }).join("");
 
 }
 
-/* ============================================================
-CARRINHO
-============================================================ */
 
 function addToCart(productId){
 
-const product=
-products.find(
-item=>String(item.id)===String(productId)
+const p=products.find(
+i=>String(i.id)===String(productId)
 );
 
-if(!product)return;
+if(!p)return;
 
-const existing=
-cart.find(
-item=>String(item.id)===String(productId)
+const e=cart.find(
+i=>String(i.id)===String(productId)
 );
 
-if(existing){
-
-existing.qty++;
-
-}else{
-
+if(e)
+e.qty++;
+else
 cart.push({
-
-id:product.id,
-
-name:product.name,
-
-price:Number(product.price),
-
+id:p.id,
+name:p.name,
+price:Number(p.price),
 qty:1
-
 });
-
-}
 
 renderCart();
 
 renderProducts();
 
-showToast(
-"🍔 "+product.name+
-" adicionado ao carrinho!"
-);
+showToast("🍔 Adicionado ao carrinho!");
 
 }
 
+
 function changeQty(productId,amount){
 
-const item=
-cart.find(
-item=>String(item.id)===String(productId)
+const item=cart.find(
+i=>String(i.id)===String(productId)
 );
 
 if(!item)return;
 
 item.qty+=amount;
 
-if(item.qty<=0){
+if(item.qty<=0)
 
-cart=
-cart.filter(
-item=>String(item.id)!==String(productId)
+cart=cart.filter(
+i=>String(i.id)!==String(productId)
 );
-
-}
 
 renderCart();
 
@@ -1822,50 +1802,42 @@ renderProducts();
 
 }
 
+
 function getCartTotal(){
 
 return cart.reduce(
-(total,item)=>
-total+
-Number(item.price)*
-Number(item.qty),
+(t,i)=>t+Number(i.price)*Number(i.qty),
 0
 );
 
 }
+
 
 function getCartCount(){
 
 return cart.reduce(
-(total,item)=>
-total+Number(item.qty),
+(t,i)=>t+Number(i.qty),
 0
 );
 
 }
 
+
 function renderCart(){
 
-const container=
-document.getElementById(
-"cartContainer"
-);
+const c=document.getElementById("cartContainer");
 
-const floating=
-document.getElementById(
+const floating=document.getElementById(
 "floatingCart"
 );
 
-const drawerButton=
-document.getElementById(
+const btn=document.getElementById(
 "drawerCheckoutBtn"
 );
 
-const count=
-getCartCount();
+const count=getCartCount();
 
-const total=
-getCartTotal();
+const total=getCartTotal();
 
 document.getElementById(
 "floatingCartCount"
@@ -1873,52 +1845,45 @@ document.getElementById(
 
 document.getElementById(
 "floatingCartTotal"
-).textContent=
-money(total);
+).textContent=money(total);
 
-if(count>0){
-
+if(count>0)
 floating.classList.add("visible");
-
-}else{
-
+else
 floating.classList.remove("visible");
-
-}
 
 if(!cart.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Seu carrinho está vazio.
 </div>`;
 
-drawerButton.style.display="none";
+btn.style.display="none";
 
 return;
 
 }
 
-drawerButton.style.display="block";
+btn.style.display="block";
 
-container.innerHTML=
-
-cart.map(item=>`
+c.innerHTML=
+cart.map(i=>`
 
 <div class="cart-item">
 
 <div>
 
 <strong>
-${escapeHtml(item.name)}
+${escapeHtml(i.name)}
 </strong>
 
 <div class="muted">
-${money(item.price)} cada
+${money(i.price)} cada
 </div>
 
 <div class="gold">
-${money(item.price*item.qty)}
+${money(i.price*i.qty)}
 </div>
 
 </div>
@@ -1926,14 +1891,18 @@ ${money(item.price*item.qty)}
 <div class="qty">
 
 <button
-onclick="changeQty(${item.id},-1)">
+onclick="changeQty(${i.id},-1)"
+>
 −
 </button>
 
-<strong>${item.qty}</strong>
+<strong>
+${i.qty}
+</strong>
 
 <button
-onclick="changeQty(${item.id},1)">
+onclick="changeQty(${i.id},1)"
+>
 +
 </button>
 
@@ -1941,23 +1910,24 @@ onclick="changeQty(${item.id},1)">
 
 </div>
 
-`).join("")+
+`).join("")
 
-`
++
 
-<div class="total">
+`<div class="total">
 
-<span>Subtotal</span>
+<span>
+Subtotal
+</span>
 
 <span class="gold">
 ${money(total)}
 </span>
 
-</div>
-
-`;
+</div>`;
 
 }
+
 
 function openCart(){
 
@@ -1971,29 +1941,31 @@ return;
 
 }
 
-document
-.getElementById("cartOverlay")
-.classList.add("active");
+document.getElementById(
+"cartOverlay"
+).classList.add("active");
 
-document
-.getElementById("cartDrawer")
-.classList.add("active");
+document.getElementById(
+"cartDrawer"
+).classList.add("active");
 
 }
+
 
 function closeCart(){
 
-document
-.getElementById("cartOverlay")
-.classList.remove("active");
+document.getElementById(
+"cartOverlay"
+).classList.remove("active");
 
-document
-.getElementById("cartDrawer")
-.classList.remove("active");
+document.getElementById(
+"cartDrawer"
+).classList.remove("active");
 
 }
 
-async function goCheckout(){
+
+function goCheckout(){
 
 if(!cart.length){
 
@@ -2007,7 +1979,7 @@ return;
 
 closeCart();
 
-await loadDeliveryZones();
+loadDeliveryZones().then(()=>{
 
 renderNeighborhoods();
 
@@ -2015,914 +1987,24 @@ renderCheckout();
 
 showScreen("checkoutScreen");
 
-}
-
-/* ============================================================
-CONFIGURAÇÕES DA LOJA
-============================================================ */
-
-function defaultHours(){
-
-return {
-
-segunda:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-terca:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-quarta:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-quinta:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-sexta:{
-open:"10:00",
-close:"23:00",
-closed:false
-},
-
-sabado:{
-open:"10:00",
-close:"23:00",
-closed:false
-},
-
-domingo:{
-open:"10:00",
-close:"18:00",
-closed:false
-}
-
-};
-
-}
-
-function normalizeOpeningHours(value){
-
-const defaults=
-defaultHours();
-
-if(!value){
-return defaults;
-}
-
-let parsed=value;
-
-if(typeof value==="string"){
-
-try{
-
-parsed=JSON.parse(value);
-
-}catch(e){
-
-return defaults;
-
-}
-
-}
-
-if(typeof parsed!=="object"){
-return defaults;
-}
-
-const result={
-...defaults
-};
-
-Object.keys(defaults).forEach(day=>{
-
-if(parsed[day]){
-
-result[day]={
-...defaults[day],
-...parsed[day]
-};
-
-}
-
 });
 
-return result;
-
 }
 
-async function loadStoreSettings(){
-
-const {data,error}=await db
-.from("store_settings")
-.select("*")
-.eq("id",1)
-.maybeSingle();
-
-if(error){
-
-console.error(
-"Erro ao carregar configurações:",
-error
-);
-
-return;
-
-}
-
-if(!data)return;
-
-if(data.delivery_fee!==undefined){
-
-deliveryFee=
-Number(data.delivery_fee)||0;
-
-}
-
-if(data.default_delivery_fee!==undefined){
-
-deliveryFee=
-Number(data.default_delivery_fee)||0;
-
-}
-
-if(data.delivery_min!==undefined){
-
-deliveryMin=
-Number(data.delivery_min)||30;
-
-}
-
-if(data.delivery_max!==undefined){
-
-deliveryMax=
-Number(data.delivery_max)||60;
-
-}
-
-if(data.estimated_delivery_min!==undefined){
-
-deliveryMin=
-Number(data.estimated_delivery_min)||30;
-
-}
-
-if(data.estimated_delivery_max!==undefined){
-
-deliveryMax=
-Number(data.estimated_delivery_max)||60;
-
-}
-
-if(data.pix_key!==undefined){
-
-pixKey=
-String(data.pix_key||"");
-
-}
-
-if(data.whatsapp!==undefined){
-
-whatsappNumber=
-String(data.whatsapp||"");
-
-}
-
-if(data.whatsapp_number!==undefined){
-
-whatsappNumber=
-String(data.whatsapp_number||"");
-
-}
-
-if(data.opening_hours!==undefined){
-
-openingHours=
-normalizeOpeningHours(
-data.opening_hours
-);
-
-}else{
-
-openingHours=
-defaultHours();
-
-}
-
-updateStoreStatus();
-
-}
-
-async function updateStoreSetting(fields){
-
-const {error}=await db
-.from("store_settings")
-.update(fields)
-.eq("id",1);
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível salvar a configuração:\n\n"+
-error.message
-);
-
-return false;
-
-}
-
-return true;
-
-}
-
-/* ============================================================
-HORÁRIO
-============================================================ */
-
-const dayNames={
-
-segunda:"Segunda-feira",
-terca:"Terça-feira",
-quarta:"Quarta-feira",
-quinta:"Quinta-feira",
-sexta:"Sexta-feira",
-sabado:"Sábado",
-domingo:"Domingo"
-
-};
-
-function isStoreOpen(){
-
-if(!openingHours ||
-!Object.keys(openingHours).length){
-
-return true;
-
-}
-
-const now=
-new Date();
-
-const jsDay=
-now.getDay();
-
-const map=[
-"domingo",
-"segunda",
-"terca",
-"quarta",
-"quinta",
-"sexta",
-"sabado"
-];
-
-const day=
-map[jsDay];
-
-const config=
-openingHours[day];
-
-if(!config){
-return true;
-}
-
-if(config.closed){
-return false;
-}
-
-if(!config.open ||
-!config.close){
-return true;
-}
-
-const current=
-now.getHours()*60+
-now.getMinutes();
-
-const [oh,om]=
-config.open.split(":")
-.map(Number);
-
-const [ch,cm]=
-config.close.split(":")
-.map(Number);
-
-const openMinutes=
-oh*60+om;
-
-const closeMinutes=
-ch*60+cm;
-
-if(closeMinutes<openMinutes){
-
-return current>=openMinutes ||
-current<=closeMinutes;
-
-}
-
-return current>=openMinutes &&
-current<=closeMinutes;
-
-}
-
-function getTodayHoursText(){
-
-const now=
-new Date();
-
-const map=[
-"domingo",
-"segunda",
-"terca",
-"quarta",
-"quinta",
-"sexta",
-"sabado"
-];
-
-const day=
-map[now.getDay()];
-
-const config=
-openingHours[day];
-
-if(!config){
-
-return "";
-
-}
-
-if(config.closed){
-
-return "Fechado hoje";
-
-}
-
-return config.open+
-" às "+
-config.close;
-
-}
-
-function updateStoreStatus(){
-
-const status=
-document.getElementById(
-"storeStatus"
-);
-
-const notice=
-document.getElementById(
-"storeNotice"
-);
-
-if(!status)return;
-
-const open=
-isStoreOpen();
-
-if(open){
-
-status.className=
-"store-status status-open";
-
-status.textContent=
-"🟢 Aberto agora • "+
-getTodayHoursText();
-
-if(notice){
-
-notice.innerHTML=
-`
-<div class="store-notice">
-<strong>🟢 Estamos abertos!</strong>
-<br>
-<span class="muted">
-Hoje: ${escapeHtml(getTodayHoursText())}
-</span>
-</div>
-`;
-
-}
-
-}else{
-
-status.className=
-"store-status status-closed";
-
-status.textContent=
-"🔴 Fechado agora • "+
-getTodayHoursText();
-
-if(notice){
-
-notice.innerHTML=
-`
-<div class="store-notice closed-box">
-<strong>🔴 Estamos fechados no momento.</strong>
-<br>
-<span>
-Confira nossos horários antes de fazer seu pedido.
-</span>
-</div>
-`;
-
-}
-
-}
-
-}
-
-function renderOpeningHoursAdmin(){
-
-const container=
-document.getElementById(
-"openingHoursContainer"
-);
-
-if(!container)return;
-
-openingHours=
-normalizeOpeningHours(
-openingHours
-);
-
-container.innerHTML=
-Object.keys(dayNames)
-.map(day=>{
-
-const config=
-openingHours[day];
-
-return `
-
-<div class="day-row">
-
-<div class="day-name">
-${dayNames[day]}
-</div>
-
-<div>
-
-<label style="margin:0">
-Abertura
-
-<input
-id="open-${day}"
-type="time"
-value="${config.open||"10:00"}"
-${config.closed?"disabled":""}>
-
-</label>
-
-</div>
-
-<div>
-
-<label style="margin:0">
-Fechamento
-
-<input
-id="close-${day}"
-type="time"
-value="${config.close||"22:00"}"
-${config.closed?"disabled":""}>
-
-</label>
-
-</div>
-
-<div>
-
-<label style="margin:0">
-
-<input
-id="closed-${day}"
-type="checkbox"
-style="width:auto"
-${config.closed?"checked":""}
-onchange="toggleDay('${day}',this.checked)">
-
- Fechado
-
-</label>
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-function toggleDay(day,closed){
-
-const open=
-document.getElementById(
-"open-"+day
-);
-
-const close=
-document.getElementById(
-"close-"+day
-);
-
-if(open)open.disabled=closed;
-
-if(close)close.disabled=closed;
-
-}
-
-async function saveOpeningHours(){
-
-const newHours={};
-
-Object.keys(dayNames)
-.forEach(day=>{
-
-const closed=
-document.getElementById(
-"closed-"+day
-).checked;
-
-newHours[day]={
-
-open:
-document.getElementById(
-"open-"+day
-).value,
-
-close:
-document.getElementById(
-"close-"+day
-).value,
-
-closed:closed
-
-};
-
-});
-
-const ok=
-await updateStoreSetting({
-
-opening_hours:newHours
-
-});
-
-if(!ok)return;
-
-openingHours=newHours;
-
-updateStoreStatus();
-
-showToast(
-"🕐 Horários salvos!"
-);
-
-}
-
-/* ============================================================
-ESTIMATIVA DE ENTREGA
-============================================================ */
-
-async function saveDeliveryEstimate(){
-
-const min=
-Number(
-document.getElementById(
-"deliveryMin"
-).value
-);
-
-const max=
-Number(
-document.getElementById(
-"deliveryMax"
-).value
-);
-
-if(!min || !max || min<=0 || max<=0){
-
-alert(
-"Digite tempos válidos."
-);
-
-return;
-
-}
-
-if(max<min){
-
-alert(
-"O tempo máximo não pode ser menor que o mínimo."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-delivery_min:min,
-
-delivery_max:max,
-
-estimated_delivery_min:min,
-
-estimated_delivery_max:max
-
-});
-
-if(!ok)return;
-
-deliveryMin=min;
-deliveryMax=max;
-
-showToast(
-"🚚 Estimativa atualizada!"
-);
-
-}
-
-/* ============================================================
-PIX
-============================================================ */
-
-async function savePixKey(){
-
-const key=
-document.getElementById(
-"pixKeyInput"
-).value.trim();
-
-if(!key){
-
-alert(
-"Digite a chave PIX."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-pix_key:key
-
-});
-
-if(!ok)return;
-
-pixKey=key;
-
-showToast(
-"💳 PIX salvo!"
-);
-
-}
-
-function updatePaymentBox(){
-
-const payment=
-document.getElementById(
-"payment"
-).value;
-
-const box=
-document.getElementById(
-"pixBox"
-);
-
-if(payment==="PIX"){
-
-box.style.display="block";
-
-document.getElementById(
-"pixKeyDisplay"
-).textContent=
-pixKey ||
-"PIX ainda não configurado.";
-
-}else{
-
-box.style.display="none";
-
-}
-
-}
-
-async function copyPixKey(){
-
-if(!pixKey){
-
-alert(
-"A chave PIX ainda não foi configurada."
-);
-
-return;
-
-}
-
-try{
-
-await navigator.clipboard.writeText(
-pixKey
-);
-
-showToast(
-"📋 Chave PIX copiada!"
-);
-
-}catch(e){
-
-alert(
-"Chave PIX:\n\n"+pixKey
-);
-
-}
-
-}
-
-/* ============================================================
-WHATSAPP
-============================================================ */
-
-async function saveWhatsapp(){
-
-let number=
-document.getElementById(
-"whatsappInput"
-).value.trim();
-
-number=
-number.replace(/\D/g,"");
-
-if(!number){
-
-alert(
-"Digite o número do WhatsApp."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-whatsapp:number,
-
-whatsapp_number:number
-
-});
-
-if(!ok)return;
-
-whatsappNumber=number;
-
-showToast(
-"📱 WhatsApp salvo!"
-);
-
-}
-
-function buildWhatsappMessage(order){
-
-if(!order)return "";
-
-let message=
-"🍔 *BURGuer GOLD*%0A%0A";
-
-message+=
-"🧾 *Pedido #"+
-order.id+"*%0A";
-
-message+=
-"👤 Cliente: "+
-encodeURIComponent(order.customer_name)+
-"%0A";
-
-message+=
-"💳 Pagamento: "+
-encodeURIComponent(order.payment)+
-"%0A";
-
-message+=
-(order.delivery
-?"🚚 Entrega"
-:"🏪 Retirada")+
-"%0A";
-
-if(order.delivery){
-
-message+=
-"📍 "+
-encodeURIComponent(order.address)+
-"%0A";
-
-}
-
-message+="%0A";
-
-message+="*Itens:*%0A";
-
-(order.items||[]).forEach(item=>{
-
-message+=
-"• "+
-item.qty+
-"x "+
-encodeURIComponent(item.name)+
-" — "+
-encodeURIComponent(
-money(item.price*item.qty)
-)+
-"%0A";
-
-});
-
-message+="%0A";
-
-message+=
-"💰 *Total: "+
-encodeURIComponent(
-money(order.total)
-)+
-"*%0A";
-
-if(order.delivery){
-
-message+=
-"⏱️ Estimativa: "+
-deliveryMin+
-" a "+
-deliveryMax+
-" minutos%0A";
-
-}
-
-return message;
-
-}
-
-function openOrderWhatsapp(){
-
-if(!whatsappNumber){
-
-alert(
-"O WhatsApp da loja ainda não foi configurado no administrador."
-);
-
-return;
-
-}
-
-const message=
-buildWhatsappMessage(
-lastOrderForWhatsapp
-);
-
-const url=
-"https://wa.me/"+
-whatsappNumber+
-"?text="+
-message;
-
-window.open(
-url,
-"_blank"
-);
-
-}
-
-/* ============================================================
-ENTREGA / BAIRROS
-============================================================ */
 
 async function loadDeliveryZones(){
 
-const {data,error}=await db
+const {
+data,
+error
+}=await db
 .from("delivery_zones")
 .select("*")
 .eq("active",true)
-.order("neighborhood",{ascending:true});
+.order(
+"neighborhood",
+{ascending:true}
+);
 
 if(error){
 
@@ -2938,169 +2020,136 @@ deliveryZones=data||[];
 
 }
 
+
 function renderNeighborhoods(){
 
-const select=
-document.getElementById(
+const select=document.getElementById(
 "customerNeighborhood"
 );
 
 if(!select)return;
 
 select.innerHTML=
-`
-<option value="">
+`<option value="">
 Selecione seu bairro
-</option>
-`+
-deliveryZones.map(zone=>
-`
-<option value="${zone.id}">
-${escapeHtml(zone.neighborhood)}
-—
-${money(zone.fee)}
-</option>
-`
+</option>`
++
+
+deliveryZones.map(z=>
+`<option value="${escapeHtml(String(z.id))}">
+${escapeHtml(z.neighborhood)}
+— ${money(z.fee)}
+</option>`
 ).join("");
 
 }
 
+
 function getSelectedDeliveryFee(){
 
-const select=
-document.getElementById(
+const s=document.getElementById(
 "customerNeighborhood"
 );
 
-if(!select || !select.value){
+if(!s||!s.value)
+return DEFAULT_DELIVERY_FEE;
 
-return Number(deliveryFee)||0;
-
-}
-
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
+const z=deliveryZones.find(
+z=>String(z.id)===String(s.value)
 );
 
-return zone
-?
-Number(zone.fee)||0
-:
-Number(deliveryFee)||0;
+return z
+?Number(z.fee)||0
+:DEFAULT_DELIVERY_FEE;
 
 }
+
 
 function getSelectedNeighborhood(){
 
-const select=
-document.getElementById(
+const s=document.getElementById(
 "customerNeighborhood"
 );
 
-if(!select || !select.value)return "";
+if(!s||!s.value)
+return "";
 
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
+const z=deliveryZones.find(
+z=>String(z.id)===String(s.value)
 );
 
-return zone
-?
-zone.neighborhood
-:
-"";
+return z
+?z.neighborhood
+:"";
 
 }
 
+
 function renderCheckout(){
 
-const container=
 document.getElementById(
 "checkoutItems"
-);
+).innerHTML=
 
-container.innerHTML=
-cart.map(item=>`
+cart.map(i=>`
 
 <div class="cart-item">
 
 <span>
-${item.qty}x
-${escapeHtml(item.name)}
+${i.qty}x ${escapeHtml(i.name)}
 </span>
 
 <strong>
-${money(item.price*item.qty)}
+${money(i.price*i.qty)}
 </strong>
 
 </div>
 
 `).join("");
 
-document.getElementById(
-"deliveryEstimatePreview"
-).textContent=
-"⏱️ Estimativa: "+
-deliveryMin+
-" a "+
-deliveryMax+
-" minutos";
-
 updateCheckoutTotal();
-
-updatePaymentBox();
 
 }
 
+
 function updateCheckoutTotal(){
 
-const subtotal=
-getCartTotal();
+const subtotal=getCartTotal();
 
-const deliveryType=
-document.getElementById(
+const type=document.getElementById(
 "deliveryType"
 ).value;
 
 const fee=
-deliveryType==="ENTREGA"
-?
-getSelectedDeliveryFee()
-:
-0;
+type==="ENTREGA"
+?getSelectedDeliveryFee()
+:0;
 
 document.getElementById(
 "checkoutSubtotal"
-).textContent=
-money(subtotal);
+).textContent=money(subtotal);
 
 document.getElementById(
 "checkoutDelivery"
-).textContent=
-money(fee);
+).textContent=money(fee);
 
 document.getElementById(
 "checkoutTotal"
-).textContent=
-money(subtotal+fee);
+).textContent=money(
+subtotal+fee
+);
 
 document.getElementById(
 "deliveryFeePreview"
 ).textContent=
-"Taxa de entrega: "+
-money(fee);
+"Taxa de entrega: "+money(fee);
 
 }
 
+
 function toggleDeliveryFields(){
 
-const type=
-document.getElementById(
+const type=document.getElementById(
 "deliveryType"
 ).value;
 
@@ -3108,30 +2157,25 @@ document.getElementById(
 "addressArea"
 ).style.display=
 type==="ENTREGA"
-?
-"block"
-:
-"none";
+?"block"
+:"none";
 
 updateCheckoutTotal();
 
 }
 
+
 /* ============================================================
-ENVIAR PEDIDO
-============================================================ */
+   FINALIZAR PEDIDO — CORRIGIDO
+   ============================================================ */
 
 async function sendOrder(){
 
-if(!isStoreOpen()){
-
-alert(
-"A loja está fechada no momento."
+const btn=document.querySelector(
+'#checkoutScreen .btn[onclick="sendOrder()"]'
 );
 
-return;
-
-}
+try{
 
 const customerName=
 document.getElementById(
@@ -3159,27 +2203,32 @@ document.getElementById(
 const neighborhood=
 getSelectedNeighborhood();
 
+
 if(!customerName){
 
-alert(
-"Digite seu nome."
-);
+alert("Digite seu nome.");
 
 return;
 
 }
 
-if(delivery && !neighborhood){
 
-alert(
-"Selecione seu bairro."
-);
+if(
+delivery &&
+!neighborhood
+){
+
+alert("Selecione seu bairro.");
 
 return;
 
 }
 
-if(delivery && !address){
+
+if(
+delivery &&
+!address
+){
 
 alert(
 "Digite o endereço de entrega."
@@ -3188,6 +2237,7 @@ alert(
 return;
 
 }
+
 
 if(!cart.length){
 
@@ -3199,26 +2249,35 @@ return;
 
 }
 
-if(payment==="PIX" && !pixKey){
 
-alert(
-"O PIX ainda não foi configurado pela loja."
-);
+if(btn){
 
-return;
+btn.disabled=true;
+
+btn.textContent=
+"⏳ Enviando pedido...";
 
 }
 
-const deliveryFeeValue=
+
+const deliveryFee=
 delivery
-?
-getSelectedDeliveryFee()
-:
-0;
+?getSelectedDeliveryFee()
+:0;
+
 
 const total=
-getCartTotal()+
-deliveryFeeValue;
+Number(
+(
+getCartTotal()+deliveryFee
+).toFixed(2)
+);
+
+
+/*
+  ID gerado no próprio navegador.
+  Não dependemos do retorno do Supabase.
+*/
 
 const orderId=
 Date.now()*1000+
@@ -3226,14 +2285,26 @@ Math.floor(
 Math.random()*1000
 );
 
+
 const finalAddress=
 delivery
-?
-`${address} — Bairro: ${neighborhood}`
-:
-"RETIRADA NA LOJA";
+?`${address} — Bairro: ${neighborhood}`
+:"RETIRADA NA LOJA";
 
-const orderData={
+
+/*
+  CORREÇÃO PRINCIPAL:
+  Antes havia:
+  .insert(...).select("id").single()
+
+  Agora inserimos diretamente.
+*/
+
+const {
+error:orderError
+}=await db
+.from("orders")
+.insert({
 
 id:orderId,
 
@@ -3255,32 +2326,34 @@ total,
 status:
 "RECEBIDO"
 
-};
+});
 
-const {error:orderError}=
-await db
-.from("orders")
-.insert(orderData);
 
 if(orderError){
 
-console.error(orderError);
+console.error(
+"ERRO AO CRIAR PEDIDO:",
+orderError
+);
 
-alert(
+throw new Error(
+orderError.message ||
 "Não foi possível criar o pedido."
 );
 
-return;
-
 }
 
+
+/*
+  Os itens usam o mesmo orderId.
+*/
+
 const items=
-cart.map((item,index)=>({
+cart.map(
+(item,index)=>({
 
 id:
-orderId*100+
-index+
-1,
+orderId+index+1,
 
 order_id:
 orderId,
@@ -3292,88 +2365,48 @@ name:
 item.name,
 
 qty:
-item.qty,
+Number(item.qty),
 
 price:
-item.price
+Number(item.price)
 
-}));
+})
+);
 
-const {error:itemsError}=
-await db
+
+const {
+error:itemsError
+}=await db
 .from("order_items")
 .insert(items);
 
+
 if(itemsError){
 
-console.error(itemsError);
+console.error(
+"ERRO AO SALVAR ITENS:",
+itemsError
+);
 
 alert(
-"O pedido foi criado, mas houve um erro ao salvar os itens."
+"O pedido foi criado (#"+
+orderId+
+"), mas houve um erro ao salvar os itens. Não faça outro pedido agora."
 );
 
 return;
 
 }
 
-lastOrderForWhatsapp={
 
-id:orderId,
-
-customer_name:
-customerName,
-
-address:
-finalAddress,
-
-payment:
-payment,
-
-delivery:
-delivery,
-
-total:
-total,
-
-items:
-cart.map(item=>({...item}))
-
-};
+/*
+  Pedido finalizado com sucesso.
+*/
 
 document.getElementById(
 "successOrderId"
 ).textContent=
 "#"+orderId;
-
-document.getElementById(
-"successInfo"
-).innerHTML=
-`
-
-<div class="store-notice">
-
-<strong>
-⏱️ Estimativa de entrega:
-</strong>
-
-<br>
-
-<span class="muted">
-${deliveryMin} a ${deliveryMax} minutos
-</span>
-
-</div>
-
-`;
-
-document.getElementById(
-"successWhatsappBtn"
-).style.display=
-whatsappNumber
-?
-"block"
-:
-"none";
 
 cart=[];
 
@@ -3383,11 +2416,42 @@ showScreen(
 "successScreen"
 );
 
+
+}catch(error){
+
+console.error(
+"ERRO NO FINALIZAMENTO:",
+error
+);
+
+alert(
+"Não foi possível finalizar o pedido.\n\n"+
+(
+error.message||
+"Verifique sua conexão e tente novamente."
+)
+);
+
+
+}finally{
+
+if(btn){
+
+btn.disabled=false;
+
+btn.textContent=
+"Confirmar pedido";
+
 }
 
+}
+
+}
+
+
 /* ============================================================
-LOGIN
-============================================================ */
+   LOGIN ADMIN
+   ============================================================ */
 
 async function adminLogin(){
 
@@ -3403,21 +2467,18 @@ document.getElementById(
 
 if(!email||!password){
 
-alert(
+return alert(
 "Preencha e-mail e senha."
 );
 
-return;
-
 }
 
-const {data,error}=
-await db.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
+const {
+data,
+error
+}=await db.auth.signInWithPassword({
+email,
+password
 });
 
 if(error){
@@ -3432,13 +2493,11 @@ return;
 
 }
 
-if(data.session){
-
+if(data.session)
 await showAdminPanel();
 
 }
 
-}
 
 async function adminLogout(){
 
@@ -3454,127 +2513,78 @@ showScreen(
 
 }
 
-/* ============================================================
-ABAS ADMIN
-============================================================ */
 
 function openAdminTab(tab){
 
 document
 .querySelectorAll(".admin-tab")
-.forEach(button=>{
-button.classList.remove("active");
-});
+.forEach(
+b=>b.classList.remove("active")
+);
 
 document
 .querySelectorAll(".admin-section")
-.forEach(section=>{
-section.classList.remove("active");
-});
+.forEach(
+s=>s.classList.remove("active")
+);
 
-const button=
+
+const b=
 document.getElementById(
 "adminTab"+
 tab.charAt(0).toUpperCase()+
 tab.slice(1)
 );
 
-if(button){
+if(b)
+b.classList.add("active");
 
-button.classList.add("active");
 
-}
-
-const section=
+const s=
 document.getElementById(
 "admin-"+
 (
 tab==="products"
-?
-"products-section"
-:
-tab
+?"products-section"
+:tab
 )
 );
 
-if(section){
+if(s)
+s.classList.add("active");
 
-section.classList.add("active");
 
-}
-
-if(tab==="dashboard"){
-
+if(tab==="dashboard")
 renderDashboard();
 
-}
-
-if(tab==="orders"){
-
+if(tab==="orders")
 loadOrders();
 
-}
-
-if(tab==="products"){
-
+if(tab==="products")
 loadAdminProducts();
 
-}
-
-if(tab==="cash"){
-
+if(tab==="cash")
 loadCashRegister();
 
-}
-
-if(tab==="reports"){
-
+if(tab==="reports")
 loadReports();
-
-}
 
 if(tab==="settings"){
 
+loadBusinessHours();
+
 loadDeliveryZonesAdmin();
 
-renderOpeningHoursAdmin();
-
-document.getElementById(
-"deliveryMin"
-).value=
-deliveryMin;
-
-document.getElementById(
-"deliveryMax"
-).value=
-deliveryMax;
-
-document.getElementById(
-"pixKeyInput"
-).value=
-pixKey;
-
-document.getElementById(
-"whatsappInput"
-).value=
-whatsappNumber;
-
-document.getElementById(
-"defaultDeliveryFee"
-).value=
-Number(deliveryFee).toFixed(2);
-
 }
 
 }
+
 
 async function showAdminPanel(){
 
 showScreen(
 "adminPanel"
 );
-
-await loadStoreSettings();
 
 await loadOrders();
 
@@ -3584,9 +2594,9 @@ await loadCashRegister();
 
 await loadReports();
 
-await loadDeliveryZonesAdmin();
+await loadBusinessHours();
 
-renderOpeningHoursAdmin();
+await loadDeliveryZonesAdmin();
 
 openAdminTab(
 "dashboard"
@@ -3594,13 +2604,10 @@ openAdminTab(
 
 }
 
-/* ============================================================
-DASHBOARD
-============================================================ */
 
 function renderDashboard(){
 
-const container=
+const c=
 document.getElementById(
 "dashboardContent"
 );
@@ -3610,44 +2617,30 @@ adminOrders||[];
 
 const total=
 orders.reduce(
-(sum,order)=>
-sum+
-Number(order.total||0),
+(s,o)=>s+Number(o.total||0),
 0
 );
 
 const average=
 orders.length
-?
-total/orders.length
-:
-0;
+?total/orders.length
+:0;
 
-const received=
-orders.filter(
-o=>o.status==="RECEBIDO"
-).length;
+const counts=[
+"RECEBIDO",
+"PREPARANDO",
+"PRONTO",
+"ENTREGUE"
+].map(
+x=>orders.filter(
+o=>o.status===x
+).length
+);
 
-const preparing=
-orders.filter(
-o=>o.status==="PREPARANDO"
-).length;
 
-const ready=
-orders.filter(
-o=>o.status==="PRONTO"
-).length;
+c.innerHTML=
 
-const delivered=
-orders.filter(
-o=>o.status==="ENTREGUE"
-).length;
-
-container.innerHTML=
-
-`
-
-<div class="dashboard-grid">
+`<div class="dashboard-grid">
 
 <div class="stat">
 <span>Faturamento</span>
@@ -3666,28 +2659,30 @@ container.innerHTML=
 
 <div class="stat">
 <span>Recebidos</span>
-<strong>${received}</strong>
+<strong>${counts[0]}</strong>
 </div>
 
 <div class="stat">
 <span>Preparando</span>
-<strong>${preparing}</strong>
+<strong>${counts[1]}</strong>
 </div>
 
 <div class="stat">
 <span>Prontos</span>
-<strong>${ready}</strong>
+<strong>${counts[2]}</strong>
 </div>
 
 <div class="stat">
 <span>Entregues</span>
-<strong>${delivered}</strong>
+<strong>${counts[3]}</strong>
 </div>
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+<div
+class="card"
+style="margin-top:18px"
+>
 
 <h3>
 🕐 Pedidos recentes
@@ -3696,77 +2691,60 @@ style="margin-top:18px">
 ${
 orders.length
 ?
-
 orders.slice(0,5).map(
-order=>`
+o=>`
 
 <div class="history-item">
 
 <strong>
-#${order.id}
-—
-${escapeHtml(
-order.customer_name
-)}
+#${o.id} —
+${escapeHtml(o.customer_name)}
 </strong>
 
 <div class="muted">
-${formatDateTime(
-order.created_at
-)}
+${formatDateTime(o.created_at)}
 </div>
 
 <div>
-
-${escapeHtml(
-order.status
-)}
-
+${escapeHtml(o.status)}
 —
-
 <strong class="gold">
-${money(order.total)}
+${money(o.total)}
 </strong>
-
 </div>
 
 </div>
 
 `
 ).join("")
-
 :
-
 `<div class="empty">
 Nenhum pedido ainda.
 </div>`
+}
+
+</div>`;
 
 }
 
-</div>
-
-`;
-
-}
-
-/* ============================================================
-PEDIDOS
-============================================================ */
 
 async function loadOrders(){
 
-const container=
+const c=
 document.getElementById(
 "ordersContainer"
 );
 
-if(!container)return;
+if(!c)return;
 
-container.innerHTML=
+c.innerHTML=
 "Carregando pedidos...";
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("orders")
 .select("*")
 .order(
@@ -3774,11 +2752,12 @@ await db
 {ascending:false}
 );
 
+
 if(error){
 
 console.error(error);
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Erro ao carregar pedidos.
 </div>`;
@@ -3787,14 +2766,15 @@ return;
 
 }
 
-adminOrders=
-data||[];
+
+adminOrders=data||[];
 
 renderDashboard();
 
+
 if(!adminOrders.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Nenhum pedido recebido ainda.
 </div>`;
@@ -3803,9 +2783,10 @@ return;
 
 }
 
-container.innerHTML=
+
+c.innerHTML=
 adminOrders.map(
-order=>`
+o=>`
 
 <div class="order">
 
@@ -3814,73 +2795,70 @@ order=>`
 <div>
 
 <strong>
-Pedido #${order.id}
+Pedido #${o.id}
 </strong>
 
 <div class="muted">
-${formatDateTime(
-order.created_at
-)}
+${formatDateTime(o.created_at)}
 </div>
 
 </div>
 
 <span class="status">
-${escapeHtml(
-order.status
-)}
+${escapeHtml(o.status)}
 </span>
 
 </div>
 
+
 <p>
 <strong>Cliente:</strong>
-${escapeHtml(
-order.customer_name
-)}
+${escapeHtml(o.customer_name)}
 </p>
+
 
 <p>
 <strong>Pedido:</strong>
-${order.delivery
-?
-"🚚 Entrega"
-:
-"🏪 Retirada"}
+${o.delivery
+?"🚚 Entrega"
+:"🏪 Retirada"}
 </p>
+
 
 <p>
 <strong>Endereço:</strong>
-${escapeHtml(
-order.address||"-"
-)}
+${escapeHtml(o.address||"-")}
 </p>
+
 
 <p>
 <strong>Pagamento:</strong>
-${escapeHtml(
-order.payment
-)}
+${escapeHtml(o.payment)}
 </p>
 
-<div id="items-${order.id}"
-class="order-items">
+
+<div
+id="items-${o.id}"
+class="order-items"
+>
 Carregando itens...
 </div>
 
+
 <strong class="gold">
-Total: ${money(order.total)}
+Total: ${money(o.total)}
 </strong>
 
-<label>
 
+<label>
 Alterar status
 
 <select
-onchange=
-"changeOrderStatus(${order.id},this.value)">
+onchange="changeOrderStatus(${o.id},this.value)"
+>
 
-${[
+${
+[
 "RECEBIDO",
 "PREPARANDO",
 "PRONTO",
@@ -3888,20 +2866,16 @@ ${[
 "ENTREGUE"
 ]
 .map(
-status=>`
-
-<option
-value="${status}"
-${order.status===status
-?"selected"
-:""}>
-
-${status}
-
-</option>
-
-`
-).join("")}
+st=>
+`<option
+value="${st}"
+${o.status===st?"selected":""}
+>
+${st}
+</option>`
+)
+.join("")
+}
 
 </select>
 
@@ -3912,86 +2886,77 @@ ${status}
 `
 ).join("");
 
-for(
-const order of adminOrders
-){
 
-loadOrderItems(
-order.id
-);
+for(const o of adminOrders)
+
+loadOrderItems(o.id);
 
 }
 
-}
 
 async function loadOrderItems(orderId){
 
-const container=
+const c=
 document.getElementById(
 "items-"+orderId
 );
 
-if(!container)return;
+if(!c)return;
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("order_items")
 .select("*")
-.eq(
-"order_id",
-orderId
-)
+.eq("order_id",orderId)
 .order("id");
+
 
 if(error){
 
-container.textContent=
+c.textContent=
 "Erro ao carregar itens.";
 
 return;
 
 }
 
+
 if(!data||!data.length){
 
-container.textContent=
+c.textContent=
 "Nenhum item.";
 
 return;
 
 }
 
-container.innerHTML=
+
+c.innerHTML=
 data.map(
-item=>`
-
-${item.qty}x
-${escapeHtml(item.name)}
-—
-${money(
-item.price*item.qty
-)}
-
-`
-).join("<br>");
+i=>
+`${i.qty}x ${escapeHtml(i.name)}
+— ${money(i.price*i.qty)}`
+)
+.join("<br>");
 
 }
+
 
 async function changeOrderStatus(
 orderId,
 status
 ){
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("orders")
-.update({
-status:status
-})
-.eq(
-"id",
-orderId
-);
+.update({status})
+.eq("id",orderId);
+
 
 if(error){
 
@@ -4009,24 +2974,24 @@ await loadOrders();
 
 }
 
-/* ============================================================
-PRODUTOS ADMIN
-============================================================ */
 
 async function loadAdminProducts(){
 
-const container=
+const c=
 document.getElementById(
 "adminProducts"
 );
 
-if(!container)return;
+if(!c)return;
 
-container.innerHTML=
+c.innerHTML=
 "Carregando produtos...";
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("products")
 .select("*")
 .order(
@@ -4034,11 +2999,12 @@ await db
 {ascending:true}
 );
 
+
 if(error){
 
 console.error(error);
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Erro ao carregar produtos.
 </div>`;
@@ -4047,9 +3013,10 @@ return;
 
 }
 
+
 if(!data||!data.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Nenhum produto cadastrado.
 </div>`;
@@ -4058,67 +3025,57 @@ return;
 
 }
 
-container.innerHTML=
+
+c.innerHTML=
 data.map(
-product=>`
+p=>`
 
 <div class="admin-product">
 
 <h3>
-${escapeHtml(
-product.name
-)}
+${escapeHtml(p.name)}
 </h3>
 
 <div class="gold">
-
 ${categoryIcons[
-getProductCategory(product)
+getProductCategory(p)
 ]||"⭐"}
 
 ${escapeHtml(
-getProductCategory(product)
+getProductCategory(p)
 )}
 
 </div>
 
 <p class="muted">
 ${escapeHtml(
-product.description||""
+p.description||""
 )}
 </p>
 
 <strong class="gold">
-${money(product.price)}
+${money(p.price)}
 </strong>
 
 <p>
 Status:
 <strong>
-${product.active
-?
-"ATIVO"
-:
-"INATIVO"}
+${p.active?"ATIVO":"INATIVO"}
 </strong>
 </p>
 
 <button
-class="btn small
-${product.active
-?
-"danger"
-:
-""}"
-onclick=
-"toggleProduct(${product.id},${product.active})">
-
-${product.active
-?
-"Desativar"
-:
-"Ativar"}
-
+class="btn small ${
+p.active?"danger":""
+}"
+onclick="toggleProduct(
+${p.id},
+${p.active}
+)"
+>
+${p.active
+?"Desativar"
+:"Ativar"}
 </button>
 
 </div>
@@ -4127,6 +3084,7 @@ ${product.active
 ).join("");
 
 }
+
 
 async function createProduct(){
 
@@ -4152,55 +3110,43 @@ document.getElementById(
 "productCategory"
 ).value;
 
-if(!name){
 
-alert(
+if(!name)
+return alert(
 "Digite o nome do produto."
 );
 
-return;
-
-}
-
-if(!price||price<=0){
-
-alert(
+if(!price||price<=0)
+return alert(
 "Digite um preço válido."
 );
 
-return;
 
-}
-
-const {error}=
-await db
+const {
+error
+}=await db
 .from("products")
 .insert({
-
-name:name,
-
-description:description,
-
-price:price,
-
-category:category,
-
+name,
+description,
+price,
+category,
 active:true
-
 });
+
 
 if(error){
 
 console.error(error);
 
 alert(
-"Não foi possível adicionar o produto:\n\n"+
-error.message
+"Não foi possível adicionar o produto."
 );
 
 return;
 
 }
+
 
 document.getElementById(
 "productName"
@@ -4214,6 +3160,7 @@ document.getElementById(
 "productPrice"
 ).value="";
 
+
 await loadAdminProducts();
 
 await loadProducts();
@@ -4224,21 +3171,21 @@ showToast(
 
 }
 
+
 async function toggleProduct(
 productId,
 currentActive
 ){
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("products")
 .update({
 active:!currentActive
 })
-.eq(
-"id",
-productId
-);
+.eq("id",productId);
+
 
 if(error){
 
@@ -4252,47 +3199,50 @@ return;
 
 }
 
+
 await loadAdminProducts();
 
 await loadProducts();
 
 }
 
+
 /* ============================================================
-CAIXA
-============================================================ */
+   CAIXA
+   ============================================================ */
 
 async function loadCashRegister(){
 
-const container=
+const c=
 document.getElementById(
 "cashContent"
 );
 
-if(!container)return;
+if(!c)return;
 
-container.innerHTML=
+c.innerHTML=
 "Carregando caixa...";
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("cash_registers")
 .select("*")
-.eq(
-"status",
-"ABERTO"
-)
+.eq("status","ABERTO")
 .order(
 "opened_at",
 {ascending:false}
 )
 .limit(1);
 
+
 if(error){
 
 console.error(error);
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Erro ao carregar caixa.
 </div>`;
@@ -4301,20 +3251,18 @@ return;
 
 }
 
+
 if(data&&data.length){
 
-currentCashRegister=
-data[0];
+currentCashRegister=data[0];
 
 await renderOpenCash();
 
 }else{
 
-currentCashRegister=
-null;
+currentCashRegister=null;
 
-currentCashData=
-null;
+currentCashData=null;
 
 await renderClosedCash();
 
@@ -4322,12 +3270,15 @@ await renderClosedCash();
 
 }
 
+
 async function getCashOrders(
 openedAt
 ){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("orders")
 .select(
 "id,total,payment,created_at,status"
@@ -4336,6 +3287,7 @@ await db
 "created_at",
 openedAt
 );
+
 
 if(error){
 
@@ -4349,12 +3301,15 @@ return data||[];
 
 }
 
+
 async function getCashMovements(
 registerId
 ){
 
-const {data,error}=
-await db
+const {
+data,
+error
+}=await db
 .from("cash_movements")
 .select("*")
 .eq(
@@ -4366,6 +3321,7 @@ registerId
 {ascending:false}
 );
 
+
 if(error){
 
 console.error(error);
@@ -4377,6 +3333,7 @@ return [];
 return data||[];
 
 }
+
 
 async function calculateCashData(
 register
@@ -4393,62 +3350,44 @@ register.id
 );
 
 let cashSales=0;
-
 let pixSales=0;
-
 let cardSales=0;
 
-orders.forEach(order=>{
 
-const amount=
-Number(order.total)||0;
+orders.forEach(o=>{
 
-if(order.payment==="DINHEIRO"){
+const a=
+Number(o.total)||0;
 
-cashSales+=amount;
+if(o.payment==="DINHEIRO")
+cashSales+=a;
 
-}else if(
-order.payment==="PIX"
-){
+else if(o.payment==="PIX")
+pixSales+=a;
 
-pixSales+=amount;
-
-}else if(
-order.payment==="CARTAO"
-){
-
-cardSales+=amount;
-
-}
+else if(o.payment==="CARTAO")
+cardSales+=a;
 
 });
+
 
 let supplies=0;
 let withdrawals=0;
 
-movements.forEach(
-movement=>{
 
-const amount=
-Number(movement.amount)||0;
+movements.forEach(m=>{
 
-if(
-movement.type===
-"SUPRIMENTO"
-){
+const a=
+Number(m.amount)||0;
 
-supplies+=amount;
+if(m.type==="SUPRIMENTO")
+supplies+=a;
 
-}else if(
-movement.type===
-"SANGRIA"
-){
-
-withdrawals+=amount;
-
-}
+else if(m.type==="SANGRIA")
+withdrawals+=a;
 
 });
+
 
 const totalSales=
 cashSales+
@@ -4456,68 +3395,54 @@ pixSales+
 cardSales;
 
 const expectedCash=
-Number(
-register.opening_amount
-)+
+Number(register.opening_amount)+
 cashSales+
 supplies-
 withdrawals;
 
-return{
 
+return {
 orders,
-
 movements,
-
 cashSales,
-
 pixSales,
-
 cardSales,
-
 totalSales,
-
 supplies,
-
 withdrawals,
-
 expectedCash
-
 };
 
 }
 
+
 async function renderOpenCash(){
 
-const container=
+const c=
 document.getElementById(
 "cashContent"
 );
 
+const d=
 currentCashData=
 await calculateCashData(
 currentCashRegister
 );
 
-const c=
-currentCashData;
 
-container.innerHTML=
-`
+c.innerHTML=
 
-<div class="cash-status">
+`<div class="cash-status">
 
 <strong>
 🟢 CAIXA ABERTO
 </strong>
 
 <div class="muted">
-
 Aberto em:
 ${formatDateTime(
 currentCashRegister.opened_at
 )}
-
 </div>
 
 </div>
@@ -4535,43 +3460,60 @@ currentCashRegister.opening_amount
 
 <div class="cash-box">
 <span>Vendas em dinheiro</span>
-<strong>${money(c.cashSales)}</strong>
+<strong>
+${money(d.cashSales)}
+</strong>
 </div>
 
 <div class="cash-box">
 <span>Vendas no PIX</span>
-<strong>${money(c.pixSales)}</strong>
+<strong>
+${money(d.pixSales)}
+</strong>
 </div>
 
 <div class="cash-box">
 <span>Vendas no cartão</span>
-<strong>${money(c.cardSales)}</strong>
+<strong>
+${money(d.cardSales)}
+</strong>
 </div>
 
 <div class="cash-box">
 <span>Total de vendas</span>
-<strong>${money(c.totalSales)}</strong>
+<strong>
+${money(d.totalSales)}
+</strong>
 </div>
 
 <div class="cash-box">
 <span>Suprimentos</span>
-<strong>${money(c.supplies)}</strong>
+<strong>
+${money(d.supplies)}
+</strong>
 </div>
 
 <div class="cash-box">
 <span>Sangrias</span>
-<strong>${money(c.withdrawals)}</strong>
+<strong>
+${money(d.withdrawals)}
+</strong>
 </div>
 
 <div class="cash-box">
 <span>Esperado no caixa</span>
-<strong>${money(c.expectedCash)}</strong>
+<strong>
+${money(d.expectedCash)}
+</strong>
 </div>
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+
+<div
+class="card"
+style="margin-top:18px"
+>
 
 <h3>
 💵 Movimentação
@@ -4588,7 +3530,8 @@ Valor
 id="movementAmount"
 type="number"
 step="0.01"
-placeholder="0,00">
+placeholder="0,00"
+>
 
 </label>
 
@@ -4602,7 +3545,8 @@ Observação
 <input
 id="movementNote"
 type="text"
-placeholder="Ex: troco / retirada">
+placeholder="Ex: troco / retirada"
+>
 
 </label>
 
@@ -4612,20 +3556,16 @@ placeholder="Ex: troco / retirada">
 
 <button
 class="btn small"
-onclick=
-"addCashMovement('SUPRIMENTO')">
-
+onclick="addCashMovement('SUPRIMENTO')"
+>
 ➕ Suprimento
-
 </button>
 
 <button
 class="btn small danger"
-onclick=
-"addCashMovement('SANGRIA')">
-
+onclick="addCashMovement('SANGRIA')"
+>
 ➖ Sangria
-
 </button>
 
 </div>
@@ -4633,6 +3573,7 @@ onclick=
 </div>
 
 </div>
+
 
 <div class="card">
 
@@ -4641,27 +3582,26 @@ onclick=
 </h3>
 
 <label>
-
 Valor contado
 
 <input
 id="closingAmount"
 type="number"
 step="0.01"
-placeholder="0,00">
+placeholder="0,00"
+>
 
 </label>
 
 <button
 class="btn"
-onclick=
-"closeCashRegister()">
-
+onclick="closeCashRegister()"
+>
 🔒 Fechar caixa
-
 </button>
 
 </div>
+
 
 <div class="card">
 
@@ -4670,63 +3610,45 @@ onclick=
 </h3>
 
 ${
-c.movements.length
+d.movements.length
 ?
-
-c.movements.map(
-movement=>`
+d.movements.map(
+m=>`
 
 <div class="history-item">
 
 <strong>
-
-${movement.type===
-"SUPRIMENTO"
-?
-"➕ Suprimento"
-:
-"➖ Sangria"}
-
+${
+m.type==="SUPRIMENTO"
+?"➕ Suprimento"
+:"➖ Sangria"
+}
 </strong>
 
 <strong class="gold">
-
-${money(
-movement.amount
-)}
-
+${money(m.amount)}
 </strong>
 
 <div class="muted">
-
-${escapeHtml(
-movement.note||""
-)}
-
+${escapeHtml(m.note||"")}
 </div>
 
 <div class="muted">
-
-${formatDateTime(
-movement.created_at
-)}
-
+${formatDateTime(m.created_at)}
 </div>
 
 </div>
 
 `
 ).join("")
-
 :
-
 `<div class="empty">
 Nenhuma movimentação.
 </div>`
-
 }
 
 </div>
+
 
 <div class="card">
 
@@ -4738,25 +3660,24 @@ Nenhuma movimentação.
 Carregando histórico...
 </div>
 
-</div>
+</div>`;
 
-`;
 
 await loadCashHistory();
 
 }
 
+
 async function renderClosedCash(){
 
-const container=
+const c=
 document.getElementById(
 "cashContent"
 );
 
-container.innerHTML=
-`
+c.innerHTML=
 
-<div class="cash-status">
+`<div class="cash-status">
 
 <strong>
 🔴 CAIXA FECHADO
@@ -4768,35 +3689,37 @@ Abra o caixa para começar.
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+
+<div
+class="card"
+style="margin-top:18px"
+>
 
 <h3>
 🟢 Abrir caixa
 </h3>
 
 <label>
-
 Valor inicial
 
 <input
 id="openingAmount"
 type="number"
 step="0.01"
-placeholder="100,00">
+placeholder="100,00"
+>
 
 </label>
 
 <button
 class="btn"
-onclick=
-"openCashRegister()">
-
+onclick="openCashRegister()"
+>
 🟢 Abrir caixa
-
 </button>
 
 </div>
+
 
 <div class="card">
 
@@ -4808,13 +3731,12 @@ onclick=
 Carregando histórico...
 </div>
 
-</div>
-
-`;
+</div>`;
 
 await loadCashHistory();
 
 }
+
 
 async function openCashRegister(){
 
@@ -4824,49 +3746,38 @@ document.getElementById(
 );
 
 const amount=
-parseMoney(
-input.value
-);
+parseMoney(input.value);
 
-if(amount<0){
 
-alert(
+if(amount<0)
+
+return alert(
 "O valor não pode ser negativo."
 );
 
-return;
-
-}
 
 const {
 data:existing,
 error:existingError
-}=
-await db
+}=await db
 .from("cash_registers")
 .select("id")
-.eq(
-"status",
-"ABERTO"
-)
+.eq("status","ABERTO")
 .limit(1);
+
 
 if(existingError){
 
 console.error(existingError);
 
-alert(
+return alert(
 "Não foi possível verificar o caixa."
 );
 
-return;
-
 }
 
-if(
-existing &&
-existing.length
-){
+
+if(existing&&existing.length){
 
 alert(
 "Já existe um caixa aberto."
@@ -4878,30 +3789,27 @@ return;
 
 }
 
-const {error}=
-await db
+
+const {
+error
+}=await db
 .from("cash_registers")
 .insert({
-
-opening_amount:
-amount,
-
-status:
-"ABERTO"
-
+opening_amount:amount,
+status:"ABERTO"
 });
+
 
 if(error){
 
 console.error(error);
 
-alert(
+return alert(
 "Não foi possível abrir o caixa."
 );
 
-return;
-
 }
+
 
 showToast(
 "🟢 Caixa aberto!"
@@ -4911,17 +3819,15 @@ await loadCashRegister();
 
 }
 
+
 async function addCashMovement(type){
 
-if(!currentCashRegister){
+if(!currentCashRegister)
 
-alert(
+return alert(
 "Não existe caixa aberto."
 );
 
-return;
-
-}
 
 const amount=
 parseMoney(
@@ -4935,74 +3841,62 @@ document.getElementById(
 "movementNote"
 ).value.trim();
 
-if(!amount||amount<=0){
 
-alert(
+if(!amount||amount<=0)
+
+return alert(
 "Digite um valor válido."
 );
 
-return;
-
-}
 
 if(
-type==="SANGRIA"&&
-currentCashData&&
-amount>
-currentCashData.expectedCash
-){
+type==="SANGRIA" &&
+currentCashData &&
+amount>currentCashData.expectedCash
+)
 
-alert(
+return alert(
 "A sangria não pode ser maior que o valor esperado."
 );
 
-return;
 
-}
-
-const {error}=
-await db
+const {
+error
+}=await db
 .from("cash_movements")
 .insert({
-
 cash_register_id:
 currentCashRegister.id,
-
-type:type,
-
-amount:amount,
-
-note:note
-
+type,
+amount,
+note
 });
+
 
 if(error){
 
 console.error(error);
 
-alert(
+return alert(
 "Não foi possível registrar a movimentação."
 );
 
-return;
-
 }
+
 
 await loadCashRegister();
 
 }
 
+
 async function closeCashRegister(){
 
-if(!currentCashRegister){
+if(!currentCashRegister)
 
-alert(
+return alert(
 "Não existe caixa aberto."
 );
 
-return;
-
-}
 
 const cashData=
 await calculateCashData(
@@ -5015,47 +3909,39 @@ document.getElementById(
 );
 
 const closingAmount=
-parseMoney(
-input.value
-);
+parseMoney(input.value);
 
-if(input.value.trim()===""){
 
-alert(
+if(input.value.trim()==="")
+
+return alert(
 "Informe o valor contado."
 );
 
-return;
-
-}
 
 const difference=
 closingAmount-
 cashData.expectedCash;
 
-const confirmed=
-confirm(
 
+if(
+!confirm(
 "Confirma o fechamento?\n\n"+
 "Esperado: "+
-money(
-cashData.expectedCash
-)+
+money(cashData.expectedCash)+
 "\nContado: "+
-money(
-closingAmount
-)+
+money(closingAmount)+
 "\nDiferença: "+
-money(
-difference
+money(difference)
+)
 )
 
-);
+return;
 
-if(!confirmed)return;
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("cash_registers")
 .update({
 
@@ -5083,7 +3969,6 @@ cashData.withdrawals,
 expected_cash:
 cashData.expectedCash,
 
-difference:
 difference,
 
 status:
@@ -5095,34 +3980,29 @@ status:
 currentCashRegister.id
 );
 
+
 if(error){
 
 console.error(error);
 
-alert(
+return alert(
 "ERRO AO FECHAR CAIXA:\n\n"+
 error.message
 );
 
-return;
-
 }
+
 
 alert(
 "Caixa fechado com sucesso!\n\n"+
 "Esperado: "+
-money(
-cashData.expectedCash
-)+
+money(cashData.expectedCash)+
 "\nContado: "+
-money(
-closingAmount
-)+
+money(closingAmount)+
 "\nDiferença: "+
-money(
-difference
-)
+money(difference)
 );
+
 
 currentCashRegister=null;
 
@@ -5132,34 +4012,36 @@ await loadCashRegister();
 
 }
 
+
 async function loadCashHistory(){
 
-const container=
+const c=
 document.getElementById(
 "cashHistory"
 );
 
-if(!container)return;
+if(!c)return;
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("cash_registers")
 .select("*")
-.eq(
-"status",
-"FECHADO"
-)
+.eq("status","FECHADO")
 .order(
 "closed_at",
 {ascending:false}
 )
 .limit(10);
 
+
 if(error){
 
 console.error(error);
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Não foi possível carregar o histórico.
 </div>`;
@@ -5168,9 +4050,10 @@ return;
 
 }
 
+
 if(!data||!data.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Nenhum caixa fechado ainda.
 </div>`;
@@ -5179,102 +4062,88 @@ return;
 
 }
 
-container.innerHTML=
+
+c.innerHTML=
 data.map(
-register=>{
-
-const difference=
-Number(
-register.difference
-)||0;
-
-return `
+r=>`
 
 <div class="history-item">
 
 <strong>
-Caixa #${register.id}
+Caixa #${r.id}
 </strong>
 
 <div class="muted">
 Aberto:
-${formatDateTime(
-register.opened_at
-)}
+${formatDateTime(r.opened_at)}
 </div>
 
 <div class="muted">
 Fechado:
-${formatDateTime(
-register.closed_at
-)}
+${formatDateTime(r.closed_at)}
 </div>
 
 <p>
 Vendas:
 <strong class="gold">
-
 ${money(
-Number(register.cash_sales)+
-Number(register.pix_sales)+
-Number(register.card_sales)
+Number(r.cash_sales)+
+Number(r.pix_sales)+
+Number(r.card_sales)
 )}
-
 </strong>
 </p>
 
 <p>
 Esperado:
 <strong>
-${money(
-register.expected_cash
-)}
+${money(r.expected_cash)}
 </strong>
 </p>
 
 <p>
 Contado:
 <strong>
-${money(
-register.closing_amount
-)}
+${money(r.closing_amount)}
 </strong>
 </p>
 
 <p>
 Diferença:
 <strong class="gold">
-${money(difference)}
+${money(r.difference)}
 </strong>
 </p>
 
 </div>
 
-`;
-
-}
+`
 ).join("");
 
 }
 
+
 /* ============================================================
-RELATÓRIOS
-============================================================ */
+   RELATÓRIOS
+   ============================================================ */
 
 async function loadReports(){
 
-const container=
+const c=
 document.getElementById(
 "reportsContent"
 );
 
-if(!container)return;
+if(!c)return;
 
-container.innerHTML=
+c.innerHTML=
 "Carregando relatórios...";
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("orders")
 .select("*")
 .order(
@@ -5282,11 +4151,12 @@ await db
 {ascending:false}
 );
 
+
 if(error){
 
 console.error(error);
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Erro ao carregar relatórios.
 </div>`;
@@ -5295,57 +4165,41 @@ return;
 
 }
 
-const orders=
-data||[];
+
+const orders=data||[];
 
 const total=
 orders.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
+(s,o)=>s+Number(o.total||0),
 0
 );
 
 const average=
 orders.length
-?
-total/orders.length
-:
-0;
+?total/orders.length
+:0;
 
 const pix=
 orders
-.filter(
-o=>o.payment==="PIX"
-)
+.filter(o=>o.payment==="PIX")
 .reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
+(s,o)=>s+Number(o.total||0),
 0
 );
 
 const cash=
 orders
-.filter(
-o=>o.payment==="DINHEIRO"
-)
+.filter(o=>o.payment==="DINHEIRO")
 .reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
+(s,o)=>s+Number(o.total||0),
 0
 );
 
 const card=
 orders
-.filter(
-o=>o.payment==="CARTAO"
-)
+.filter(o=>o.payment==="CARTAO")
 .reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
+(s,o)=>s+Number(o.total||0),
 0
 );
 
@@ -5359,7 +4213,8 @@ orders.filter(
 o=>!o.delivery
 ).length;
 
-const statusList=[
+
+const statuses=[
 "RECEBIDO",
 "PREPARANDO",
 "PRONTO",
@@ -5367,10 +4222,10 @@ const statusList=[
 "ENTREGUE"
 ];
 
-container.innerHTML=
-`
 
-<div class="report-grid">
+c.innerHTML=
+
+`<div class="report-grid">
 
 <div class="stat">
 <span>Faturamento total</span>
@@ -5414,36 +4269,40 @@ container.innerHTML=
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+
+<div
+class="card"
+style="margin-top:18px"
+>
 
 <h3>
 📋 Pedidos por status
 </h3>
 
-${statusList.map(
-status=>`
+${
+statuses.map(
+s=>`
 
 <div class="history-item">
 
 <span>
-${status}
+${s}
 </span>
 
 <strong class="gold">
-
 ${orders.filter(
-o=>o.status===status
+o=>o.status===s
 ).length}
-
 </strong>
 
 </div>
 
 `
-).join("")}
+).join("")
+}
 
 </div>
+
 
 <div class="card">
 
@@ -5452,32 +4311,317 @@ o=>o.status===status
 </h3>
 
 <div class="history-item">
-
 PIX
-
 <strong class="gold">
 ${money(pix)}
 </strong>
-
 </div>
 
 <div class="history-item">
-
 Dinheiro
-
 <strong class="gold">
 ${money(cash)}
 </strong>
-
 </div>
 
 <div class="history-item">
-
 Cartão
-
 <strong class="gold">
 ${money(card)}
 </strong>
+</div>
+
+</div>`;
+
+}
+
+
+/* ============================================================
+   HORÁRIOS DE FUNCIONAMENTO
+   ============================================================ */
+
+async function loadBusinessHours(){
+
+const c=
+document.getElementById(
+"businessHoursContainer"
+);
+
+if(!c)return;
+
+c.innerHTML=
+"Carregando horários...";
+
+
+const {
+data,
+error
+}=await db
+.from("business_hours")
+.select("*")
+.order(
+"day_of_week",
+{ascending:true}
+);
+
+
+if(error){
+
+console.error(
+"Erro ao carregar horários:",
+error
+);
+
+businessHours=[];
+
+businessHoursLoaded=false;
+
+c.innerHTML=
+`<div class="empty">
+
+Erro ao carregar horários:
+
+<br><br>
+
+${escapeHtml(
+error.message
+)}
+
+<br>
+
+<small>
+Código:
+${escapeHtml(
+error.code||"sem código"
+)}
+</small>
+
+</div>`;
+
+return;
+
+}
+
+
+let hours=data||[];
+
+
+/*
+  Se a tabela estiver vazia,
+  cria automaticamente os 7 dias.
+*/
+
+if(hours.length===0){
+
+const defaults=
+WEEKDAY_NAMES.map(
+(name,index)=>({
+
+day_of_week:index,
+
+day_name:name,
+
+is_open:false,
+
+open_time:"18:00",
+
+close_time:"23:00"
+
+})
+);
+
+
+const {
+data:created,
+error:createError
+}=await db
+.from("business_hours")
+.insert(defaults)
+.select("*");
+
+
+if(createError){
+
+console.error(
+"Erro ao criar horários:",
+createError
+);
+
+businessHours=[];
+
+businessHoursLoaded=false;
+
+c.innerHTML=
+`<div class="empty">
+
+Não foi possível criar os horários.
+
+<br><br>
+
+${escapeHtml(
+createError.message
+)}
+
+<br>
+
+<small>
+Código:
+${escapeHtml(
+createError.code||"sem código"
+)}
+</small>
+
+</div>`;
+
+return;
+
+}
+
+
+hours=created||defaults;
+
+}
+
+
+businessHours=
+hours.sort(
+(a,b)=>
+Number(a.day_of_week)-
+Number(b.day_of_week)
+);
+
+businessHoursLoaded=true;
+
+renderBusinessHoursAdmin();
+
+}
+
+
+function renderBusinessHoursAdmin(){
+
+const c=
+document.getElementById(
+"businessHoursContainer"
+);
+
+if(!c)return;
+
+
+if(!businessHours.length){
+
+c.innerHTML=
+`<div class="empty">
+Nenhum horário cadastrado.
+</div>`;
+
+return;
+
+}
+
+
+c.innerHTML=
+businessHours.map(
+h=>{
+
+const day=
+Number(h.day_of_week);
+
+const name=
+h.day_name||
+WEEKDAY_NAMES[day]||
+("Dia "+day);
+
+
+return `
+
+<div class="hours-row">
+
+<div class="day-name">
+${escapeHtml(name)}
+</div>
+
+<div>
+
+<div
+id="bh-badge-${day}"
+class="open-badge ${
+h.is_open?"on":""
+}"
+>
+${h.is_open
+?"ABERTO"
+:"FECHADO"}
+</div>
+
+</div>
+
+
+<div class="time-field">
+
+<label>
+Abre
+
+<input
+id="bh-start-${day}"
+type="time"
+value="${
+escapeHtml(
+(h.open_time||"18:00")
+.slice(0,5)
+)
+}"
+>
+
+</label>
+
+</div>
+
+
+<div class="time-field">
+
+<label>
+Fecha
+
+<input
+id="bh-end-${day}"
+type="time"
+value="${
+escapeHtml(
+(h.close_time||"23:00")
+.slice(0,5)
+)
+}"
+>
+
+</label>
+
+</div>
+
+
+<div class="save-hour">
+
+<label
+style="display:flex;gap:7px;align-items:center;cursor:pointer"
+>
+
+<input
+id="bh-open-${day}"
+type="checkbox"
+${h.is_open?"checked":""}
+onchange="updateHourBadge(${day})"
+style="width:auto;margin:0"
+>
+
+Aberto
+
+</label>
+
+<button
+class="btn small"
+onclick="saveBusinessHour(${day})"
+>
+💾 Salvar
+</button>
 
 </div>
 
@@ -5486,25 +4630,148 @@ ${money(card)}
 `;
 
 }
+).join("");
+
+}
+
+
+function updateHourBadge(day){
+
+const checkbox=
+document.getElementById(
+"bh-open-"+day
+);
+
+const badge=
+document.getElementById(
+"bh-badge-"+day
+);
+
+if(!checkbox||!badge)
+return;
+
+badge.textContent=
+checkbox.checked
+?"ABERTO"
+:"FECHADO";
+
+badge.classList.toggle(
+"on",
+checkbox.checked
+);
+
+}
+
+
+async function saveBusinessHour(day){
+
+const openCheckbox=
+document.getElementById(
+"bh-open-"+day
+);
+
+const startInput=
+document.getElementById(
+"bh-start-"+day
+);
+
+const endInput=
+document.getElementById(
+"bh-end-"+day
+);
+
+
+if(!openCheckbox)
+
+return alert(
+"Não foi possível encontrar o horário."
+);
+
+
+const isOpen=
+openCheckbox.checked;
+
+const openTime=
+startInput.value||null;
+
+const closeTime=
+endInput.value||null;
+
+
+if(
+isOpen &&
+(!openTime||!closeTime)
+)
+
+return alert(
+"Informe o horário de abertura e fechamento."
+);
+
+
+const {
+error
+}=await db
+.from("business_hours")
+.update({
+is_open:isOpen,
+open_time:openTime,
+close_time:closeTime
+})
+.eq(
+"day_of_week",
+Number(day)
+);
+
+
+if(error){
+
+console.error(
+"ERRO AO SALVAR HORÁRIO:",
+error
+);
+
+alert(
+"ERRO AO SALVAR HORÁRIO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(error.code||"sem código")
+);
+
+return;
+
+}
+
+
+await loadBusinessHours();
+
+showToast(
+"🕐 Horário salvo!"
+);
+
+}
+
 
 /* ============================================================
-BAIRROS
-============================================================ */
+   BAIRROS / TAXAS
+   ============================================================ */
 
 async function loadDeliveryZonesAdmin(){
 
-const container=
+const c=
 document.getElementById(
 "zonesContainer"
 );
 
-if(!container)return;
+if(!c)return;
 
-container.innerHTML=
+c.innerHTML=
 "Carregando bairros...";
 
-const {data,error}=
-await db
+
+const {
+data,
+error
+}=await db
 .from("delivery_zones")
 .select("*")
 .order(
@@ -5512,28 +4779,50 @@ await db
 {ascending:true}
 );
 
+
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO CARREGAR BAIRROS:",
+error
+);
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
-Erro ao carregar bairros.
+
+Erro ao carregar bairros:
+
+<br><br>
+
+${escapeHtml(
+error.message
+)}
+
+<br>
+
+<small>
+Código:
+${escapeHtml(
+error.code||"sem código"
+)}
+</small>
+
 </div>`;
 
 return;
 
 }
 
+
 deliveryZones=
-(data||[])
-.filter(
-zone=>zone.active
+(data||[]).filter(
+z=>z.active
 );
+
 
 if(!data||!data.length){
 
-container.innerHTML=
+c.innerHTML=
 `<div class="empty">
 Nenhum bairro cadastrado ainda.
 </div>`;
@@ -5542,65 +4831,78 @@ return;
 
 }
 
-container.innerHTML=
+
+c.innerHTML=
 data.map(
-zone=>`
+z=>{
+
+const safeId=
+JSON.stringify(
+String(z.id)
+);
+
+
+return `
 
 <div class="zone-row">
 
 <div>
 
 <strong>
-${escapeHtml(
-zone.neighborhood
-)}
+${escapeHtml(z.neighborhood)}
 </strong>
 
 <div class="muted">
-${zone.active
-?
-"ATIVO"
-:
-"INATIVO"}
+${
+z.active
+?"🟢 ATIVO"
+:"🔴 INATIVO"
+}
 </div>
 
 </div>
+
 
 <input
-id="zone-fee-${zone.id}"
+id="zone-fee-${escapeHtml(String(z.id))}"
 type="number"
 step="0.01"
-value=
-"${Number(zone.fee).toFixed(2)}">
+min="0"
+value="${Number(z.fee||0).toFixed(2)}"
+>
+
 
 <button
 class="btn small"
-onclick=
-"updateDeliveryZone(${zone.id})">
-
-Salvar
-
+onclick='updateDeliveryZone(${safeId})'
+>
+💾 Salvar
 </button>
+
 
 <button
 class="btn small danger"
-onclick=
-"toggleDeliveryZone(${zone.id},${zone.active})">
-
-${zone.active
-?
-"Desativar"
-:
-"Ativar"}
-
+onclick='toggleDeliveryZone(
+${safeId},
+${Boolean(z.active)}
+)'
+>
+${
+z.active
+?"Desativar"
+:"Ativar"
+}
 </button>
 
 </div>
 
-`
+`;
+
+}
 ).join("");
 
 }
+
 
 async function createDeliveryZone(){
 
@@ -5616,63 +4918,58 @@ document.getElementById(
 ).value
 );
 
-if(!neighborhood){
 
-alert(
+if(!neighborhood)
+
+return alert(
 "Digite o bairro."
 );
 
-return;
 
-}
+if(fee<0)
 
-if(fee<0){
-
-alert(
+return alert(
 "A taxa não pode ser negativa."
 );
 
-return;
 
-}
-
-const {error}=
-await db
+const {
+error
+}=await db
 .from("delivery_zones")
 .insert({
-
-neighborhood:
 neighborhood,
-
-fee:
 fee,
-
-active:
-true
-
+active:true
 });
+
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO ADICIONAR BAIRRO:",
+error
+);
 
-if(error.code==="23505"){
+if(error.code==="23505")
 
 alert(
 "Esse bairro já está cadastrado."
 );
 
-}else{
+else
 
 alert(
-"Não foi possível adicionar o bairro."
+"ERRO AO ADICIONAR BAIRRO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(error.code||"sem código")
 );
-
-}
 
 return;
 
 }
+
 
 document.getElementById(
 "zoneNeighborhood"
@@ -5681,6 +4978,7 @@ document.getElementById(
 document.getElementById(
 "zoneFee"
 ).value="";
+
 
 await loadDeliveryZonesAdmin();
 
@@ -5692,50 +4990,58 @@ showToast(
 
 }
 
+
 async function updateDeliveryZone(id){
 
 const input=
 document.getElementById(
-"zone-fee-"+id
+"zone-fee-"+String(id)
 );
+
+if(!input)
+
+return alert(
+"Campo da taxa não encontrado."
+);
+
 
 const fee=
-parseMoney(
-input.value
-);
+parseMoney(input.value);
 
-if(fee<0){
 
-alert(
+if(fee<0)
+
+return alert(
 "A taxa não pode ser negativa."
 );
 
-return;
 
-}
-
-const {error}=
-await db
+const {
+error
+}=await db
 .from("delivery_zones")
-.update({
-fee:fee
-})
-.eq(
-"id",
-id
-);
+.update({fee})
+.eq("id",id);
+
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO ATUALIZAR TAXA:",
+error
+);
 
 alert(
-"Não foi possível atualizar a taxa."
+"ERRO AO ATUALIZAR TAXA:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(error.code||"sem código")
 );
 
 return;
 
 }
+
 
 await loadDeliveryZonesAdmin();
 
@@ -5747,227 +5053,115 @@ showToast(
 
 }
 
+
 async function toggleDeliveryZone(
 id,
 currentActive
 ){
 
-const {error}=
-await db
+const {
+error
+}=await db
 .from("delivery_zones")
 .update({
-
-active:
-!currentActive
-
+active:!currentActive
 })
-.eq(
-"id",
-id
-);
+.eq("id",id);
+
 
 if(error){
 
-console.error(error);
+console.error(
+"ERRO AO ALTERAR BAIRRO:",
+error
+);
 
 alert(
-"Não foi possível alterar o bairro."
+"ERRO AO ALTERAR BAIRRO:\n\n"+
+error.message+
+"\n\nCódigo: "+
+(error.code||"sem código")
 );
 
 return;
 
 }
+
 
 await loadDeliveryZonesAdmin();
 
 await loadDeliveryZones();
 
-}
-
-/* ============================================================
-TAXA PADRÃO
-============================================================ */
-
-async function saveDefaultDeliveryFee(){
-
-const fee=
-parseMoney(
-document.getElementById(
-"defaultDeliveryFee"
-).value
-);
-
-if(fee<0){
-
-alert(
-"A taxa não pode ser negativa."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-delivery_fee:
-fee,
-
-default_delivery_fee:
-fee
-
-});
-
-if(!ok)return;
-
-deliveryFee=fee;
-
 showToast(
-"💰 Taxa padrão atualizada!"
+currentActive
+?"📍 Bairro desativado!"
+:"📍 Bairro ativado!"
 );
 
 }
 
+
 /* ============================================================
-REALTIME
-============================================================ */
+   REALTIME
+   ============================================================ */
 
-/* SOM DE NOVO PEDIDO */
-
-let audioLiberado = false;
-let audioContext = null;
-
-function liberarSom(){
-  try{
-    if(!audioContext){
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    if(audioContext.state === "suspended"){
-      audioContext.resume();
-    }
-
-    audioLiberado = true;
-  }catch(e){
-    console.log("Áudio não disponível:",e);
-  }
-}
-
-document.addEventListener("click",liberarSom);
-
-function tocarSomPedido(){
-  try{
-    if(!audioContext){
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    if(audioContext.state === "suspended"){
-      audioContext.resume();
-    }
-
-    const agora = audioContext.currentTime;
-
-    const osc = audioContext.createOscillator();
-    const ganho = audioContext.createGain();
-
-    osc.type = "sine";
-
-    osc.frequency.setValueAtTime(880,agora);
-    osc.frequency.setValueAtTime(1100,agora+0.15);
-    osc.frequency.setValueAtTime(880,agora+0.30);
-
-    ganho.gain.setValueAtTime(0.0001,agora);
-    ganho.gain.exponentialRampToValueAtTime(0.35,agora+0.02);
-    ganho.gain.exponentialRampToValueAtTime(0.0001,agora+0.45);
-
-    osc.connect(ganho);
-    ganho.connect(audioContext.destination);
-
-    osc.start(agora);
-    osc.stop(agora+0.5);
-
-  }catch(e){
-    console.log("Não foi possível tocar o som:",e);
-  }
-}
-
-
-/* REALTIME */
-
-db
-.channel("burguer-gold-realtime")
+db.channel(
+"orders-realtime"
+)
 .on(
-  "postgres_changes",
-  {
-    event:"*",
-    schema:"public",
-    table:"orders"
-  },
-  async(payload)=>{
+"postgres_changes",
+{
+event:"*",
+schema:"public",
+table:"orders"
+},
+async()=>{
 
-    const panel=document.getElementById("adminPanel");
+const panel=
+document.getElementById(
+"adminPanel"
+);
 
-    if(
-      panel &&
-      panel.classList.contains("active")
-    ){
+if(
+panel &&
+panel.classList.contains("active")
+){
 
-      /* SOMENTE PEDIDO NOVO */
-      if(payload.eventType==="INSERT"){
-        tocarSomPedido();
-      }
+await loadOrders();
 
-      /* ATUALIZA PEDIDOS */
-      await loadOrders();
+const activeSection=
+document.querySelector(
+".admin-section.active"
+);
 
-      const active=
-        document.querySelector(".admin-section.active");
 
-      /* ATUALIZA CAIXA */
-      if(
-        active &&
-        active.id==="admin-cash"
-      ){
-        await loadCashRegister();
-      }
+if(
+activeSection &&
+activeSection.id==="admin-cash"
+)
 
-      /* ATUALIZA RELATÓRIOS */
-      if(
-        active &&
-        active.id==="admin-reports"
-      ){
-        await loadReports();
-      }
+await loadCashRegister();
 
-    }
 
-  }
+if(
+activeSection &&
+activeSection.id==="admin-reports"
+)
+
+await loadReports();
+
+}
+
+}
 )
 .subscribe();
 
 
-/* ATIVA O ÁUDIO AO ENTRAR/INTERAGIR NO ADMIN */
-
-document.addEventListener("touchstart",liberarSom,{passive:true});
 /* ============================================================
-ATUALIZAÇÃO DO HORÁRIO
-============================================================ */
-
-setInterval(
-updateStoreStatus,
-30000
-);
-
-/* ============================================================
-INICIALIZAÇÃO
-============================================================ */
+   INICIALIZAÇÃO
+   ============================================================ */
 
 async function init(){
-
-openingHours=
-defaultHours();
-
-await loadStoreSettings();
 
 await loadProducts();
 
@@ -5977,12 +5171,11 @@ renderCart();
 
 toggleDeliveryFields();
 
-updateStoreStatus();
 
 const {
 data
-}=
-await db.auth.getSession();
+}=await db.auth.getSession();
+
 
 if(
 data &&
@@ -5990,19 +5183,15 @@ data.session
 ){
 
 if(
-location.pathname===
-"/admin"
-){
+location.pathname==="/admin"
+)
 
 await showAdminPanel();
 
 }
 
-}else{
-
-if(
-location.pathname===
-"/admin"
+else if(
+location.pathname==="/admin"
 ){
 
 showScreen(
@@ -6013,7 +5202,6 @@ showScreen(
 
 }
 
-}
 
 init();
 
