@@ -916,8 +916,9 @@ textarea{
 
         <input
           id="settingDeliveryEstimate"
-          type="number"
-          min="0">
+          type="text"
+          value="40–60 min"
+          readonly>
 
         <label>Taxa padrão de entrega</label>
 
@@ -1312,73 +1313,6 @@ textarea{
   </div>
 
 </div>
-
-
-<!-- MODAL LANÇAMENTO -->
-
-<div
-  id="cashModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-header">
-
-      <h2>Lançamento no caixa</h2>
-
-      <button
-        class="close"
-        onclick="closeCashModal()">
-
-        ×
-
-      </button>
-
-    </div>
-
-    <label>Tipo</label>
-
-    <select id="cashType">
-
-      <option value="income">
-        Entrada
-      </option>
-
-      <option value="expense">
-        Saída
-      </option>
-
-    </select>
-
-    <label>Valor</label>
-
-    <input
-      id="cashAmount"
-      type="number"
-      min="0"
-      step="0.01">
-
-    <label>Descrição</label>
-
-    <input
-      id="cashDescription"
-      type="text"
-      placeholder="Ex: Compra de ingredientes">
-
-    <button
-      class="btn btn-gold full"
-      style="margin-top:18px"
-      onclick="saveCashMovement()">
-
-      Salvar lançamento
-
-    </button>
-
-  </div>
-
-</div>
-
-
 <!-- MODAL ABRIR CAIXA -->
 
 <div
@@ -1389,7 +1323,7 @@ textarea{
 
     <div class="modal-header">
 
-      <h2>🔓 Abrir caixa</h2>
+      <h2>Abrir caixa</h2>
 
       <button
         class="close"
@@ -1401,28 +1335,14 @@ textarea{
 
     </div>
 
-    <div style="
-      color:#aaa;
-      font-size:14px;
-      line-height:1.5;
-      margin-bottom:15px">
-
-      Informe quanto dinheiro já existe no caixa
-      no momento da abertura.
-
-    </div>
-
-    <label>
-      Valor inicial
-    </label>
+    <label>Saldo inicial</label>
 
     <input
-      id="openingCashAmount"
+      id="openingBalance"
       type="number"
       min="0"
       step="0.01"
-      value="0"
-      placeholder="0,00">
+      value="0">
 
     <button
       class="btn btn-gold full"
@@ -1448,7 +1368,7 @@ textarea{
 
     <div class="modal-header">
 
-      <h2>🔒 Fechar caixa</h2>
+      <h2>Fechar caixa</h2>
 
       <button
         class="close"
@@ -1460,57 +1380,19 @@ textarea{
 
     </div>
 
-    <div style="
-      background:#111;
-      border:1px solid #292929;
-      border-radius:12px;
-      padding:15px;
-      margin-bottom:15px">
+    <div
+      id="closeCashSummary"
+      class="cash-closed-message">
 
-      <div style="
-        color:#777;
-        font-size:11px;
-        text-transform:uppercase">
-
-        Saldo calculado
-
-      </div>
-
-      <div
-        id="closeCashCalculated"
-        style="
-          color:#d7aa4d;
-          font-size:28px;
-          font-weight:900;
-          margin-top:5px">
-
-        R$ 0,00
-
-      </div>
+      Confira o saldo antes de fechar o caixa.
 
     </div>
 
-    <div style="
-      color:#aaa;
-      font-size:14px;
-      line-height:1.5;
-      margin-bottom:15px">
+    <label>Observação</label>
 
-      Confira o dinheiro físico do caixa.
-      Você pode registrar o valor encontrado
-      para fechar o caixa.
-
-    </div>
-
-    <label>
-      Valor final contado
-    </label>
-
-    <input
-      id="closingCashAmount"
-      type="number"
-      min="0"
-      step="0.01">
+    <textarea
+      id="closeCashNotes"
+      placeholder="Observação opcional"></textarea>
 
     <button
       class="btn btn-red full"
@@ -1518,6 +1400,71 @@ textarea{
       onclick="closeCash()">
 
       Fechar caixa
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL MOVIMENTAÇÃO -->
+
+<div
+  id="cashModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>Novo lançamento</h2>
+
+      <button
+        class="close"
+        onclick="closeCashModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+    <label>Tipo</label>
+
+    <select id="movementType">
+
+      <option value="income">
+        Entrada
+      </option>
+
+      <option value="expense">
+        Saída
+      </option>
+
+    </select>
+
+    <label>Valor</label>
+
+    <input
+      id="movementAmount"
+      type="number"
+      min="0.01"
+      step="0.01">
+
+    <label>Descrição</label>
+
+    <input
+      id="movementDescription"
+      type="text"
+      placeholder="Ex: Compra de ingredientes">
+
+    <button
+      class="btn btn-gold full"
+      style="margin-top:18px"
+      onclick="saveCashMovement()">
+
+      Salvar lançamento
 
     </button>
 
@@ -1549,37 +1496,255 @@ const db =
    ESTADO
 ===================================================== */
 
+let currentSession = null;
+
 let products = [];
+
 let zones = [];
+
 let settings = null;
+
 let orders = [];
+
+let currentCashSession = null;
+
 let cashMovements = [];
-let cashSession = null;
+
+let audioContext = null;
+
+let orderChannel = null;
 
 
 /* =====================================================
-   INÍCIO
+   ALERTA DE NOVO PEDIDO
 ===================================================== */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async function(){
+function activateOrderSound(){
 
-    const {
-      data
-    } =
-      await db.auth.getSession();
+  try{
 
-    if(data.session){
+    if(!audioContext){
 
-      showAdmin(
-        data.session
-      );
+      audioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
 
     }
 
+    if(audioContext.state === "suspended"){
+
+      audioContext.resume();
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Não foi possível ativar o áudio:",
+      error
+    );
+
   }
+
+}
+
+
+function playNewOrderSound(){
+
+  try{
+
+    if(!audioContext){
+
+      activateOrderSound();
+
+    }
+
+    if(
+      !audioContext ||
+      audioContext.state === "suspended"
+    ){
+
+      return;
+
+    }
+
+    const now =
+      audioContext.currentTime;
+
+    const notes = [
+      880,
+      1046.50,
+      1318.51,
+      1046.50
+    ];
+
+    notes.forEach(
+      (frequency,index)=>{
+
+        const oscillator =
+          audioContext.createOscillator();
+
+        const gain =
+          audioContext.createGain();
+
+        oscillator.type =
+          "sine";
+
+        oscillator.frequency.value =
+          frequency;
+
+        oscillator.connect(gain);
+
+        gain.connect(
+          audioContext.destination
+        );
+
+        const start =
+          now + index * 0.16;
+
+        const end =
+          start + 0.13;
+
+        gain.gain.setValueAtTime(
+          0.0001,
+          start
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.28,
+          start + 0.02
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          end
+        );
+
+        oscillator.start(start);
+
+        oscillator.stop(end);
+
+      }
+    );
+
+  }catch(error){
+
+    console.error(
+      "Erro ao tocar alerta:",
+      error
+    );
+
+  }
+
+}
+
+
+function setupOrderRealtime(){
+
+  if(orderChannel){
+
+    return;
+
+  }
+
+  orderChannel =
+    db
+      .channel(
+        "burguer-gold-new-orders"
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"INSERT",
+          schema:"public",
+          table:"orders"
+        },
+        async function(payload){
+
+          console.log(
+            "NOVO PEDIDO:",
+            payload.new
+          );
+
+          playNewOrderSound();
+
+          await loadOrders();
+
+        }
+      )
+      .subscribe(
+        function(status){
+
+          console.log(
+            "Realtime pedidos:",
+            status
+          );
+
+        }
+      );
+
+}
+
+
+document.addEventListener(
+  "click",
+  function(){
+
+    activateOrderSound();
+
+  },
+  {once:true}
 );
+
+
+/* =====================================================
+   FORMATADORES
+===================================================== */
+
+function money(value){
+
+  return Number(value || 0).toLocaleString(
+    "pt-BR",
+    {
+      style:"currency",
+      currency:"BRL"
+    }
+  );
+
+}
+
+
+function dateTime(value){
+
+  if(!value){
+
+    return "-";
+
+  }
+
+  return new Date(value).toLocaleString(
+    "pt-BR",
+    {
+      dateStyle:"short",
+      timeStyle:"short"
+    }
+  );
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
 
 
 /* =====================================================
@@ -1591,27 +1756,26 @@ async function login(event){
   event.preventDefault();
 
   const email =
-    document
-      .getElementById("loginEmail")
-      .value
-      .trim();
+    document.getElementById(
+      "loginEmail"
+    ).value.trim();
 
   const password =
-    document
-      .getElementById("loginPassword")
-      .value;
+    document.getElementById(
+      "loginPassword"
+    ).value;
 
   const button =
     document.getElementById(
       "loginButton"
     );
 
-  const error =
+  const errorBox =
     document.getElementById(
       "loginError"
     );
 
-  error.classList.add("hidden");
+  errorBox.classList.add("hidden");
 
   button.disabled = true;
 
@@ -1620,31 +1784,31 @@ async function login(event){
 
   try{
 
-    const result =
+    const {data,error} =
       await db.auth.signInWithPassword({
-
-        email:email,
-
-        password:password
-
+        email,
+        password
       });
 
-    if(result.error){
-      throw result.error;
+    if(error){
+
+      throw error;
+
     }
 
-    showAdmin(
-      result.data.session
+    await showAdmin(
+      data.session
     );
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
-    error.textContent =
-      "E-mail ou senha incorretos.";
+    errorBox.textContent =
+      error.message ||
+      "Não foi possível entrar.";
 
-    error.classList.remove(
+    errorBox.classList.remove(
       "hidden"
     );
 
@@ -1661,10 +1825,34 @@ async function login(event){
 
 
 /* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+  try{
+
+    await db.auth.signOut();
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+  location.reload();
+
+}
+
+
+/* =====================================================
    MOSTRAR ADMIN
 ===================================================== */
 
 async function showAdmin(session){
+
+  currentSession =
+    session;
 
   document
     .getElementById("loginPage")
@@ -1677,28 +1865,19 @@ async function showAdmin(session){
   document
     .getElementById("adminUser")
     .textContent =
-      session.user.email || "";
+      session?.user?.email || "";
 
   await loadAll();
 
-}
+  activateOrderSound();
 
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logout(){
-
-  await db.auth.signOut();
-
-  location.reload();
+  setupOrderRealtime();
 
 }
 
 
 /* =====================================================
-   NAVEGAÇÃO
+   PAINÉIS
 ===================================================== */
 
 function showPanel(
@@ -1708,52 +1887,53 @@ function showPanel(
 
   document
     .querySelectorAll(".panel")
-    .forEach(el=>{
-      el.classList.remove(
-        "active"
-      );
-    });
+    .forEach(
+      function(item){
 
-  document
-    .getElementById(
-      panel + "Panel"
-    )
-    .classList.add(
-      "active"
+        item.classList.remove(
+          "active"
+        );
+
+      }
     );
 
   document
     .querySelectorAll(".tab")
-    .forEach(el=>{
-      el.classList.remove(
-        "active"
-      );
-    });
+    .forEach(
+      function(item){
+
+        item.classList.remove(
+          "active"
+        );
+
+      }
+    );
+
+  const target =
+    document.getElementById(
+      panel + "Panel"
+    );
+
+  if(target){
+
+    target.classList.add(
+      "active"
+    );
+
+  }
 
   if(button){
+
     button.classList.add(
       "active"
     );
-  }
 
-  if(panel === "orders"){
-    loadOrders();
-  }
-
-  if(panel === "products"){
-    loadProducts();
-  }
-
-  if(panel === "delivery"){
-    loadZones();
-  }
-
-  if(panel === "settings"){
-    loadSettings();
   }
 
   if(panel === "cash"){
+
     loadCash();
+
   }
 
 }
@@ -1765,15 +1945,329 @@ function showPanel(
 
 async function loadAll(){
 
-  await loadSettings();
+  await Promise.all([
+    loadSettings(),
+    loadProducts(),
+    loadZones(),
+    loadOrders(),
+    loadCash()
+  ]);
 
-  await loadProducts();
+}
 
-  await loadZones();
 
-  await loadOrders();
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
 
-  await loadCash();
+async function loadSettings(){
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("store_settings")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+
+  if(error){
+
+    console.error(
+      "Erro ao carregar configurações:",
+      error
+    );
+
+    return;
+
+  }
+
+  settings =
+    data;
+
+  renderSettings();
+
+}
+
+
+function renderSettings(){
+
+  if(!settings){
+
+    return;
+
+  }
+
+  const storeName =
+    document.getElementById(
+      "settingStoreName"
+    );
+
+  const deliveryEstimate =
+    document.getElementById(
+      "settingDeliveryEstimate"
+    );
+
+  const defaultFee =
+    document.getElementById(
+      "settingDefaultFee"
+    );
+
+  const pix =
+    document.getElementById(
+      "settingPix"
+    );
+
+  const whatsapp =
+    document.getElementById(
+      "settingWhatsapp"
+    );
+
+  if(storeName){
+
+    storeName.value =
+      settings.store_name || "";
+
+  }
+
+  if(deliveryEstimate){
+
+    deliveryEstimate.value =
+      "40–60 min";
+
+  }
+
+  if(defaultFee){
+
+    defaultFee.value =
+      settings.default_delivery_fee ?? 0;
+
+  }
+
+  if(pix){
+
+    pix.value =
+      settings.pix_key || "";
+
+  }
+
+  if(whatsapp){
+
+    whatsapp.value =
+      settings.whatsapp || "";
+
+  }
+
+  renderHours();
+
+}
+
+
+function renderHours(){
+
+  const container =
+    document.getElementById(
+      "hoursContainer"
+    );
+
+  if(!container){
+
+    return;
+
+  }
+
+  const days = [
+    ["monday","Segunda-feira"],
+    ["tuesday","Terça-feira"],
+    ["wednesday","Quarta-feira"],
+    ["thursday","Quinta-feira"],
+    ["friday","Sexta-feira"],
+    ["saturday","Sábado"],
+    ["sunday","Domingo"]
+  ];
+
+  container.innerHTML =
+    days.map(
+      function(day){
+
+        const key =
+          day[0];
+
+        const label =
+          day[1];
+
+        const open =
+          settings[
+            key + "_open"
+          ] || "18:00";
+
+        const close =
+          settings[
+            key + "_close"
+          ] || "00:00";
+
+        const enabled =
+          settings[
+            key + "_enabled"
+          ] !== false;
+
+        return `
+
+          <div class="day-row">
+
+            <div class="day-name">
+              ${label}
+            </div>
+
+            <div class="time-row">
+
+              <input
+                id="open_${key}"
+                type="time"
+                value="${open}">
+
+              <input
+                id="close_${key}"
+                type="time"
+                value="${close}">
+
+            </div>
+
+            <label class="switch-row">
+
+              <input
+                id="enabled_${key}"
+                type="checkbox"
+                ${enabled ? "checked" : ""}>
+
+              Aberto
+
+            </label>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =====================================================
+   SALVAR CONFIGURAÇÕES
+===================================================== */
+
+async function saveSettings(){
+
+  if(!settings?.id){
+
+    alert(
+      "Configuração da loja não encontrada."
+    );
+
+    return;
+
+  }
+
+  const days = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+  ];
+
+  const updateData = {
+
+    store_name:
+      document.getElementById(
+        "settingStoreName"
+      ).value.trim(),
+
+    delivery_estimate:40,
+
+    default_delivery_fee:
+      Number(
+        document.getElementById(
+          "settingDefaultFee"
+        ).value || 0
+      ),
+
+    pix_key:
+      document.getElementById(
+        "settingPix"
+      ).value.trim(),
+
+    whatsapp:
+      document.getElementById(
+        "settingWhatsapp"
+      ).value.trim()
+
+  };
+
+  days.forEach(
+    function(day){
+
+      updateData[
+        day + "_open"
+      ] =
+        document.getElementById(
+          "open_" + day
+        ).value;
+
+      updateData[
+        day + "_close"
+      ] =
+        document.getElementById(
+          "close_" + day
+        ).value;
+
+      updateData[
+        day + "_enabled"
+      ] =
+        document.getElementById(
+          "enabled_" + day
+        ).checked;
+
+    }
+  );
+
+  try{
+
+    const {
+      error
+    } =
+      await db
+        .from("store_settings")
+        .update(updateData)
+        .eq("id",settings.id);
+
+    if(error){
+
+      throw error;
+
+    }
+
+    await loadSettings();
+
+    alert(
+      "Configurações salvas com sucesso!"
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao salvar configurações:\n\n" +
+      error.message
+    );
+
+  }
 
 }
 
@@ -1784,45 +2278,39 @@ async function loadAll(){
 
 async function loadProducts(){
 
-  const container =
-    document.getElementById(
-      "productsList"
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("products")
+      .select("*")
+      .order("category")
+      .order("sort_order")
+      .order("name");
+
+  if(error){
+
+    console.error(
+      "Erro ao carregar produtos:",
+      error
     );
 
-  try{
-
-    const result =
-      await db
-        .from("products")
-        .select("*")
-        .order(
-          "display_order",
-          {ascending:true}
-        )
-        .order(
-          "name",
-          {ascending:true}
-        );
-
-    if(result.error){
-      throw result.error;
-    }
-
-    products =
-      result.data || [];
-
-    renderProducts();
-
-  }catch(err){
-
-    console.error(err);
-
-    container.innerHTML =
+    document.getElementById(
+      "productsList"
+    ).innerHTML =
       `<div class="empty">
         Erro ao carregar produtos.
       </div>`;
 
+    return;
+
   }
+
+  products =
+    data || [];
+
+  renderProducts();
 
 }
 
@@ -1846,146 +2334,202 @@ function renderProducts(){
   }
 
   container.innerHTML =
-    products.map(product=>`
+    products.map(
+      function(product){
 
-      <div class="product-row">
+        const image =
+          product.image_url ||
+          "";
 
-        ${
-          product.image_url
-          ?
-          `<img
-            class="product-thumb"
-            src="${escapeAttribute(product.image_url)}"
-            onerror="this.style.display='none'">`
-          :
-          `<div
-            class="product-thumb"
-            style="display:flex;align-items:center;justify-content:center;font-size:28px">
-            🍔
-          </div>`
-        }
+        return `
 
-        <div class="product-info">
-
-          <div class="product-name">
-            ${escapeHtml(product.name)}
-          </div>
-
-          <div class="product-meta">
-
-            ${escapeHtml(product.category || "Sem categoria")}
-            •
-            R$ ${money(product.price)}
-
-            <br>
-
-            <span class="${
-              product.available
-              ? "available"
-              : "unavailable"
-            }">
-
-              ${
-                product.available
-                ? "Disponível"
-                : "Indisponível"
-              }
-
-            </span>
-
-          </div>
-
-        </div>
-
-        <div class="product-actions">
-
-          <button
-            class="small-btn btn-dark"
-            onclick="editProduct('${escapeJs(product.id)}')">
-
-            Editar
-
-          </button>
-
-          <button
-            class="small-btn ${
-              product.available
-              ? "btn-red"
-              : "btn-gold"
-            }"
-            onclick="toggleProduct('${escapeJs(product.id)}')">
+          <div class="product-row">
 
             ${
-              product.available
-              ? "Desativar"
-              : "Ativar"
+              image
+              ?
+              `<img
+                class="product-thumb"
+                src="${escapeHtml(image)}"
+                alt="">`
+              :
+              `<div
+                class="product-thumb"
+                style="
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:25px">
+
+                🍔
+
+              </div>`
             }
 
-          </button>
+            <div class="product-info">
 
-          <button
-            class="small-btn btn-red"
-            onclick="deleteProduct('${escapeJs(product.id)}')">
+              <div class="product-name">
 
-            Excluir
+                ${escapeHtml(
+                  product.name
+                )}
 
-          </button>
+              </div>
 
-        </div>
+              <div class="product-meta">
 
-      </div>
+                ${money(product.price)}
+                •
+                ${escapeHtml(
+                  product.category || ""
+                )}
 
-    `).join("");
+                <span
+                  class="${
+                    product.available
+                    ?
+                    "available"
+                    :
+                    "unavailable"
+                  }">
+
+                  • ${
+                    product.available
+                    ?
+                    "Disponível"
+                    :
+                    "Indisponível"
+                  }
+
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="product-actions">
+
+              <button
+                class="small-btn btn-dark"
+                onclick="editProduct('${product.id}')">
+
+                Editar
+
+              </button>
+
+              <button
+                class="small-btn ${
+                  product.available
+                  ?
+                  "btn-red"
+                  :
+                  "btn-gold"
+                }"
+                onclick="toggleProduct('${product.id}',${!product.available})">
+
+                ${
+                  product.available
+                  ?
+                  "Desativar"
+                  :
+                  "Ativar"
+                }
+
+              </button>
+
+              <button
+                class="small-btn btn-red"
+                onclick="deleteProduct('${product.id}')">
+
+                Excluir
+
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
 
-function openProductModal(){
+/* =====================================================
+   MODAL PRODUTO
+===================================================== */
 
-  document.getElementById(
-    "productModalTitle"
-  ).textContent =
-    "Novo produto";
+function openProductModal(
+  product = null
+){
+
+  document
+    .getElementById(
+      "productModal"
+    )
+    .classList.add("active");
+
+  document
+    .getElementById(
+      "productModalTitle"
+    )
+    .textContent =
+      product
+      ?
+      "Editar produto"
+      :
+      "Novo produto";
 
   document.getElementById(
     "productId"
-  ).value = "";
+  ).value =
+    product?.id || "";
 
   document.getElementById(
     "productName"
-  ).value = "";
+  ).value =
+    product?.name || "";
 
   document.getElementById(
     "productDescription"
-  ).value = "";
+  ).value =
+    product?.description || "";
 
   document.getElementById(
     "productPrice"
-  ).value = "";
+  ).value =
+    product?.price ?? "";
 
   document.getElementById(
     "productCategory"
-  ).value = "";
+  ).value =
+    product?.category || "";
 
   document.getElementById(
     "productImage"
-  ).value = "";
+  ).value =
+    product?.image_url || "";
 
   document.getElementById(
     "productOrder"
-  ).value = "0";
+  ).value =
+    product?.sort_order ?? 0;
 
   document.getElementById(
     "productAvailable"
-  ).checked = true;
+  ).checked =
+    product
+    ?
+    product.available !== false
+    :
+    true;
 
   document.getElementById(
     "productFeatured"
-  ).checked = false;
-
-  document
-    .getElementById("productModal")
-    .classList.add("active");
+  ).checked =
+    product?.featured || false;
 
 }
 
@@ -1993,7 +2537,9 @@ function openProductModal(){
 function closeProductModal(){
 
   document
-    .getElementById("productModal")
+    .getElementById(
+      "productModal"
+    )
     .classList.remove("active");
 
 }
@@ -2003,68 +2549,14 @@ function editProduct(id){
 
   const product =
     products.find(
-      p =>
-        String(p.id) ===
-        String(id)
+      p => String(p.id) === String(id)
     );
 
-  if(!product){
-    return;
+  if(product){
+
+    openProductModal(product);
+
   }
-
-  document.getElementById(
-    "productModalTitle"
-  ).textContent =
-    "Editar produto";
-
-  document.getElementById(
-    "productId"
-  ).value =
-    product.id;
-
-  document.getElementById(
-    "productName"
-  ).value =
-    product.name || "";
-
-  document.getElementById(
-    "productDescription"
-  ).value =
-    product.description || "";
-
-  document.getElementById(
-    "productPrice"
-  ).value =
-    product.price || "";
-
-  document.getElementById(
-    "productCategory"
-  ).value =
-    product.category || "";
-
-  document.getElementById(
-    "productImage"
-  ).value =
-    product.image_url || "";
-
-  document.getElementById(
-    "productOrder"
-  ).value =
-    product.display_order || 0;
-
-  document.getElementById(
-    "productAvailable"
-  ).checked =
-    !!product.available;
-
-  document.getElementById(
-    "productFeatured"
-  ).checked =
-    !!product.featured;
-
-  document
-    .getElementById("productModal")
-    .classList.add("active");
 
 }
 
@@ -2076,99 +2568,63 @@ async function saveProduct(){
       "productId"
     ).value;
 
-  const name =
-    document.getElementById(
-      "productName"
-    ).value.trim();
+  const productData = {
 
-  const description =
-    document.getElementById(
-      "productDescription"
-    ).value.trim();
-
-  const price =
-    Number(
+    name:
       document.getElementById(
-        "productPrice"
-      ).value
-    );
+        "productName"
+      ).value.trim(),
 
-  const category =
-    document.getElementById(
-      "productCategory"
-    ).value.trim();
-
-  const image =
-    document.getElementById(
-      "productImage"
-    ).value.trim();
-
-  const displayOrder =
-    Number(
+    description:
       document.getElementById(
-        "productOrder"
-      ).value || 0
-    );
+        "productDescription"
+      ).value.trim(),
 
-  const available =
-    document.getElementById(
-      "productAvailable"
-    ).checked;
+    price:
+      Number(
+        document.getElementById(
+          "productPrice"
+        ).value || 0
+      ),
 
-  const featured =
-    document.getElementById(
-      "productFeatured"
-    ).checked;
+    category:
+      document.getElementById(
+        "productCategory"
+      ).value.trim(),
 
-  if(!name){
+    image_url:
+      document.getElementById(
+        "productImage"
+      ).value.trim() || null,
 
-    alert(
-      "Digite o nome do produto."
-    );
+    sort_order:
+      Number(
+        document.getElementById(
+          "productOrder"
+        ).value || 0
+      ),
 
-    return;
+    available:
+      document.getElementById(
+        "productAvailable"
+      ).checked,
 
-  }
-
-  if(!category){
-
-    alert(
-      "Digite a categoria."
-    );
-
-    return;
-
-  }
-
-  if(!Number.isFinite(price) || price < 0){
-
-    alert(
-      "Digite um preço válido."
-    );
-
-    return;
-
-  }
-
-  const data = {
-
-    name:name,
-
-    description:description,
-
-    price:price,
-
-    category:category,
-
-    image_url:image || null,
-
-    available:available,
-
-    featured:featured,
-
-    display_order:displayOrder
+    featured:
+      document.getElementById(
+        "productFeatured"
+      ).checked
 
   };
+
+  if(!productData.name){
+
+    alert(
+      "Informe o nome do produto."
+    );
+
+    return;
+
+  }
 
   try{
 
@@ -2179,7 +2635,7 @@ async function saveProduct(){
       result =
         await db
           .from("products")
-          .update(data)
+          .update(productData)
           .eq("id",id);
 
     }else{
@@ -2187,12 +2643,16 @@ async function saveProduct(){
       result =
         await db
           .from("products")
-          .insert(data);
+          .insert(
+            productData
+          );
 
     }
 
     if(result.error){
+
       throw result.error;
+
     }
 
     closeProductModal();
@@ -2203,12 +2663,13 @@ async function saveProduct(){
       "Produto salvo com sucesso!"
     );
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível salvar o produto."
+      "Erro ao salvar produto:\n\n" +
+      error.message
     );
 
   }
@@ -2216,42 +2677,38 @@ async function saveProduct(){
 }
 
 
-async function toggleProduct(id){
-
-  const product =
-    products.find(
-      p =>
-        String(p.id) ===
-        String(id)
-    );
-
-  if(!product){
-    return;
-  }
+async function toggleProduct(
+  id,
+  available
+){
 
   try{
 
-    const result =
+    const {
+      error
+    } =
       await db
         .from("products")
         .update({
-          available:
-            !product.available
+          available
         })
         .eq("id",id);
 
-    if(result.error){
-      throw result.error;
+    if(error){
+
+      throw error;
+
     }
 
     await loadProducts();
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível alterar o produto."
+      "Erro ao alterar produto:\n\n" +
+      error.message
     );
 
   }
@@ -2261,43 +2718,41 @@ async function toggleProduct(id){
 
 async function deleteProduct(id){
 
-  const product =
-    products.find(
-      p =>
-        String(p.id) ===
-        String(id)
-    );
+  if(
+    !confirm(
+      "Tem certeza que deseja excluir este produto?"
+    )
+  ){
 
-  if(!product){
     return;
-  }
 
-  if(!confirm(
-    `Excluir "${product.name}"?`
-  )){
-    return;
   }
 
   try{
 
-    const result =
+    const {
+      error
+    } =
       await db
         .from("products")
         .delete()
         .eq("id",id);
 
-    if(result.error){
-      throw result.error;
+    if(error){
+
+      throw error;
+
     }
 
     await loadProducts();
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível excluir o produto."
+      "Erro ao excluir produto:\n\n" +
+      error.message
     );
 
   }
@@ -2311,41 +2766,37 @@ async function deleteProduct(id){
 
 async function loadZones(){
 
-  const container =
-    document.getElementById(
-      "zonesList"
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("delivery_zones")
+      .select("*")
+      .order("name");
+
+  if(error){
+
+    console.error(
+      "Erro ao carregar zonas:",
+      error
     );
 
-  try{
-
-    const result =
-      await db
-        .from("delivery_zones")
-        .select("*")
-        .order(
-          "name",
-          {ascending:true}
-        );
-
-    if(result.error){
-      throw result.error;
-    }
-
-    zones =
-      result.data || [];
-
-    renderZones();
-
-  }catch(err){
-
-    console.error(err);
-
-    container.innerHTML =
+    document.getElementById(
+      "zonesList"
+    ).innerHTML =
       `<div class="empty">
         Erro ao carregar zonas.
       </div>`;
 
+    return;
+
   }
+
+  zones =
+    data || [];
+
+  renderZones();
 
 }
 
@@ -2369,97 +2820,136 @@ function renderZones(){
   }
 
   container.innerHTML =
-    zones.map(zone=>`
+    zones.map(
+      function(zone){
 
-      <div class="product-row">
+        return `
 
-        <div class="product-info">
+          <div
+            class="product-row"
+            style="margin-bottom:10px">
 
-          <div class="product-name">
-            ${escapeHtml(zone.name)}
+            <div class="product-info">
+
+              <div class="product-name">
+                ${escapeHtml(zone.name)}
+              </div>
+
+              <div class="product-meta">
+
+                Taxa:
+                ${money(zone.fee)}
+
+                <span
+                  class="${
+                    zone.active
+                    ?
+                    "available"
+                    :
+                    "unavailable"
+                  }">
+
+                  • ${
+                    zone.active
+                    ?
+                    "Ativa"
+                    :
+                    "Inativa"
+                  }
+
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="product-actions">
+
+              <button
+                class="small-btn btn-dark"
+                onclick="editZone('${zone.id}')">
+
+                Editar
+
+              </button>
+
+              <button
+                class="small-btn ${
+                  zone.active
+                  ?
+                  "btn-red"
+                  :
+                  "btn-gold"
+                }"
+                onclick="toggleZone('${zone.id}',${!zone.active})">
+
+                ${
+                  zone.active
+                  ?
+                  "Desativar"
+                  :
+                  "Ativar"
+                }
+
+              </button>
+
+              <button
+                class="small-btn btn-red"
+                onclick="deleteZone('${zone.id}')">
+
+                Excluir
+
+              </button>
+
+            </div>
+
           </div>
 
-          <div class="product-meta">
+        `;
 
-            Taxa:
-            R$ ${money(zone.fee)}
-
-            •
-
-            ${
-              zone.active
-              ? '<span class="available">Ativa</span>'
-              : '<span class="unavailable">Inativa</span>'
-            }
-
-          </div>
-
-        </div>
-
-        <div class="product-actions">
-
-          <button
-            class="small-btn btn-dark"
-            onclick="editZone('${escapeJs(zone.id)}')">
-
-            Editar
-
-          </button>
-
-          <button
-            class="small-btn ${
-              zone.active
-              ? "btn-red"
-              : "btn-gold"
-            }"
-            onclick="toggleZone('${escapeJs(zone.id)}')">
-
-            ${
-              zone.active
-              ? "Desativar"
-              : "Ativar"
-            }
-
-          </button>
-
-          <button
-            class="small-btn btn-red"
-            onclick="deleteZone('${escapeJs(zone.id)}')">
-
-            Excluir
-
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
+      }
+    ).join("");
 
 }
 
 
-function openZoneModal(){
+/* =====================================================
+   MODAL ZONA
+===================================================== */
+
+function openZoneModal(
+  zone = null
+){
+
+  document
+    .getElementById(
+      "zoneModal"
+    )
+    .classList.add("active");
 
   document.getElementById(
     "zoneId"
-  ).value = "";
+  ).value =
+    zone?.id || "";
 
   document.getElementById(
     "zoneName"
-  ).value = "";
+  ).value =
+    zone?.name || "";
 
   document.getElementById(
     "zoneFee"
-  ).value = "";
+  ).value =
+    zone?.fee ?? "";
 
   document.getElementById(
     "zoneActive"
-  ).checked = true;
-
-  document
-    .getElementById("zoneModal")
-    .classList.add("active");
+  ).checked =
+    zone
+    ?
+    zone.active !== false
+    :
+    true;
 
 }
 
@@ -2467,7 +2957,9 @@ function openZoneModal(){
 function closeZoneModal(){
 
   document
-    .getElementById("zoneModal")
+    .getElementById(
+      "zoneModal"
+    )
     .classList.remove("active");
 
 }
@@ -2477,38 +2969,14 @@ function editZone(id){
 
   const zone =
     zones.find(
-      z =>
-        String(z.id) ===
-        String(id)
+      z => String(z.id) === String(id)
     );
 
-  if(!zone){
-    return;
+  if(zone){
+
+    openZoneModal(zone);
+
   }
-
-  document.getElementById(
-    "zoneId"
-  ).value =
-    zone.id;
-
-  document.getElementById(
-    "zoneName"
-  ).value =
-    zone.name || "";
-
-  document.getElementById(
-    "zoneFee"
-  ).value =
-    zone.fee || "";
-
-  document.getElementById(
-    "zoneActive"
-  ).checked =
-    !!zone.active;
-
-  document
-    .getElementById("zoneModal")
-    .classList.add("active");
 
 }
 
@@ -2520,52 +2988,36 @@ async function saveZone(){
       "zoneId"
     ).value;
 
-  const name =
-    document.getElementById(
-      "zoneName"
-    ).value.trim();
+  const zoneData = {
 
-  const fee =
-    Number(
+    name:
       document.getElementById(
-        "zoneFee"
-      ).value
-    );
+        "zoneName"
+      ).value.trim(),
 
-  const active =
-    document.getElementById(
-      "zoneActive"
-    ).checked;
+    fee:
+      Number(
+        document.getElementById(
+          "zoneFee"
+        ).value || 0
+      ),
 
-  if(!name){
-
-    alert(
-      "Digite o nome da região."
-    );
-
-    return;
-
-  }
-
-  if(!Number.isFinite(fee) || fee < 0){
-
-    alert(
-      "Digite uma taxa válida."
-    );
-
-    return;
-
-  }
-
-  const data = {
-
-    name:name,
-
-    fee:fee,
-
-    active:active
+    active:
+      document.getElementById(
+        "zoneActive"
+      ).checked
 
   };
+
+  if(!zoneData.name){
+
+    alert(
+      "Informe o nome da região."
+    );
+
+    return;
+
+  }
 
   try{
 
@@ -2576,7 +3028,7 @@ async function saveZone(){
       result =
         await db
           .from("delivery_zones")
-          .update(data)
+          .update(zoneData)
           .eq("id",id);
 
     }else{
@@ -2584,12 +3036,14 @@ async function saveZone(){
       result =
         await db
           .from("delivery_zones")
-          .insert(data);
+          .insert(zoneData);
 
     }
 
     if(result.error){
+
       throw result.error;
+
     }
 
     closeZoneModal();
@@ -2600,12 +3054,13 @@ async function saveZone(){
       "Zona salva com sucesso!"
     );
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível salvar a zona."
+      "Erro ao salvar zona:\n\n" +
+      error.message
     );
 
   }
@@ -2613,42 +3068,38 @@ async function saveZone(){
 }
 
 
-async function toggleZone(id){
-
-  const zone =
-    zones.find(
-      z =>
-        String(z.id) ===
-        String(id)
-    );
-
-  if(!zone){
-    return;
-  }
+async function toggleZone(
+  id,
+  active
+){
 
   try{
 
-    const result =
+    const {
+      error
+    } =
       await db
         .from("delivery_zones")
         .update({
-          active:
-            !zone.active
+          active
         })
         .eq("id",id);
 
-    if(result.error){
-      throw result.error;
+    if(error){
+
+      throw error;
+
     }
 
     await loadZones();
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível alterar a zona."
+      "Erro ao alterar zona:\n\n" +
+      error.message
     );
 
   }
@@ -2658,342 +3109,90 @@ async function toggleZone(id){
 
 async function deleteZone(id){
 
-  const zone =
-    zones.find(
-      z =>
-        String(z.id) ===
-        String(id)
-    );
+  if(
+    !confirm(
+      "Tem certeza que deseja excluir esta zona?"
+    )
+  ){
 
-  if(!zone){
     return;
-  }
 
-  if(!confirm(
-    `Excluir a zona "${zone.name}"?`
-  )){
-    return;
   }
 
   try{
 
-    const result =
+    const {
+      error
+    } =
       await db
         .from("delivery_zones")
         .delete()
         .eq("id",id);
 
-    if(result.error){
-      throw result.error;
+    if(error){
+
+      throw error;
+
     }
 
     await loadZones();
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível excluir a zona."
+      "Erro ao excluir zona:\n\n" +
+      error.message
     );
 
   }
 
 }
-
-
-/* =====================================================
-   CONFIGURAÇÕES
-===================================================== */
-
-async function loadSettings(){
-
-  try{
-
-    const result =
-      await db
-        .from("store_settings")
-        .select("*")
-        .eq("id",1)
-        .maybeSingle();
-
-    if(result.error){
-      throw result.error;
-    }
-
-    settings =
-      result.data || null;
-
-    renderSettings();
-
-  }catch(err){
-
-    console.error(err);
-
-  }
-
-}
-
-
-function renderSettings(){
-
-  if(!settings){
-    return;
-  }
-
-  document.getElementById(
-    "settingStoreName"
-  ).value =
-    settings.store_name || "";
-
-  document.getElementById(
-    "settingDeliveryEstimate"
-  ).value =
-    settings.delivery_estimate || 0;
-
-  document.getElementById(
-    "settingDefaultFee"
-  ).value =
-    settings.default_delivery_fee || 0;
-
-  document.getElementById(
-    "settingPix"
-  ).value =
-    settings.pix_key || "";
-
-  document.getElementById(
-    "settingWhatsapp"
-  ).value =
-    settings.whatsapp || "";
-
-  renderHours();
-
-}
-
-
-function renderHours(){
-
-  const container =
-    document.getElementById(
-      "hoursContainer"
-    );
-
-  const days = [
-
-    ["sunday","Domingo"],
-    ["monday","Segunda"],
-    ["tuesday","Terça"],
-    ["wednesday","Quarta"],
-    ["thursday","Quinta"],
-    ["friday","Sexta"],
-    ["saturday","Sábado"]
-
-  ];
-
-  const hours =
-    settings?.opening_hours || {};
-
-  container.innerHTML =
-    days.map(([key,label])=>{
-
-      const day =
-        hours[key] || {};
-
-      return `
-
-        <div class="day-row">
-
-          <div class="day-name">
-            ${label}
-          </div>
-
-          <div class="time-row">
-
-            <input
-              id="open_${key}"
-              type="time"
-              value="${day.open || "18:00"}">
-
-            <input
-              id="close_${key}"
-              type="time"
-              value="${day.close || "00:00"}">
-
-          </div>
-
-          <label class="switch-row">
-
-            <input
-              id="closed_${key}"
-              type="checkbox"
-              ${day.closed ? "checked" : ""}>
-
-            Fechado
-
-          </label>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-async function saveSettings(){
-
-  const days = [
-
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday"
-
-  ];
-
-  const openingHours = {};
-
-  days.forEach(day=>{
-
-    openingHours[day] = {
-
-      open:
-        document.getElementById(
-          "open_"+day
-        ).value || "18:00",
-
-      close:
-        document.getElementById(
-          "close_"+day
-        ).value || "00:00",
-
-      closed:
-        document.getElementById(
-          "closed_"+day
-        ).checked
-
-    };
-
-  });
-
-  const data = {
-
-    store_name:
-      document.getElementById(
-        "settingStoreName"
-      ).value.trim(),
-
-    delivery_estimate:
-      Number(
-        document.getElementById(
-          "settingDeliveryEstimate"
-        ).value || 0
-      ),
-
-    default_delivery_fee:
-      Number(
-        document.getElementById(
-          "settingDefaultFee"
-        ).value || 0
-      ),
-
-    pix_key:
-      document.getElementById(
-        "settingPix"
-      ).value.trim(),
-
-    whatsapp:
-      document.getElementById(
-        "settingWhatsapp"
-      ).value.trim(),
-
-    opening_hours:
-      openingHours
-
-  };
-
-  try{
-
-    const result =
-      await db
-        .from("store_settings")
-        .update(data)
-        .eq("id",1);
-
-    if(result.error){
-      throw result.error;
-    }
-
-    await loadSettings();
-
-    alert(
-      "Configurações salvas!"
-    );
-
-  }catch(err){
-
-    console.error(err);
-
-    alert(
-      "Não foi possível salvar as configurações."
-    );
-
-  }
-
-}
-
-
 /* =====================================================
    PEDIDOS
 ===================================================== */
 
 async function loadOrders(){
 
-  const container =
-    document.getElementById(
-      "ordersList"
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("orders")
+      .select("*")
+      .order("created_at",{ascending:false});
+
+  if(error){
+
+    console.error(
+      "Erro ao carregar pedidos:",
+      error
     );
 
-  container.innerHTML =
-    `<div class="loading">
-      Carregando pedidos...
-    </div>`;
+    const container =
+      document.getElementById(
+        "ordersList"
+      );
 
-  try{
+    if(container){
 
-    const result =
-      await db
-        .from("orders")
-        .select("*")
-        .order(
-          "created_at",
-          {ascending:false}
-        )
-        .limit(100);
+      container.innerHTML =
+        `<div class="empty">
+          Erro ao carregar pedidos.
+        </div>`;
 
-    if(result.error){
-      throw result.error;
     }
 
-    orders =
-      result.data || [];
-
-    renderOrders();
-
-  }catch(err){
-
-    console.error(err);
-
-    container.innerHTML =
-      `<div class="empty">
-        Erro ao carregar pedidos.
-      </div>`;
+    return;
 
   }
+
+  orders =
+    data || [];
+
+  renderOrders();
 
 }
 
@@ -3004,6 +3203,12 @@ function renderOrders(){
     document.getElementById(
       "ordersList"
     );
+
+  if(!container){
+
+    return;
+
+  }
 
   if(!orders.length){
 
@@ -3017,253 +3222,365 @@ function renderOrders(){
   }
 
   container.innerHTML =
-    orders.map(order=>{
+    orders.map(
+      function(order){
 
-      const items =
-        Array.isArray(order.items)
-        ? order.items
-        : [];
+        let items = [];
 
-      return `
+        try{
 
-        <article class="order">
+          items =
+            typeof order.items === "string"
+            ?
+            JSON.parse(order.items)
+            :
+            order.items || [];
 
-          <div class="order-header">
+        }catch(e){
 
-            <div>
+          items = [];
 
-              <div class="order-number">
-                Pedido #${order.id}
+        }
+
+        const itemsHtml =
+          Array.isArray(items)
+          ?
+          items.map(
+            function(item){
+
+              return `
+                <div class="order-item">
+
+                  <span>
+                    ${Number(item.quantity || 1)}
+                    ×
+                    ${escapeHtml(
+                      item.name || "Produto"
+                    )}
+                  </span>
+
+                  <strong>
+                    ${money(
+                      Number(item.price || 0) *
+                      Number(item.quantity || 1)
+                    )}
+                  </strong>
+
+                </div>
+              `;
+
+            }
+          ).join("")
+          :
+          "";
+
+        const status =
+          order.status || "pending";
+
+        return `
+
+          <div class="order-card">
+
+            <div class="order-top">
+
+              <div>
+
+                <div class="order-number">
+
+                  Pedido #${order.id}
+
+                </div>
+
+                <div class="order-date">
+
+                  ${dateTime(
+                    order.created_at
+                  )}
+
+                </div>
+
               </div>
 
-              <div class="order-date">
-                ${formatDate(order.created_at)}
-              </div>
+              <span
+                class="status status-${escapeHtml(status)}">
+
+                ${getStatusLabel(status)}
+
+              </span>
 
             </div>
 
-            <select
-              class="status-select"
-              onchange="
-                updateOrderStatus(
-                  '${escapeJs(order.id)}',
-                  this.value
-                )">
 
-              ${statusOptions(order.status)}
+            <div class="order-customer">
 
-            </select>
+              <strong>
+                ${escapeHtml(
+                  order.customer_name || ""
+                )}
+              </strong>
 
-          </div>
+              ${
+                order.customer_phone
+                ?
+                `<div>
+                  📱 ${escapeHtml(
+                    order.customer_phone
+                  )}
+                </div>`
+                :
+                ""
+              }
 
-
-          <div class="order-info">
-
-            <div class="info-box">
-
-              <div class="info-label">
-                CLIENTE
-              </div>
-
-              <div class="info-value">
-                ${escapeHtml(order.customer_name)}
-              </div>
-
-            </div>
-
-
-            <div class="info-box">
-
-              <div class="info-label">
-                TELEFONE
-              </div>
-
-              <div class="info-value">
-                ${escapeHtml(order.customer_phone)}
-              </div>
-
-            </div>
-
-
-            <div class="info-box">
-
-              <div class="info-label">
-                TIPO
-              </div>
-
-              <div class="info-value">
+              <div>
 
                 ${
                   order.order_type === "delivery"
-                  ? "🚚 Entrega"
-                  : "🏪 Retirada"
+                  ?
+                  "🛵 Entrega"
+                  :
+                  "🏪 Retirada"
                 }
 
               </div>
 
+              ${
+                order.address
+                ?
+                `<div>
+                  📍 ${escapeHtml(
+                    order.address
+                  )}
+                </div>`
+                :
+                ""
+              }
+
             </div>
 
 
-            <div class="info-box">
+            <div class="order-items">
 
-              <div class="info-label">
-                PAGAMENTO
-              </div>
-
-              <div class="info-value">
-                ${escapeHtml(order.payment_method || "-")}
-              </div>
+              ${itemsHtml}
 
             </div>
 
 
             ${
-              order.address
+              order.notes
               ?
-              `<div class="info-box"
-                    style="grid-column:1/-1">
+              `
+                <div class="order-notes">
 
-                <div class="info-label">
-                  ENDEREÇO
+                  <strong>Observação:</strong>
+                  ${escapeHtml(
+                    order.notes
+                  )}
+
                 </div>
-
-                <div class="info-value">
-                  ${escapeHtml(order.address)}
-                </div>
-
-              </div>`
-              : ""
+              `
+              :
+              ""
             }
 
-          </div>
 
+            <div class="order-payment">
 
-          <div class="order-items">
+              <div>
 
-            ${items.map(item=>`
-
-              <div class="order-item">
-
-                <span>
-                  ${item.quantity}x
-                  ${escapeHtml(item.name)}
-                </span>
-
-                <span>
-                  R$ ${money(item.subtotal)}
-                </span>
+                Pagamento:
+                <strong>
+                  ${escapeHtml(
+                    getPaymentLabel(
+                      order.payment_method
+                    )
+                  )}
+                </strong>
 
               </div>
 
-            `).join("")}
+              ${
+                order.change_for
+                ?
+                `
+                  <div>
+                    Troco para:
+                    <strong>
+                      ${money(
+                        order.change_for
+                      )}
+                    </strong>
+                  </div>
+                `
+                :
+                ""
+              }
+
+            </div>
+
+
+            <div class="order-total">
+
+              <span>Total</span>
+
+              <strong>
+                ${money(order.total)}
+              </strong>
+
+            </div>
+
+
+            <div class="order-actions">
+
+              <select
+                onchange="changeOrderStatus('${order.id}',this.value)">
+
+                <option
+                  value="pending"
+                  ${status === "pending" ? "selected" : ""}>
+                  Pendente
+                </option>
+
+                <option
+                  value="confirmed"
+                  ${status === "confirmed" ? "selected" : ""}>
+                  Confirmado
+                </option>
+
+                <option
+                  value="preparing"
+                  ${status === "preparing" ? "selected" : ""}>
+                  Preparando
+                </option>
+
+                <option
+                  value="ready"
+                  ${status === "ready" ? "selected" : ""}>
+                  Pronto
+                </option>
+
+                <option
+                  value="out_for_delivery"
+                  ${status === "out_for_delivery" ? "selected" : ""}>
+                  Saiu para entrega
+                </option>
+
+                <option
+                  value="completed"
+                  ${status === "completed" ? "selected" : ""}>
+                  Concluído
+                </option>
+
+                <option
+                  value="cancelled"
+                  ${status === "cancelled" ? "selected" : ""}>
+                  Cancelado
+                </option>
+
+              </select>
+
+              <button
+                class="small-btn btn-red"
+                onclick="deleteOrder('${order.id}')">
+
+                Excluir
+
+              </button>
+
+            </div>
 
           </div>
 
+        `;
 
-          ${
-            order.notes
-            ?
-            `<div
-              style="
-                margin-top:12px;
-                color:#aaa;
-                font-size:13px">
-
-              📝 ${escapeHtml(order.notes)}
-
-            </div>`
-            : ""
-          }
-
-
-          <div class="order-total">
-
-            <span>
-              Total
-            </span>
-
-            <span>
-              R$ ${money(order.total)}
-            </span>
-
-          </div>
-
-        </article>
-
-      `;
-
-    }).join("");
+      }
+    ).join("");
 
 }
 
 
-function statusOptions(current){
+function getStatusLabel(status){
 
-  const statuses = [
+  const labels = {
 
-    ["pending","Pendente"],
-    ["confirmed","Confirmado"],
-    ["preparing","Preparando"],
-    ["ready","Pronto"],
-    ["out_for_delivery","Saiu para entrega"],
-    ["completed","Concluído"],
-    ["cancelled","Cancelado"]
+    pending:"Pendente",
 
-  ];
+    confirmed:"Confirmado",
 
-  return statuses.map(
-    ([value,label])=>`
+    preparing:"Preparando",
 
-      <option
-        value="${value}"
-        ${current === value ? "selected" : ""}>
+    ready:"Pronto",
 
-        ${label}
+    out_for_delivery:
+      "Saiu para entrega",
 
-      </option>
+    completed:"Concluído",
 
-    `
-  ).join("");
+    cancelled:"Cancelado"
+
+  };
+
+  return labels[status] || status;
 
 }
 
 
-async function updateOrderStatus(
+function getPaymentLabel(payment){
+
+  const labels = {
+
+    pix:"PIX",
+
+    cash:"Dinheiro",
+
+    card:"Cartão",
+
+    credit:"Cartão de crédito",
+
+    debit:"Cartão de débito"
+
+  };
+
+  return labels[payment] || payment || "-";
+
+}
+
+
+/* =====================================================
+   ALTERAR STATUS DO PEDIDO
+===================================================== */
+
+async function changeOrderStatus(
   id,
   status
 ){
 
   try{
 
-    const result =
+    const {
+      error
+    } =
       await db
         .from("orders")
         .update({
-          status:status
+          status
         })
         .eq("id",id);
 
-    if(result.error){
-      throw result.error;
+    if(error){
+
+      throw error;
+
     }
 
-    const order =
-      orders.find(
-        item =>
-          String(item.id) ===
-          String(id)
-      );
+    await loadOrders();
 
-    if(order){
-      order.status = status;
-    }
+  }catch(error){
 
-  }catch(err){
-
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível atualizar o pedido."
+      "Erro ao atualizar pedido:\n\n" +
+      error.message
     );
 
     await loadOrders();
@@ -3274,255 +3591,108 @@ async function updateOrderStatus(
 
 
 /* =====================================================
-   CAIXA - SESSÃO
+   EXCLUIR PEDIDO
+===================================================== */
+
+async function deleteOrder(id){
+
+  if(
+    !confirm(
+      "Tem certeza que deseja excluir este pedido?"
+    )
+  ){
+
+    return;
+
+  }
+
+  try{
+
+    const {
+      error
+    } =
+      await db
+        .from("orders")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+
+      throw error;
+
+    }
+
+    await loadOrders();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao excluir pedido:\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   CAIXA
 ===================================================== */
 
 async function loadCash(){
 
-  const container =
-    document.getElementById(
-      "cashList"
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("cash_sessions")
+      .select("*")
+      .order(
+        "opened_at",
+        {ascending:false}
+      )
+      .limit(1)
+      .maybeSingle();
+
+  if(error){
+
+    console.error(
+      "Erro ao carregar caixa:",
+      error
     );
 
-  container.innerHTML =
-    `<div class="loading">
-      Carregando caixa...
-    </div>`;
+  }
 
-  try{
+  currentCashSession =
+    data || null;
 
-    const sessionResult =
-      await db
-        .from("cash_sessions")
-        .select("*")
-        .eq("status","open")
-        .order(
-          "opened_at",
-          {ascending:false}
-        )
-        .limit(1)
-        .maybeSingle();
+  renderCash();
 
-    if(sessionResult.error){
-      throw sessionResult.error;
-    }
+  if(
+    currentCashSession?.id
+  ){
 
-    cashSession =
-      sessionResult.data || null;
-
-
-    if(cashSession){
-
-      const movementsResult =
-        await db
-          .from("cash_movements")
-          .select("*")
-          .eq(
-            "cash_session_id",
-            cashSession.id
-          )
-          .order(
-            "created_at",
-            {ascending:false}
-          )
-          .limit(100);
-
-      if(movementsResult.error){
-        throw movementsResult.error;
-      }
-
-      cashMovements =
-        movementsResult.data || [];
-
-    }else{
-
-      cashMovements = [];
-
-    }
-
-    renderCash();
-
-  }catch(err){
-
-    console.error(err);
-
-    container.innerHTML =
-      `<div class="empty">
-        Erro ao carregar caixa.
-      </div>`;
-
-    updateCashStatus();
+    await loadCashMovements();
 
   }
 
 }
 
-
-/* =====================================================
-   RENDER CAIXA
-===================================================== */
 
 function renderCash(){
-
-  let income = 0;
-  let expense = 0;
-
-  cashMovements.forEach(item=>{
-
-    const amount =
-      Number(item.amount || 0);
-
-    if(item.type === "income"){
-      income += amount;
-    }else{
-      expense += amount;
-    }
-
-  });
-
-  const opening =
-    Number(
-      cashSession?.opening_balance || 0
-    );
-
-  const balance =
-    opening +
-    income -
-    expense;
-
-
-  document.getElementById(
-    "cashOpeningBalance"
-  ).textContent =
-    "R$ " + money(opening);
-
-  document.getElementById(
-    "cashIncome"
-  ).textContent =
-    "R$ " + money(income);
-
-  document.getElementById(
-    "cashExpense"
-  ).textContent =
-    "R$ " + money(expense);
-
-  document.getElementById(
-    "cashBalance"
-  ).textContent =
-    money(balance);
-
-
-  updateCashStatus();
-
-
-  const container =
-    document.getElementById(
-      "cashList"
-    );
-
-
-  if(!cashSession){
-
-    container.innerHTML =
-      `<div class="cash-closed-message">
-        🔒 O caixa está fechado.<br>
-        Abra o caixa para registrar entradas e saídas.
-      </div>`;
-
-    return;
-
-  }
-
-
-  if(!cashMovements.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        Nenhum lançamento neste caixa.
-      </div>`;
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    cashMovements.map(item=>{
-
-      const income =
-        item.type === "income";
-
-      return `
-
-        <div class="movement">
-
-          <div>
-
-            <strong>
-              ${escapeHtml(
-                item.description || "Sem descrição"
-              )}
-            </strong>
-
-            <div
-              style="
-                color:#777;
-                font-size:11px;
-                margin-top:4px">
-
-              ${
-                income
-                ? "Entrada"
-                : "Saída"
-              }
-
-              •
-              ${formatDate(item.created_at)}
-
-            </div>
-
-          </div>
-
-          <strong
-            class="${
-              income
-              ? "positive"
-              : "negative"
-            }">
-
-            ${income ? "+" : "-"}
-            R$ ${money(item.amount)}
-
-          </strong>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =====================================================
-   STATUS DO CAIXA
-===================================================== */
-
-function updateCashStatus(){
 
   const status =
     document.getElementById(
       "cashStatus"
     );
 
-  const title =
+  const balance =
     document.getElementById(
-      "cashStatusTitle"
-    );
-
-  const info =
-    document.getElementById(
-      "cashStatusInfo"
+      "cashBalance"
     );
 
   const openButton =
@@ -3537,66 +3707,219 @@ function updateCashStatus(){
 
   const movementButton =
     document.getElementById(
-      "newCashMovementButton"
+      "movementCashButton"
     );
 
+  if(
+    currentCashSession &&
+    !currentCashSession.closed_at
+  ){
 
-  if(cashSession){
+    if(status){
 
-    status.classList.remove(
-      "closed"
-    );
+      status.textContent =
+        "Caixa aberto";
 
-    status.classList.add(
-      "open"
-    );
+    }
 
-    title.textContent =
-      "🟢 Caixa aberto";
+    if(balance){
 
-    info.innerHTML =
-      "Aberto em " +
-      formatDate(cashSession.opened_at) +
-      "<br>Saldo inicial: R$ " +
-      money(cashSession.opening_balance);
+      balance.textContent =
+        money(
+          currentCashSession.opening_balance || 0
+        );
 
-    openButton.classList.add(
-      "hidden"
-    );
+    }
 
-    closeButton.classList.remove(
-      "hidden"
-    );
+    if(openButton){
 
-    movementButton.disabled = false;
+      openButton.classList.add(
+        "hidden"
+      );
+
+    }
+
+    if(closeButton){
+
+      closeButton.classList.remove(
+        "hidden"
+      );
+
+    }
+
+    if(movementButton){
+
+      movementButton.classList.remove(
+        "hidden"
+      );
+
+    }
 
   }else{
 
-    status.classList.remove(
-      "open"
-    );
+    if(status){
 
-    status.classList.add(
-      "closed"
-    );
+      status.textContent =
+        "Caixa fechado";
 
-    title.textContent =
-      "🔒 Caixa fechado";
+    }
 
-    info.textContent =
-      "Abra o caixa para começar os lançamentos.";
+    if(balance){
 
-    openButton.classList.remove(
-      "hidden"
-    );
+      balance.textContent =
+        money(0);
 
-    closeButton.classList.add(
-      "hidden"
-    );
+    }
 
-    movementButton.disabled = true;
+    if(openButton){
+
+      openButton.classList.remove(
+        "hidden"
+      );
+
+    }
+
+    if(closeButton){
+
+      closeButton.classList.add(
+        "hidden"
+      );
+
+    }
+
+    if(movementButton){
+
+      movementButton.classList.add(
+        "hidden"
+      );
+
+    }
 
   }
+
+}
+
+
+async function loadCashMovements(){
+
+  if(
+    !currentCashSession?.id
+  ){
+
+    cashMovements = [];
+
+    renderCashMovements();
+
+    return;
+
+  }
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("cash_movements")
+      .select("*")
+      .eq(
+        "cash_session_id",
+        currentCashSession.id
+      )
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+  if(error){
+
+    console.error(
+      "Erro ao carregar movimentações:",
+      error
+    );
+
+    return;
+
+  }
+
+  cashMovements =
+    data || [];
+
+  renderCashMovements();
+
+}
+
+
+function renderCashMovements(){
+
+  const container =
+    document.getElementById(
+      "cashMovementsList"
+    );
+
+  if(!container){
+
+    return;
+
+  }
+
+  if(!cashMovements.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhuma movimentação.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    cashMovements.map(
+      function(item){
+
+        const income =
+          item.type === "income";
+
+        return `
+
+          <div class="movement-row">
+
+            <div>
+
+              <strong>
+                ${escapeHtml(
+                  item.description || "Sem descrição"
+                )}
+              </strong>
+
+              <small>
+                ${dateTime(
+                  item.created_at
+                )}
+              </small>
+
+            </div>
+
+            <strong
+              class="${
+                income
+                ?
+                "available"
+                :
+                "unavailable"
+              }">
+
+              ${income ? "+" : "-"}
+              ${money(item.amount)}
+
+            </strong>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
@@ -3607,23 +3930,10 @@ function updateCashStatus(){
 
 function openOpenCashModal(){
 
-  if(cashSession){
-
-    alert(
-      "O caixa já está aberto."
-    );
-
-    return;
-
-  }
-
-  document.getElementById(
-    "openingCashAmount"
-  ).value =
-    "0";
-
   document
-    .getElementById("openCashModal")
+    .getElementById(
+      "openCashModal"
+    )
     .classList.add("active");
 
 }
@@ -3632,7 +3942,9 @@ function openOpenCashModal(){
 function closeOpenCashModal(){
 
   document
-    .getElementById("openCashModal")
+    .getElementById(
+      "openCashModal"
+    )
     .classList.remove("active");
 
 }
@@ -3640,104 +3952,54 @@ function closeOpenCashModal(){
 
 async function openCash(){
 
-  const amount =
+  const openingBalance =
     Number(
       document.getElementById(
-        "openingCashAmount"
-      ).value
+        "openingBalance"
+      ).value || 0
     );
-
-  if(!Number.isFinite(amount) || amount < 0){
-
-    alert(
-      "Digite um valor inicial válido."
-    );
-
-    return;
-
-  }
-
 
   try{
 
     const {
-      data:sessionData
+      data,
+      error
     } =
-      await db.auth.getSession();
-
-    const userId =
-      sessionData?.session?.user?.id || null;
-
-
-    const existing =
-      await db
-        .from("cash_sessions")
-        .select("id")
-        .eq("status","open")
-        .limit(1)
-        .maybeSingle();
-
-    if(existing.error){
-      throw existing.error;
-    }
-
-    if(existing.data){
-
-      alert(
-        "Já existe um caixa aberto."
-      );
-
-      closeOpenCashModal();
-
-      await loadCash();
-
-      return;
-
-    }
-
-
-    const result =
       await db
         .from("cash_sessions")
         .insert({
-
-          opening_balance:amount,
-
-          status:"open",
-
-          opened_by:userId
-
+          opening_balance:
+            openingBalance,
+          opened_by:
+            currentSession?.user?.id
         })
         .select()
         .single();
 
+    if(error){
 
-    if(result.error){
-      throw result.error;
+      throw error;
+
     }
 
-
-    cashSession =
-      result.data;
-
-    cashMovements = [];
-
+    currentCashSession =
+      data;
 
     closeOpenCashModal();
 
-    renderCash();
-
+    await loadCash();
 
     alert(
       "Caixa aberto com sucesso!"
     );
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível abrir o caixa."
+      "Erro ao abrir caixa:\n\n" +
+      error.message
     );
 
   }
@@ -3751,35 +4013,86 @@ async function openCash(){
 
 function openCloseCashModal(){
 
-  if(!cashSession){
-
-    alert(
-      "O caixa está fechado."
-    );
+  if(
+    !currentCashSession?.id
+  ){
 
     return;
 
   }
 
+  const opening =
+    Number(
+      currentCashSession.opening_balance || 0
+    );
 
-  const balance =
-    calculateCashBalance();
+  const income =
+    cashMovements
+      .filter(
+        m => m.type === "income"
+      )
+      .reduce(
+        (sum,m) =>
+          sum + Number(m.amount || 0),
+        0
+      );
 
+  const expense =
+    cashMovements
+      .filter(
+        m => m.type === "expense"
+      )
+      .reduce(
+        (sum,m) =>
+          sum + Number(m.amount || 0),
+        0
+      );
 
-  document.getElementById(
-    "closeCashCalculated"
-  ).textContent =
-    "R$ " + money(balance);
+  const expected =
+    opening + income - expense;
 
+  const summary =
+    document.getElementById(
+      "closeCashSummary"
+    );
 
-  document.getElementById(
-    "closingCashAmount"
-  ).value =
-    balance.toFixed(2);
+  if(summary){
 
+    summary.innerHTML = `
+
+      <div>
+        Saldo inicial:
+        <strong>${money(opening)}</strong>
+      </div>
+
+      <div>
+        Entradas:
+        <strong>${money(income)}</strong>
+      </div>
+
+      <div>
+        Saídas:
+        <strong>${money(expense)}</strong>
+      </div>
+
+      <div
+        style="
+          margin-top:10px;
+          font-size:18px">
+
+        Saldo esperado:
+        <strong>${money(expected)}</strong>
+
+      </div>
+
+    `;
+
+  }
 
   document
-    .getElementById("closeCashModal")
+    .getElementById(
+      "closeCashModal"
+    )
     .classList.add("active");
 
 }
@@ -3788,178 +4101,69 @@ function openCloseCashModal(){
 function closeCloseCashModal(){
 
   document
-    .getElementById("closeCashModal")
-    .classList.remove("active");
-
-}
-
-
-function calculateCashBalance(){
-
-  if(!cashSession){
-    return 0;
-  }
-
-
-  let income = 0;
-  let expense = 0;
-
-
-  cashMovements.forEach(item=>{
-
-    const amount =
-      Number(item.amount || 0);
-
-    if(item.type === "income"){
-
-      income += amount;
-
-    }else{
-
-      expense += amount;
-
-    }
-
-  });
-
-
-  return (
-    Number(
-      cashSession.opening_balance || 0
+    .getElementById(
+      "closeCashModal"
     )
-    +
-    income
-    -
-    expense
-  );
+    .classList.remove("active");
 
 }
 
 
 async function closeCash(){
 
-  if(!cashSession){
-
-    alert(
-      "Não existe caixa aberto."
-    );
+  if(
+    !currentCashSession?.id
+  ){
 
     return;
 
   }
 
-
-  const calculated =
-    calculateCashBalance();
-
-
-  const counted =
-    Number(
-      document.getElementById(
-        "closingCashAmount"
-      ).value
-    );
-
-
-  if(!Number.isFinite(counted) || counted < 0){
-
-    alert(
-      "Digite um valor final válido."
-    );
-
-    return;
-
-  }
-
-
-  const difference =
-    counted - calculated;
-
-
-  let message =
-    "Deseja fechar o caixa?";
-
-
-  if(Math.abs(difference) >= 0.01){
-
-    message =
-      "O valor contado é diferente do saldo calculado.\n\n" +
-      "Saldo calculado: R$ " +
-      money(calculated) +
-      "\n" +
-      "Valor contado: R$ " +
-      money(counted) +
-      "\n" +
-      "Diferença: R$ " +
-      money(difference) +
-      "\n\n" +
-      "Deseja fechar mesmo assim?";
-
-  }
-
-
-  if(!confirm(message)){
-    return;
-  }
-
+  const notes =
+    document.getElementById(
+      "closeCashNotes"
+    ).value.trim();
 
   try{
 
     const {
-      data:sessionData
+      error
     } =
-      await db.auth.getSession();
-
-    const userId =
-      sessionData?.session?.user?.id || null;
-
-
-    const result =
       await db
         .from("cash_sessions")
         .update({
-
-          status:"closed",
-
           closed_at:
             new Date().toISOString(),
-
-          closing_balance:
-            counted,
-
-          closed_by:userId
-
+          closed_by:
+            currentSession?.user?.id,
+          notes
         })
         .eq(
           "id",
-          cashSession.id
+          currentCashSession.id
         );
 
+    if(error){
 
-    if(result.error){
-      throw result.error;
+      throw error;
+
     }
-
-
-    cashSession = null;
-    cashMovements = [];
-
 
     closeCloseCashModal();
 
     await loadCash();
 
-
     alert(
       "Caixa fechado com sucesso!"
     );
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível fechar o caixa."
+      "Erro ao fechar caixa:\n\n" +
+      error.message
     );
 
   }
@@ -3968,39 +4172,27 @@ async function closeCash(){
 
 
 /* =====================================================
-   LANÇAMENTOS
+   MOVIMENTAÇÃO DE CAIXA
 ===================================================== */
 
-function openCashModal(){
+function openCashMovementModal(){
 
-  if(!cashSession){
+  if(
+    !currentCashSession?.id
+  ){
 
     alert(
-      "Abra o caixa antes de fazer um lançamento."
+      "Abra o caixa primeiro."
     );
 
     return;
 
   }
 
-
-  document.getElementById(
-    "cashType"
-  ).value =
-    "income";
-
-  document.getElementById(
-    "cashAmount"
-  ).value =
-    "";
-
-  document.getElementById(
-    "cashDescription"
-  ).value =
-    "";
-
   document
-    .getElementById("cashModal")
+    .getElementById(
+      "cashModal"
+    )
     .classList.add("active");
 
 }
@@ -4009,7 +4201,9 @@ function openCashModal(){
 function closeCashModal(){
 
   document
-    .getElementById("cashModal")
+    .getElementById(
+      "cashModal"
+    )
     .classList.remove("active");
 
 }
@@ -4017,91 +4211,97 @@ function closeCashModal(){
 
 async function saveCashMovement(){
 
-  if(!cashSession){
+  if(
+    !currentCashSession?.id
+  ){
 
     alert(
-      "Abra o caixa antes de fazer um lançamento."
+      "Abra o caixa primeiro."
     );
-
-    closeCashModal();
 
     return;
 
   }
 
-
   const type =
     document.getElementById(
-      "cashType"
+      "movementType"
     ).value;
 
   const amount =
     Number(
       document.getElementById(
-        "cashAmount"
-      ).value
+        "movementAmount"
+      ).value || 0
     );
 
   const description =
     document.getElementById(
-      "cashDescription"
+      "movementDescription"
     ).value.trim();
 
-
-  if(!Number.isFinite(amount) || amount <= 0){
+  if(amount <= 0){
 
     alert(
-      "Digite um valor válido."
+      "Informe um valor válido."
     );
 
     return;
 
   }
 
-
   try{
 
-    const result =
+    const {
+      error
+    } =
       await db
         .from("cash_movements")
         .insert({
 
-          type:type,
-
-          amount:amount,
-
-          description:
-            description || null,
-
           cash_session_id:
-            cashSession.id,
+            currentCashSession.id,
 
-          movement_type:
-            type
+          type,
+
+          amount,
+
+          description,
+
+          created_by:
+            currentSession?.user?.id
 
         });
 
+    if(error){
 
-    if(result.error){
-      throw result.error;
+      throw error;
+
     }
 
+    document.getElementById(
+      "movementAmount"
+    ).value = "";
+
+    document.getElementById(
+      "movementDescription"
+    ).value = "";
 
     closeCashModal();
 
     await loadCash();
 
-
     alert(
       "Lançamento salvo!"
     );
 
-  }catch(err){
+  }catch(error){
 
-    console.error(err);
+    console.error(error);
 
     alert(
-      "Não foi possível salvar o lançamento."
+      "Erro ao salvar lançamento:\n\n" +
+      error.message
     );
 
   }
@@ -4110,72 +4310,108 @@ async function saveCashMovement(){
 
 
 /* =====================================================
-   AUXILIARES
+   INICIALIZAÇÃO
 ===================================================== */
 
-function money(value){
+async function init(){
 
-  return Number(value || 0)
-    .toFixed(2)
-    .replace(".",",");
+  try{
 
-}
+    const {
+      data
+    } =
+      await db.auth.getSession();
 
+    if(data?.session){
 
-function formatDate(value){
+      await showAdmin(
+        data.session
+      );
 
-  if(!value){
-    return "-";
+    }else{
+
+      document
+        .getElementById(
+          "loginPage"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+      document
+        .getElementById(
+          "adminPage"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Erro ao iniciar painel:",
+      error
+    );
+
   }
 
-  const date =
-    new Date(value);
+}
 
-  return date.toLocaleString(
-    "pt-BR",
-    {
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit"
+
+db.auth.onAuthStateChange(
+  async function(
+    event,
+    session
+  ){
+
+    if(
+      event === "SIGNED_IN" &&
+      session
+    ){
+
+      await showAdmin(
+        session
+      );
+
     }
-  );
 
-}
-
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
+  }
+);
 
 
-function escapeAttribute(value){
+/* =====================================================
+   FECHAR MODAIS AO CLICAR FORA
+===================================================== */
 
-  return escapeHtml(value);
+document.addEventListener(
+  "click",
+  function(event){
 
-}
+    if(
+      event.target.classList.contains(
+        "modal"
+      )
+    ){
+
+      event.target.classList.remove(
+        "active"
+      );
+
+    }
+
+  }
+);
 
 
-function escapeJs(value){
+/* =====================================================
+   INICIAR
+===================================================== */
 
-  return String(value ?? "")
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'")
-    .replace(/"/g,'\\"')
-    .replace(/\n/g,"\\n")
-    .replace(/\r/g,"\\r");
-
-}
+init();
 
 </script>
 
 </body>
-</html>
+</html>  
