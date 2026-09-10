@@ -474,6 +474,21 @@ textarea{
 }
 
 /* =========================
+   TAXA DE ENTREGA
+========================= */
+
+.delivery-fee-info{
+  margin-top:9px;
+  padding:10px 12px;
+  border-radius:9px;
+  background:#0d0d0d;
+  border:1px solid #292929;
+  color:#d7aa4d;
+  font-size:13px;
+  font-weight:bold;
+}
+
+/* =========================
    PIX
 ========================= */
 
@@ -826,6 +841,8 @@ textarea{
 
     </div>
 
+    <!-- ENDEREÇO / BAIRROS -->
+
     <div
       id="deliveryFields"
       class="card">
@@ -854,10 +871,20 @@ textarea{
         Bairro
       </label>
 
-      <input
+      <select
         id="addressNeighborhood"
-        type="text"
-        placeholder="Bairro">
+        onchange="calculateCheckoutTotal()">
+
+        <option value="">
+          Carregando bairros...
+        </option>
+
+      </select>
+
+      <div
+        id="neighborhoodFeeInfo"
+        class="delivery-fee-info">
+      </div>
 
       <label for="addressComplement">
         Complemento
@@ -1048,6 +1075,8 @@ let cart = [];
 
 let storeSettings = null;
 
+let deliveryZones = [];
+
 let lastOrder = null;
 
 /* =====================================================
@@ -1061,6 +1090,8 @@ document.addEventListener(
     loadSavedCart();
 
     await loadStoreSettings();
+
+    await loadDeliveryZones();
 
     await loadProducts();
 
@@ -1147,6 +1178,102 @@ async function loadStoreSettings(){
     }
 
   }
+
+}
+
+/* =====================================================
+   BAIRROS E TAXAS DE ENTREGA
+===================================================== */
+
+async function loadDeliveryZones(){
+
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .select("id,name,fee,available")
+        .eq("available",true)
+        .order("name",{ascending:true});
+
+    if(result.error){
+      throw result.error;
+    }
+
+    deliveryZones =
+      result.data || [];
+
+    renderDeliveryZones();
+
+  }catch(error){
+
+    console.error(
+      "Erro ao carregar bairros:",
+      error
+    );
+
+    deliveryZones = [];
+
+    const select =
+      document.getElementById(
+        "addressNeighborhood"
+      );
+
+    if(select){
+
+      select.innerHTML = `
+        <option value="">
+          Não foi possível carregar os bairros
+        </option>
+      `;
+
+    }
+
+  }
+
+}
+
+function renderDeliveryZones(){
+
+  const select =
+    document.getElementById(
+      "addressNeighborhood"
+    );
+
+  if(!select){
+    return;
+  }
+
+  if(!deliveryZones.length){
+
+    select.innerHTML = `
+      <option value="">
+        Nenhum bairro disponível
+      </option>
+    `;
+
+    return;
+
+  }
+
+  select.innerHTML = `
+
+    <option value="">
+      Selecione seu bairro
+    </option>
+
+    ${deliveryZones.map(zone=>`
+
+      <option value="${escapeAttribute(zone.id)}">
+
+        ${escapeHtml(zone.name)}
+        — R$ ${formatMoney(zone.fee)}
+
+      </option>
+
+    `).join("")}
+
+  `;
 
 }
 
@@ -1958,13 +2085,58 @@ function calculateCheckoutTotal(){
       'input[name="orderType"]:checked'
     )?.value;
 
+  const feeInfo =
+    document.getElementById(
+      "neighborhoodFeeInfo"
+    );
+
   if(type === "delivery"){
 
-    deliveryFee =
-      Number(
-        storeSettings
-          ?.default_delivery_fee || 0
+    const neighborhoodElement =
+      document.getElementById(
+        "addressNeighborhood"
       );
+
+    const selectedZoneId =
+      neighborhoodElement?.value || "";
+
+    const selectedZone =
+      deliveryZones.find(
+        zone =>
+          String(zone.id) ===
+          String(selectedZoneId)
+      );
+
+    if(selectedZone){
+
+      deliveryFee =
+        Number(selectedZone.fee || 0);
+
+      if(feeInfo){
+
+        feeInfo.textContent =
+          `Taxa de entrega: R$ ${formatMoney(selectedZone.fee)}`;
+
+      }
+
+    }else{
+
+      if(feeInfo){
+
+        feeInfo.textContent =
+          "Selecione seu bairro para calcular a taxa.";
+
+      }
+
+    }
+
+  }else{
+
+    if(feeInfo){
+
+      feeInfo.textContent = "";
+
+    }
 
   }
 
@@ -2322,10 +2494,11 @@ async function finishOrder(){
 
   let address = "";
 
+  let deliveryZoneId = null;
+
   /*
-    Não existe mais região/zona.
-    O endereço é formado somente por:
-    rua + número + bairro + complemento.
+    Para entrega:
+    rua + número + bairro escolhido.
   */
 
   if(type === "delivery"){
@@ -2356,8 +2529,8 @@ async function finishOrder(){
     const number =
       numberElement.value.trim();
 
-    const neighborhood =
-      neighborhoodElement.value.trim();
+    const neighborhoodId =
+      neighborhoodElement.value;
 
     const complement =
       complementElement.value.trim();
@@ -2386,10 +2559,10 @@ async function finishOrder(){
 
     }
 
-    if(!neighborhood){
+    if(!neighborhoodId){
 
       alert(
-        "Digite o bairro."
+        "Selecione seu bairro."
       );
 
       neighborhoodElement.focus();
@@ -2398,8 +2571,28 @@ async function finishOrder(){
 
     }
 
+    const selectedZone =
+      deliveryZones.find(
+        zone =>
+          String(zone.id) ===
+          String(neighborhoodId)
+      );
+
+    if(!selectedZone){
+
+      alert(
+        "Não foi possível identificar a taxa desse bairro. Atualize a página e tente novamente."
+      );
+
+      return;
+
+    }
+
+    deliveryZoneId =
+      selectedZone.id;
+
     address =
-      `${street}, ${number} - ${neighborhood}`;
+      `${street}, ${number} - ${selectedZone.name}`;
 
     if(complement){
 
@@ -2412,6 +2605,25 @@ async function finishOrder(){
 
   const totals =
     calculateCheckoutTotal();
+
+  /*
+    Segurança extra:
+    se for entrega, confirma que existe
+    um bairro selecionado antes de enviar.
+  */
+
+  if(
+    type === "delivery" &&
+    !deliveryZoneId
+  ){
+
+    alert(
+      "Selecione seu bairro para calcular a taxa de entrega."
+    );
+
+    return;
+
+  }
 
   const items =
     cart.map(item=>({
@@ -2430,10 +2642,6 @@ async function finishOrder(){
 
     }));
 
-  /*
-    Não enviamos delivery_zone_id.
-  */
-
   const orderData = {
 
     customer_name:name,
@@ -2443,6 +2651,9 @@ async function finishOrder(){
     order_type:type,
 
     address:address,
+
+    delivery_zone_id:
+      deliveryZoneId,
 
     payment_method:payment,
 
