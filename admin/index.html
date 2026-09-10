@@ -1841,10 +1841,20 @@ async function saveSettings(){
     domingo:getHour("sun")
 
   };
+  const hours={
+  monday:getHour("mon"),
+  tuesday:getHour("tue"),
+  wednesday:getHour("wed"),
+  thursday:getHour("thu"),
+  friday:getHour("fri"),
+  saturday:getHour("sat"),
+  sunday:getHour("sun")
+};
 
   const update={
 
     opening_hours,
+    hours,
 
     delivery_fee:
       Number(
