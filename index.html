@@ -11,8 +11,6 @@
 <style>
 *{box-sizing:border-box}
 
-html{scroll-behavior:smooth}
-
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
@@ -28,7 +26,7 @@ button{cursor:pointer}
 header{
   background:linear-gradient(135deg,#111,#050505);
   border-bottom:1px solid #d4af37;
-  padding:20px 18px;
+  padding:22px 18px;
   text-align:center;
   position:sticky;
   top:0;
@@ -46,19 +44,10 @@ header p{
   color:#aaa;
 }
 
-.store-status{
-  margin-top:10px;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.status-open{color:#50d890}
-.status-closed{color:#ff6969}
-
 main{
   width:min(1100px,94%);
   margin:25px auto;
-  padding-bottom:120px;
+  padding-bottom:110px;
 }
 
 .screen{display:none}
@@ -89,21 +78,8 @@ main{
 }
 
 .btn:hover{filter:brightness(1.08)}
-
-.btn.secondary{
-  background:#292929;
-  color:#fff;
-}
-
-.btn.danger{
-  background:#8e2525;
-  color:#fff;
-}
-
-.btn.whatsapp{
-  background:#25D366;
-  color:#000;
-}
+.btn.secondary{background:#292929;color:#fff}
+.btn.danger{background:#8e2525;color:#fff}
 
 .btn.small{
   width:auto;
@@ -244,33 +220,26 @@ label{
   font-size:20px;
 }
 
+.category-title{
+  grid-column:1/-1;
+  margin-top:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid #3b3219;
+}
+
+.category-title h2{
+  margin:0;
+  color:#d4af37;
+  font-size:22px;
+}
+
 .empty{
   text-align:center;
   padding:25px;
   color:#888;
 }
 
-/* ================= AVISOS ================= */
-
-.store-notice{
-  border:1px solid #d4af37;
-  background:#17140a;
-  border-radius:13px;
-  padding:14px;
-  margin-bottom:18px;
-}
-
-.store-notice strong{
-  color:#d4af37;
-}
-
-.closed-box{
-  border:1px solid #8e2525;
-  background:#190d0d;
-  color:#ff8d8d;
-}
-
-/* ================= CARRINHO ================= */
+/* ================= CARRINHO FLUTUANTE ================= */
 
 .floating-cart{
   position:fixed;
@@ -392,26 +361,6 @@ label{
 
 .checkout-delivery{
   color:#aaa;
-  padding:8px 0;
-}
-
-.pix-box{
-  display:none;
-  margin-top:15px;
-  background:#0b0b0b;
-  border:1px solid #d4af37;
-  border-radius:13px;
-  padding:15px;
-}
-
-.pix-key{
-  background:#171717;
-  padding:12px;
-  border-radius:9px;
-  word-break:break-all;
-  margin:10px 0;
-  color:#d4af37;
-  font-weight:bold;
 }
 
 /* ================= ADMIN ================= */
@@ -570,9 +519,7 @@ label{
   border-bottom:1px solid #292929;
 }
 
-.history-item:last-child{
-  border-bottom:0;
-}
+.history-item:last-child{border-bottom:0}
 
 .zone-row{
   display:grid;
@@ -581,28 +528,6 @@ label{
   align-items:end;
   padding:12px 0;
   border-bottom:1px solid #292929;
-}
-
-.setting-box{
-  background:#0c0c0c;
-  border:1px solid #292929;
-  border-radius:14px;
-  padding:15px;
-  margin-top:15px;
-}
-
-.day-row{
-  display:grid;
-  grid-template-columns:120px 1fr 1fr 100px;
-  gap:8px;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid #292929;
-}
-
-.day-name{
-  font-weight:bold;
-  color:#d4af37;
 }
 
 .toast{
@@ -619,8 +544,6 @@ label{
   opacity:0;
   pointer-events:none;
   transition:.25s;
-  text-align:center;
-  max-width:90%;
 }
 
 .toast.show{
@@ -633,32 +556,13 @@ label{
   text-align:center;
 }
 
-.success-icon{
-  font-size:55px;
-}
+.success-icon{font-size:55px}
 
-@media(max-width:700px){
-
+@media(max-width:600px){
   header h1{font-size:25px}
-
   main{width:94%}
-
-  .movement{
-    grid-template-columns:1fr;
-  }
-
-  .zone-row{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .day-row{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .product-actions{
-    flex-wrap:wrap;
-  }
-
+  .movement{grid-template-columns:1fr}
+  .zone-row{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -668,15 +572,8 @@ label{
 <div class="app">
 
 <header>
-
-<h1>🍔 Burguer Gold</h1>
-
-<p>Sabor que vale ouro.</p>
-
-<div id="storeStatus" class="store-status">
-Verificando horário...
-</div>
-
+  <h1>🍔 Burguer Gold</h1>
+  <p>Sabor que vale ouro.</p>
 </header>
 
 <main>
@@ -684,8 +581,6 @@ Verificando horário...
 <!-- ================= MENU ================= -->
 
 <section id="menuScreen" class="screen active">
-
-<div id="storeNotice"></div>
 
 <div class="card">
 
@@ -746,44 +641,16 @@ Endereço completo
 Taxa de entrega: R$ 0,00
 </div>
 
-<div id="deliveryEstimatePreview" class="checkout-delivery">
-⏱️ Estimativa: -
-</div>
-
 </div>
 
 <label>
 Forma de pagamento
-
-<select id="payment" onchange="updatePaymentBox()">
+<select id="payment">
 <option value="PIX">PIX</option>
 <option value="DINHEIRO">Dinheiro</option>
 <option value="CARTAO">Cartão</option>
 </select>
-
 </label>
-
-<div id="pixBox" class="pix-box">
-
-<strong>💳 Pagamento via PIX</strong>
-
-<p class="muted">
-Faça o PIX usando a chave abaixo.
-</p>
-
-<div id="pixKeyDisplay" class="pix-key">
-PIX não configurado.
-</div>
-
-<button class="btn small" onclick="copyPixKey()">
-📋 Copiar chave PIX
-</button>
-
-<p class="muted">
-Após pagar, envie o comprovante pelo WhatsApp se necessário.
-</p>
-
-</div>
 
 <div class="card" style="margin-top:20px">
 
@@ -803,15 +670,13 @@ Após pagar, envie o comprovante pelo WhatsApp se necessário.
 
 <div class="total">
 <span>Total</span>
-<span id="checkoutTotal" class="gold">
-R$ 0,00
-</span>
+<span id="checkoutTotal" class="gold">R$ 0,00</span>
 </div>
 
 </div>
 
 <button class="btn" onclick="sendOrder()">
-✅ Confirmar pedido
+Confirmar pedido
 </button>
 
 <button class="btn secondary" onclick="showScreen('menuScreen')">
@@ -840,14 +705,6 @@ Seu pedido foi enviado para a Burguer Gold.
 Número do pedido:
 <strong id="successOrderId" class="gold"></strong>
 </p>
-
-<div id="successInfo"></div>
-
-<button id="successWhatsappBtn"
-class="btn whatsapp"
-onclick="openOrderWhatsapp()">
-📱 Enviar pedido pelo WhatsApp
-</button>
 
 <button class="btn" onclick="location.reload()">
 Fazer novo pedido
@@ -914,38 +771,32 @@ Sair
 
 <div class="admin-tabs">
 
-<button id="adminTabDashboard"
-class="admin-tab active"
+<button id="adminTabDashboard" class="admin-tab active"
 onclick="openAdminTab('dashboard')">
 📊 Visão geral
 </button>
 
-<button id="adminTabOrders"
-class="admin-tab"
+<button id="adminTabOrders" class="admin-tab"
 onclick="openAdminTab('orders')">
 📋 Pedidos
 </button>
 
-<button id="adminTabProducts"
-class="admin-tab"
+<button id="adminTabProducts" class="admin-tab"
 onclick="openAdminTab('products')">
 🍔 Produtos
 </button>
 
-<button id="adminTabCash"
-class="admin-tab"
+<button id="adminTabCash" class="admin-tab"
 onclick="openAdminTab('cash')">
 💰 Caixa
 </button>
 
-<button id="adminTabReports"
-class="admin-tab"
+<button id="adminTabReports" class="admin-tab"
 onclick="openAdminTab('reports')">
 📈 Relatórios
 </button>
 
-<button id="adminTabSettings"
-class="admin-tab"
+<button id="adminTabSettings" class="admin-tab"
 onclick="openAdminTab('settings')">
 ⚙️ Configurações
 </button>
@@ -1065,15 +916,12 @@ Carregando produtos...
 
 <div>
 <h2>💰 Caixa</h2>
-
 <p class="muted">
 Controle as vendas e faça o fechamento.
 </p>
-
 </div>
 
-<button class="btn small secondary"
-onclick="loadCashRegister()">
+<button class="btn small secondary" onclick="loadCashRegister()">
 ↻ Atualizar
 </button>
 
@@ -1097,15 +945,12 @@ Carregando caixa...
 
 <div>
 <h2>📈 Relatórios</h2>
-
 <p class="muted">
 Resumo das vendas da Burguer Gold.
 </p>
-
 </div>
 
-<button class="btn small secondary"
-onclick="loadReports()">
+<button class="btn small secondary" onclick="loadReports()">
 ↻ Atualizar
 </button>
 
@@ -1125,155 +970,25 @@ Carregando relatórios...
 
 <div class="card">
 
-<h2>⚙️ Configurações da loja</h2>
+<h2>⚙️ Configurações</h2>
 
 <p class="muted">
-Tudo aqui é salvo online no Supabase e vale para todos os clientes.
+Cadastre os bairros e defina a taxa de entrega de cada região.
 </p>
 
-<!-- HORÁRIOS -->
+<div class="card">
 
-<div class="setting-box">
-
-<h3>🕐 Horários de funcionamento</h3>
-
-<p class="muted">
-Defina o horário de abertura e fechamento de cada dia.
-</p>
-
-<div id="openingHoursContainer">
-Carregando horários...
-</div>
-
-<button class="btn" onclick="saveOpeningHours()">
-💾 Salvar horários
-</button>
-
-</div>
-
-<!-- ESTIMATIVA -->
-
-<div class="setting-box">
-
-<h3>🚚 Estimativa de entrega</h3>
-
-<p class="muted">
-Esse tempo será mostrado ao cliente durante o pedido.
-</p>
+<h3>➕ Novo bairro</h3>
 
 <label>
-Tempo mínimo (minutos)
-<input id="deliveryMin" type="number" min="1">
-</label>
-
-<label>
-Tempo máximo (minutos)
-<input id="deliveryMax" type="number" min="1">
-</label>
-
-<button class="btn" onclick="saveDeliveryEstimate()">
-💾 Salvar estimativa
-</button>
-
-</div>
-
-<!-- PIX -->
-
-<div class="setting-box">
-
-<h3>💳 PIX</h3>
-
-<p class="muted">
-Cadastre a chave PIX que aparecerá para os clientes.
-</p>
-
-<label>
-Chave PIX
-<input id="pixKeyInput"
-type="text"
-placeholder="CPF, telefone, e-mail ou chave aleatória">
-</label>
-
-<button class="btn" onclick="savePixKey()">
-💾 Salvar PIX
-</button>
-
-</div>
-
-<!-- WHATSAPP -->
-
-<div class="setting-box">
-
-<h3>📱 WhatsApp</h3>
-
-<p class="muted">
-Número que receberá os pedidos pelo WhatsApp.
-</p>
-
-<label>
-Número do WhatsApp
-<input id="whatsappInput"
-type="tel"
-placeholder="Ex: 5524999999999">
-</label>
-
-<p class="muted">
-Use o formato internacional, por exemplo:
-<strong>5524999999999</strong>
-</p>
-
-<button class="btn whatsapp"
-onclick="saveWhatsapp()">
-💾 Salvar WhatsApp
-</button>
-
-</div>
-
-<!-- TAXA PADRÃO -->
-
-<div class="setting-box">
-
-<h3>💰 Taxa padrão</h3>
-
-<p class="muted">
-Caso o bairro não possua uma taxa específica.
-</p>
-
-<label>
-Taxa padrão
-<input id="defaultDeliveryFee"
-type="number"
-step="0.01"
-min="0">
-</label>
-
-<button class="btn" onclick="saveDefaultDeliveryFee()">
-💾 Salvar taxa padrão
-</button>
-
-</div>
-
-<!-- BAIRROS -->
-
-<div class="setting-box">
-
-<h3>📍 Taxas por bairro</h3>
-
-<p class="muted">
-Cada bairro pode ter sua própria taxa.
-</p>
-
-<label>
-Novo bairro
-<input id="zoneNeighborhood"
-type="text"
+Bairro
+<input id="zoneNeighborhood" type="text"
 placeholder="Ex: Vila Santa Cecília">
 </label>
 
 <label>
 Taxa de entrega
-<input id="zoneFee"
-type="number"
+<input id="zoneFee" type="number"
 step="0.01"
 placeholder="5.00">
 </label>
@@ -1282,12 +997,12 @@ placeholder="5.00">
 ➕ Adicionar bairro
 </button>
 
+</div>
+
 <h3>📍 Bairros cadastrados</h3>
 
 <div id="zonesContainer">
 Carregando bairros...
-</div>
-
 </div>
 
 </div>
@@ -1307,10 +1022,7 @@ class="floating-cart"
 onclick="openCart()">
 
 <div>
-<span id="floatingCartCount"
-class="cart-count">
-0
-</span>
+<span id="floatingCartCount" class="cart-count">0</span>
 itens
 </div>
 
@@ -1325,22 +1037,16 @@ class="overlay"
 onclick="closeCart()">
 </div>
 
-<div id="cartDrawer"
-class="cart-drawer">
+<div id="cartDrawer" class="cart-drawer">
 
 <div class="cart-header">
 
 <div>
 <h2>🛒 Seu carrinho</h2>
-<p class="muted">
-Confira seu pedido.
-</p>
+<p class="muted">Confira seu pedido.</p>
 </div>
 
-<button class="close-cart"
-onclick="closeCart()">
-×
-</button>
+<button class="close-cart" onclick="closeCart()">×</button>
 
 </div>
 
@@ -1366,11 +1072,8 @@ SUPABASE
 const SUPABASE_URL =
 "https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
-/*
- COLE AQUI A SUA PUBLISHABLE KEY DO SUPABASE
-*/
 const SUPABASE_KEY =
-"sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
+"COLE_AQUI_A_SUA_PUBLISHABLE_KEY";
 
 const db =
 supabase.createClient(
@@ -1384,20 +1087,8 @@ CONFIGURAÇÕES
 
 const DEFAULT_DELIVERY_FEE = 0;
 
-let deliveryFee = DEFAULT_DELIVERY_FEE;
-
-let deliveryMin = 30;
-let deliveryMax = 60;
-
-let pixKey = "";
-
-let whatsappNumber = "";
-
-let openingHours = {};
-
 let products = [];
 let cart = [];
-
 let selectedCategory = "Todos";
 
 let deliveryZones = [];
@@ -1406,8 +1097,6 @@ let currentCashRegister = null;
 let currentCashData = null;
 
 let adminOrders = [];
-
-let lastOrderForWhatsapp = null;
 
 /* ============================================================
 UTILIDADES
@@ -1427,9 +1116,7 @@ currency:"BRL"
 
 function parseMoney(value){
 
-if(typeof value === "number"){
-return value;
-}
+if(typeof value === "number") return value;
 
 return Number(
 String(value)
@@ -1452,10 +1139,9 @@ return String(text ?? "")
 
 function formatDateTime(date){
 
-if(!date)return "-";
+if(!date) return "-";
 
-return new Date(date)
-.toLocaleString("pt-BR");
+return new Date(date).toLocaleString("pt-BR");
 
 }
 
@@ -1473,29 +1159,22 @@ if(screen){
 screen.classList.add("active");
 }
 
-if(id!=="menuScreen"){
-closeCart();
-}
-
 window.scrollTo(0,0);
 
 }
 
 function showToast(message){
 
-const toast=
-document.getElementById("toast");
+const toast=document.getElementById("toast");
 
 toast.textContent=message;
-
 toast.classList.add("show");
 
 clearTimeout(window.toastTimer);
 
-window.toastTimer=
-setTimeout(()=>{
+window.toastTimer=setTimeout(()=>{
 toast.classList.remove("show");
-},2000);
+},1800);
 
 }
 
@@ -1529,41 +1208,30 @@ return product.category || "Lanches";
 
 function renderCategoryTabs(){
 
-const container=
-document.getElementById("categoryTabs");
+const container=document.getElementById("categoryTabs");
 
-const available=
-categories.filter(category=>
+const available=categories.filter(category=>
 products.some(product=>
 getProductCategory(product)===category
 )
 );
 
 let html=`
-
 <button
 class="category-tab ${selectedCategory==="Todos"?"active":""}"
 onclick="selectCategory('Todos')">
-
 🍽️ Todos
-
 </button>
-
 `;
 
 available.forEach(category=>{
 
 html+=`
-
 <button
 class="category-tab ${selectedCategory===category?"active":""}"
 onclick="selectCategory('${category}')">
-
-${categoryIcons[category]}
-${category}
-
+${categoryIcons[category]} ${category}
 </button>
-
 `;
 
 });
@@ -1577,7 +1245,6 @@ function selectCategory(category){
 selectedCategory=category;
 
 renderCategoryTabs();
-
 renderProducts();
 
 }
@@ -1594,10 +1261,7 @@ if(error){
 
 console.error(error);
 
-document.getElementById(
-"productsContainer"
-).innerHTML=
-
+document.getElementById("productsContainer").innerHTML=
 `<div class="empty">
 Não foi possível carregar o cardápio.
 </div>`;
@@ -1614,21 +1278,17 @@ selectedCategory!=="Todos" &&
 p=>getProductCategory(p)===selectedCategory
 )
 ){
-
 selectedCategory="Todos";
-
 }
 
 renderCategoryTabs();
-
 renderProducts();
 
 }
 
 function getCartQty(productId){
 
-const item=
-cart.find(item=>
+const item=cart.find(item=>
 String(item.id)===String(productId)
 );
 
@@ -1639,9 +1299,7 @@ return item ? item.qty : 0;
 function renderProducts(){
 
 const container=
-document.getElementById(
-"productsContainer"
-);
+document.getElementById("productsContainer");
 
 if(!products.length){
 
@@ -1658,8 +1316,7 @@ let filtered=products;
 
 if(selectedCategory!=="Todos"){
 
-filtered=
-products.filter(product=>
+filtered=products.filter(product=>
 getProductCategory(product)===selectedCategory
 );
 
@@ -1676,19 +1333,16 @@ return;
 
 }
 
-container.innerHTML=
-filtered.map(product=>{
+container.innerHTML=filtered.map(product=>{
 
-const qty=
-getCartQty(product.id);
+const qty=getCartQty(product.id);
 
 return `
 
 <div class="product">
 
 ${qty>0?
-`<div class="product-qty-badge">${qty}</div>`
-:""}
+`<div class="product-qty-badge">${qty}</div>`:""}
 
 <h3>
 ${escapeHtml(product.name)}
@@ -1707,32 +1361,26 @@ ${money(product.price)}
 <button
 class="btn"
 onclick="addToCart(${product.id})">
-
 ${qty>0?"✓ Adicionado":"Adicionar"}
-
 </button>
 
 ${
 qty>0
 ?
 `
-
 <div class="quick-qty">
 
-<button
-onclick="changeQty(${product.id},-1)">
+<button onclick="changeQty(${product.id},-1)">
 −
 </button>
 
 <strong>${qty}</strong>
 
-<button
-onclick="changeQty(${product.id},1)">
+<button onclick="changeQty(${product.id},1)">
 +
 </button>
 
 </div>
-
 `
 :""
 }
@@ -1753,15 +1401,13 @@ CARRINHO
 
 function addToCart(productId){
 
-const product=
-products.find(
+const product=products.find(
 item=>String(item.id)===String(productId)
 );
 
 if(!product)return;
 
-const existing=
-cart.find(
+const existing=cart.find(
 item=>String(item.id)===String(productId)
 );
 
@@ -1772,34 +1418,24 @@ existing.qty++;
 }else{
 
 cart.push({
-
 id:product.id,
-
 name:product.name,
-
 price:Number(product.price),
-
 qty:1
-
 });
 
 }
 
 renderCart();
-
 renderProducts();
 
-showToast(
-"🍔 "+product.name+
-" adicionado ao carrinho!"
-);
+showToast("🍔 Adicionado ao carrinho!");
 
 }
 
 function changeQty(productId,amount){
 
-const item=
-cart.find(
+const item=cart.find(
 item=>String(item.id)===String(productId)
 );
 
@@ -1809,15 +1445,13 @@ item.qty+=amount;
 
 if(item.qty<=0){
 
-cart=
-cart.filter(
+cart=cart.filter(
 item=>String(item.id)!==String(productId)
 );
 
 }
 
 renderCart();
-
 renderProducts();
 
 }
@@ -1847,34 +1481,22 @@ total+Number(item.qty),
 function renderCart(){
 
 const container=
-document.getElementById(
-"cartContainer"
-);
+document.getElementById("cartContainer");
 
 const floating=
-document.getElementById(
-"floatingCart"
-);
+document.getElementById("floatingCart");
 
 const drawerButton=
-document.getElementById(
-"drawerCheckoutBtn"
-);
+document.getElementById("drawerCheckoutBtn");
 
-const count=
-getCartCount();
+const count=getCartCount();
+const total=getCartTotal();
 
-const total=
-getCartTotal();
+document.getElementById("floatingCartCount")
+.textContent=count;
 
-document.getElementById(
-"floatingCartCount"
-).textContent=count;
-
-document.getElementById(
-"floatingCartTotal"
-).textContent=
-money(total);
+document.getElementById("floatingCartTotal")
+.textContent=money(total);
 
 if(count>0){
 
@@ -1903,7 +1525,9 @@ drawerButton.style.display="block";
 
 container.innerHTML=
 
-cart.map(item=>`
+cart.map(item=>{
+
+return `
 
 <div class="cart-item">
 
@@ -1941,7 +1565,9 @@ onclick="changeQty(${item.id},1)">
 
 </div>
 
-`).join("")+
+`;
+
+}).join("")+
 
 `
 
@@ -1963,43 +1589,35 @@ function openCart(){
 
 if(!cart.length){
 
-showToast(
-"Seu carrinho está vazio."
-);
+showToast("Seu carrinho está vazio.");
 
 return;
 
 }
 
-document
-.getElementById("cartOverlay")
+document.getElementById("cartOverlay")
 .classList.add("active");
 
-document
-.getElementById("cartDrawer")
+document.getElementById("cartDrawer")
 .classList.add("active");
 
 }
 
 function closeCart(){
 
-document
-.getElementById("cartOverlay")
+document.getElementById("cartOverlay")
 .classList.remove("active");
 
-document
-.getElementById("cartDrawer")
+document.getElementById("cartDrawer")
 .classList.remove("active");
 
 }
 
-async function goCheckout(){
+function goCheckout(){
 
 if(!cart.length){
 
-showToast(
-"Seu carrinho está vazio."
-);
+showToast("Seu carrinho está vazio.");
 
 return;
 
@@ -2007,913 +1625,18 @@ return;
 
 closeCart();
 
-await loadDeliveryZones();
+loadDeliveryZones().then(()=>{
 
 renderNeighborhoods();
-
 renderCheckout();
-
 showScreen("checkoutScreen");
 
-}
-
-/* ============================================================
-CONFIGURAÇÕES DA LOJA
-============================================================ */
-
-function defaultHours(){
-
-return {
-
-segunda:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-terca:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-quarta:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-quinta:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
-
-sexta:{
-open:"10:00",
-close:"23:00",
-closed:false
-},
-
-sabado:{
-open:"10:00",
-close:"23:00",
-closed:false
-},
-
-domingo:{
-open:"10:00",
-close:"18:00",
-closed:false
-}
-
-};
-
-}
-
-function normalizeOpeningHours(value){
-
-const defaults=
-defaultHours();
-
-if(!value){
-return defaults;
-}
-
-let parsed=value;
-
-if(typeof value==="string"){
-
-try{
-
-parsed=JSON.parse(value);
-
-}catch(e){
-
-return defaults;
-
-}
-
-}
-
-if(typeof parsed!=="object"){
-return defaults;
-}
-
-const result={
-...defaults
-};
-
-Object.keys(defaults).forEach(day=>{
-
-if(parsed[day]){
-
-result[day]={
-...defaults[day],
-...parsed[day]
-};
-
-}
-
 });
-
-return result;
-
-}
-
-async function loadStoreSettings(){
-
-const {data,error}=await db
-.from("store_settings")
-.select("*")
-.eq("id",1)
-.maybeSingle();
-
-if(error){
-
-console.error(
-"Erro ao carregar configurações:",
-error
-);
-
-return;
-
-}
-
-if(!data)return;
-
-if(data.delivery_fee!==undefined){
-
-deliveryFee=
-Number(data.delivery_fee)||0;
-
-}
-
-if(data.default_delivery_fee!==undefined){
-
-deliveryFee=
-Number(data.default_delivery_fee)||0;
-
-}
-
-if(data.delivery_min!==undefined){
-
-deliveryMin=
-Number(data.delivery_min)||30;
-
-}
-
-if(data.delivery_max!==undefined){
-
-deliveryMax=
-Number(data.delivery_max)||60;
-
-}
-
-if(data.estimated_delivery_min!==undefined){
-
-deliveryMin=
-Number(data.estimated_delivery_min)||30;
-
-}
-
-if(data.estimated_delivery_max!==undefined){
-
-deliveryMax=
-Number(data.estimated_delivery_max)||60;
-
-}
-
-if(data.pix_key!==undefined){
-
-pixKey=
-String(data.pix_key||"");
-
-}
-
-if(data.whatsapp!==undefined){
-
-whatsappNumber=
-String(data.whatsapp||"");
-
-}
-
-if(data.whatsapp_number!==undefined){
-
-whatsappNumber=
-String(data.whatsapp_number||"");
-
-}
-
-if(data.opening_hours!==undefined){
-
-openingHours=
-normalizeOpeningHours(
-data.opening_hours
-);
-
-}else{
-
-openingHours=
-defaultHours();
-
-}
-
-updateStoreStatus();
-
-}
-
-async function updateStoreSetting(fields){
-
-const {error}=await db
-.from("store_settings")
-.update(fields)
-.eq("id",1);
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível salvar a configuração:\n\n"+
-error.message
-);
-
-return false;
-
-}
-
-return true;
 
 }
 
 /* ============================================================
-HORÁRIO
-============================================================ */
-
-const dayNames={
-
-segunda:"Segunda-feira",
-terca:"Terça-feira",
-quarta:"Quarta-feira",
-quinta:"Quinta-feira",
-sexta:"Sexta-feira",
-sabado:"Sábado",
-domingo:"Domingo"
-
-};
-
-function isStoreOpen(){
-
-if(!openingHours ||
-!Object.keys(openingHours).length){
-
-return true;
-
-}
-
-const now=
-new Date();
-
-const jsDay=
-now.getDay();
-
-const map=[
-"domingo",
-"segunda",
-"terca",
-"quarta",
-"quinta",
-"sexta",
-"sabado"
-];
-
-const day=
-map[jsDay];
-
-const config=
-openingHours[day];
-
-if(!config){
-return true;
-}
-
-if(config.closed){
-return false;
-}
-
-if(!config.open ||
-!config.close){
-return true;
-}
-
-const current=
-now.getHours()*60+
-now.getMinutes();
-
-const [oh,om]=
-config.open.split(":")
-.map(Number);
-
-const [ch,cm]=
-config.close.split(":")
-.map(Number);
-
-const openMinutes=
-oh*60+om;
-
-const closeMinutes=
-ch*60+cm;
-
-if(closeMinutes<openMinutes){
-
-return current>=openMinutes ||
-current<=closeMinutes;
-
-}
-
-return current>=openMinutes &&
-current<=closeMinutes;
-
-}
-
-function getTodayHoursText(){
-
-const now=
-new Date();
-
-const map=[
-"domingo",
-"segunda",
-"terca",
-"quarta",
-"quinta",
-"sexta",
-"sabado"
-];
-
-const day=
-map[now.getDay()];
-
-const config=
-openingHours[day];
-
-if(!config){
-
-return "";
-
-}
-
-if(config.closed){
-
-return "Fechado hoje";
-
-}
-
-return config.open+
-" às "+
-config.close;
-
-}
-
-function updateStoreStatus(){
-
-const status=
-document.getElementById(
-"storeStatus"
-);
-
-const notice=
-document.getElementById(
-"storeNotice"
-);
-
-if(!status)return;
-
-const open=
-isStoreOpen();
-
-if(open){
-
-status.className=
-"store-status status-open";
-
-status.textContent=
-"🟢 Aberto agora • "+
-getTodayHoursText();
-
-if(notice){
-
-notice.innerHTML=
-`
-<div class="store-notice">
-<strong>🟢 Estamos abertos!</strong>
-<br>
-<span class="muted">
-Hoje: ${escapeHtml(getTodayHoursText())}
-</span>
-</div>
-`;
-
-}
-
-}else{
-
-status.className=
-"store-status status-closed";
-
-status.textContent=
-"🔴 Fechado agora • "+
-getTodayHoursText();
-
-if(notice){
-
-notice.innerHTML=
-`
-<div class="store-notice closed-box">
-<strong>🔴 Estamos fechados no momento.</strong>
-<br>
-<span>
-Confira nossos horários antes de fazer seu pedido.
-</span>
-</div>
-`;
-
-}
-
-}
-
-}
-
-function renderOpeningHoursAdmin(){
-
-const container=
-document.getElementById(
-"openingHoursContainer"
-);
-
-if(!container)return;
-
-openingHours=
-normalizeOpeningHours(
-openingHours
-);
-
-container.innerHTML=
-Object.keys(dayNames)
-.map(day=>{
-
-const config=
-openingHours[day];
-
-return `
-
-<div class="day-row">
-
-<div class="day-name">
-${dayNames[day]}
-</div>
-
-<div>
-
-<label style="margin:0">
-Abertura
-
-<input
-id="open-${day}"
-type="time"
-value="${config.open||"10:00"}"
-${config.closed?"disabled":""}>
-
-</label>
-
-</div>
-
-<div>
-
-<label style="margin:0">
-Fechamento
-
-<input
-id="close-${day}"
-type="time"
-value="${config.close||"22:00"}"
-${config.closed?"disabled":""}>
-
-</label>
-
-</div>
-
-<div>
-
-<label style="margin:0">
-
-<input
-id="closed-${day}"
-type="checkbox"
-style="width:auto"
-${config.closed?"checked":""}
-onchange="toggleDay('${day}',this.checked)">
-
- Fechado
-
-</label>
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-function toggleDay(day,closed){
-
-const open=
-document.getElementById(
-"open-"+day
-);
-
-const close=
-document.getElementById(
-"close-"+day
-);
-
-if(open)open.disabled=closed;
-
-if(close)close.disabled=closed;
-
-}
-
-async function saveOpeningHours(){
-
-const newHours={};
-
-Object.keys(dayNames)
-.forEach(day=>{
-
-const closed=
-document.getElementById(
-"closed-"+day
-).checked;
-
-newHours[day]={
-
-open:
-document.getElementById(
-"open-"+day
-).value,
-
-close:
-document.getElementById(
-"close-"+day
-).value,
-
-closed:closed
-
-};
-
-});
-
-const ok=
-await updateStoreSetting({
-
-opening_hours:newHours
-
-});
-
-if(!ok)return;
-
-openingHours=newHours;
-
-updateStoreStatus();
-
-showToast(
-"🕐 Horários salvos!"
-);
-
-}
-
-/* ============================================================
-ESTIMATIVA DE ENTREGA
-============================================================ */
-
-async function saveDeliveryEstimate(){
-
-const min=
-Number(
-document.getElementById(
-"deliveryMin"
-).value
-);
-
-const max=
-Number(
-document.getElementById(
-"deliveryMax"
-).value
-);
-
-if(!min || !max || min<=0 || max<=0){
-
-alert(
-"Digite tempos válidos."
-);
-
-return;
-
-}
-
-if(max<min){
-
-alert(
-"O tempo máximo não pode ser menor que o mínimo."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-delivery_min:min,
-
-delivery_max:max,
-
-estimated_delivery_min:min,
-
-estimated_delivery_max:max
-
-});
-
-if(!ok)return;
-
-deliveryMin=min;
-deliveryMax=max;
-
-showToast(
-"🚚 Estimativa atualizada!"
-);
-
-}
-
-/* ============================================================
-PIX
-============================================================ */
-
-async function savePixKey(){
-
-const key=
-document.getElementById(
-"pixKeyInput"
-).value.trim();
-
-if(!key){
-
-alert(
-"Digite a chave PIX."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-pix_key:key
-
-});
-
-if(!ok)return;
-
-pixKey=key;
-
-showToast(
-"💳 PIX salvo!"
-);
-
-}
-
-function updatePaymentBox(){
-
-const payment=
-document.getElementById(
-"payment"
-).value;
-
-const box=
-document.getElementById(
-"pixBox"
-);
-
-if(payment==="PIX"){
-
-box.style.display="block";
-
-document.getElementById(
-"pixKeyDisplay"
-).textContent=
-pixKey ||
-"PIX ainda não configurado.";
-
-}else{
-
-box.style.display="none";
-
-}
-
-}
-
-async function copyPixKey(){
-
-if(!pixKey){
-
-alert(
-"A chave PIX ainda não foi configurada."
-);
-
-return;
-
-}
-
-try{
-
-await navigator.clipboard.writeText(
-pixKey
-);
-
-showToast(
-"📋 Chave PIX copiada!"
-);
-
-}catch(e){
-
-alert(
-"Chave PIX:\n\n"+pixKey
-);
-
-}
-
-}
-
-/* ============================================================
-WHATSAPP
-============================================================ */
-
-async function saveWhatsapp(){
-
-let number=
-document.getElementById(
-"whatsappInput"
-).value.trim();
-
-number=
-number.replace(/\D/g,"");
-
-if(!number){
-
-alert(
-"Digite o número do WhatsApp."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-whatsapp:number,
-
-whatsapp_number:number
-
-});
-
-if(!ok)return;
-
-whatsappNumber=number;
-
-showToast(
-"📱 WhatsApp salvo!"
-);
-
-}
-
-function buildWhatsappMessage(order){
-
-if(!order)return "";
-
-let message=
-"🍔 *BURGuer GOLD*%0A%0A";
-
-message+=
-"🧾 *Pedido #"+
-order.id+"*%0A";
-
-message+=
-"👤 Cliente: "+
-encodeURIComponent(order.customer_name)+
-"%0A";
-
-message+=
-"💳 Pagamento: "+
-encodeURIComponent(order.payment)+
-"%0A";
-
-message+=
-(order.delivery
-?"🚚 Entrega"
-:"🏪 Retirada")+
-"%0A";
-
-if(order.delivery){
-
-message+=
-"📍 "+
-encodeURIComponent(order.address)+
-"%0A";
-
-}
-
-message+="%0A";
-
-message+="*Itens:*%0A";
-
-(order.items||[]).forEach(item=>{
-
-message+=
-"• "+
-item.qty+
-"x "+
-encodeURIComponent(item.name)+
-" — "+
-encodeURIComponent(
-money(item.price*item.qty)
-)+
-"%0A";
-
-});
-
-message+="%0A";
-
-message+=
-"💰 *Total: "+
-encodeURIComponent(
-money(order.total)
-)+
-"*%0A";
-
-if(order.delivery){
-
-message+=
-"⏱️ Estimativa: "+
-deliveryMin+
-" a "+
-deliveryMax+
-" minutos%0A";
-
-}
-
-return message;
-
-}
-
-function openOrderWhatsapp(){
-
-if(!whatsappNumber){
-
-alert(
-"O WhatsApp da loja ainda não foi configurado no administrador."
-);
-
-return;
-
-}
-
-const message=
-buildWhatsappMessage(
-lastOrderForWhatsapp
-);
-
-const url=
-"https://wa.me/"+
-whatsappNumber+
-"?text="+
-message;
-
-window.open(
-url,
-"_blank"
-);
-
-}
-
-/* ============================================================
-ENTREGA / BAIRROS
+ENTREGA
 ============================================================ */
 
 async function loadDeliveryZones(){
@@ -2941,18 +1664,14 @@ deliveryZones=data||[];
 function renderNeighborhoods(){
 
 const select=
-document.getElementById(
-"customerNeighborhood"
-);
+document.getElementById("customerNeighborhood");
 
 if(!select)return;
 
 select.innerHTML=
-`
-<option value="">
+`<option value="">
 Selecione seu bairro
-</option>
-`+
+</option>`+
 deliveryZones.map(zone=>
 `
 <option value="${zone.id}">
@@ -2968,70 +1687,50 @@ ${money(zone.fee)}
 function getSelectedDeliveryFee(){
 
 const select=
-document.getElementById(
-"customerNeighborhood"
-);
+document.getElementById("customerNeighborhood");
 
 if(!select || !select.value){
 
-return Number(deliveryFee)||0;
+return DEFAULT_DELIVERY_FEE;
 
 }
 
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
+const zone=deliveryZones.find(
+zone=>String(zone.id)===String(select.value)
 );
 
-return zone
-?
-Number(zone.fee)||0
-:
-Number(deliveryFee)||0;
+return zone ? Number(zone.fee)||0 : DEFAULT_DELIVERY_FEE;
 
 }
 
 function getSelectedNeighborhood(){
 
 const select=
-document.getElementById(
-"customerNeighborhood"
-);
+document.getElementById("customerNeighborhood");
 
 if(!select || !select.value)return "";
 
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
+const zone=deliveryZones.find(
+zone=>String(zone.id)===String(select.value)
 );
 
-return zone
-?
-zone.neighborhood
-:
-"";
+return zone ? zone.neighborhood : "";
 
 }
 
 function renderCheckout(){
 
 const container=
-document.getElementById(
-"checkoutItems"
-);
+document.getElementById("checkoutItems");
 
 container.innerHTML=
+
 cart.map(item=>`
 
 <div class="cart-item">
 
 <span>
-${item.qty}x
-${escapeHtml(item.name)}
+${item.qty}x ${escapeHtml(item.name)}
 </span>
 
 <strong>
@@ -3042,76 +1741,45 @@ ${money(item.price*item.qty)}
 
 `).join("");
 
-document.getElementById(
-"deliveryEstimatePreview"
-).textContent=
-"⏱️ Estimativa: "+
-deliveryMin+
-" a "+
-deliveryMax+
-" minutos";
-
 updateCheckoutTotal();
-
-updatePaymentBox();
 
 }
 
 function updateCheckoutTotal(){
 
-const subtotal=
-getCartTotal();
+const subtotal=getCartTotal();
 
 const deliveryType=
-document.getElementById(
-"deliveryType"
-).value;
+document.getElementById("deliveryType").value;
 
 const fee=
 deliveryType==="ENTREGA"
-?
-getSelectedDeliveryFee()
-:
-0;
+?getSelectedDeliveryFee()
+:0;
 
-document.getElementById(
-"checkoutSubtotal"
-).textContent=
-money(subtotal);
+document.getElementById("checkoutSubtotal")
+.textContent=money(subtotal);
 
-document.getElementById(
-"checkoutDelivery"
-).textContent=
-money(fee);
+document.getElementById("checkoutDelivery")
+.textContent=money(fee);
 
-document.getElementById(
-"checkoutTotal"
-).textContent=
-money(subtotal+fee);
+document.getElementById("checkoutTotal")
+.textContent=money(subtotal+fee);
 
-document.getElementById(
-"deliveryFeePreview"
-).textContent=
-"Taxa de entrega: "+
-money(fee);
+document.getElementById("deliveryFeePreview")
+.textContent=
+"Taxa de entrega: "+money(fee);
 
 }
 
 function toggleDeliveryFields(){
 
 const type=
-document.getElementById(
-"deliveryType"
-).value;
+document.getElementById("deliveryType").value;
 
-document.getElementById(
-"addressArea"
-).style.display=
-type==="ENTREGA"
-?
-"block"
-:
-"none";
+document.getElementById("addressArea")
+.style.display=
+type==="ENTREGA"?"block":"none";
 
 updateCheckoutTotal();
 
@@ -3123,108 +1791,65 @@ ENVIAR PEDIDO
 
 async function sendOrder(){
 
-if(!isStoreOpen()){
-
-alert(
-"A loja está fechada no momento."
-);
-
-return;
-
-}
-
 const customerName=
-document.getElementById(
-"customerName"
-).value.trim();
+document.getElementById("customerName")
+.value.trim();
 
 const deliveryType=
-document.getElementById(
-"deliveryType"
-).value;
+document.getElementById("deliveryType").value;
 
 const delivery=
 deliveryType==="ENTREGA";
 
 const address=
-document.getElementById(
-"customerAddress"
-).value.trim();
+document.getElementById("customerAddress")
+.value.trim();
 
 const payment=
-document.getElementById(
-"payment"
-).value;
+document.getElementById("payment").value;
 
 const neighborhood=
 getSelectedNeighborhood();
 
 if(!customerName){
 
-alert(
-"Digite seu nome."
-);
-
+alert("Digite seu nome.");
 return;
 
 }
 
 if(delivery && !neighborhood){
 
-alert(
-"Selecione seu bairro."
-);
-
+alert("Selecione seu bairro.");
 return;
 
 }
 
 if(delivery && !address){
 
-alert(
-"Digite o endereço de entrega."
-);
-
+alert("Digite o endereço de entrega.");
 return;
 
 }
 
 if(!cart.length){
 
-alert(
-"Seu carrinho está vazio."
-);
-
+alert("Seu carrinho está vazio.");
 return;
 
 }
 
-if(payment==="PIX" && !pixKey){
-
-alert(
-"O PIX ainda não foi configurado pela loja."
-);
-
-return;
-
-}
-
-const deliveryFeeValue=
+const deliveryFee=
 delivery
-?
-getSelectedDeliveryFee()
-:
-0;
+?getSelectedDeliveryFee()
+:0;
 
 const total=
-getCartTotal()+
-deliveryFeeValue;
+getCartTotal()+deliveryFee;
 
 const orderId=
 Date.now()*1000+
-Math.floor(
-Math.random()*1000
-);
+Math.floor(Math.random()*1000);
 
 const finalAddress=
 delivery
@@ -3237,28 +1862,21 @@ const orderData={
 
 id:orderId,
 
-customer_name:
-customerName,
+customer_name:customerName,
 
-address:
-finalAddress,
+address:finalAddress,
 
-payment:
-payment,
+payment:payment,
 
-delivery:
-delivery,
+delivery:delivery,
 
-total:
-total,
+total:total,
 
-status:
-"RECEBIDO"
+status:"RECEBIDO"
 
 };
 
-const {error:orderError}=
-await db
+const {error:orderError}=await db
 .from("orders")
 .insert(orderData);
 
@@ -3299,8 +1917,7 @@ item.price
 
 }));
 
-const {error:itemsError}=
-await db
+const {error:itemsError}=await db
 .from("order_items")
 .insert(items);
 
@@ -3316,72 +1933,14 @@ return;
 
 }
 
-lastOrderForWhatsapp={
-
-id:orderId,
-
-customer_name:
-customerName,
-
-address:
-finalAddress,
-
-payment:
-payment,
-
-delivery:
-delivery,
-
-total:
-total,
-
-items:
-cart.map(item=>({...item}))
-
-};
-
-document.getElementById(
-"successOrderId"
-).textContent=
-"#"+orderId;
-
-document.getElementById(
-"successInfo"
-).innerHTML=
-`
-
-<div class="store-notice">
-
-<strong>
-⏱️ Estimativa de entrega:
-</strong>
-
-<br>
-
-<span class="muted">
-${deliveryMin} a ${deliveryMax} minutos
-</span>
-
-</div>
-
-`;
-
-document.getElementById(
-"successWhatsappBtn"
-).style.display=
-whatsappNumber
-?
-"block"
-:
-"none";
+document.getElementById("successOrderId")
+.textContent="#"+orderId;
 
 cart=[];
 
 renderCart();
 
-showScreen(
-"successScreen"
-);
+showScreen("successScreen");
 
 }
 
@@ -3392,21 +1951,16 @@ LOGIN
 async function adminLogin(){
 
 const email=
-document.getElementById(
-"adminEmail"
-).value.trim();
+document.getElementById("adminEmail")
+.value.trim();
 
 const password=
-document.getElementById(
-"adminPassword"
-).value;
+document.getElementById("adminPassword")
+.value;
 
 if(!email||!password){
 
-alert(
-"Preencha e-mail e senha."
-);
-
+alert("Preencha e-mail e senha.");
 return;
 
 }
@@ -3415,7 +1969,6 @@ const {data,error}=
 await db.auth.signInWithPassword({
 
 email:email,
-
 password:password
 
 });
@@ -3424,9 +1977,7 @@ if(error){
 
 console.error(error);
 
-alert(
-"E-mail ou senha incorretos."
-);
+alert("E-mail ou senha incorretos.");
 
 return;
 
@@ -3445,12 +1996,9 @@ async function adminLogout(){
 await db.auth.signOut();
 
 currentCashRegister=null;
-
 currentCashData=null;
 
-showScreen(
-"menuScreen"
-);
+showScreen("menuScreen");
 
 }
 
@@ -3472,109 +2020,57 @@ document
 section.classList.remove("active");
 });
 
-const button=
-document.getElementById(
+const button=document.getElementById(
 "adminTab"+
 tab.charAt(0).toUpperCase()+
 tab.slice(1)
 );
 
 if(button){
-
 button.classList.add("active");
-
 }
 
-const section=
-document.getElementById(
-"admin-"+
-(
+const section=document.getElementById(
+"admin-"+(
 tab==="products"
-?
-"products-section"
-:
-tab
+?"products-section"
+:tab
 )
 );
 
 if(section){
-
 section.classList.add("active");
-
 }
 
 if(tab==="dashboard"){
-
 renderDashboard();
-
 }
 
 if(tab==="orders"){
-
 loadOrders();
-
 }
 
 if(tab==="products"){
-
 loadAdminProducts();
-
 }
 
 if(tab==="cash"){
-
 loadCashRegister();
-
 }
 
 if(tab==="reports"){
-
 loadReports();
-
 }
 
 if(tab==="settings"){
-
 loadDeliveryZonesAdmin();
-
-renderOpeningHoursAdmin();
-
-document.getElementById(
-"deliveryMin"
-).value=
-deliveryMin;
-
-document.getElementById(
-"deliveryMax"
-).value=
-deliveryMax;
-
-document.getElementById(
-"pixKeyInput"
-).value=
-pixKey;
-
-document.getElementById(
-"whatsappInput"
-).value=
-whatsappNumber;
-
-document.getElementById(
-"defaultDeliveryFee"
-).value=
-Number(deliveryFee).toFixed(2);
-
 }
 
 }
 
 async function showAdminPanel(){
 
-showScreen(
-"adminPanel"
-);
-
-await loadStoreSettings();
+showScreen("adminPanel");
 
 await loadOrders();
 
@@ -3586,11 +2082,7 @@ await loadReports();
 
 await loadDeliveryZonesAdmin();
 
-renderOpeningHoursAdmin();
-
-openAdminTab(
-"dashboard"
-);
+openAdminTab("dashboard");
 
 }
 
@@ -3601,51 +2093,33 @@ DASHBOARD
 function renderDashboard(){
 
 const container=
-document.getElementById(
-"dashboardContent"
-);
+document.getElementById("dashboardContent");
 
-const orders=
-adminOrders||[];
+const orders=adminOrders||[];
 
-const total=
-orders.reduce(
-(sum,order)=>
-sum+
-Number(order.total||0),
+const total=orders.reduce(
+(sum,order)=>sum+Number(order.total||0),
 0
 );
 
 const average=
 orders.length
-?
-total/orders.length
-:
-0;
+?total/orders.length
+:0;
 
 const received=
-orders.filter(
-o=>o.status==="RECEBIDO"
-).length;
+orders.filter(o=>o.status==="RECEBIDO").length;
 
 const preparing=
-orders.filter(
-o=>o.status==="PREPARANDO"
-).length;
+orders.filter(o=>o.status==="PREPARANDO").length;
 
 const ready=
-orders.filter(
-o=>o.status==="PRONTO"
-).length;
+orders.filter(o=>o.status==="PRONTO").length;
 
 const delivered=
-orders.filter(
-o=>o.status==="ENTREGUE"
-).length;
+orders.filter(o=>o.status==="ENTREGUE").length;
 
-container.innerHTML=
-
-`
+container.innerHTML=`
 
 <div class="dashboard-grid">
 
@@ -3686,61 +2160,38 @@ container.innerHTML=
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+<div class="card" style="margin-top:18px">
 
-<h3>
-🕐 Pedidos recentes
-</h3>
+<h3>🕐 Pedidos recentes</h3>
 
 ${
 orders.length
 ?
-
-orders.slice(0,5).map(
-order=>`
+orders.slice(0,5).map(order=>`
 
 <div class="history-item">
 
 <strong>
-#${order.id}
-—
-${escapeHtml(
-order.customer_name
-)}
+#${order.id} — ${escapeHtml(order.customer_name)}
 </strong>
 
 <div class="muted">
-${formatDateTime(
-order.created_at
-)}
+${formatDateTime(order.created_at)}
 </div>
 
 <div>
-
-${escapeHtml(
-order.status
-)}
-
+${escapeHtml(order.status)}
 —
-
 <strong class="gold">
 ${money(order.total)}
 </strong>
-
 </div>
 
 </div>
 
-`
-).join("")
-
+`).join("")
 :
-
-`<div class="empty">
-Nenhum pedido ainda.
-</div>`
-
+`<div class="empty">Nenhum pedido ainda.</div>`
 }
 
 </div>
@@ -3756,23 +2207,16 @@ PEDIDOS
 async function loadOrders(){
 
 const container=
-document.getElementById(
-"ordersContainer"
-);
+document.getElementById("ordersContainer");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando pedidos...";
+container.innerHTML="Carregando pedidos...";
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("orders")
 .select("*")
-.order(
-"created_at",
-{ascending:false}
-);
+.order("created_at",{ascending:false});
 
 if(error){
 
@@ -3787,8 +2231,7 @@ return;
 
 }
 
-adminOrders=
-data||[];
+adminOrders=data||[];
 
 renderDashboard();
 
@@ -3804,8 +2247,7 @@ return;
 }
 
 container.innerHTML=
-adminOrders.map(
-order=>`
+adminOrders.map(order=>`
 
 <div class="order">
 
@@ -3818,53 +2260,38 @@ Pedido #${order.id}
 </strong>
 
 <div class="muted">
-${formatDateTime(
-order.created_at
-)}
+${formatDateTime(order.created_at)}
 </div>
 
 </div>
 
 <span class="status">
-${escapeHtml(
-order.status
-)}
+${escapeHtml(order.status)}
 </span>
 
 </div>
 
 <p>
 <strong>Cliente:</strong>
-${escapeHtml(
-order.customer_name
-)}
+${escapeHtml(order.customer_name)}
 </p>
 
 <p>
 <strong>Pedido:</strong>
-${order.delivery
-?
-"🚚 Entrega"
-:
-"🏪 Retirada"}
+${order.delivery?"🚚 Entrega":"🏪 Retirada"}
 </p>
 
 <p>
 <strong>Endereço:</strong>
-${escapeHtml(
-order.address||"-"
-)}
+${escapeHtml(order.address||"-")}
 </p>
 
 <p>
 <strong>Pagamento:</strong>
-${escapeHtml(
-order.payment
-)}
+${escapeHtml(order.payment)}
 </p>
 
-<div id="items-${order.id}"
-class="order-items">
+<div id="items-${order.id}" class="order-items">
 Carregando itens...
 </div>
 
@@ -3876,9 +2303,7 @@ Total: ${money(order.total)}
 
 Alterar status
 
-<select
-onchange=
-"changeOrderStatus(${order.id},this.value)">
+<select onchange="changeOrderStatus(${order.id},this.value)">
 
 ${[
 "RECEBIDO",
@@ -3886,22 +2311,15 @@ ${[
 "PRONTO",
 "SAIU PARA ENTREGA",
 "ENTREGUE"
-]
-.map(
-status=>`
+].map(status=>`
 
 <option
 value="${status}"
-${order.status===status
-?"selected"
-:""}>
-
+${order.status===status?"selected":""}>
 ${status}
-
 </option>
 
-`
-).join("")}
+`).join("")}
 
 </select>
 
@@ -3909,16 +2327,11 @@ ${status}
 
 </div>
 
-`
-).join("");
+`).join("");
 
-for(
-const order of adminOrders
-){
+for(const order of adminOrders){
 
-loadOrderItems(
-order.id
-);
+loadOrderItems(order.id);
 
 }
 
@@ -3927,26 +2340,19 @@ order.id
 async function loadOrderItems(orderId){
 
 const container=
-document.getElementById(
-"items-"+orderId
-);
+document.getElementById("items-"+orderId);
 
 if(!container)return;
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("order_items")
 .select("*")
-.eq(
-"order_id",
-orderId
-)
+.eq("order_id",orderId)
 .order("id");
 
 if(error){
 
-container.textContent=
-"Erro ao carregar itens.";
+container.textContent="Erro ao carregar itens.";
 
 return;
 
@@ -3954,44 +2360,29 @@ return;
 
 if(!data||!data.length){
 
-container.textContent=
-"Nenhum item.";
+container.textContent="Nenhum item.";
 
 return;
 
 }
 
 container.innerHTML=
-data.map(
-item=>`
+data.map(item=>`
 
-${item.qty}x
-${escapeHtml(item.name)}
+${item.qty}x ${escapeHtml(item.name)}
 —
-${money(
-item.price*item.qty
-)}
+${money(item.price*item.qty)}
 
-`
-).join("<br>");
+`).join("<br>");
 
 }
 
-async function changeOrderStatus(
-orderId,
-status
-){
+async function changeOrderStatus(orderId,status){
 
-const {error}=
-await db
+const {error}=await db
 .from("orders")
-.update({
-status:status
-})
-.eq(
-"id",
-orderId
-);
+.update({status:status})
+.eq("id",orderId);
 
 if(error){
 
@@ -4016,23 +2407,16 @@ PRODUTOS ADMIN
 async function loadAdminProducts(){
 
 const container=
-document.getElementById(
-"adminProducts"
-);
+document.getElementById("adminProducts");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando produtos...";
+container.innerHTML="Carregando produtos...";
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("products")
 .select("*")
-.order(
-"id",
-{ascending:true}
-);
+.order("id",{ascending:true});
 
 if(error){
 
@@ -4059,33 +2443,21 @@ return;
 }
 
 container.innerHTML=
-data.map(
-product=>`
+data.map(product=>`
 
 <div class="admin-product">
 
 <h3>
-${escapeHtml(
-product.name
-)}
+${escapeHtml(product.name)}
 </h3>
 
 <div class="gold">
-
-${categoryIcons[
-getProductCategory(product)
-]||"⭐"}
-
-${escapeHtml(
-getProductCategory(product)
-)}
-
+${categoryIcons[getProductCategory(product)]||"⭐"}
+${escapeHtml(getProductCategory(product))}
 </div>
 
 <p class="muted">
-${escapeHtml(
-product.description||""
-)}
+${escapeHtml(product.description||"")}
 </p>
 
 <strong class="gold">
@@ -4095,96 +2467,64 @@ ${money(product.price)}
 <p>
 Status:
 <strong>
-${product.active
-?
-"ATIVO"
-:
-"INATIVO"}
+${product.active?"ATIVO":"INATIVO"}
 </strong>
 </p>
 
 <button
-class="btn small
-${product.active
-?
-"danger"
-:
-""}"
-onclick=
-"toggleProduct(${product.id},${product.active})">
+class="btn small ${product.active?"danger":""}"
+onclick="toggleProduct(${product.id},${product.active})">
 
-${product.active
-?
-"Desativar"
-:
-"Ativar"}
+${product.active?"Desativar":"Ativar"}
 
 </button>
 
 </div>
 
-`
-).join("");
+`).join("");
 
 }
 
 async function createProduct(){
 
 const name=
-document.getElementById(
-"productName"
-).value.trim();
+document.getElementById("productName")
+.value.trim();
 
 const description=
-document.getElementById(
-"productDescription"
-).value.trim();
+document.getElementById("productDescription")
+.value.trim();
 
 const price=
 parseMoney(
-document.getElementById(
-"productPrice"
-).value
+document.getElementById("productPrice").value
 );
 
 const category=
-document.getElementById(
-"productCategory"
-).value;
+document.getElementById("productCategory").value;
 
 if(!name){
 
-alert(
-"Digite o nome do produto."
-);
-
+alert("Digite o nome do produto.");
 return;
 
 }
 
 if(!price||price<=0){
 
-alert(
-"Digite um preço válido."
-);
-
+alert("Digite um preço válido.");
 return;
 
 }
 
-const {error}=
-await db
+const {error}=await db
 .from("products")
 .insert({
 
 name:name,
-
 description:description,
-
 price:price,
-
 category:category,
-
 active:true
 
 });
@@ -4194,51 +2534,32 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível adicionar o produto:\n\n"+
-error.message
+"Não foi possível adicionar o produto."
 );
 
 return;
 
 }
 
-document.getElementById(
-"productName"
-).value="";
-
-document.getElementById(
-"productDescription"
-).value="";
-
-document.getElementById(
-"productPrice"
-).value="";
+document.getElementById("productName").value="";
+document.getElementById("productDescription").value="";
+document.getElementById("productPrice").value="";
 
 await loadAdminProducts();
-
 await loadProducts();
 
-showToast(
-"✅ Produto adicionado!"
-);
+showToast("✅ Produto adicionado!");
 
 }
 
-async function toggleProduct(
-productId,
-currentActive
-){
+async function toggleProduct(productId,currentActive){
 
-const {error}=
-await db
+const {error}=await db
 .from("products")
 .update({
 active:!currentActive
 })
-.eq(
-"id",
-productId
-);
+.eq("id",productId);
 
 if(error){
 
@@ -4253,7 +2574,6 @@ return;
 }
 
 await loadAdminProducts();
-
 await loadProducts();
 
 }
@@ -4265,27 +2585,17 @@ CAIXA
 async function loadCashRegister(){
 
 const container=
-document.getElementById(
-"cashContent"
-);
+document.getElementById("cashContent");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando caixa...";
+container.innerHTML="Carregando caixa...";
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("cash_registers")
 .select("*")
-.eq(
-"status",
-"ABERTO"
-)
-.order(
-"opened_at",
-{ascending:false}
-)
+.eq("status","ABERTO")
+.order("opened_at",{ascending:false})
 .limit(1);
 
 if(error){
@@ -4303,18 +2613,14 @@ return;
 
 if(data&&data.length){
 
-currentCashRegister=
-data[0];
+currentCashRegister=data[0];
 
 await renderOpenCash();
 
 }else{
 
-currentCashRegister=
-null;
-
-currentCashData=
-null;
+currentCashRegister=null;
+currentCashData=null;
 
 await renderClosedCash();
 
@@ -4322,25 +2628,16 @@ await renderClosedCash();
 
 }
 
-async function getCashOrders(
-openedAt
-){
+async function getCashOrders(openedAt){
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("orders")
-.select(
-"id,total,payment,created_at,status"
-)
-.gte(
-"created_at",
-openedAt
-);
+.select("id,total,payment,created_at,status")
+.gte("created_at",openedAt);
 
 if(error){
 
 console.error(error);
-
 return [];
 
 }
@@ -4349,27 +2646,17 @@ return data||[];
 
 }
 
-async function getCashMovements(
-registerId
-){
+async function getCashMovements(registerId){
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("cash_movements")
 .select("*")
-.eq(
-"cash_register_id",
-registerId
-)
-.order(
-"created_at",
-{ascending:false}
-);
+.eq("cash_register_id",registerId)
+.order("created_at",{ascending:false});
 
 if(error){
 
 console.error(error);
-
 return [];
 
 }
@@ -4378,75 +2665,45 @@ return data||[];
 
 }
 
-async function calculateCashData(
-register
-){
+async function calculateCashData(register){
 
 const orders=
-await getCashOrders(
-register.opened_at
-);
+await getCashOrders(register.opened_at);
 
 const movements=
-await getCashMovements(
-register.id
-);
+await getCashMovements(register.id);
 
 let cashSales=0;
-
 let pixSales=0;
-
 let cardSales=0;
 
 orders.forEach(order=>{
 
-const amount=
-Number(order.total)||0;
+const amount=Number(order.total)||0;
 
-if(order.payment==="DINHEIRO"){
-
+if(order.payment==="DINHEIRO")
 cashSales+=amount;
 
-}else if(
-order.payment==="PIX"
-){
-
+else if(order.payment==="PIX")
 pixSales+=amount;
 
-}else if(
-order.payment==="CARTAO"
-){
-
+else if(order.payment==="CARTAO")
 cardSales+=amount;
-
-}
 
 });
 
 let supplies=0;
 let withdrawals=0;
 
-movements.forEach(
-movement=>{
+movements.forEach(movement=>{
 
-const amount=
-Number(movement.amount)||0;
+const amount=Number(movement.amount)||0;
 
-if(
-movement.type===
-"SUPRIMENTO"
-){
-
+if(movement.type==="SUPRIMENTO")
 supplies+=amount;
 
-}else if(
-movement.type===
-"SANGRIA"
-){
-
+else if(movement.type==="SANGRIA")
 withdrawals+=amount;
-
-}
 
 });
 
@@ -4456,9 +2713,7 @@ pixSales+
 cardSales;
 
 const expectedCash=
-Number(
-register.opening_amount
-)+
+Number(register.opening_amount)+
 cashSales+
 supplies-
 withdrawals;
@@ -4466,21 +2721,13 @@ withdrawals;
 return{
 
 orders,
-
 movements,
-
 cashSales,
-
 pixSales,
-
 cardSales,
-
 totalSales,
-
 supplies,
-
 withdrawals,
-
 expectedCash
 
 };
@@ -4490,34 +2737,22 @@ expectedCash
 async function renderOpenCash(){
 
 const container=
-document.getElementById(
-"cashContent"
-);
+document.getElementById("cashContent");
 
 currentCashData=
-await calculateCashData(
-currentCashRegister
-);
+await calculateCashData(currentCashRegister);
 
-const c=
-currentCashData;
+const c=currentCashData;
 
-container.innerHTML=
-`
+container.innerHTML=`
 
 <div class="cash-status">
 
-<strong>
-🟢 CAIXA ABERTO
-</strong>
+<strong>🟢 CAIXA ABERTO</strong>
 
 <div class="muted">
-
 Aberto em:
-${formatDateTime(
-currentCashRegister.opened_at
-)}
-
+${formatDateTime(currentCashRegister.opened_at)}
 </div>
 
 </div>
@@ -4526,11 +2761,7 @@ currentCashRegister.opened_at
 
 <div class="cash-box">
 <span>Valor de abertura</span>
-<strong>
-${money(
-currentCashRegister.opening_amount
-)}
-</strong>
+<strong>${money(currentCashRegister.opening_amount)}</strong>
 </div>
 
 <div class="cash-box">
@@ -4570,62 +2801,38 @@ currentCashRegister.opening_amount
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+<div class="card" style="margin-top:18px">
 
-<h3>
-💵 Movimentação
-</h3>
+<h3>💵 Movimentação</h3>
 
 <div class="movement">
 
 <div>
-
 <label>
 Valor
-
-<input
-id="movementAmount"
-type="number"
-step="0.01"
-placeholder="0,00">
-
+<input id="movementAmount" type="number" step="0.01" placeholder="0,00">
 </label>
-
 </div>
 
 <div>
-
 <label>
 Observação
-
-<input
-id="movementNote"
-type="text"
-placeholder="Ex: troco / retirada">
-
+<input id="movementNote" type="text" placeholder="Ex: troco / retirada">
 </label>
-
 </div>
 
 <div>
 
 <button
 class="btn small"
-onclick=
-"addCashMovement('SUPRIMENTO')">
-
+onclick="addCashMovement('SUPRIMENTO')">
 ➕ Suprimento
-
 </button>
 
 <button
 class="btn small danger"
-onclick=
-"addCashMovement('SANGRIA')">
-
+onclick="addCashMovement('SANGRIA')">
 ➖ Sangria
-
 </button>
 
 </div>
@@ -4636,103 +2843,62 @@ onclick=
 
 <div class="card">
 
-<h3>
-🔒 Fechar caixa
-</h3>
+<h3>🔒 Fechar caixa</h3>
 
 <label>
-
 Valor contado
-
-<input
-id="closingAmount"
-type="number"
-step="0.01"
-placeholder="0,00">
-
+<input id="closingAmount" type="number" step="0.01" placeholder="0,00">
 </label>
 
-<button
-class="btn"
-onclick=
-"closeCashRegister()">
-
+<button class="btn" onclick="closeCashRegister()">
 🔒 Fechar caixa
-
 </button>
 
 </div>
 
 <div class="card">
 
-<h3>
-📜 Movimentações recentes
-</h3>
+<h3>📜 Movimentações recentes</h3>
 
 ${
 c.movements.length
 ?
-
-c.movements.map(
-movement=>`
+c.movements.map(movement=>`
 
 <div class="history-item">
 
 <strong>
-
-${movement.type===
-"SUPRIMENTO"
-?
-"➕ Suprimento"
-:
-"➖ Sangria"}
-
+${movement.type==="SUPRIMENTO"
+?"➕ Suprimento"
+:"➖ Sangria"}
 </strong>
 
 <strong class="gold">
-
-${money(
-movement.amount
-)}
-
+${money(movement.amount)}
 </strong>
 
 <div class="muted">
-
-${escapeHtml(
-movement.note||""
-)}
-
+${escapeHtml(movement.note||"")}
 </div>
 
 <div class="muted">
-
-${formatDateTime(
-movement.created_at
-)}
-
+${formatDateTime(movement.created_at)}
 </div>
 
 </div>
 
-`
-).join("")
-
+`).join("")
 :
-
 `<div class="empty">
 Nenhuma movimentação.
 </div>`
-
 }
 
 </div>
 
 <div class="card">
 
-<h3>
-📊 Histórico de caixas
-</h3>
+<h3>📊 Histórico de caixas</h3>
 
 <div id="cashHistory">
 Carregando histórico...
@@ -4749,18 +2915,13 @@ await loadCashHistory();
 async function renderClosedCash(){
 
 const container=
-document.getElementById(
-"cashContent"
-);
+document.getElementById("cashContent");
 
-container.innerHTML=
-`
+container.innerHTML=`
 
 <div class="cash-status">
 
-<strong>
-🔴 CAIXA FECHADO
-</strong>
+<strong>🔴 CAIXA FECHADO</strong>
 
 <div class="muted">
 Abra o caixa para começar.
@@ -4768,41 +2929,24 @@ Abra o caixa para começar.
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+<div class="card" style="margin-top:18px">
 
-<h3>
-🟢 Abrir caixa
-</h3>
+<h3>🟢 Abrir caixa</h3>
 
 <label>
-
 Valor inicial
-
-<input
-id="openingAmount"
-type="number"
-step="0.01"
-placeholder="100,00">
-
+<input id="openingAmount" type="number" step="0.01" placeholder="100,00">
 </label>
 
-<button
-class="btn"
-onclick=
-"openCashRegister()">
-
+<button class="btn" onclick="openCashRegister()">
 🟢 Abrir caixa
-
 </button>
 
 </div>
 
 <div class="card">
 
-<h3>
-📜 Histórico de caixas
-</h3>
+<h3>📜 Histórico de caixas</h3>
 
 <div id="cashHistory">
 Carregando histórico...
@@ -4819,75 +2963,47 @@ await loadCashHistory();
 async function openCashRegister(){
 
 const input=
-document.getElementById(
-"openingAmount"
-);
+document.getElementById("openingAmount");
 
-const amount=
-parseMoney(
-input.value
-);
+const amount=parseMoney(input.value);
 
 if(amount<0){
 
-alert(
-"O valor não pode ser negativo."
-);
-
+alert("O valor não pode ser negativo.");
 return;
 
 }
 
-const {
-data:existing,
-error:existingError
-}=
+const {data:existing,error:existingError}=
 await db
 .from("cash_registers")
 .select("id")
-.eq(
-"status",
-"ABERTO"
-)
+.eq("status","ABERTO")
 .limit(1);
 
 if(existingError){
 
 console.error(existingError);
 
-alert(
-"Não foi possível verificar o caixa."
-);
-
+alert("Não foi possível verificar o caixa.");
 return;
 
 }
 
-if(
-existing &&
-existing.length
-){
+if(existing&&existing.length){
 
-alert(
-"Já existe um caixa aberto."
-);
-
+alert("Já existe um caixa aberto.");
 await loadCashRegister();
-
 return;
 
 }
 
-const {error}=
-await db
+const {error}=await db
 .from("cash_registers")
 .insert({
 
-opening_amount:
-amount,
-
-status:
-"ABERTO"
+opening_amount:amount,
+status:"ABERTO"
 
 });
 
@@ -4895,17 +3011,12 @@ if(error){
 
 console.error(error);
 
-alert(
-"Não foi possível abrir o caixa."
-);
-
+alert("Não foi possível abrir o caixa.");
 return;
 
 }
 
-showToast(
-"🟢 Caixa aberto!"
-);
+showToast("🟢 Caixa aberto!");
 
 await loadCashRegister();
 
@@ -4915,32 +3026,23 @@ async function addCashMovement(type){
 
 if(!currentCashRegister){
 
-alert(
-"Não existe caixa aberto."
-);
-
+alert("Não existe caixa aberto.");
 return;
 
 }
 
 const amount=
 parseMoney(
-document.getElementById(
-"movementAmount"
-).value
+document.getElementById("movementAmount").value
 );
 
 const note=
-document.getElementById(
-"movementNote"
-).value.trim();
+document.getElementById("movementNote")
+.value.trim();
 
 if(!amount||amount<=0){
 
-alert(
-"Digite um valor válido."
-);
-
+alert("Digite um valor válido.");
 return;
 
 }
@@ -4948,8 +3050,7 @@ return;
 if(
 type==="SANGRIA"&&
 currentCashData&&
-amount>
-currentCashData.expectedCash
+amount>currentCashData.expectedCash
 ){
 
 alert(
@@ -4960,18 +3061,13 @@ return;
 
 }
 
-const {error}=
-await db
+const {error}=await db
 .from("cash_movements")
 .insert({
 
-cash_register_id:
-currentCashRegister.id,
-
+cash_register_id:currentCashRegister.id,
 type:type,
-
 amount:amount,
-
 note:note
 
 });
@@ -4996,10 +3092,7 @@ async function closeCashRegister(){
 
 if(!currentCashRegister){
 
-alert(
-"Não existe caixa aberto."
-);
-
+alert("Não existe caixa aberto.");
 return;
 
 }
@@ -5010,21 +3103,14 @@ currentCashRegister
 );
 
 const input=
-document.getElementById(
-"closingAmount"
-);
+document.getElementById("closingAmount");
 
 const closingAmount=
-parseMoney(
-input.value
-);
+parseMoney(input.value);
 
 if(input.value.trim()===""){
 
-alert(
-"Informe o valor contado."
-);
-
+alert("Informe o valor contado.");
 return;
 
 }
@@ -5033,67 +3119,43 @@ const difference=
 closingAmount-
 cashData.expectedCash;
 
-const confirmed=
-confirm(
+const confirmed=confirm(
 
 "Confirma o fechamento?\n\n"+
-"Esperado: "+
-money(
-cashData.expectedCash
-)+
-"\nContado: "+
-money(
-closingAmount
-)+
-"\nDiferença: "+
-money(
-difference
-)
+"Esperado: "+money(cashData.expectedCash)+
+"\nContado: "+money(closingAmount)+
+"\nDiferença: "+money(difference)
 
 );
 
 if(!confirmed)return;
 
-const {error}=
-await db
+const {error}=await db
 .from("cash_registers")
 .update({
 
-closed_at:
-new Date().toISOString(),
+closed_at:new Date().toISOString(),
 
-closing_amount:
-closingAmount,
+closing_amount:closingAmount,
 
-cash_sales:
-cashData.cashSales,
+cash_sales:cashData.cashSales,
 
-pix_sales:
-cashData.pixSales,
+pix_sales:cashData.pixSales,
 
-card_sales:
-cashData.cardSales,
+card_sales:cashData.cardSales,
 
-supplies:
-cashData.supplies,
+supplies:cashData.supplies,
 
-withdrawals:
-cashData.withdrawals,
+withdrawals:cashData.withdrawals,
 
-expected_cash:
-cashData.expectedCash,
+expected_cash:cashData.expectedCash,
 
-difference:
-difference,
+difference:difference,
 
-status:
-"FECHADO"
+status:"FECHADO"
 
 })
-.eq(
-"id",
-currentCashRegister.id
-);
+.eq("id",currentCashRegister.id);
 
 if(error){
 
@@ -5110,22 +3172,12 @@ return;
 
 alert(
 "Caixa fechado com sucesso!\n\n"+
-"Esperado: "+
-money(
-cashData.expectedCash
-)+
-"\nContado: "+
-money(
-closingAmount
-)+
-"\nDiferença: "+
-money(
-difference
-)
+"Esperado: "+money(cashData.expectedCash)+
+"\nContado: "+money(closingAmount)+
+"\nDiferença: "+money(difference)
 );
 
 currentCashRegister=null;
-
 currentCashData=null;
 
 await loadCashRegister();
@@ -5135,24 +3187,15 @@ await loadCashRegister();
 async function loadCashHistory(){
 
 const container=
-document.getElementById(
-"cashHistory"
-);
+document.getElementById("cashHistory");
 
 if(!container)return;
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("cash_registers")
 .select("*")
-.eq(
-"status",
-"FECHADO"
-)
-.order(
-"closed_at",
-{ascending:false}
-)
+.eq("status","FECHADO")
+.order("closed_at",{ascending:false})
 .limit(10);
 
 if(error){
@@ -5180,13 +3223,10 @@ return;
 }
 
 container.innerHTML=
-data.map(
-register=>{
+data.map(register=>{
 
 const difference=
-Number(
-register.difference
-)||0;
+Number(register.difference)||0;
 
 return `
 
@@ -5198,62 +3238,45 @@ Caixa #${register.id}
 
 <div class="muted">
 Aberto:
-${formatDateTime(
-register.opened_at
-)}
+${formatDateTime(register.opened_at)}
 </div>
 
 <div class="muted">
 Fechado:
-${formatDateTime(
-register.closed_at
-)}
+${formatDateTime(register.closed_at)}
 </div>
 
 <p>
 Vendas:
 <strong class="gold">
-
 ${money(
 Number(register.cash_sales)+
 Number(register.pix_sales)+
 Number(register.card_sales)
 )}
-
 </strong>
 </p>
 
 <p>
 Esperado:
-<strong>
-${money(
-register.expected_cash
-)}
-</strong>
+<strong>${money(register.expected_cash)}</strong>
 </p>
 
 <p>
 Contado:
-<strong>
-${money(
-register.closing_amount
-)}
-</strong>
+<strong>${money(register.closing_amount)}</strong>
 </p>
 
 <p>
 Diferença:
-<strong class="gold">
-${money(difference)}
-</strong>
+<strong class="gold">${money(difference)}</strong>
 </p>
 
 </div>
 
 `;
 
-}
-).join("");
+}).join("");
 
 }
 
@@ -5264,23 +3287,16 @@ RELATÓRIOS
 async function loadReports(){
 
 const container=
-document.getElementById(
-"reportsContent"
-);
+document.getElementById("reportsContent");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando relatórios...";
+container.innerHTML="Carregando relatórios...";
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("orders")
 .select("*")
-.order(
-"created_at",
-{ascending:false}
-);
+.order("created_at",{ascending:false});
 
 if(error){
 
@@ -5295,69 +3311,35 @@ return;
 
 }
 
-const orders=
-data||[];
+const orders=data||[];
 
-const total=
-orders.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
+const total=orders.reduce(
+(sum,o)=>sum+Number(o.total||0),
 0
 );
 
 const average=
-orders.length
-?
-total/orders.length
-:
-0;
+orders.length?total/orders.length:0;
 
-const pix=
-orders
-.filter(
-o=>o.payment==="PIX"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
+const pix=orders
+.filter(o=>o.payment==="PIX")
+.reduce((sum,o)=>sum+Number(o.total||0),0);
 
-const cash=
-orders
-.filter(
-o=>o.payment==="DINHEIRO"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
+const cash=orders
+.filter(o=>o.payment==="DINHEIRO")
+.reduce((sum,o)=>sum+Number(o.total||0),0);
 
-const card=
-orders
-.filter(
-o=>o.payment==="CARTAO"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
+const card=orders
+.filter(o=>o.payment==="CARTAO")
+.reduce((sum,o)=>sum+Number(o.total||0),0);
 
-const delivery=
-orders.filter(
-o=>o.delivery
-).length;
+const delivery=orders
+.filter(o=>o.delivery)
+.length;
 
-const pickup=
-orders.filter(
-o=>!o.delivery
-).length;
+const pickup=orders
+.filter(o=>!o.delivery)
+.length;
 
 const statusList=[
 "RECEBIDO",
@@ -5367,8 +3349,7 @@ const statusList=[
 "ENTREGUE"
 ];
 
-container.innerHTML=
-`
+container.innerHTML=`
 
 <div class="report-grid">
 
@@ -5414,71 +3395,43 @@ container.innerHTML=
 
 </div>
 
-<div class="card"
-style="margin-top:18px">
+<div class="card" style="margin-top:18px">
 
-<h3>
-📋 Pedidos por status
-</h3>
+<h3>📋 Pedidos por status</h3>
 
-${statusList.map(
-status=>`
+${statusList.map(status=>`
 
 <div class="history-item">
 
-<span>
-${status}
-</span>
+<span>${status}</span>
 
 <strong class="gold">
-
-${orders.filter(
-o=>o.status===status
-).length}
-
+${orders.filter(o=>o.status===status).length}
 </strong>
 
 </div>
 
-`
-).join("")}
+`).join("")}
 
 </div>
 
 <div class="card">
 
-<h3>
-💳 Vendas por pagamento
-</h3>
+<h3>💳 Vendas por pagamento</h3>
 
 <div class="history-item">
-
 PIX
-
-<strong class="gold">
-${money(pix)}
-</strong>
-
+<strong class="gold">${money(pix)}</strong>
 </div>
 
 <div class="history-item">
-
 Dinheiro
-
-<strong class="gold">
-${money(cash)}
-</strong>
-
+<strong class="gold">${money(cash)}</strong>
 </div>
 
 <div class="history-item">
-
 Cartão
-
-<strong class="gold">
-${money(card)}
-</strong>
-
+<strong class="gold">${money(card)}</strong>
 </div>
 
 </div>
@@ -5488,29 +3441,22 @@ ${money(card)}
 }
 
 /* ============================================================
-BAIRROS
+BAIRROS / TAXAS
 ============================================================ */
 
 async function loadDeliveryZonesAdmin(){
 
 const container=
-document.getElementById(
-"zonesContainer"
-);
+document.getElementById("zonesContainer");
 
 if(!container)return;
 
-container.innerHTML=
-"Carregando bairros...";
+container.innerHTML="Carregando bairros...";
 
-const {data,error}=
-await db
+const {data,error}=await db
 .from("delivery_zones")
 .select("*")
-.order(
-"neighborhood",
-{ascending:true}
-);
+.order("neighborhood",{ascending:true});
 
 if(error){
 
@@ -5526,10 +3472,7 @@ return;
 }
 
 deliveryZones=
-(data||[])
-.filter(
-zone=>zone.active
-);
+(data||[]).filter(zone=>zone.active);
 
 if(!data||!data.length){
 
@@ -5543,25 +3486,18 @@ return;
 }
 
 container.innerHTML=
-data.map(
-zone=>`
+data.map(zone=>`
 
 <div class="zone-row">
 
 <div>
 
 <strong>
-${escapeHtml(
-zone.neighborhood
-)}
+${escapeHtml(zone.neighborhood)}
 </strong>
 
 <div class="muted">
-${zone.active
-?
-"ATIVO"
-:
-"INATIVO"}
+${zone.active?"ATIVO":"INATIVO"}
 </div>
 
 </div>
@@ -5570,85 +3506,58 @@ ${zone.active
 id="zone-fee-${zone.id}"
 type="number"
 step="0.01"
-value=
-"${Number(zone.fee).toFixed(2)}">
+value="${Number(zone.fee).toFixed(2)}">
 
 <button
 class="btn small"
-onclick=
-"updateDeliveryZone(${zone.id})">
-
+onclick="updateDeliveryZone(${zone.id})">
 Salvar
-
 </button>
 
 <button
 class="btn small danger"
-onclick=
-"toggleDeliveryZone(${zone.id},${zone.active})">
-
-${zone.active
-?
-"Desativar"
-:
-"Ativar"}
-
+onclick="toggleDeliveryZone(${zone.id},${zone.active})">
+${zone.active?"Desativar":"Ativar"}
 </button>
 
 </div>
 
-`
-).join("");
+`).join("");
 
 }
 
 async function createDeliveryZone(){
 
 const neighborhood=
-document.getElementById(
-"zoneNeighborhood"
-).value.trim();
+document.getElementById("zoneNeighborhood")
+.value.trim();
 
 const fee=
 parseMoney(
-document.getElementById(
-"zoneFee"
-).value
+document.getElementById("zoneFee").value
 );
 
 if(!neighborhood){
 
-alert(
-"Digite o bairro."
-);
-
+alert("Digite o bairro.");
 return;
 
 }
 
 if(fee<0){
 
-alert(
-"A taxa não pode ser negativa."
-);
-
+alert("A taxa não pode ser negativa.");
 return;
 
 }
 
-const {error}=
-await db
+const {error}=await db
 .from("delivery_zones")
 .insert({
 
-neighborhood:
-neighborhood,
-
-fee:
-fee,
-
-active:
-true
+neighborhood:neighborhood,
+fee:fee,
+active:true
 
 });
 
@@ -5658,9 +3567,7 @@ console.error(error);
 
 if(error.code==="23505"){
 
-alert(
-"Esse bairro já está cadastrado."
-);
+alert("Esse bairro já está cadastrado.");
 
 }else{
 
@@ -5674,56 +3581,34 @@ return;
 
 }
 
-document.getElementById(
-"zoneNeighborhood"
-).value="";
-
-document.getElementById(
-"zoneFee"
-).value="";
+document.getElementById("zoneNeighborhood").value="";
+document.getElementById("zoneFee").value="";
 
 await loadDeliveryZonesAdmin();
-
 await loadDeliveryZones();
 
-showToast(
-"📍 Bairro adicionado!"
-);
+showToast("📍 Bairro adicionado!");
 
 }
 
 async function updateDeliveryZone(id){
 
 const input=
-document.getElementById(
-"zone-fee-"+id
-);
+document.getElementById("zone-fee-"+id);
 
-const fee=
-parseMoney(
-input.value
-);
+const fee=parseMoney(input.value);
 
 if(fee<0){
 
-alert(
-"A taxa não pode ser negativa."
-);
-
+alert("A taxa não pode ser negativa.");
 return;
 
 }
 
-const {error}=
-await db
+const {error}=await db
 .from("delivery_zones")
-.update({
-fee:fee
-})
-.eq(
-"id",
-id
-);
+.update({fee:fee})
+.eq("id",id);
 
 if(error){
 
@@ -5738,33 +3623,20 @@ return;
 }
 
 await loadDeliveryZonesAdmin();
-
 await loadDeliveryZones();
 
-showToast(
-"💰 Taxa atualizada!"
-);
+showToast("💰 Taxa atualizada!");
 
 }
 
-async function toggleDeliveryZone(
-id,
-currentActive
-){
+async function toggleDeliveryZone(id,currentActive){
 
-const {error}=
-await db
+const {error}=await db
 .from("delivery_zones")
 .update({
-
-active:
-!currentActive
-
+active:!currentActive
 })
-.eq(
-"id",
-id
-);
+.eq("id",id);
 
 if(error){
 
@@ -5779,52 +3651,7 @@ return;
 }
 
 await loadDeliveryZonesAdmin();
-
 await loadDeliveryZones();
-
-}
-
-/* ============================================================
-TAXA PADRÃO
-============================================================ */
-
-async function saveDefaultDeliveryFee(){
-
-const fee=
-parseMoney(
-document.getElementById(
-"defaultDeliveryFee"
-).value
-);
-
-if(fee<0){
-
-alert(
-"A taxa não pode ser negativa."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-delivery_fee:
-fee,
-
-default_delivery_fee:
-fee
-
-});
-
-if(!ok)return;
-
-deliveryFee=fee;
-
-showToast(
-"💰 Taxa padrão atualizada!"
-);
 
 }
 
@@ -5833,8 +3660,7 @@ REALTIME
 ============================================================ */
 
 db
-.channel("burguer-gold-realtime")
-
+.channel("orders-realtime")
 .on(
 "postgres_changes",
 {
@@ -5845,27 +3671,21 @@ table:"orders"
 async()=>{
 
 const panel=
-document.getElementById(
-"adminPanel"
-);
+document.getElementById("adminPanel");
 
 if(
 panel &&
-panel.classList.contains(
-"active"
-)
+panel.classList.contains("active")
 ){
 
 await loadOrders();
 
-const active=
-document.querySelector(
-".admin-section.active"
-);
+const activeSection=
+document.querySelector(".admin-section.active");
 
 if(
-active &&
-active.id==="admin-cash"
+activeSection &&
+activeSection.id==="admin-cash"
 ){
 
 await loadCashRegister();
@@ -5873,8 +3693,8 @@ await loadCashRegister();
 }
 
 if(
-active &&
-active.id==="admin-reports"
+activeSection &&
+activeSection.id==="admin-reports"
 ){
 
 await loadReports();
@@ -5885,28 +3705,13 @@ await loadReports();
 
 }
 )
-
 .subscribe();
-
-/* ============================================================
-ATUALIZAÇÃO DO HORÁRIO
-============================================================ */
-
-setInterval(
-updateStoreStatus,
-30000
-);
 
 /* ============================================================
 INICIALIZAÇÃO
 ============================================================ */
 
 async function init(){
-
-openingHours=
-defaultHours();
-
-await loadStoreSettings();
 
 await loadProducts();
 
@@ -5916,22 +3721,11 @@ renderCart();
 
 toggleDeliveryFields();
 
-updateStoreStatus();
+const {data}=await db.auth.getSession();
 
-const {
-data
-}=
-await db.auth.getSession();
+if(data&&data.session){
 
-if(
-data &&
-data.session
-){
-
-if(
-location.pathname===
-"/admin"
-){
+if(location.pathname==="/admin"){
 
 await showAdminPanel();
 
@@ -5939,14 +3733,9 @@ await showAdminPanel();
 
 }else{
 
-if(
-location.pathname===
-"/admin"
-){
+if(location.pathname==="/admin"){
 
-showScreen(
-"adminLogin"
-);
+showScreen("adminLogin");
 
 }
 
