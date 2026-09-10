@@ -473,49 +473,81 @@ textarea{
   margin-right:5px;
 }
 
-/* PIX */
+/* =========================
+   PIX
+========================= */
 
 .pix-box{
-  display:none;
   margin-top:15px;
-  padding:15px;
+  padding:16px;
   background:#0d0d0d;
   border:1px solid #d7aa4d;
-  border-radius:12px;
+  border-radius:13px;
 }
 
 .pix-title{
   color:#d7aa4d;
+  font-size:18px;
   font-weight:900;
-  margin-bottom:7px;
+  margin-bottom:12px;
 }
 
-.pix-description{
-  color:#aaa;
-  font-size:13px;
+.pix-text{
+  color:#ccc;
+  font-size:14px;
+  line-height:1.5;
+  margin-bottom:12px;
+}
+
+.pix-key-label{
+  color:#999;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+.pix-key{
+  padding:12px;
+  background:#181818;
+  border:1px solid #333;
+  border-radius:9px;
+  color:#fff;
+  font-weight:bold;
+  word-break:break-all;
   line-height:1.4;
-  margin-bottom:10px;
-}
-
-.pix-row{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.pix-row input{
-  margin:0;
-  min-width:0;
 }
 
 .pix-copy-btn{
-  flex:none;
+  width:100%;
+  margin-top:10px;
+  border:1px solid #444;
+  border-radius:10px;
+  padding:12px;
+  background:#222;
+  color:#fff;
+  font-weight:bold;
+}
+
+.pix-whatsapp-btn{
+  width:100%;
+  margin-top:10px;
   border:0;
   border-radius:10px;
-  padding:12px 14px;
-  background:#d7aa4d;
-  color:#111;
+  padding:13px;
+  background:#25D366;
+  color:#fff;
   font-weight:900;
+}
+
+.pix-warning{
+  color:#ff6262;
+  font-size:13px;
+  line-height:1.45;
+}
+
+.pix-success{
+  color:#58d36d;
+  font-size:13px;
+  margin-top:8px;
 }
 
 .success{
@@ -560,15 +592,6 @@ textarea{
     grid-template-columns:1fr;
   }
 
-  .pix-row{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .pix-copy-btn{
-    width:100%;
-  }
-
 }
 </style>
 </head>
@@ -592,7 +615,6 @@ textarea{
   </div>
 
 </header>
-
 
 <!-- CARDÁPIO -->
 
@@ -629,7 +651,6 @@ textarea{
   </div>
 
 </main>
-
 
 <!-- CARRINHO -->
 
@@ -675,7 +696,6 @@ textarea{
 
 </div>
 
-
 <button
   id="cartButton"
   class="cart-button"
@@ -690,7 +710,6 @@ textarea{
   </span>
 
 </button>
-
 
 <!-- CHECKOUT -->
 
@@ -707,7 +726,6 @@ textarea{
       ← Voltar ao cardápio
 
     </button>
-
 
     <div class="card">
 
@@ -747,7 +765,6 @@ textarea{
 
     </div>
 
-
     <div class="card">
 
       <h2>Seus dados</h2>
@@ -762,7 +779,6 @@ textarea{
         autocomplete="name"
         placeholder="Seu nome">
 
-
       <label for="customerPhone">
         Telefone
       </label>
@@ -774,7 +790,6 @@ textarea{
         placeholder="(00) 00000-0000">
 
     </div>
-
 
     <div class="card">
 
@@ -795,7 +810,6 @@ textarea{
 
         </label>
 
-
         <label class="radio-option">
 
           <input
@@ -812,7 +826,6 @@ textarea{
 
     </div>
 
-
     <div
       id="deliveryFields"
       class="card">
@@ -828,7 +841,6 @@ textarea{
         type="text"
         placeholder="Nome da rua">
 
-
       <label for="addressNumber">
         Número
       </label>
@@ -838,7 +850,6 @@ textarea{
         type="text"
         placeholder="Número">
 
-
       <label for="addressNeighborhood">
         Bairro
       </label>
@@ -847,7 +858,6 @@ textarea{
         id="addressNeighborhood"
         type="text"
         placeholder="Bairro">
-
 
       <label for="addressComplement">
         Complemento
@@ -860,7 +870,6 @@ textarea{
 
     </div>
 
-
     <div class="card">
 
       <h2>Pagamento</h2>
@@ -871,7 +880,7 @@ textarea{
 
       <select
         id="paymentMethod"
-        onchange="togglePix()">
+        onchange="updatePaymentFields()">
 
         <option value="">
           Selecione
@@ -891,42 +900,64 @@ textarea{
 
       </select>
 
-
       <!-- PIX -->
 
       <div
         id="pixBox"
-        class="pix-box">
+        class="pix-box"
+        style="display:none;">
 
         <div class="pix-title">
-          💳 Pague via PIX
+          💠 Pagamento via PIX
         </div>
 
-        <div class="pix-description">
-          Copie a chave PIX abaixo e faça o pagamento.
+        <div class="pix-text">
+
+          Faça o pagamento usando a chave PIX abaixo.
+          <br><br>
+
+          <strong>
+            Após realizar o pagamento, envie o comprovante pelo WhatsApp da loja.
+          </strong>
+
         </div>
 
-        <div class="pix-row">
+        <div class="pix-key-label">
+          Chave PIX
+        </div>
 
-          <input
-            id="pixKeyDisplay"
-            type="text"
-            readonly
-            placeholder="Carregando chave PIX...">
+        <div
+          id="pixKey"
+          class="pix-key">
 
-          <button
-            type="button"
-            class="pix-copy-btn"
-            onclick="copyPix()">
+          Carregando...
 
-            Copiar
+        </div>
 
-          </button>
+        <button
+          type="button"
+          class="pix-copy-btn"
+          onclick="copyPixKey()">
 
+          📋 Copiar chave PIX
+
+        </button>
+
+        <button
+          type="button"
+          class="pix-whatsapp-btn"
+          onclick="sendPixProof()">
+
+          📲 Enviar comprovante pelo WhatsApp
+
+        </button>
+
+        <div
+          id="pixStatus"
+          style="margin-top:8px;">
         </div>
 
       </div>
-
 
       <label for="orderNotes">
         Observações
@@ -938,7 +969,6 @@ textarea{
       </textarea>
 
     </div>
-
 
     <button
       id="finishOrderBtn"
@@ -952,7 +982,6 @@ textarea{
   </div>
 
 </main>
-
 
 <!-- SUCESSO -->
 
@@ -984,7 +1013,6 @@ textarea{
 
 </main>
 
-
 <script>
 
 /* =====================================================
@@ -1003,6 +1031,12 @@ const db =
     SUPABASE_KEY
   );
 
+/* =====================================================
+   WHATSAPP DA LOJA
+===================================================== */
+
+const STORE_WHATSAPP =
+  "5524998441693";
 
 /* =====================================================
    ESTADO
@@ -1015,7 +1049,6 @@ let cart = [];
 let storeSettings = null;
 
 let lastOrder = null;
-
 
 /* =====================================================
    INÍCIO
@@ -1035,9 +1068,10 @@ document.addEventListener(
 
     toggleDeliveryFields();
 
+    updatePaymentFields();
+
   }
 );
-
 
 /* =====================================================
    CONFIGURAÇÕES DA LOJA
@@ -1091,6 +1125,8 @@ async function loadStoreSettings(){
 
     }
 
+    updatePixBox();
+
   }catch(error){
 
     console.error(
@@ -1113,7 +1149,6 @@ async function loadStoreSettings(){
   }
 
 }
-
 
 /* =====================================================
    STATUS DA LOJA
@@ -1225,7 +1260,6 @@ function updateStoreStatus(){
 
 }
 
-
 /* =====================================================
    PRODUTOS
 ===================================================== */
@@ -1299,7 +1333,6 @@ async function loadProducts(){
 
 }
 
-
 /* =====================================================
    CATEGORIAS
 ===================================================== */
@@ -1355,7 +1388,6 @@ function renderCategories(){
 
 }
 
-
 function filterCategory(
   category,
   button
@@ -1376,7 +1408,6 @@ function filterCategory(
   renderProducts(category);
 
 }
-
 
 /* =====================================================
    RENDERIZAÇÃO
@@ -1535,7 +1566,6 @@ function renderProducts(
 
 }
 
-
 /* =====================================================
    CARRINHO
 ===================================================== */
@@ -1570,7 +1600,6 @@ function loadSavedCart(){
 
 }
 
-
 function saveCart(){
 
   try{
@@ -1587,7 +1616,6 @@ function saveCart(){
   }
 
 }
-
 
 function addToCart(id){
 
@@ -1637,7 +1665,6 @@ function addToCart(id){
 
 }
 
-
 function changeQuantity(
   id,
   amount
@@ -1676,7 +1703,6 @@ function changeQuantity(
   calculateCheckoutTotal();
 
 }
-
 
 function renderCart(){
 
@@ -1784,7 +1810,6 @@ function renderCart(){
 
 }
 
-
 function openCart(){
 
   document
@@ -1793,7 +1818,6 @@ function openCart(){
 
 }
 
-
 function closeCart(){
 
   document
@@ -1801,7 +1825,6 @@ function closeCart(){
     .classList.remove("active");
 
 }
-
 
 /* =====================================================
    CHECKOUT
@@ -1829,8 +1852,9 @@ function goToCheckout(){
     "checkoutScreen"
   );
 
-}
+  updatePaymentFields();
 
+}
 
 function renderCheckoutItems(){
 
@@ -1887,7 +1911,6 @@ function renderCheckoutItems(){
 
 }
 
-
 function toggleDeliveryFields(){
 
   const type =
@@ -1912,115 +1935,6 @@ function toggleDeliveryFields(){
   calculateCheckoutTotal();
 
 }
-
-
-/* =====================================================
-   PIX
-===================================================== */
-
-function togglePix(){
-
-  const payment =
-    document.getElementById(
-      "paymentMethod"
-    )?.value;
-
-  const pixBox =
-    document.getElementById(
-      "pixBox"
-    );
-
-  const pixDisplay =
-    document.getElementById(
-      "pixKeyDisplay"
-    );
-
-  if(!pixBox || !pixDisplay){
-    return;
-  }
-
-
-  if(payment === "PIX"){
-
-    const pixKey =
-      storeSettings?.pix_key || "";
-
-    if(pixKey){
-
-      pixDisplay.value =
-        pixKey;
-
-    }else{
-
-      pixDisplay.value =
-        "Chave PIX não cadastrada";
-
-    }
-
-    pixBox.style.display =
-      "block";
-
-  }else{
-
-    pixBox.style.display =
-      "none";
-
-  }
-
-}
-
-
-async function copyPix(){
-
-  const pixDisplay =
-    document.getElementById(
-      "pixKeyDisplay"
-    );
-
-  const pixKey =
-    pixDisplay?.value || "";
-
-  if(
-    !pixKey ||
-    pixKey ===
-      "Chave PIX não cadastrada"
-  ){
-
-    alert(
-      "A chave PIX ainda não foi cadastrada no painel administrativo."
-    );
-
-    return;
-
-  }
-
-
-  try{
-
-    await navigator.clipboard.writeText(
-      pixKey
-    );
-
-    alert(
-      "Chave PIX copiada!"
-    );
-
-  }catch(error){
-
-    pixDisplay.select();
-
-    document.execCommand(
-      "copy"
-    );
-
-    alert(
-      "Chave PIX copiada!"
-    );
-
-  }
-
-}
-
 
 /* =====================================================
    TOTAL
@@ -2101,6 +2015,221 @@ function calculateCheckoutTotal(){
 
 }
 
+/* =====================================================
+   PIX
+===================================================== */
+
+function updatePaymentFields(){
+
+  const payment =
+    document.getElementById(
+      "paymentMethod"
+    )?.value;
+
+  const pixBox =
+    document.getElementById(
+      "pixBox"
+    );
+
+  if(!pixBox){
+    return;
+  }
+
+  if(payment === "PIX"){
+
+    pixBox.style.display =
+      "block";
+
+    updatePixBox();
+
+  }else{
+
+    pixBox.style.display =
+      "none";
+
+  }
+
+}
+
+function updatePixBox(){
+
+  const pixBox =
+    document.getElementById(
+      "pixBox"
+    );
+
+  const pixKey =
+    document.getElementById(
+      "pixKey"
+    );
+
+  const pixStatus =
+    document.getElementById(
+      "pixStatus"
+    );
+
+  if(!pixBox || !pixKey){
+    return;
+  }
+
+  const payment =
+    document.getElementById(
+      "paymentMethod"
+    )?.value;
+
+  if(payment !== "PIX"){
+    return;
+  }
+
+  const key =
+    String(
+      storeSettings?.pix_key || ""
+    ).trim();
+
+  if(key){
+
+    pixKey.textContent =
+      key;
+
+    if(pixStatus){
+
+      pixStatus.className =
+        "pix-success";
+
+      pixStatus.textContent =
+        "Depois de pagar, envie o comprovante pelo WhatsApp da loja.";
+
+    }
+
+  }else{
+
+    pixKey.textContent =
+      "Chave PIX não configurada";
+
+    if(pixStatus){
+
+      pixStatus.className =
+        "pix-warning";
+
+      pixStatus.textContent =
+        "A loja ainda não cadastrou a chave PIX.";
+
+    }
+
+  }
+
+}
+
+async function copyPixKey(){
+
+  const key =
+    String(
+      storeSettings?.pix_key || ""
+    ).trim();
+
+  if(!key){
+
+    alert(
+      "A chave PIX ainda não foi configurada pela loja."
+    );
+
+    return;
+
+  }
+
+  try{
+
+    await navigator.clipboard.writeText(
+      key
+    );
+
+    const status =
+      document.getElementById(
+        "pixStatus"
+      );
+
+    if(status){
+
+      status.className =
+        "pix-success";
+
+      status.textContent =
+        "✅ Chave PIX copiada! Agora faça o pagamento.";
+
+    }
+
+  }catch(error){
+
+    alert(
+      "Não foi possível copiar automaticamente. Toque e segure a chave PIX para copiar."
+    );
+
+  }
+
+}
+
+/* =====================================================
+   WHATSAPP - COMPROVANTE PIX
+===================================================== */
+
+function sendPixProof(){
+
+  const name =
+    document.getElementById(
+      "customerName"
+    )?.value.trim();
+
+  if(!name){
+
+    alert(
+      "Digite seu nome antes de enviar o comprovante."
+    );
+
+    document
+      .getElementById(
+        "customerName"
+      )
+      ?.focus();
+
+    return;
+
+  }
+
+  const phone =
+    document.getElementById(
+      "customerPhone"
+    )?.value.trim();
+
+  const totals =
+    calculateCheckoutTotal();
+
+  const message =
+`Olá, Burguer Gold! 🍔
+
+Sou ${name}.
+
+Acabei de realizar o pagamento via PIX do meu pedido.
+
+💰 Valor do pedido: R$ ${formatMoney(totals.total)}
+
+📱 Telefone: ${phone || "não informado"}
+
+Estou enviando o comprovante do pagamento por aqui.`;
+
+  const whatsappUrl =
+    "https://wa.me/" +
+    STORE_WHATSAPP +
+    "?text=" +
+    encodeURIComponent(
+      message
+    );
+
+  window.open(
+    whatsappUrl,
+    "_blank"
+  );
+
+}
 
 /* =====================================================
    FINALIZAR PEDIDO
@@ -2117,7 +2246,6 @@ async function finishOrder(){
     return;
 
   }
-
 
   const nameElement =
     document.getElementById(
@@ -2139,7 +2267,6 @@ async function finishOrder(){
       "orderNotes"
     );
 
-
   const name =
     nameElement.value.trim();
 
@@ -2152,12 +2279,10 @@ async function finishOrder(){
   const notes =
     notesElement.value.trim();
 
-
   const type =
     document.querySelector(
       'input[name="orderType"]:checked'
     )?.value || "delivery";
-
 
   if(!name){
 
@@ -2171,7 +2296,6 @@ async function finishOrder(){
 
   }
 
-
   if(!phone){
 
     alert(
@@ -2183,7 +2307,6 @@ async function finishOrder(){
     return;
 
   }
-
 
   if(!payment){
 
@@ -2197,9 +2320,13 @@ async function finishOrder(){
 
   }
 
-
   let address = "";
 
+  /*
+    Não existe mais região/zona.
+    O endereço é formado somente por:
+    rua + número + bairro + complemento.
+  */
 
   if(type === "delivery"){
 
@@ -2223,7 +2350,6 @@ async function finishOrder(){
         "addressComplement"
       );
 
-
     const street =
       streetElement.value.trim();
 
@@ -2235,7 +2361,6 @@ async function finishOrder(){
 
     const complement =
       complementElement.value.trim();
-
 
     if(!street){
 
@@ -2249,7 +2374,6 @@ async function finishOrder(){
 
     }
 
-
     if(!number){
 
       alert(
@@ -2261,7 +2385,6 @@ async function finishOrder(){
       return;
 
     }
-
 
     if(!neighborhood){
 
@@ -2275,10 +2398,8 @@ async function finishOrder(){
 
     }
 
-
     address =
       `${street}, ${number} - ${neighborhood}`;
-
 
     if(complement){
 
@@ -2289,10 +2410,8 @@ async function finishOrder(){
 
   }
 
-
   const totals =
     calculateCheckoutTotal();
-
 
   const items =
     cart.map(item=>({
@@ -2311,6 +2430,9 @@ async function finishOrder(){
 
     }));
 
+  /*
+    Não enviamos delivery_zone_id.
+  */
 
   const orderData = {
 
@@ -2340,18 +2462,15 @@ async function finishOrder(){
 
   };
 
-
   const button =
     document.getElementById(
       "finishOrderBtn"
     );
 
-
   button.disabled = true;
 
   button.textContent =
     "Enviando pedido...";
-
 
   try{
 
@@ -2360,14 +2479,12 @@ async function finishOrder(){
       orderData
     );
 
-
     const result =
       await db
         .from("orders")
         .insert(orderData)
         .select()
         .single();
-
 
     if(result.error){
 
@@ -2380,10 +2497,8 @@ async function finishOrder(){
 
     }
 
-
     lastOrder =
       result.data;
-
 
     cart = [];
 
@@ -2391,17 +2506,14 @@ async function finishOrder(){
 
     renderCart();
 
-
     document.getElementById(
       "successOrderNumber"
     ).textContent =
       `Pedido #${result.data.id} recebido com sucesso!`;
 
-
     showScreen(
       "successScreen"
     );
-
 
   }catch(error){
 
@@ -2410,10 +2522,8 @@ async function finishOrder(){
       error
     );
 
-
     let message =
       "Não foi possível enviar o pedido.";
-
 
     if(error?.message){
 
@@ -2423,9 +2533,7 @@ async function finishOrder(){
 
     }
 
-
     alert(message);
-
 
   }finally{
 
@@ -2437,7 +2545,6 @@ async function finishOrder(){
   }
 
 }
-
 
 /* =====================================================
    NAVEGAÇÃO
@@ -2453,10 +2560,8 @@ function showScreen(id){
       );
     });
 
-
   const screen =
     document.getElementById(id);
-
 
   if(screen){
 
@@ -2466,14 +2571,12 @@ function showScreen(id){
 
   }
 
-
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
 
 }
-
 
 function backToMenu(){
 
@@ -2482,7 +2585,6 @@ function backToMenu(){
   );
 
 }
-
 
 /* =====================================================
    FUNÇÕES AUXILIARES
@@ -2496,7 +2598,6 @@ function formatMoney(value){
 
 }
 
-
 function escapeHtml(value){
 
   return String(value ?? "")
@@ -2508,13 +2609,11 @@ function escapeHtml(value){
 
 }
 
-
 function escapeAttribute(value){
 
   return escapeHtml(value);
 
 }
-
 
 function escapeJs(value){
 
