@@ -765,7 +765,8 @@ textarea{
       </div>
 
     </div>
-        <div class="card">
+
+    <div class="card">
 
       <h2>Seus dados</h2>
 
@@ -1064,10 +1065,6 @@ document.addEventListener(
 
     updatePaymentFields();
 
-    /*
-      Atualiza o status global da loja
-      diretamente pelo Supabase.
-    */
     setInterval(
       loadStoreSettings,
       30000
@@ -1079,6 +1076,7 @@ document.addEventListener(
 /* =====================================================
    CONFIGURAÇÕES DA LOJA
 ===================================================== */
+
 async function loadStoreSettings(){
 
   try{
@@ -1138,11 +1136,6 @@ async function loadStoreSettings(){
       error
     );
 
-    /*
-      Se o carregamento das configurações falhar,
-      não vamos bloquear a loja.
-    */
-
     storeSettings = {
       store_open:true
     };
@@ -1165,7 +1158,10 @@ async function loadDeliveryZones(){
       await db
         .from("delivery_zones")
         .select("id,name,fee")
-        .order("name",{ascending:true});
+        .order(
+          "name",
+          {ascending:true}
+        );
 
     if(result.error){
       throw result.error;
@@ -1285,8 +1281,9 @@ function updateStoreStatus(){
     open
       ? "status open"
       : "status closed";
+
 }
-  
+
 /* =====================================================
    PRODUTOS
 ===================================================== */
@@ -1592,6 +1589,7 @@ function renderProducts(
     }).join("");
 
 }
+
 /* =====================================================
    CARRINHO
 ===================================================== */
@@ -2614,12 +2612,15 @@ async function finishOrder(){
       orderData
     );
 
+    /* =================================================
+       INSERE O PEDIDO SEM SELECT
+       para não exigir permissão de leitura na orders
+    ================================================= */
+
     const result =
       await db
         .from("orders")
-        .insert(orderData)
-        .select()
-        .single();
+        .insert(orderData);
 
     if(result.error){
 
@@ -2633,7 +2634,7 @@ async function finishOrder(){
     }
 
     lastOrder =
-      result.data;
+      orderData;
 
     cart = [];
 
@@ -2644,7 +2645,7 @@ async function finishOrder(){
     document.getElementById(
       "successOrderNumber"
     ).textContent =
-      `Pedido #${result.data.id} recebido com sucesso!`;
+      "Pedido recebido com sucesso!";
 
     showScreen(
       "successScreen"
@@ -2764,4 +2765,4 @@ function escapeJs(value){
 </script>
 
 </body>
-</html>  
+</html>
