@@ -1,1 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Burguer Gold — Administração</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#090909;color:#fff}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh}
+header{background:linear-gradient(135deg,#111,#050505);border-bottom:1px solid #d4af37;padding:20px 18px;text-align:center;position:sticky;top:0;z-index:50}
+header h1{margin:0;color:#d4af37;font-size:30px}
+header p{margin:6px 0 0;color:#aaa}
+.store-status{margin-top:10px;font-size:13px;font-weight:bold}
+.status-open{color:#50d890}.status-closed{color:#ff6969}
+main{width:min(1100px,94%);margin:25px auto;padding-bottom:120px}
+.screen{display:none}.screen.active{display:block}
+.card{background:#111;border:1px solid #292929;border-radius:16px;padding:20px;margin-bottom:18px}
+.card h2,.card h3{margin-top:0;color:#d4af37}
+input,textarea,select{width:100%;padding:13px;background:#181818;color:#fff;border:1px solid #333;border-radius:10px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:#d4af37}
+label{display:block;color:#ccc;font-size:14px;margin:12px 0 6px}
+button{border:0;border-radius:10px;padding:12px 16px;font-weight:bold}
+.btn{background:#d4af37;color:#080808}
+.btn:hover{filter:brightness(1.1)}
+.btn-danger{background:#b32626;color:#fff}
+.btn-dark{background:#242424;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+.login-box{max-width:430px;margin:80px auto}
+.login-box h1{text-align:center;color:#d4af37}
+.small{font-size:13px;color:#999}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px}
+.tab{white-space:nowrap;background:#181818;color:#ccc;border:1px solid #333}
+.tab.active{background:#d4af37;color:#080808;border-color:#d4af37}
+.panel{display:none}.panel.active{display:block}
+.day{display:grid;grid-template-columns:90px 1fr 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #222}
+.day:last-child{border-bottom:0}
+.day-name{font-weight:bold}
+.closed{accent-color:#d4af37}
+.item{border:1px solid #292929;background:#151515;border-radius:12px;padding:14px;margin-bottom:10px}
+.item-title{font-weight:bold;color:#fff}
+.item-meta{font-size:13px;color:#aaa;margin-top:5px}
+.toast{position:fixed;right:20px;bottom:20px;background:#171717;border:1px solid #d4af37;color:#fff;padding:13px 17px;border-radius:12px;z-index:999;display:none}
+.toast.show{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{background:#151515;border:1px solid #292929;border-radius:12px;padding:15px}
+.stat b{display:block;font-size:24px;color:#d4af37;margin-top:6px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #292929;font-size:13px}
+th{color:#d4af37}
+.empty{padding:25px;text-align:center;color:#777}
+@media(max-width:700px){
+.grid{grid-template-columns:1fr}
+.stat-grid{grid-template-columns:repeat(2,1fr)}
+.day{grid-template-columns:70px 1fr 1fr}
+.day label{grid-column:1/-1}
+}
+</style>
+</head>
 
+<body>
+<div class="app">
+
+<header id="adminHeader" style="display:none">
+<h1>🍔 Burguer Gold</h1>
+<p>Painel Administrativo</p>
+<div id="storeStatus" class="store-status"></div>
+</header>
+
+<main>
+
+<section id="adminLogin" class="screen active">
+<div class="card login-box">
+<h1>🔐 Acesso Administrativo</h1>
+
+<label for="adminEmail">E-mail</label>
+<input id="adminEmail" type="email" autocomplete="username">
+
+<label for="adminPassword">Senha</label>
+<input id="adminPassword" type="password" autocomplete="current-password">
+
+<button class="btn" style="width:100%;margin-top:15px" onclick="adminLogin()">Entrar</button>
+</div>
+</section>
+
+<section id="adminPanel" class="screen">
+
+<div class="tabs">
+<button class="tab active" onclick="openPanel('dashboard',this)">📊 Dashboard</button>
+<button class="tab" onclick="openPanel('pedidos',this)">🧾 Pedidos</button>
+<button class="tab" onclick="openPanel('produtos',this)">🍔 Produtos</button>
+<button class="tab" onclick="openPanel('config',this)">⚙️ Configurações</button>
+<button class="tab" onclick="adminLogout()">🚪 Sair</button>
+</div>
+
+<div id="dashboard" class="panel active">
+<div class="stat-grid">
+<div class="stat">Pedidos hoje<b id="statOrders">0</b></div>
+<div class="stat">Vendas hoje<b id="statSales">R$ 0,00</b></div>
+<div class="stat">Produtos<b id="statProducts">0</b></div>
+<div class="stat">Status<b id="statStatus">—</b></div>
+</div>
+
+<div class="card" style="margin-top:18px">
+<h2>Resumo</h2>
+<div id="dashboardOrders" class="empty">Carregando...</div>
+</div>
+</div>
+
+<div id="pedidos" class="panel">
+<div class="card">
+<h2>🧾 Pedidos</h2>
+<div class="row">
+<button class="btn" onclick="loadOrders()">🔄 Atualizar</button>
+<button class="btn-dark" onclick="clearTestOrders()">🗑️ Apagar pedidos teste</button>
+</div>
+</div>
+<div id="ordersList"></div>
+</div>
+
+<div id="produtos" class="panel">
+<div class="card">
+<h2>🍔 Produtos</h2>
+<div id="productsList"></div>
+</div>
+</div>
+
+<div id="config" class="panel">
+
+<div class="card">
+<h2>🕐 Horário da loja</h2>
+<p class="small">Configure o horário que aparecerá no site do cliente.</p>
+
+<div id="hoursEditor"></div>
+
+<button class="btn" onclick="saveOpeningHours()" style="margin-top:15px">
+💾 Salvar horários
+</button>
+</div>
+
+<div class="card">
+<h2>🚚 Tempo de entrega</h2>
+<div class="grid">
+<div>
+<label>Mínimo em minutos</label>
+<input id="deliveryMin" type="number">
+</div>
+<div>
+<label>Máximo em minutos</label>
+<input id="deliveryMax" type="number">
+</div>
+</div>
+<button class="btn" onclick="saveDeliveryEstimate()" style="margin-top:15px">
+💾 Salvar estimativa
+</button>
+</div>
+
+<div class="card">
+<h2>💰 Taxa de entrega</h2>
+<label>Taxa padrão</label>
+<input id="defaultDeliveryFee" type="number" step="0.01">
+<button class="btn" onclick="saveDefaultDeliveryFee()" style="margin-top:15px">
+💾 Salvar taxa
+</button>
+</div>
+
+<div class="card">
+<h2>💳 PIX</h2>
+<label>Chave PIX</label>
+<input id="pixKeyInput">
+<button class="btn" onclick="savePixKey()" style="margin-top:15px">
+💾 Salvar PIX
+</button>
+</div>
+
+<div class="card">
+<h2>📱 WhatsApp</h2>
+<label>Número do WhatsApp</label>
+<input id="whatsappInput" placeholder="Ex.: 5524999999999">
+<button class="btn" onclick="saveWhatsapp()" style="margin-top:15px">
+💾 Salvar WhatsApp
+</button>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+</div>
+
+<script>
+const SUPABASE_URL="https://tliifpjfrjuxkjqyrvnw.supabase.co";
+const SUPABASE_KEY="sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
+
+const db=supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+const dayNames={
+domingo:"Domingo",
+segunda:"Segunda-feira",
+terca:"Terça-feira",
+quarta:"Quarta-feira",
+quinta:"Quinta-feira",
+sexta:"Sexta-feira",
+sabado:"Sábado"
+};
+
+let openingHours={};
+let deliveryMin=30;
+let deliveryMax=50;
+let deliveryFee=0;
+let pixKey="";
+let whatsappNumber="";
+let orders=[];
+let products=[];
+
+function showScreen(id){
+document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+const el=document.getElementById(id);
+if(el)el.classList.add("active");
+}
+
+function toast(msg){
+const el=document.getElementById("toast");
+el.textContent=msg;
+el.classList.add("show");
+setTimeout(()=>el.classList.remove("show"),2500);
+}
+
+function openPanel(id,button){
+document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+const p=document.getElementById(id);
+if(p)p.classList.add("active");
+if(button)button.classList.add("active");
+
+if(id==="dashboard")loadDashboard();
+if(id==="pedidos")loadOrders();
+if(id==="produtos")loadProducts();
+if(id==="config")loadSettings();
+}
+
+async function adminLogin(){
+
+const email=document.getElementById("adminEmail").value.trim();
+const password=document.getElementById("adminPassword").value;
+
+if(!email||!password){
+alert("Preencha e-mail e senha.");
+return;
+}
+
+const {data,error}=await db.auth.signInWithPassword({
+email:email,
+password:password
+});
+
+if(error){
+console.error(error);
+alert("E-mail ou senha incorretos.");
+return;
+}
+
+if(data.session){
+await showAdminPanel();
+}
+}
+
+async function adminLogout(){
+
+await db.auth.signOut();
+
+document.getElementById("adminHeader").style.display="none";
+showScreen("adminLogin");
+}
+
+async function initAdminOnly(){
+
+const {data,error}=await db.auth.getSession();
+
+if(error){
+console.error(error);
+showScreen("adminLogin");
+return;
+}
+
+if(data&&data.session){
+await showAdminPanel();
+}else{
+showScreen("adminLogin");
+}
+}
+
+async function showAdminPanel(){
+
+showScreen("adminPanel");
+document.getElementById("adminHeader").style.display="block";
+
+await loadSettings();
+await loadProducts();
+await loadOrders();
+await loadDashboard();
+}
+
+async function updateStoreSetting(fields){
+
+try{
+
+const {data,error}=await db
+.from("store_settings")
+.update(fields)
+.eq("id",1)
+.select("*")
+.maybeSingle();
+
+if(error){
+
+console.error("Erro ao salvar configuração:",error);
+
+alert(
+"Não foi possível salvar a configuração:\n\n"+
+error.message
+);
+
+return false;
+}
+
+if(!data){
+
+console.error("Nenhuma linha foi atualizada em store_settings.");
+
+alert(
+"A configuração não foi salva.\n\n"+
+"O usuário administrador não tem permissão para alterar a tabela store_settings."
+);
+
+return false;
+}
+
+return true;
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Erro ao salvar configuração:\n\n"+
+(error.message||error)
+);
+
+return false;
+}
+}
+
+async function loadSettings(){
+
+const {data,error}=await db
+.from("store_settings")
+.select("*")
+.eq("id",1)
+.maybeSingle();
+
+if(error){
+console.error(error);
+return;
+}
+
+if(!data)return;
+
+deliveryFee=Number(data.delivery_fee||0);
+deliveryMin=Number(data.delivery_min||data.estimated_delivery_min||30);
+deliveryMax=Number(data.delivery_max||data.estimated_delivery_max||50);
+pixKey=data.pix_key||"";
+whatsappNumber=data.whatsapp_number||data.whatsapp||"";
+openingHours=data.opening_hours||{};
+
+document.getElementById("deliveryMin").value=deliveryMin;
+document.getElementById("deliveryMax").value=deliveryMax;
+document.getElementById("defaultDeliveryFee").value=deliveryFee;
+document.getElementById("pixKeyInput").value=pixKey;
+document.getElementById("whatsappInput").value=whatsappNumber;
+
+renderHours();
+updateStoreStatus();
+}
+
+function renderHours(){
+
+const container=document.getElementById("hoursEditor");
+
+if(!container)return;
+
+const days=[
+"domingo",
+"segunda",
+"terca",
+"quarta",
+"quinta",
+"sexta",
+"sabado"
+];
+
+container.innerHTML=days.map(day=>{
+
+const h=openingHours[day]||{
+open:"18:00",
+close:"00:00",
+closed:false
+};
+
+return `
+<div class="day">
+<div class="day-name">${dayNames[day]}</div>
+<input id="open-${day}" type="time" value="${h.open||"18:00"}">
+<input id="close-${day}" type="time" value="${h.close||"00:00"}">
+<label style="margin:0;display:flex;gap:6px;align-items:center">
+<input id="closed-${day}" class="closed" type="checkbox" ${h.closed?"checked":""}>
+Fechado
+</label>
+</div>
+`;
+
+}).join("");
+}
+
+async function saveOpeningHours(){
+
+const newHours={};
+
+Object.keys(dayNames).forEach(day=>{
+
+const closed=document.getElementById("closed-"+day).checked;
+
+newHours[day]={
+open:document.getElementById("open-"+day).value,
+close:document.getElementById("close-"+day).value,
+closed:closed
+};
+
+});
+
+const ok=await updateStoreSetting({
+opening_hours:newHours
+});
+
+if(!ok)return;
+
+openingHours=newHours;
+
+updateStoreStatus();
+
+toast("🕐 Horários salvos!");
+
+}
+
+async function saveDeliveryEstimate(){
+
+const min=Number(document.getElementById("deliveryMin").value);
+const max=Number(document.getElementById("deliveryMax").value);
+
+if(!min||!max||min<=0||max<=0){
+alert("Digite tempos válidos.");
+return;
+}
+
+if(max<min){
+alert("O tempo máximo não pode ser menor que o mínimo.");
+return;
+}
+
+const ok=await updateStoreSetting({
+delivery_min:min,
+delivery_max:max,
+estimated_delivery_min:min,
+estimated_delivery_max:max
+});
+
+if(!ok)return;
+
+deliveryMin=min;
+deliveryMax=max;
+
+toast("🚚 Estimativa atualizada!");
+}
+
+async function savePixKey(){
+
+const key=document.getElementById("pixKeyInput").value.trim();
+
+if(!key){
+alert("Digite a chave PIX.");
+return;
+}
+
+const ok=await updateStoreSetting({
+pix_key:key
+});
+
+if(!ok)return;
+
+pixKey=key;
+
+toast("💳 PIX salvo!");
+}
+
+async function saveWhatsapp(){
+
+let number=document.getElementById("whatsappInput").value.trim();
+
+number=number.replace(/\D/g,"");
+
+if(!number){
+alert("Digite o número do WhatsApp.");
+return;
+}
+
+const ok=await updateStoreSetting({
+whatsapp:number,
+whatsapp_number:number
+});
+
+if(!ok)return;
+
+whatsappNumber=number;
+
+toast("📱 WhatsApp salvo!");
+}
+
+async function saveDefaultDeliveryFee(){
+
+const fee=Number(
+document.getElementById("defaultDeliveryFee").value
+);
+
+if(fee<0||Number.isNaN(fee)){
+alert("Digite uma taxa válida.");
+return;
+}
+
+const ok=await updateStoreSetting({
+delivery_fee:fee
+});
+
+if(!ok)return;
+
+deliveryFee=fee;
+
+toast("💰 Taxa padrão salva!");
+}
+
+function updateStoreStatus(){
+
+const el=document.getElementById("storeStatus");
+const now=new Date();
+
+const names=[
+"domingo",
+"segunda",
+"terca",
+"quarta",
+"quinta",
+"sexta",
+"sabado"
+];
+
+const day=names[now.getDay()];
+const h=openingHours[day];
+
+if(!h||h.closed){
+el.textContent="🔴 Loja fechada";
+el.className="store-status status-closed";
+document.getElementById("statStatus").textContent="Fechada";
+return;
+}
+
+const current=now.getHours()*60+now.getMinutes();
+
+const [oh,om]=(h.open||"18:00").split(":").map(Number);
+const [ch,cm]=(h.close||"00:00").split(":").map(Number);
+
+const open=oh*60+om;
+let close=ch*60+cm;
+
+if(close<=open)close+=1440;
+
+let currentAdjusted=current;
+
+if(currentAdjusted<open&&close>1440)
+currentAdjusted+=1440;
+
+const isOpen=
+currentAdjusted>=open&&
+currentAdjusted<close;
+
+if(isOpen){
+el.textContent="🟢 Loja aberta";
+el.className="store-status status-open";
+document.getElementById("statStatus").textContent="Aberta";
+}else{
+el.textContent="🔴 Loja fechada";
+el.className="store-status status-closed";
+document.getElementById("statStatus").textContent="Fechada";
+}
+}
+
+async function loadOrders(){
+
+const box=document.getElementById("ordersList");
+
+if(!box)return;
+
+box.innerHTML='<div class="card empty">Carregando pedidos...</div>';
+
+const {data,error}=await db
+.from("orders")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error){
+
+console.error(error);
+
+box.innerHTML=
+'<div class="card empty">Erro ao carregar pedidos.</div>';
+
+return;
+}
+
+orders=data||[];
+
+if(!orders.length){
+
+box.innerHTML='<div class="card empty">Nenhum pedido encontrado.</div>';
+
+return;
+}
+
+box.innerHTML=orders.map(order=>{
+
+const date=order.created_at?
+new Date(order.created_at).toLocaleString("pt-BR"):
+"";
+
+const total=Number(
+order.total||
+order.total_amount||
+order.valor_total||
+0
+);
+
+const status=order.status||"—";
+
+return `
+<div class="card">
+<h3>Pedido #${order.id}</h3>
+<div class="item-meta">${date}</div>
+<div class="item-meta">Status: ${status}</div>
+<div class="item-meta">Cliente: ${order.customer_name||order.nome||"—"}</div>
+<div class="item-meta">Telefone: ${order.phone||order.whatsapp||"—"}</div>
+<div class="item-meta">Endereço: ${order.address||order.endereco||"—"}</div>
+<div style="margin-top:12px;font-size:18px;color:#d4af37;font-weight:bold">
+R$ ${total.toFixed(2).replace(".",",")}
+</div>
+</div>
+`;
+
+}).join("");
+
+}
+
+async function clearTestOrders(){
+
+if(!confirm(
+"Tem certeza que deseja apagar os pedidos de teste?"
+))return;
+
+const testIds=orders
+.filter(o=>{
+const text=JSON.stringify(o).toLowerCase();
+return text.includes("teste")||
+text.includes("test");
+})
+.map(o=>o.id)
+.filter(Boolean);
+
+if(!testIds.length){
+alert("Nenhum pedido de teste encontrado.");
+return;
+}
+
+const {error}=await db
+.from("orders")
+.delete()
+.in("id",testIds);
+
+if(error){
+alert("Não foi possível apagar os pedidos:\n\n"+error.message);
+return;
+}
+
+toast("🗑️ Pedidos teste apagados!");
+
+await loadOrders();
+await loadDashboard();
+}
+
+async function loadProducts(){
+
+const box=document.getElementById("productsList");
+
+if(!box)return;
+
+box.innerHTML='<div class="empty">Carregando produtos...</div>';
+
+const {data,error}=await db
+.from("products")
+.select("*")
+.order("name",{ascending:true});
+
+if(error){
+
+console.error(error);
+
+box.innerHTML=
+'<div class="empty">Erro ao carregar produtos.</div>';
+
+return;
+}
+
+products=data||[];
+
+document.getElementById("statProducts").textContent=
+products.length;
+
+if(!products.length){
+
+box.innerHTML=
+'<div class="empty">Nenhum produto encontrado.</div>';
+
+return;
+}
+
+box.innerHTML=products.map(p=>{
+
+const price=Number(p.price||0);
+
+return `
+<div class="item">
+<div class="item-title">${p.name||"Produto"}</div>
+<div class="item-meta">
+R$ ${price.toFixed(2).replace(".",",")}
+</div>
+<div class="item-meta">
+${p.available===false?"🔴 Indisponível":"🟢 Disponível"}
+</div>
+</div>
+`;
+
+}).join("");
+
+}
+
+async function loadDashboard(){
+
+const today=new Date();
+
+const start=new Date(
+today.getFullYear(),
+today.getMonth(),
+today.getDate()
+).toISOString();
+
+const {data,error}=await db
+.from("orders")
+.select("*")
+.gte("created_at",start);
+
+if(error){
+console.error(error);
+return;
+}
+
+const list=data||[];
+
+const sales=list.reduce((sum,o)=>{
+
+return sum+
+Number(
+o.total||
+o.total_amount||
+o.valor_total||
+0
+);
+
+},0);
+
+document.getElementById("statOrders").textContent=list.length;
+
+document.getElementById("statSales").textContent=
+"R$ "+sales.toFixed(2).replace(".",",");
+
+const box=document.getElementById("dashboardOrders");
+
+if(!list.length){
+
+box.innerHTML="Nenhum pedido hoje.";
+
+return;
+}
+
+box.innerHTML=
+`Hoje foram recebidos <b>${list.length}</b> pedido(s), totalizando <b>R$ ${sales.toFixed(2).replace(".",",")}</b>.`;
+
+}
+
+initAdminOnly();
+
+setInterval(()=>{
+if(document.getElementById("adminPanel").classList.contains("active")){
+updateStoreStatus();
+}
+},60000);
+</script>
+
+</body>
+</html>
