@@ -34,8 +34,6 @@ button:disabled{
   cursor:not-allowed;
 }
 
-/* HEADER */
-
 .header{
   position:sticky;
   top:0;
@@ -79,15 +77,11 @@ button:disabled{
   color:#ff6262;
 }
 
-/* CONTAINER */
-
 .container{
   width:calc(100% - 28px);
   max-width:1050px;
   margin:auto;
 }
-
-/* HERO */
 
 .hero{
   padding:30px 0 18px;
@@ -102,8 +96,6 @@ button:disabled{
   margin:0;
   color:#999;
 }
-
-/* CATEGORIAS */
 
 .categories{
   display:flex;
@@ -132,8 +124,6 @@ button:disabled{
   border-color:#d7aa4d;
   font-weight:bold;
 }
-
-/* PRODUTOS */
 
 .category-title{
   color:#d7aa4d;
@@ -231,8 +221,6 @@ button:disabled{
   padding:60px 15px;
 }
 
-/* BOTÃO CARRINHO */
-
 .cart-button{
   position:fixed;
   right:18px;
@@ -257,8 +245,6 @@ button:disabled{
   color:#fff;
   text-align:center;
 }
-
-/* CARRINHO */
 
 .overlay{
   position:fixed;
@@ -372,8 +358,6 @@ button:disabled{
   color:#fff;
 }
 
-/* TELAS */
-
 .screen{
   display:none;
 }
@@ -381,8 +365,6 @@ button:disabled{
 .screen.active{
   display:block;
 }
-
-/* CHECKOUT */
 
 .checkout{
   padding:25px 0 50px;
@@ -491,8 +473,6 @@ textarea{
   margin-right:5px;
 }
 
-/* SUCESSO */
-
 .success{
   text-align:center;
   padding:80px 20px;
@@ -511,8 +491,6 @@ textarea{
   color:#aaa;
   margin-bottom:25px;
 }
-
-/* MOBILE */
 
 @media(max-width:600px){
 
@@ -544,6 +522,7 @@ textarea{
 <body>
 
 <header class="header">
+
   <div class="header-inner">
 
     <div class="logo">
@@ -557,8 +536,11 @@ textarea{
     </div>
 
   </div>
+
 </header>
 
+
+<!-- CARDÁPIO -->
 
 <main
   id="menuScreen"
@@ -595,6 +577,8 @@ textarea{
 </main>
 
 
+<!-- CARRINHO -->
+
 <div
   id="cartOverlay"
   class="overlay">
@@ -628,7 +612,9 @@ textarea{
     <button
       class="primary-btn"
       onclick="goToCheckout()">
+
       Finalizar pedido
+
     </button>
 
   </div>
@@ -652,6 +638,8 @@ textarea{
 </button>
 
 
+<!-- CHECKOUT -->
+
 <main
   id="checkoutScreen"
   class="screen">
@@ -661,7 +649,9 @@ textarea{
     <button
       class="back-btn"
       onclick="backToMenu()">
+
       ← Voltar ao cardápio
+
     </button>
 
 
@@ -872,6 +862,8 @@ textarea{
 </main>
 
 
+<!-- SUCESSO -->
+
 <main
   id="successScreen"
   class="screen">
@@ -903,6 +895,10 @@ textarea{
 
 <script>
 
+/* =====================================================
+   SUPABASE
+===================================================== */
+
 const SUPABASE_URL =
   "https://xmxacmfzwrvrrmayivph.supabase.co";
 
@@ -916,9 +912,11 @@ const db =
   );
 
 
-let products = [];
+/* =====================================================
+   ESTADO
+===================================================== */
 
-let deliveryZones = [];
+let products = [];
 
 let cart = [];
 
@@ -926,6 +924,10 @@ let storeSettings = null;
 
 let lastOrder = null;
 
+
+/* =====================================================
+   INÍCIO
+===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -937,8 +939,6 @@ document.addEventListener(
 
     await loadProducts();
 
-    await loadDeliveryZones();
-
     renderCart();
 
     toggleDeliveryFields();
@@ -947,7 +947,9 @@ document.addEventListener(
 );
 
 
-/* CONFIGURAÇÕES */
+/* =====================================================
+   CONFIGURAÇÕES DA LOJA
+===================================================== */
 
 async function loadStoreSettings(){
 
@@ -1004,15 +1006,26 @@ async function loadStoreSettings(){
       error
     );
 
-    document.getElementById(
-      "storeStatus"
-    ).textContent =
-      "Burguer Gold";
+    const status =
+      document.getElementById(
+        "storeStatus"
+      );
+
+    if(status){
+
+      status.textContent =
+        "Burguer Gold";
+
+    }
 
   }
 
 }
 
+
+/* =====================================================
+   STATUS DA LOJA
+===================================================== */
 
 function updateStoreStatus(){
 
@@ -1121,7 +1134,9 @@ function updateStoreStatus(){
 }
 
 
-/* PRODUTOS */
+/* =====================================================
+   PRODUTOS
+===================================================== */
 
 async function loadProducts(){
 
@@ -1180,7 +1195,9 @@ async function loadProducts(){
         <button
           class="primary-btn"
           onclick="loadProducts()">
+
           Tentar novamente
+
         </button>
 
       </div>
@@ -1191,7 +1208,9 @@ async function loadProducts(){
 }
 
 
-/* CATEGORIAS */
+/* =====================================================
+   CATEGORIAS
+===================================================== */
 
 function renderCategories(){
 
@@ -1220,7 +1239,9 @@ function renderCategories(){
     <button
       class="category-btn active"
       onclick="filterCategory('all',this)">
+
       Todos
+
     </button>
 
     ${categories.map(category=>`
@@ -1265,7 +1286,9 @@ function filterCategory(
 }
 
 
-/* RENDERIZAÇÃO */
+/* =====================================================
+   RENDERIZAÇÃO
+===================================================== */
 
 function renderProducts(
   selectedCategory="all"
@@ -1352,7 +1375,9 @@ function renderProducts(
                     <div
                       class="no-image"
                       style="display:none">
+
                       🍔
+
                     </div>
                   `
                   : `
@@ -1365,23 +1390,29 @@ function renderProducts(
                 <div class="product-content">
 
                   <div class="product-name">
+
                     ${escapeHtml(
                       product.name
                     )}
+
                   </div>
 
                   <div class="product-description">
+
                     ${escapeHtml(
                       product.description || ""
                     )}
+
                   </div>
 
                   <div class="product-bottom">
 
                     <span class="price">
+
                       R$ ${formatMoney(
                         product.price
                       )}
+
                     </span>
 
                     <button
@@ -1413,7 +1444,9 @@ function renderProducts(
 }
 
 
-/* CARRINHO */
+/* =====================================================
+   CARRINHO
+===================================================== */
 
 function loadSavedCart(){
 
@@ -1612,11 +1645,15 @@ function renderCart(){
         <div class="cart-item-info">
 
           <div class="cart-item-name">
+
             ${escapeHtml(item.name)}
+
           </div>
 
           <div class="cart-item-price">
+
             R$ ${formatMoney(item.price)}
+
           </div>
 
         </div>
@@ -1628,7 +1665,9 @@ function renderCart(){
               '${escapeJs(item.id)}',
               -1
             )">
+
             −
+
           </button>
 
           <strong>
@@ -1640,7 +1679,9 @@ function renderCart(){
               '${escapeJs(item.id)}',
               1
             )">
+
             +
+
           </button>
 
         </div>
@@ -1670,7 +1711,9 @@ function closeCart(){
 }
 
 
-/* CHECKOUT */
+/* =====================================================
+   CHECKOUT
+===================================================== */
 
 function goToCheckout(){
 
@@ -1729,65 +1772,26 @@ function renderCheckoutItems(){
           </strong>
 
           <small>
+
             ${item.qty}x
             R$ ${formatMoney(item.price)}
+
           </small>
 
         </div>
 
         <strong>
+
           R$ ${formatMoney(
             Number(item.price) *
             Number(item.qty)
           )}
+
         </strong>
 
       </div>
 
     `).join("");
-
-}
-
-
-async function loadDeliveryZones(){
-
-  /*
-    Mantido apenas para compatibilidade
-    com a estrutura atual do sistema.
-    A região não é mais usada no cliente.
-  */
-
-  try{
-
-    const result =
-      await db
-        .from("delivery_zones")
-        .select("id,name,fee")
-        .eq("active",true)
-        .order("name");
-
-    if(result.error){
-      console.warn(
-        "Não foi possível carregar zonas:",
-        result.error
-      );
-
-      deliveryZones = [];
-
-      return;
-
-    }
-
-    deliveryZones =
-      result.data || [];
-
-  }catch(error){
-
-    console.warn(error);
-
-    deliveryZones = [];
-
-  }
 
 }
 
@@ -1818,6 +1822,10 @@ function toggleDeliveryFields(){
 }
 
 
+/* =====================================================
+   TOTAL
+===================================================== */
+
 function calculateCheckoutTotal(){
 
   const subtotal =
@@ -1828,11 +1836,6 @@ function calculateCheckoutTotal(){
         Number(item.qty),
       0
     );
-
-  /*
-    A entrega não depende mais de região.
-    A taxa padrão configurada na loja será usada.
-  */
 
   let deliveryFee = 0;
 
@@ -1854,20 +1857,41 @@ function calculateCheckoutTotal(){
   const total =
     subtotal + deliveryFee;
 
-  document.getElementById(
-    "checkoutSubtotal"
-  ).textContent =
-    `R$ ${formatMoney(subtotal)}`;
+  const subtotalElement =
+    document.getElementById(
+      "checkoutSubtotal"
+    );
 
-  document.getElementById(
-    "checkoutDeliveryFee"
-  ).textContent =
-    `R$ ${formatMoney(deliveryFee)}`;
+  const deliveryElement =
+    document.getElementById(
+      "checkoutDeliveryFee"
+    );
 
-  document.getElementById(
-    "checkoutTotal"
-  ).textContent =
-    `R$ ${formatMoney(total)}`;
+  const totalElement =
+    document.getElementById(
+      "checkoutTotal"
+    );
+
+  if(subtotalElement){
+
+    subtotalElement.textContent =
+      `R$ ${formatMoney(subtotal)}`;
+
+  }
+
+  if(deliveryElement){
+
+    deliveryElement.textContent =
+      `R$ ${formatMoney(deliveryFee)}`;
+
+  }
+
+  if(totalElement){
+
+    totalElement.textContent =
+      `R$ ${formatMoney(total)}`;
+
+  }
 
   return {
     subtotal,
@@ -1878,7 +1902,9 @@ function calculateCheckoutTotal(){
 }
 
 
-/* FINALIZAR PEDIDO */
+/* =====================================================
+   FINALIZAR PEDIDO
+===================================================== */
 
 async function finishOrder(){
 
@@ -1892,30 +1918,46 @@ async function finishOrder(){
 
   }
 
-  const name =
+
+  const nameElement =
     document.getElementById(
       "customerName"
-    ).value.trim();
+    );
 
-  const phone =
+  const phoneElement =
     document.getElementById(
       "customerPhone"
-    ).value.trim();
+    );
 
-  const payment =
+  const paymentElement =
     document.getElementById(
       "paymentMethod"
-    ).value;
+    );
 
-  const notes =
+  const notesElement =
     document.getElementById(
       "orderNotes"
-    ).value.trim();
+    );
+
+
+  const name =
+    nameElement.value.trim();
+
+  const phone =
+    phoneElement.value.trim();
+
+  const payment =
+    paymentElement.value;
+
+  const notes =
+    notesElement.value.trim();
+
 
   const type =
     document.querySelector(
       'input[name="orderType"]:checked'
     )?.value || "delivery";
+
 
   if(!name){
 
@@ -1923,9 +1965,12 @@ async function finishOrder(){
       "Digite seu nome."
     );
 
+    nameElement.focus();
+
     return;
 
   }
+
 
   if(!phone){
 
@@ -1933,9 +1978,12 @@ async function finishOrder(){
       "Digite seu telefone."
     );
 
+    phoneElement.focus();
+
     return;
 
   }
+
 
   if(!payment){
 
@@ -1943,46 +1991,90 @@ async function finishOrder(){
       "Selecione a forma de pagamento."
     );
 
+    paymentElement.focus();
+
     return;
 
   }
 
+
   let address = "";
 
-  let zoneId = null;
+  /*
+    Não existe mais região/zona.
+    O endereço é formado somente por:
+    rua + número + bairro + complemento.
+  */
 
   if(type === "delivery"){
 
-    const street =
+    const streetElement =
       document.getElementById(
         "addressStreet"
-      ).value.trim();
+      );
 
-    const number =
+    const numberElement =
       document.getElementById(
         "addressNumber"
-      ).value.trim();
+      );
 
-    const neighborhood =
+    const neighborhoodElement =
       document.getElementById(
         "addressNeighborhood"
-      ).value.trim();
+      );
 
-    const complement =
+    const complementElement =
       document.getElementById(
         "addressComplement"
-      ).value.trim();
+      );
 
 
-    if(
-      !street ||
-      !number ||
-      !neighborhood
-    ){
+    const street =
+      streetElement.value.trim();
+
+    const number =
+      numberElement.value.trim();
+
+    const neighborhood =
+      neighborhoodElement.value.trim();
+
+    const complement =
+      complementElement.value.trim();
+
+
+    if(!street){
 
       alert(
-        "Preencha rua, número e bairro."
+        "Digite o nome da rua."
       );
+
+      streetElement.focus();
+
+      return;
+
+    }
+
+
+    if(!number){
+
+      alert(
+        "Digite o número."
+      );
+
+      numberElement.focus();
+
+      return;
+
+    }
+
+
+    if(!neighborhood){
+
+      alert(
+        "Digite o bairro."
+      );
+
+      neighborhoodElement.focus();
 
       return;
 
@@ -1991,6 +2083,7 @@ async function finishOrder(){
 
     address =
       `${street}, ${number} - ${neighborhood}`;
+
 
     if(complement){
 
@@ -2024,6 +2117,12 @@ async function finishOrder(){
     }));
 
 
+  /*
+    IMPORTANTE:
+    Não enviamos delivery_zone_id.
+    A região foi removida completamente.
+  */
+
   const orderData = {
 
     customer_name:name,
@@ -2033,8 +2132,6 @@ async function finishOrder(){
     order_type:type,
 
     address:address,
-
-    delivery_zone_id:zoneId,
 
     payment_method:payment,
 
@@ -2069,6 +2166,12 @@ async function finishOrder(){
 
   try{
 
+    console.log(
+      "Enviando pedido:",
+      orderData
+    );
+
+
     const result =
       await db
         .from("orders")
@@ -2078,7 +2181,14 @@ async function finishOrder(){
 
 
     if(result.error){
+
+      console.error(
+        "Erro retornado pelo Supabase:",
+        result.error
+      );
+
       throw result.error;
+
     }
 
 
@@ -2107,13 +2217,25 @@ async function finishOrder(){
   }catch(error){
 
     console.error(
-      "Erro ao enviar pedido:",
+      "ERRO AO FINALIZAR PEDIDO:",
       error
     );
 
-    alert(
-      "Não foi possível enviar o pedido. Tente novamente."
-    );
+
+    let message =
+      "Não foi possível enviar o pedido.";
+
+
+    if(error?.message){
+
+      message +=
+        "\n\n" +
+        error.message;
+
+    }
+
+
+    alert(message);
 
 
   }finally{
@@ -2128,7 +2250,9 @@ async function finishOrder(){
 }
 
 
-/* NAVEGAÇÃO */
+/* =====================================================
+   NAVEGAÇÃO
+===================================================== */
 
 function showScreen(id){
 
@@ -2140,8 +2264,10 @@ function showScreen(id){
       );
     });
 
+
   const screen =
     document.getElementById(id);
+
 
   if(screen){
 
@@ -2150,6 +2276,7 @@ function showScreen(id){
     );
 
   }
+
 
   window.scrollTo({
     top:0,
@@ -2168,7 +2295,9 @@ function backToMenu(){
 }
 
 
-/* AUXILIARES */
+/* =====================================================
+   FUNÇÕES AUXILIARES
+===================================================== */
 
 function formatMoney(value){
 
