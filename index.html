@@ -576,6 +576,42 @@ textarea{
   margin-bottom:25px;
 }
 
+/* =====================================================
+   ACOMPANHAMENTO DO PEDIDO
+===================================================== */
+
+.order-tracking{
+  margin-top:25px;
+  padding:20px;
+  background:#151515;
+  border:1px solid #292929;
+  border-radius:16px;
+  text-align:left;
+}
+
+.order-tracking-title{
+  color:#d7aa4d;
+  font-size:20px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.order-status-icon{
+  font-size:42px;
+  margin-bottom:8px;
+}
+
+.order-status-text{
+  font-size:22px;
+  font-weight:900;
+}
+
+.order-status-message{
+  color:#999;
+  margin-top:7px;
+  line-height:1.4;
+}
+
 @media(max-width:600px){
 
   .header-inner{
@@ -1005,8 +1041,42 @@ textarea{
     <h1>Pedido enviado!</h1>
 
     <p id="successOrderNumber">
-      Seu pedido foi recebido.
+      Pedido recebido com sucesso!
     </p>
+
+    <div
+      id="orderTracking"
+      class="order-tracking">
+
+      <div class="order-tracking-title">
+        📦 Acompanhe seu pedido
+      </div>
+
+      <div
+        id="orderStatusIcon"
+        class="order-status-icon">
+
+        🟡
+
+      </div>
+
+      <div
+        id="orderStatusText"
+        class="order-status-text">
+
+        Pendente
+
+      </div>
+
+      <div
+        id="orderStatusMessage"
+        class="order-status-message">
+
+        Seu pedido está aguardando confirmação da loja.
+
+      </div>
+
+    </div>
 
     <button
       class="secondary-btn"
@@ -1046,6 +1116,12 @@ let storeSettings = null;
 let deliveryZones = [];
 
 let lastOrder = null;
+
+/* NOVO: acompanhamento do pedido */
+
+let customerOrderId = null;
+
+let orderStatusChannel = null;
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -2564,7 +2640,19 @@ async function finishOrder(){
 
     }));
 
+  /* =================================================
+     NOVO:
+     Gera o ID do pedido antes de inserir.
+     Isso permite que o cliente acompanhe
+     exatamente o próprio pedido.
+  ================================================= */
+
+  const orderId =
+    crypto.randomUUID();
+
   const orderData = {
+
+    id:orderId,
 
     customer_name:name,
 
@@ -2612,11 +2700,6 @@ async function finishOrder(){
       orderData
     );
 
-    /* =================================================
-       INSERE O PEDIDO SEM SELECT
-       para não exigir permissão de leitura na orders
-    ================================================= */
-
     const result =
       await db
         .from("orders")
@@ -2635,6 +2718,26 @@ async function finishOrder(){
 
     lastOrder =
       orderData;
+
+    /* =================================================
+       SALVA O ID DO PEDIDO PARA ACOMPANHAMENTO
+    ================================================= */
+
+    customerOrderId =
+      orderId;
+
+    localStorage.setItem(
+      "burguer_gold_order_id",
+      orderId
+    );
+
+    /* =================================================
+       INICIA ACOMPANHAMENTO EM TEMPO REAL
+    ================================================= */
+
+    startOrderTracking(
+      orderId
+    );
 
     cart = [];
 
@@ -2679,6 +2782,162 @@ async function finishOrder(){
       "Finalizar pedido";
 
   }
+
+}
+
+/* =====================================================
+   ACOMPANHAMENTO DO PEDIDO
+===================================================== */
+
+function updateOrderStatus(status){
+
+  const icon =
+    document.getElementById(
+      "orderStatusIcon"
+    );
+
+  const text =
+    document.getElementById(
+      "orderStatusText"
+    );
+
+  const message =
+    document.getElementById(
+      "orderStatusMessage"
+    );
+
+  const statuses = {
+
+    pending:{
+      icon:"🟡",
+      text:"Pendente",
+      message:
+        "Seu pedido está aguardando confirmação da loja."
+    },
+
+    confirmed:{
+      icon:"🔵",
+      text:"Confirmado",
+      message:
+        "Seu pedido foi confirmado pela loja."
+    },
+
+    preparing:{
+      icon:"🟠",
+      text:"Preparando",
+      message:
+        "Seu pedido está sendo preparado. 🍔"
+    },
+
+    ready:{
+      icon:"🟣",
+      text:"Pronto",
+      message:
+        "Seu pedido está pronto!"
+    },
+
+    out_for_delivery:{
+      icon:"🚚",
+      text:"Saiu para entrega",
+      message:
+        "Seu pedido saiu para entrega. 🛵"
+    },
+
+    completed:{
+      icon:"🟢",
+      text:"Concluído",
+      message:
+        "Pedido concluído. Obrigado pela preferência! ❤️"
+    },
+
+    cancelled:{
+      icon:"🔴",
+      text:"Cancelado",
+      message:
+        "Infelizmente, seu pedido foi cancelado."
+    }
+
+  };
+
+  const current =
+    statuses[status] ||
+    statuses.pending;
+
+  if(icon){
+
+    icon.textContent =
+      current.icon;
+
+  }
+
+  if(text){
+
+    text.textContent =
+      current.text;
+
+  }
+
+  if(message){
+
+    message.textContent =
+      current.message;
+
+  }
+
+}
+
+function startOrderTracking(orderId){
+
+  if(!orderId){
+    return;
+  }
+
+  customerOrderId =
+    orderId;
+
+  updateOrderStatus(
+    "pending"
+  );
+
+  if(orderStatusChannel){
+
+    db.removeChannel(
+      orderStatusChannel
+    );
+
+  }
+
+  orderStatusChannel =
+    db
+      .channel(
+        "burguer-gold-order-" +
+        orderId
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"UPDATE",
+          schema:"public",
+          table:"orders",
+          filter:
+            "id=eq." + orderId
+        },
+        function(payload){
+
+          const newStatus =
+            payload?.new?.status;
+
+          if(newStatus){
+
+            updateOrderStatus(
+              newStatus
+            );
+
+          }
+
+        }
+      )
+      .subscribe();
 
 }
 
