@@ -691,14 +691,10 @@ Verificando horário...
 
 <h2>🍔 Nosso cardápio</h2>
 
-<p class="muted">
-Escolha seus lanches e monte seu pedido.
-</p>
-
 <div id="categoryTabs" class="category-tabs"></div>
 
 <div id="productsContainer" class="products">
-<div class="empty">Carregando cardápio...</div>
+Carregando produtos...
 </div>
 
 </div>
@@ -1356,7 +1352,6 @@ Continuar pedido
 </div>
 
 <div id="toast" class="toast"></div>
-
 <script>
 
 /* ============================================================
@@ -1366,9 +1361,6 @@ SUPABASE
 const SUPABASE_URL =
 "https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
-/*
- COLE AQUI A SUA PUBLISHABLE KEY DO SUPABASE
-*/
 const SUPABASE_KEY =
 "sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
@@ -1646,6 +1638,7 @@ document.getElementById(
 if(!products.length){
 
 container.innerHTML=
+
 `<div class="empty">
 Nenhum produto disponível no momento.
 </div>`;
@@ -1668,6 +1661,7 @@ getProductCategory(product)===selectedCategory
 if(!filtered.length){
 
 container.innerHTML=
+
 `<div class="empty">
 Nenhum produto nesta categoria.
 </div>`;
@@ -2025,47 +2019,19 @@ function defaultHours(){
 
 return {
 
-segunda:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
+segunda:{open:"18:00",close:"00:00",closed:false},
 
-terca:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
+terca:{open:"18:00",close:"00:00",closed:false},
 
-quarta:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
+quarta:{open:"18:00",close:"00:00",closed:false},
 
-quinta:{
-open:"10:00",
-close:"22:00",
-closed:false
-},
+quinta:{open:"18:00",close:"00:00",closed:false},
 
-sexta:{
-open:"10:00",
-close:"23:00",
-closed:false
-},
+sexta:{open:"18:00",close:"00:00",closed:false},
 
-sabado:{
-open:"10:00",
-close:"23:00",
-closed:false
-},
+sabado:{open:"18:00",close:"00:00",closed:false},
 
-domingo:{
-open:"10:00",
-close:"18:00",
-closed:false
-}
+domingo:{open:"18:00",close:"00:00",closed:false}
 
 };
 
@@ -2073,45 +2039,62 @@ closed:false
 
 function normalizeOpeningHours(value){
 
-const defaults=
-defaultHours();
-
-if(!value){
-return defaults;
-}
+const defaults=defaultHours();
 
 let parsed=value;
 
 if(typeof value==="string"){
 
 try{
-
 parsed=JSON.parse(value);
+}
+catch(e){
+return defaults;
+}
 
-}catch(e){
+}
+
+if(
+!parsed ||
+typeof parsed!=="object" ||
+Array.isArray(parsed)
+){
 
 return defaults;
 
 }
 
-}
-
-if(typeof parsed!=="object"){
-return defaults;
-}
-
-const result={
-...defaults
-};
+const result={};
 
 Object.keys(defaults).forEach(day=>{
 
-if(parsed[day]){
+const item=parsed[day];
+
+if(item && typeof item==="object"){
 
 result[day]={
-...defaults[day],
-...parsed[day]
+
+open:
+(typeof item.open==="string" && item.open)
+?
+item.open
+:
+defaults[day].open,
+
+close:
+(typeof item.close==="string" && item.close)
+?
+item.close
+:
+defaults[day].close,
+
+closed:Boolean(item.closed)
+
 };
+
+}else{
+
+result[day]={...defaults[day]};
 
 }
 
@@ -2124,60 +2107,98 @@ return result;
 async function loadStoreSettings(){
 
 const {data,error}=await db
+
 .from("store_settings")
+
 .select("*")
+
 .eq("id",1)
+
 .maybeSingle();
 
 if(error){
 
 console.error(
-"Erro ao carregar configurações:",
+"Erro ao carregar configurações da loja:",
 error
 );
 
-return;
+openingHours=defaultHours();
+
+updateStoreStatus();
+
+return false;
 
 }
 
-if(!data)return;
+if(!data){
 
-if(data.delivery_fee!==undefined){
+console.warn(
+"Nenhuma configuração encontrada em store_settings para id=1."
+);
+
+openingHours=defaultHours();
+
+updateStoreStatus();
+
+return false;
+
+}
+
+if(
+data.delivery_fee!==undefined &&
+data.delivery_fee!==null
+){
 
 deliveryFee=
 Number(data.delivery_fee)||0;
 
 }
 
-if(data.default_delivery_fee!==undefined){
+if(
+data.default_delivery_fee!==undefined &&
+data.default_delivery_fee!==null
+){
 
 deliveryFee=
 Number(data.default_delivery_fee)||0;
 
 }
 
-if(data.delivery_min!==undefined){
+if(
+data.delivery_min!==undefined &&
+data.delivery_min!==null
+){
 
 deliveryMin=
 Number(data.delivery_min)||30;
 
 }
 
-if(data.delivery_max!==undefined){
+if(
+data.delivery_max!==undefined &&
+data.delivery_max!==null
+){
 
 deliveryMax=
 Number(data.delivery_max)||60;
 
 }
 
-if(data.estimated_delivery_min!==undefined){
+if(
+data.estimated_delivery_min!==undefined &&
+data.estimated_delivery_min!==null
+){
 
 deliveryMin=
 Number(data.estimated_delivery_min)||30;
 
 }
 
-if(data.estimated_delivery_max!==undefined){
+if(
+data.estimated_delivery_max!==undefined &&
+data.estimated_delivery_max!==null
+){
 
 deliveryMax=
 Number(data.estimated_delivery_max)||60;
@@ -2205,29 +2226,35 @@ String(data.whatsapp_number||"");
 
 }
 
-if(data.opening_hours!==undefined){
-
 openingHours=
 normalizeOpeningHours(
 data.opening_hours
 );
 
-}else{
+console.log(
+"CONFIGURAÇÕES DA LOJA RECEBIDAS:",
+data
+);
 
-openingHours=
-defaultHours();
-
-}
+console.log(
+"HORÁRIOS USADOS PELO SITE:",
+openingHours
+);
 
 updateStoreStatus();
+
+return true;
 
 }
 
 async function updateStoreSetting(fields){
 
 const {error}=await db
+
 .from("store_settings")
+
 .update(fields)
+
 .eq("id",1);
 
 if(error){
@@ -2254,19 +2281,27 @@ HORÁRIO
 const dayNames={
 
 segunda:"Segunda-feira",
+
 terca:"Terça-feira",
+
 quarta:"Quarta-feira",
+
 quinta:"Quinta-feira",
+
 sexta:"Sexta-feira",
+
 sabado:"Sábado",
+
 domingo:"Domingo"
 
 };
 
 function isStoreOpen(){
 
-if(!openingHours ||
-!Object.keys(openingHours).length){
+if(
+!openingHours ||
+!Object.keys(openingHours).length
+){
 
 return true;
 
@@ -2279,6 +2314,7 @@ const jsDay=
 now.getDay();
 
 const map=[
+
 "domingo",
 "segunda",
 "terca",
@@ -2286,6 +2322,7 @@ const map=[
 "quinta",
 "sexta",
 "sabado"
+
 ];
 
 const day=
@@ -2295,16 +2332,24 @@ const config=
 openingHours[day];
 
 if(!config){
+
 return true;
+
 }
 
 if(config.closed){
+
 return false;
+
 }
 
-if(!config.open ||
-!config.close){
+if(
+!config.open ||
+!config.close
+){
+
 return true;
+
 }
 
 const current=
@@ -2343,6 +2388,7 @@ const now=
 new Date();
 
 const map=[
+
 "domingo",
 "segunda",
 "terca",
@@ -2350,6 +2396,7 @@ const map=[
 "quinta",
 "sexta",
 "sabado"
+
 ];
 
 const day=
@@ -2406,13 +2453,24 @@ if(notice){
 
 notice.innerHTML=
 `
+
 <div class="store-notice">
-<strong>🟢 Estamos abertos!</strong>
+
+<strong>
+🟢 Estamos abertos!
+</strong>
+
 <br>
+
 <span class="muted">
-Hoje: ${escapeHtml(getTodayHoursText())}
+
+Hoje:
+${escapeHtml(getTodayHoursText())}
+
 </span>
+
 </div>
+
 `;
 
 }
@@ -2430,13 +2488,21 @@ if(notice){
 
 notice.innerHTML=
 `
+
 <div class="store-notice closed-box">
-<strong>🔴 Estamos fechados no momento.</strong>
+
+<strong>
+🔴 Estamos fechados no momento.
+</strong>
+
 <br>
+
 <span>
 Confira nossos horários antes de fazer seu pedido.
 </span>
+
 </div>
+
 `;
 
 }
@@ -2477,6 +2543,7 @@ ${dayNames[day]}
 <div>
 
 <label style="margin:0">
+
 Abertura
 
 <input
@@ -2492,6 +2559,7 @@ ${config.closed?"disabled":""}>
 <div>
 
 <label style="margin:0">
+
 Fechamento
 
 <input
@@ -2515,7 +2583,7 @@ style="width:auto"
 ${config.closed?"checked":""}
 onchange="toggleDay('${day}',this.checked)">
 
- Fechado
+Fechado
 
 </label>
 
@@ -2551,25 +2619,38 @@ async function saveOpeningHours(){
 
 const newHours={};
 
-Object.keys(dayNames)
-.forEach(day=>{
+Object.keys(dayNames).forEach(day=>{
 
 const closed=
 document.getElementById(
 "closed-"+day
 ).checked;
 
+const openInput=
+document.getElementById(
+"open-"+day
+);
+
+const closeInput=
+document.getElementById(
+"close-"+day
+);
+
 newHours[day]={
 
 open:
-document.getElementById(
-"open-"+day
-).value,
+openInput
+?
+(openInput.value || "18:00")
+:
+"18:00",
 
 close:
-document.getElementById(
-"close-"+day
-).value,
+closeInput
+?
+(closeInput.value || "00:00")
+:
+"00:00",
 
 closed:closed
 
@@ -2579,14 +2660,17 @@ closed:closed
 
 const ok=
 await updateStoreSetting({
-
 opening_hours:newHours
-
 });
 
 if(!ok)return;
 
-openingHours=newHours;
+openingHours=
+normalizeOpeningHours(
+newHours
+);
+
+renderOpeningHoursAdmin();
 
 updateStoreStatus();
 
@@ -2616,7 +2700,12 @@ document.getElementById(
 ).value
 );
 
-if(!min || !max || min<=0 || max<=0){
+if(
+!min ||
+!max ||
+min<=0 ||
+max<=0
+){
 
 alert(
 "Digite tempos válidos."
@@ -2652,6 +2741,7 @@ estimated_delivery_max:max
 if(!ok)return;
 
 deliveryMin=min;
+
 deliveryMax=max;
 
 showToast(
@@ -2728,7 +2818,38 @@ box.style.display="none";
 
 }
 
-async function copyPixKey(){
+function copyPixKey(){
+
+if(!pixKey){
+
+alert(
+"A chave PIX ainda não foi configurada."
+);
+
+return;
+
+}
+
+try{
+
+navigator.clipboard.writeText(
+pixKey
+);
+
+showToast(
+"📋 Chave PIX copiada!"
+);
+
+}catch(e){
+
+alert(
+"Chave PIX:\n\n"+pixKey
+);
+
+}
+
+}
+function copyPixKey(){
 
 if(!pixKey){
 
@@ -3814,7 +3935,7 @@ order=>`
 <div>
 
 <strong>
-Pedido #${order.id}
+#${order.id}
 </strong>
 
 <div class="muted">
@@ -3833,71 +3954,190 @@ order.status
 
 </div>
 
-<p>
-<strong>Cliente:</strong>
+<div class="order-customer">
+
+<strong>
 ${escapeHtml(
 order.customer_name
 )}
-</p>
+</strong>
 
-<p>
-<strong>Pedido:</strong>
+<div>
 ${order.delivery
 ?
 "🚚 Entrega"
 :
 "🏪 Retirada"}
-</p>
-
-<p>
-<strong>Endereço:</strong>
-${escapeHtml(
-order.address||"-"
-)}
-</p>
-
-<p>
-<strong>Pagamento:</strong>
-${escapeHtml(
-order.payment
-)}
-</p>
-
-<div id="items-${order.id}"
-class="order-items">
-Carregando itens...
 </div>
 
-<strong class="gold">
-Total: ${money(order.total)}
+<div class="muted">
+${escapeHtml(
+order.address||""
+)}
+</div>
+
+<div>
+💳 ${escapeHtml(
+order.payment
+)}
+</div>
+
+</div>
+
+<div class="order-items">
+
+<div class="muted">
+Itens:
+</div>
+
+`;
+
+for(const item of []){
+}
+
+container.innerHTML+=
+"";
+
+for(const order of adminOrders){
+
+}
+
+const {data:allItems,error:itemsError}=
+await db
+.from("order_items")
+.select("*");
+
+if(!itemsError){
+
+const grouped={};
+
+(allItems||[]).forEach(item=>{
+
+if(!grouped[item.order_id]){
+
+grouped[item.order_id]=[];
+
+}
+
+grouped[item.order_id].push(item);
+
+});
+
+container.innerHTML=
+adminOrders.map(
+order=>`
+
+<div class="order">
+
+<div class="order-top">
+
+<div>
+
+<strong>
+#${order.id}
 </strong>
 
-<label>
+<div class="muted">
+${formatDateTime(
+order.created_at
+)}
+</div>
 
-Alterar status
+</div>
+
+<span class="status">
+${escapeHtml(
+order.status
+)}
+</span>
+
+</div>
+
+<div class="order-customer">
+
+<strong>
+${escapeHtml(
+order.customer_name
+)}
+</strong>
+
+<div>
+${order.delivery
+?
+"🚚 Entrega"
+:
+"🏪 Retirada"}
+</div>
+
+<div class="muted">
+${escapeHtml(
+order.address||""
+)}
+</div>
+
+<div>
+💳 ${escapeHtml(
+order.payment
+)}
+</div>
+
+</div>
+
+<div class="order-items">
+
+${
+(grouped[order.id]||[]).map(
+item=>`
+
+<div class="order-item">
+
+<span>
+${item.qty}x
+${escapeHtml(item.name)}
+</span>
+
+<strong>
+${money(
+Number(item.price)*
+Number(item.qty)
+)}
+</strong>
+
+</div>
+
+`
+).join("")
+}
+
+</div>
+
+<div class="order-bottom">
+
+<strong class="gold">
+${money(order.total)}
+</strong>
 
 <select
+id="status-${order.id}"
 onchange=
-"changeOrderStatus(${order.id},this.value)">
+"updateOrderStatus(${order.id})"
+>
 
 ${[
 "RECEBIDO",
 "PREPARANDO",
 "PRONTO",
 "SAIU PARA ENTREGA",
-"ENTREGUE"
-]
-.map(
+"ENTREGUE",
+"CANCELADO"
+].map(
 status=>`
 
 <option
 value="${status}"
-${order.status===status
-?"selected"
-:""}>
-
+${order.status===status?"selected":""}
+>
 ${status}
-
 </option>
 
 `
@@ -3905,82 +4145,32 @@ ${status}
 
 </select>
 
-</label>
+</div>
 
 </div>
 
 `
 ).join("");
 
-for(
-const order of adminOrders
-){
-
-loadOrderItems(
-order.id
-);
-
 }
 
 }
 
-async function loadOrderItems(orderId){
+/* ============================================================
+ATUALIZAR STATUS
+============================================================ */
 
-const container=
+async function updateOrderStatus(orderId){
+
+const select=
 document.getElementById(
-"items-"+orderId
+"status-"+orderId
 );
 
-if(!container)return;
+if(!select)return;
 
-const {data,error}=
-await db
-.from("order_items")
-.select("*")
-.eq(
-"order_id",
-orderId
-)
-.order("id");
-
-if(error){
-
-container.textContent=
-"Erro ao carregar itens.";
-
-return;
-
-}
-
-if(!data||!data.length){
-
-container.textContent=
-"Nenhum item.";
-
-return;
-
-}
-
-container.innerHTML=
-data.map(
-item=>`
-
-${item.qty}x
-${escapeHtml(item.name)}
-—
-${money(
-item.price*item.qty
-)}
-
-`
-).join("<br>");
-
-}
-
-async function changeOrderStatus(
-orderId,
-status
-){
+const status=
+select.value;
 
 const {error}=
 await db
@@ -3998,12 +4188,16 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível alterar o status."
+"Não foi possível atualizar o status."
 );
 
 return;
 
 }
+
+showToast(
+"✅ Status atualizado!"
+);
 
 await loadOrders();
 
@@ -4017,7 +4211,7 @@ async function loadAdminProducts(){
 
 const container=
 document.getElementById(
-"adminProducts"
+"adminProductsContainer"
 );
 
 if(!container)return;
@@ -4030,7 +4224,11 @@ await db
 .from("products")
 .select("*")
 .order(
-"id",
+"category",
+{ascending:true}
+)
+.order(
+"name",
 {ascending:true}
 );
 
@@ -4047,7 +4245,10 @@ return;
 
 }
 
-if(!data||!data.length){
+adminProducts=
+data||[];
+
+if(!adminProducts.length){
 
 container.innerHTML=
 `<div class="empty">
@@ -4059,65 +4260,47 @@ return;
 }
 
 container.innerHTML=
-data.map(
+adminProducts.map(
 product=>`
 
-<div class="admin-product">
+<div class="product-admin">
 
-<h3>
-${escapeHtml(
-product.name
-)}
-</h3>
+<div>
 
-<div class="gold">
+<strong>
+${escapeHtml(product.name)}
+</strong>
 
-${categoryIcons[
-getProductCategory(product)
-]||"⭐"}
-
-${escapeHtml(
-getProductCategory(product)
-)}
+<div class="muted">
+${escapeHtml(product.category)}
+</div>
 
 </div>
 
-<p class="muted">
-${escapeHtml(
-product.description||""
-)}
-</p>
+<input
+id="product-price-${product.id}"
+type="number"
+step="0.01"
+value=
+"${Number(product.price).toFixed(2)}">
 
-<strong class="gold">
-${money(product.price)}
-</strong>
+<label class="switch">
 
-<p>
-Status:
-<strong>
-${product.active
-?
-"ATIVO"
-:
-"INATIVO"}
-</strong>
-</p>
+<input
+id="product-active-${product.id}"
+type="checkbox"
+${product.active?"checked":""}>
+
+<span></span>
+
+</label>
 
 <button
-class="btn small
-${product.active
-?
-"danger"
-:
-""}"
+class="btn small"
 onclick=
-"toggleProduct(${product.id},${product.active})">
+"saveProduct(${product.id})">
 
-${product.active
-?
-"Desativar"
-:
-"Ativar"}
+Salvar
 
 </button>
 
@@ -4128,116 +4311,49 @@ ${product.active
 
 }
 
-async function createProduct(){
+async function saveProduct(id){
 
-const name=
+const priceInput=
 document.getElementById(
-"productName"
-).value.trim();
+"product-price-"+id
+);
 
-const description=
+const activeInput=
 document.getElementById(
-"productDescription"
-).value.trim();
+"product-active-"+id
+);
 
 const price=
 parseMoney(
-document.getElementById(
-"productPrice"
-).value
+priceInput.value
 );
 
-const category=
-document.getElementById(
-"productCategory"
-).value;
+const active=
+activeInput.checked;
 
-if(!name){
+if(price<0){
 
 alert(
-"Digite o nome do produto."
+"O preço não pode ser negativo."
 );
 
 return;
 
 }
-
-if(!price||price<=0){
-
-alert(
-"Digite um preço válido."
-);
-
-return;
-
-}
-
-const {error}=
-await db
-.from("products")
-.insert({
-
-name:name,
-
-description:description,
-
-price:price,
-
-category:category,
-
-active:true
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível adicionar o produto:\n\n"+
-error.message
-);
-
-return;
-
-}
-
-document.getElementById(
-"productName"
-).value="";
-
-document.getElementById(
-"productDescription"
-).value="";
-
-document.getElementById(
-"productPrice"
-).value="";
-
-await loadAdminProducts();
-
-await loadProducts();
-
-showToast(
-"✅ Produto adicionado!"
-);
-
-}
-
-async function toggleProduct(
-productId,
-currentActive
-){
 
 const {error}=
 await db
 .from("products")
 .update({
-active:!currentActive
+
+price:price,
+
+active:active
+
 })
 .eq(
 "id",
-productId
+id
 );
 
 if(error){
@@ -4245,16 +4361,20 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível alterar o produto."
+"Não foi possível salvar o produto."
 );
 
 return;
 
 }
 
+await loadProducts();
+
 await loadAdminProducts();
 
-await loadProducts();
+showToast(
+"🍔 Produto atualizado!"
+);
 
 }
 
@@ -4270,9 +4390,6 @@ document.getElementById(
 );
 
 if(!container)return;
-
-container.innerHTML=
-"Carregando caixa...";
 
 const {data,error}=
 await db
@@ -4301,37 +4418,177 @@ return;
 
 }
 
-if(data&&data.length){
-
 currentCashRegister=
-data[0];
-
-await renderOpenCash();
-
-}else{
-
-currentCashRegister=
+data&&data.length
+?
+data[0]
+:
 null;
+
+if(!currentCashRegister){
+
+currentCashData=null;
+
+container.innerHTML=
+`
+
+<div class="card">
+
+<h3>
+🔒 Caixa fechado
+</h3>
+
+<p class="muted">
+Abra o caixa para começar a registrar as vendas.
+</p>
+
+<div class="form-row">
+
+<label>
+Valor inicial
+</label>
+
+<input
+id="openingAmount"
+type="number"
+step="0.01"
+placeholder="0,00">
+
+<button
+class="btn"
+onclick=
+"openCashRegister()">
+
+Abrir caixa
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+await loadCashHistory();
+
+return;
+
+}
 
 currentCashData=
-null;
+await calculateCashData(
+currentCashRegister
+);
 
-await renderClosedCash();
+container.innerHTML=
+`
+
+<div class="dashboard-grid">
+
+<div class="stat">
+<span>Valor inicial</span>
+<strong>
+${money(
+currentCashRegister.opening_amount
+)}
+</strong>
+</div>
+
+<div class="stat">
+<span>Vendas em dinheiro</span>
+<strong>
+${money(
+currentCashData.cashSales
+)}
+</strong>
+</div>
+
+<div class="stat">
+<span>Vendas PIX</span>
+<strong>
+${money(
+currentCashData.pixSales
+)}
+</strong>
+</div>
+
+<div class="stat">
+<span>Vendas cartão</span>
+<strong>
+${money(
+currentCashData.cardSales
+)}
+</strong>
+</div>
+
+<div class="stat">
+<span>Suprimentos</span>
+<strong>
+${money(
+currentCashData.supplies
+)}
+</strong>
+</div>
+
+<div class="stat">
+<span>Sangrias</span>
+<strong>
+${money(
+currentCashData.withdrawals
+)}
+</strong>
+</div>
+
+<div class="stat">
+<span>Dinheiro esperado</span>
+<strong class="gold">
+${money(
+currentCashData.expectedCash
+)}
+</strong>
+</div>
+
+</div>
+
+<div class="card"
+style="margin-top:18px">
+
+<h3>
+🔐 Fechar caixa
+</h3>
+
+<input
+id="closingAmount"
+type="number"
+step="0.01"
+placeholder="Valor contado">
+
+<button
+class="btn danger"
+onclick=
+"closeCashRegister()">
+
+Fechar caixa
+
+</button>
+
+</div>
+
+`;
+
+await loadCashHistory();
 
 }
 
-}
+async function calculateCashData(register){
 
-async function getCashOrders(
-openedAt
-){
+const openedAt=
+register.opened_at;
 
 const {data,error}=
 await db
 .from("orders")
-.select(
-"id,total,payment,created_at,status"
-)
+.select("*")
 .gte(
 "created_at",
 openedAt
@@ -4341,478 +4598,112 @@ if(error){
 
 console.error(error);
 
-return [];
+return {
 
-}
-
-return data||[];
-
-}
-
-async function getCashMovements(
-registerId
-){
-
-const {data,error}=
-await db
-.from("cash_movements")
-.select("*")
-.eq(
-"cash_register_id",
-registerId
-)
-.order(
-"created_at",
-{ascending:false}
-);
-
-if(error){
-
-console.error(error);
-
-return [];
-
-}
-
-return data||[];
-
-}
-
-async function calculateCashData(
-register
-){
-
-const orders=
-await getCashOrders(
-register.opened_at
-);
-
-const movements=
-await getCashMovements(
-register.id
-);
-
-let cashSales=0;
-
-let pixSales=0;
-
-let cardSales=0;
-
-orders.forEach(order=>{
-
-const amount=
-Number(order.total)||0;
-
-if(order.payment==="DINHEIRO"){
-
-cashSales+=amount;
-
-}else if(
-order.payment==="PIX"
-){
-
-pixSales+=amount;
-
-}else if(
-order.payment==="CARTAO"
-){
-
-cardSales+=amount;
-
-}
-
-});
-
-let supplies=0;
-let withdrawals=0;
-
-movements.forEach(
-movement=>{
-
-const amount=
-Number(movement.amount)||0;
-
-if(
-movement.type===
-"SUPRIMENTO"
-){
-
-supplies+=amount;
-
-}else if(
-movement.type===
-"SANGRIA"
-){
-
-withdrawals+=amount;
-
-}
-
-});
-
-const totalSales=
-cashSales+
-pixSales+
-cardSales;
-
-const expectedCash=
-Number(
-register.opening_amount
-)+
-cashSales+
-supplies-
-withdrawals;
-
-return{
-
-orders,
-
-movements,
-
-cashSales,
-
-pixSales,
-
-cardSales,
-
-totalSales,
-
-supplies,
-
-withdrawals,
-
-expectedCash
+cashSales:0,
+pixSales:0,
+cardSales:0,
+supplies:0,
+withdrawals:0,
+expectedCash:
+Number(register.opening_amount)||0
 
 };
 
 }
 
-async function renderOpenCash(){
-
-const container=
-document.getElementById(
-"cashContent"
+const orders=
+(data||[]).filter(
+o=>o.status!=="CANCELADO"
 );
 
-currentCashData=
-await calculateCashData(
-currentCashRegister
+const cashSales=
+orders
+.filter(
+o=>o.payment==="DINHEIRO"
+)
+.reduce(
+(sum,o)=>
+sum+
+Number(o.total||0),
+0
 );
 
-const c=
-currentCashData;
-
-container.innerHTML=
-`
-
-<div class="cash-status">
-
-<strong>
-🟢 CAIXA ABERTO
-</strong>
-
-<div class="muted">
-
-Aberto em:
-${formatDateTime(
-currentCashRegister.opened_at
-)}
-
-</div>
-
-</div>
-
-<div class="cash-grid">
-
-<div class="cash-box">
-<span>Valor de abertura</span>
-<strong>
-${money(
-currentCashRegister.opening_amount
-)}
-</strong>
-</div>
-
-<div class="cash-box">
-<span>Vendas em dinheiro</span>
-<strong>${money(c.cashSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Vendas no PIX</span>
-<strong>${money(c.pixSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Vendas no cartão</span>
-<strong>${money(c.cardSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Total de vendas</span>
-<strong>${money(c.totalSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Suprimentos</span>
-<strong>${money(c.supplies)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Sangrias</span>
-<strong>${money(c.withdrawals)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Esperado no caixa</span>
-<strong>${money(c.expectedCash)}</strong>
-</div>
-
-</div>
-
-<div class="card"
-style="margin-top:18px">
-
-<h3>
-💵 Movimentação
-</h3>
-
-<div class="movement">
-
-<div>
-
-<label>
-Valor
-
-<input
-id="movementAmount"
-type="number"
-step="0.01"
-placeholder="0,00">
-
-</label>
-
-</div>
-
-<div>
-
-<label>
-Observação
-
-<input
-id="movementNote"
-type="text"
-placeholder="Ex: troco / retirada">
-
-</label>
-
-</div>
-
-<div>
-
-<button
-class="btn small"
-onclick=
-"addCashMovement('SUPRIMENTO')">
-
-➕ Suprimento
-
-</button>
-
-<button
-class="btn small danger"
-onclick=
-"addCashMovement('SANGRIA')">
-
-➖ Sangria
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>
-🔒 Fechar caixa
-</h3>
-
-<label>
-
-Valor contado
-
-<input
-id="closingAmount"
-type="number"
-step="0.01"
-placeholder="0,00">
-
-</label>
-
-<button
-class="btn"
-onclick=
-"closeCashRegister()">
-
-🔒 Fechar caixa
-
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>
-📜 Movimentações recentes
-</h3>
-
-${
-c.movements.length
-?
-
-c.movements.map(
-movement=>`
-
-<div class="history-item">
-
-<strong>
-
-${movement.type===
-"SUPRIMENTO"
-?
-"➕ Suprimento"
-:
-"➖ Sangria"}
-
-</strong>
-
-<strong class="gold">
-
-${money(
-movement.amount
-)}
-
-</strong>
-
-<div class="muted">
-
-${escapeHtml(
-movement.note||""
-)}
-
-</div>
-
-<div class="muted">
-
-${formatDateTime(
-movement.created_at
-)}
-
-</div>
-
-</div>
-
-`
-).join("")
-
-:
-
-`<div class="empty">
-Nenhuma movimentação.
-</div>`
+const pixSales=
+orders
+.filter(
+o=>o.payment==="PIX"
+)
+.reduce(
+(sum,o)=>
+sum+
+Number(o.total||0),
+0
+);
+
+const cardSales=
+orders
+.filter(
+o=>o.payment==="CARTAO"
+)
+.reduce(
+(sum,o)=>
+sum+
+Number(o.total||0),
+0
+);
+
+const {data:movements,error:movementError}=
+await db
+.from("cash_movements")
+.select("*")
+.eq(
+"cash_register_id",
+register.id
+);
+
+let supplies=0;
+let withdrawals=0;
+
+if(!movementError){
+
+(movements||[]).forEach(
+movement=>{
+
+if(movement.type==="SUPRIMENTO"){
+
+supplies+=
+Number(movement.amount)||0;
 
 }
 
-</div>
+if(movement.type==="SANGRIA"){
 
-<div class="card">
-
-<h3>
-📊 Histórico de caixas
-</h3>
-
-<div id="cashHistory">
-Carregando histórico...
-</div>
-
-</div>
-
-`;
-
-await loadCashHistory();
+withdrawals+=
+Number(movement.amount)||0;
 
 }
 
-async function renderClosedCash(){
+});
 
-const container=
-document.getElementById(
-"cashContent"
-);
+}
 
-container.innerHTML=
-`
+const expectedCash=
+Number(register.opening_amount||0)+
+cashSales+
+supplies-
+withdrawals;
 
-<div class="cash-status">
+return {
 
-<strong>
-🔴 CAIXA FECHADO
-</strong>
+cashSales,
+pixSales,
+cardSales,
+supplies,
+withdrawals,
+expectedCash
 
-<div class="muted">
-Abra o caixa para começar.
-</div>
-
-</div>
-
-<div class="card"
-style="margin-top:18px">
-
-<h3>
-🟢 Abrir caixa
-</h3>
-
-<label>
-
-Valor inicial
-
-<input
-id="openingAmount"
-type="number"
-step="0.01"
-placeholder="100,00">
-
-</label>
-
-<button
-class="btn"
-onclick=
-"openCashRegister()">
-
-🟢 Abrir caixa
-
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>
-📜 Histórico de caixas
-</h3>
-
-<div id="cashHistory">
-Carregando histórico...
-</div>
-
-</div>
-
-`;
-
-await loadCashHistory();
+};
 
 }
 
@@ -4823,91 +4714,65 @@ document.getElementById(
 "openingAmount"
 );
 
-const amount=
+const openingAmount=
 parseMoney(
 input.value
 );
 
-if(amount<0){
+if(openingAmount<0){
 
 alert(
-"O valor não pode ser negativo."
+"O valor inicial não pode ser negativo."
 );
 
 return;
 
 }
 
-const {
-data:existing,
-error:existingError
-}=
-await db
-.from("cash_registers")
-.select("id")
-.eq(
-"status",
-"ABERTO"
-)
-.limit(1);
-
-if(existingError){
-
-console.error(existingError);
-
-alert(
-"Não foi possível verificar o caixa."
-);
+if(!confirm(
+"Confirma abrir o caixa com "+
+money(openingAmount)+"?"
+)){
 
 return;
 
 }
 
-if(
-existing &&
-existing.length
-){
-
-alert(
-"Já existe um caixa aberto."
-);
-
-await loadCashRegister();
-
-return;
-
-}
-
-const {error}=
+const {data,error}=
 await db
 .from("cash_registers")
 .insert({
 
 opening_amount:
-amount,
+openingAmount,
 
 status:
 "ABERTO"
 
-});
+})
+.select()
+.single();
 
 if(error){
 
 console.error(error);
 
 alert(
-"Não foi possível abrir o caixa."
+"Não foi possível abrir o caixa:\n\n"+
+error.message
 );
 
 return;
 
 }
 
-showToast(
-"🟢 Caixa aberto!"
-);
+currentCashRegister=data;
 
 await loadCashRegister();
+
+showToast(
+"💰 Caixa aberto!"
+);
 
 }
 
@@ -4916,26 +4781,29 @@ async function addCashMovement(type){
 if(!currentCashRegister){
 
 alert(
-"Não existe caixa aberto."
+"Abra o caixa primeiro."
 );
 
 return;
 
 }
 
+const label=
+type==="SUPRIMENTO"
+?
+"Suprimento"
+:
+"Sangria";
+
 const amount=
 parseMoney(
-document.getElementById(
-"movementAmount"
-).value
+prompt(
+"Digite o valor de "+
+label.toLowerCase()+":"
+)
 );
 
-const note=
-document.getElementById(
-"movementNote"
-).value.trim();
-
-if(!amount||amount<=0){
+if(amount<=0){
 
 alert(
 "Digite um valor válido."
@@ -4945,20 +4813,10 @@ return;
 
 }
 
-if(
-type==="SANGRIA"&&
-currentCashData&&
-amount>
-currentCashData.expectedCash
-){
-
-alert(
-"A sangria não pode ser maior que o valor esperado."
-);
-
-return;
-
-}
+const note=
+prompt(
+"Observação (opcional):"
+)||"";
 
 const {error}=
 await db
@@ -4981,7 +4839,7 @@ if(error){
 console.error(error);
 
 alert(
-"Não foi possível registrar a movimentação."
+"Não foi possível registrar o movimento."
 );
 
 return;
@@ -4989,6 +4847,14 @@ return;
 }
 
 await loadCashRegister();
+
+showToast(
+type==="SUPRIMENTO"
+?
+"➕ Suprimento registrado!"
+:
+"➖ Sangria registrada!"
+);
 
 }
 
@@ -5959,5 +5825,4 @@ init();
 </script>
 
 </body>
-</html>
-
+</html>  
