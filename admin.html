@@ -85,8 +85,7 @@ input,select,textarea{
 }
 
 input:focus,
-select:focus,
-textarea:focus{
+select:focus{
   border-color:#d7aa4d;
 }
 
@@ -875,13 +874,44 @@ textarea{
       </div>
 
     </section>
-
     <section
       id="settingsPanel"
       class="panel">
 
       <div class="panel-title">
+
         <h1>Configurações</h1>
+
+      </div>
+
+      <!-- STATUS GLOBAL DA LOJA -->
+
+      <div class="card">
+
+        <h2>Status da loja</h2>
+
+        <label class="switch-row">
+
+          <input
+            id="storeOpenToggle"
+            type="checkbox"
+            onchange="toggleStoreOpen()">
+
+          <span id="storeOpenLabel">
+            Carregando...
+          </span>
+
+        </label>
+
+        <div style="
+          color:#888;
+          font-size:13px;
+          margin-top:8px">
+
+          O status é global e vale para todos os clientes.
+
+        </div>
+
       </div>
 
       <div class="card">
@@ -1438,7 +1468,8 @@ textarea{
 </div>
 
 <script>
- const SUPABASE_URL =
+
+const SUPABASE_URL =
   "https://xmxacmfzwrvrrmayivph.supabase.co";
 
 const SUPABASE_KEY =
@@ -2346,8 +2377,6 @@ function setupOrderRealtime(){
   }
 
 }
-
-
 /* =========================
    PRODUTOS
 ========================= */
@@ -3206,6 +3235,99 @@ async function loadSettings(){
 }
 
 
+function renderStoreOpenControl(){
+
+  const toggle =
+    document.getElementById(
+      "storeOpenToggle"
+    );
+
+  const label =
+    document.getElementById(
+      "storeOpenLabel"
+    );
+
+  if(!toggle){
+    return;
+  }
+
+  const open =
+    storeSettings?.store_open !== false;
+
+  toggle.checked =
+    open;
+
+  if(label){
+
+    label.textContent =
+      open
+        ? "🟢 Loja aberta"
+        : "🔴 Loja fechada";
+
+  }
+
+}
+
+
+async function toggleStoreOpen(){
+
+  const toggle =
+    document.getElementById(
+      "storeOpenToggle"
+    );
+
+  if(!toggle){
+    return;
+  }
+
+  const open =
+    !!toggle.checked;
+
+  try{
+
+    const result =
+      await db
+        .from("store_settings")
+        .update({
+          store_open:open
+        })
+        .eq(
+          "id",
+          storeSettings?.id || 1
+        );
+
+    if(result.error){
+      throw result.error;
+    }
+
+    if(storeSettings){
+
+      storeSettings.store_open =
+        open;
+
+    }
+
+    renderStoreOpenControl();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao alterar o status da loja:\n\n" +
+      error.message
+    );
+
+    toggle.checked =
+      !open;
+
+    renderStoreOpenControl();
+
+  }
+
+}
+
+
 function renderSettings(){
 
   const settings =
@@ -3276,6 +3398,8 @@ function renderSettings(){
   }
 
   renderHours();
+
+  renderStoreOpenControl();
 
 }
 
@@ -4391,4 +4515,4 @@ checkSession();
 
 </script>
 </body>
-</html>
+</html>  
