@@ -473,6 +473,51 @@ textarea{
   margin-right:5px;
 }
 
+/* PIX */
+
+.pix-box{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  background:#0d0d0d;
+  border:1px solid #d7aa4d;
+  border-radius:12px;
+}
+
+.pix-title{
+  color:#d7aa4d;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+.pix-description{
+  color:#aaa;
+  font-size:13px;
+  line-height:1.4;
+  margin-bottom:10px;
+}
+
+.pix-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.pix-row input{
+  margin:0;
+  min-width:0;
+}
+
+.pix-copy-btn{
+  flex:none;
+  border:0;
+  border-radius:10px;
+  padding:12px 14px;
+  background:#d7aa4d;
+  color:#111;
+  font-weight:900;
+}
+
 .success{
   text-align:center;
   padding:80px 20px;
@@ -513,6 +558,15 @@ textarea{
 
   .products{
     grid-template-columns:1fr;
+  }
+
+  .pix-row{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .pix-copy-btn{
+    width:100%;
   }
 
 }
@@ -815,7 +869,9 @@ textarea{
         Forma de pagamento
       </label>
 
-      <select id="paymentMethod">
+      <select
+        id="paymentMethod"
+        onchange="togglePix()">
 
         <option value="">
           Selecione
@@ -834,6 +890,42 @@ textarea{
         </option>
 
       </select>
+
+
+      <!-- PIX -->
+
+      <div
+        id="pixBox"
+        class="pix-box">
+
+        <div class="pix-title">
+          💳 Pague via PIX
+        </div>
+
+        <div class="pix-description">
+          Copie a chave PIX abaixo e faça o pagamento.
+        </div>
+
+        <div class="pix-row">
+
+          <input
+            id="pixKeyDisplay"
+            type="text"
+            readonly
+            placeholder="Carregando chave PIX...">
+
+          <button
+            type="button"
+            class="pix-copy-btn"
+            onclick="copyPix()">
+
+            Copiar
+
+          </button>
+
+        </div>
+
+      </div>
 
 
       <label for="orderNotes">
@@ -1823,6 +1915,114 @@ function toggleDeliveryFields(){
 
 
 /* =====================================================
+   PIX
+===================================================== */
+
+function togglePix(){
+
+  const payment =
+    document.getElementById(
+      "paymentMethod"
+    )?.value;
+
+  const pixBox =
+    document.getElementById(
+      "pixBox"
+    );
+
+  const pixDisplay =
+    document.getElementById(
+      "pixKeyDisplay"
+    );
+
+  if(!pixBox || !pixDisplay){
+    return;
+  }
+
+
+  if(payment === "PIX"){
+
+    const pixKey =
+      storeSettings?.pix_key || "";
+
+    if(pixKey){
+
+      pixDisplay.value =
+        pixKey;
+
+    }else{
+
+      pixDisplay.value =
+        "Chave PIX não cadastrada";
+
+    }
+
+    pixBox.style.display =
+      "block";
+
+  }else{
+
+    pixBox.style.display =
+      "none";
+
+  }
+
+}
+
+
+async function copyPix(){
+
+  const pixDisplay =
+    document.getElementById(
+      "pixKeyDisplay"
+    );
+
+  const pixKey =
+    pixDisplay?.value || "";
+
+  if(
+    !pixKey ||
+    pixKey ===
+      "Chave PIX não cadastrada"
+  ){
+
+    alert(
+      "A chave PIX ainda não foi cadastrada no painel administrativo."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    await navigator.clipboard.writeText(
+      pixKey
+    );
+
+    alert(
+      "Chave PIX copiada!"
+    );
+
+  }catch(error){
+
+    pixDisplay.select();
+
+    document.execCommand(
+      "copy"
+    );
+
+    alert(
+      "Chave PIX copiada!"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
    TOTAL
 ===================================================== */
 
@@ -2000,11 +2200,6 @@ async function finishOrder(){
 
   let address = "";
 
-  /*
-    Não existe mais região/zona.
-    O endereço é formado somente por:
-    rua + número + bairro + complemento.
-  */
 
   if(type === "delivery"){
 
@@ -2116,12 +2311,6 @@ async function finishOrder(){
 
     }));
 
-
-  /*
-    IMPORTANTE:
-    Não enviamos delivery_zone_id.
-    A região foi removida completamente.
-  */
 
   const orderData = {
 
