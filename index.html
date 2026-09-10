@@ -560,10 +560,6 @@ textarea{
 </header>
 
 
-<!-- =====================================================
-     CARDÁPIO
-===================================================== -->
-
 <main
   id="menuScreen"
   class="screen active">
@@ -598,10 +594,6 @@ textarea{
 
 </main>
 
-
-<!-- =====================================================
-     CARRINHO
-===================================================== -->
 
 <div
   id="cartOverlay"
@@ -659,10 +651,6 @@ textarea{
 
 </button>
 
-
-<!-- =====================================================
-     CHECKOUT
-===================================================== -->
 
 <main
   id="checkoutScreen"
@@ -826,19 +814,6 @@ textarea{
         type="text"
         placeholder="Casa, apartamento etc.">
 
-
-      <label for="deliveryZone">
-        Região
-      </label>
-
-      <select id="deliveryZone">
-
-        <option value="">
-          Selecione sua região
-        </option>
-
-      </select>
-
     </div>
 
 
@@ -897,10 +872,6 @@ textarea{
 </main>
 
 
-<!-- =====================================================
-     PEDIDO ENVIADO
-===================================================== -->
-
 <main
   id="successScreen"
   class="screen">
@@ -932,10 +903,6 @@ textarea{
 
 <script>
 
-/* =====================================================
-   SUPABASE
-===================================================== */
-
 const SUPABASE_URL =
   "https://xmxacmfzwrvrrmayivph.supabase.co";
 
@@ -949,10 +916,6 @@ const db =
   );
 
 
-/* =====================================================
-   ESTADO
-===================================================== */
-
 let products = [];
 
 let deliveryZones = [];
@@ -963,10 +926,6 @@ let storeSettings = null;
 
 let lastOrder = null;
 
-
-/* =====================================================
-   INÍCIO
-===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -982,17 +941,13 @@ document.addEventListener(
 
     renderCart();
 
-    populateDeliveryZones();
-
     toggleDeliveryFields();
 
   }
 );
 
 
-/* =====================================================
-   CONFIGURAÇÕES DA LOJA
-===================================================== */
+/* CONFIGURAÇÕES */
 
 async function loadStoreSettings(){
 
@@ -1166,9 +1121,7 @@ function updateStoreStatus(){
 }
 
 
-/* =====================================================
-   PRODUTOS
-===================================================== */
+/* PRODUTOS */
 
 async function loadProducts(){
 
@@ -1238,9 +1191,7 @@ async function loadProducts(){
 }
 
 
-/* =====================================================
-   CATEGORIAS
-===================================================== */
+/* CATEGORIAS */
 
 function renderCategories(){
 
@@ -1314,9 +1265,7 @@ function filterCategory(
 }
 
 
-/* =====================================================
-   RENDERIZAÇÃO
-===================================================== */
+/* RENDERIZAÇÃO */
 
 function renderProducts(
   selectedCategory="all"
@@ -1464,9 +1413,7 @@ function renderProducts(
 }
 
 
-/* =====================================================
-   CARRINHO
-===================================================== */
+/* CARRINHO */
 
 function loadSavedCart(){
 
@@ -1723,9 +1670,7 @@ function closeCart(){
 }
 
 
-/* =====================================================
-   CHECKOUT
-===================================================== */
+/* CHECKOUT */
 
 function goToCheckout(){
 
@@ -1804,33 +1749,45 @@ function renderCheckoutItems(){
 }
 
 
-function populateDeliveryZones(){
+async function loadDeliveryZones(){
 
-  const select =
-    document.getElementById(
-      "deliveryZone"
-    );
+  /*
+    Mantido apenas para compatibilidade
+    com a estrutura atual do sistema.
+    A região não é mais usada no cliente.
+  */
 
-  if(!select){
-    return;
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .select("id,name,fee")
+        .eq("active",true)
+        .order("name");
+
+    if(result.error){
+      console.warn(
+        "Não foi possível carregar zonas:",
+        result.error
+      );
+
+      deliveryZones = [];
+
+      return;
+
+    }
+
+    deliveryZones =
+      result.data || [];
+
+  }catch(error){
+
+    console.warn(error);
+
+    deliveryZones = [];
+
   }
-
-  select.innerHTML = `
-
-    <option value="">
-      Selecione sua região
-    </option>
-
-    ${deliveryZones.map(zone=>`
-
-      <option value="${zone.id}">
-        ${escapeHtml(zone.name)}
-        - R$ ${formatMoney(zone.fee)}
-      </option>
-
-    `).join("")}
-
-  `;
 
 }
 
@@ -1872,6 +1829,11 @@ function calculateCheckoutTotal(){
       0
     );
 
+  /*
+    A entrega não depende mais de região.
+    A taxa padrão configurada na loja será usada.
+  */
+
   let deliveryFee = 0;
 
   const type =
@@ -1881,32 +1843,11 @@ function calculateCheckoutTotal(){
 
   if(type === "delivery"){
 
-    const zoneId =
-      document.getElementById(
-        "deliveryZone"
-      )?.value;
-
-    const zone =
-      deliveryZones.find(
-        item =>
-          String(item.id) ===
-          String(zoneId)
+    deliveryFee =
+      Number(
+        storeSettings
+          ?.default_delivery_fee || 0
       );
-
-    if(zone){
-
-      deliveryFee =
-        Number(zone.fee);
-
-    }else{
-
-      deliveryFee =
-        Number(
-          storeSettings
-            ?.default_delivery_fee || 0
-        );
-
-    }
 
   }
 
@@ -1937,9 +1878,7 @@ function calculateCheckoutTotal(){
 }
 
 
-/* =====================================================
-   FINALIZAR PEDIDO
-===================================================== */
+/* FINALIZAR PEDIDO */
 
 async function finishOrder(){
 
@@ -2034,10 +1973,6 @@ async function finishOrder(){
         "addressComplement"
       ).value.trim();
 
-    zoneId =
-      document.getElementById(
-        "deliveryZone"
-      ).value || null;
 
     if(
       !street ||
@@ -2046,22 +1981,13 @@ async function finishOrder(){
     ){
 
       alert(
-        "Preencha seu endereço."
+        "Preencha rua, número e bairro."
       );
 
       return;
 
     }
 
-    if(!zoneId){
-
-      alert(
-        "Selecione sua região."
-      );
-
-      return;
-
-    }
 
     address =
       `${street}, ${number} - ${neighborhood}`;
@@ -2075,8 +2001,10 @@ async function finishOrder(){
 
   }
 
+
   const totals =
     calculateCheckoutTotal();
+
 
   const items =
     cart.map(item=>({
@@ -2093,7 +2021,8 @@ async function finishOrder(){
         Number(item.price) *
         Number(item.qty)
 
-  }));
+    }));
+
 
   const orderData = {
 
@@ -2125,15 +2054,18 @@ async function finishOrder(){
 
   };
 
+
   const button =
     document.getElementById(
       "finishOrderBtn"
     );
 
+
   button.disabled = true;
 
   button.textContent =
     "Enviando pedido...";
+
 
   try{
 
@@ -2144,12 +2076,15 @@ async function finishOrder(){
         .select()
         .single();
 
+
     if(result.error){
       throw result.error;
     }
 
+
     lastOrder =
       result.data;
+
 
     cart = [];
 
@@ -2157,14 +2092,17 @@ async function finishOrder(){
 
     renderCart();
 
+
     document.getElementById(
       "successOrderNumber"
     ).textContent =
       `Pedido #${result.data.id} recebido com sucesso!`;
 
+
     showScreen(
       "successScreen"
     );
+
 
   }catch(error){
 
@@ -2176,6 +2114,7 @@ async function finishOrder(){
     alert(
       "Não foi possível enviar o pedido. Tente novamente."
     );
+
 
   }finally{
 
@@ -2189,9 +2128,7 @@ async function finishOrder(){
 }
 
 
-/* =====================================================
-   NAVEGAÇÃO
-===================================================== */
+/* NAVEGAÇÃO */
 
 function showScreen(id){
 
@@ -2231,9 +2168,7 @@ function backToMenu(){
 }
 
 
-/* =====================================================
-   FUNÇÕES AUXILIARES
-===================================================== */
+/* AUXILIARES */
 
 function formatMoney(value){
 
