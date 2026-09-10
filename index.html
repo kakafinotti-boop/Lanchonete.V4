@@ -765,8 +765,7 @@ textarea{
       </div>
 
     </div>
-
-    <div class="card">
+        <div class="card">
 
       <h2>Seus dados</h2>
 
@@ -1066,12 +1065,11 @@ document.addEventListener(
     updatePaymentFields();
 
     /*
-      Atualiza o status automaticamente.
-      Assim a loja muda de Aberto/Fechado
-      sem precisar atualizar a página.
+      Atualiza o status global da loja
+      diretamente pelo Supabase.
     */
     setInterval(
-      updateStoreStatus,
+      loadStoreSettings,
       30000
     );
 
@@ -1254,7 +1252,7 @@ function renderDeliveryZones(){
 }
 
 /* =====================================================
-   VERIFICAR SE A LOJA ESTÁ ABERTA
+   STATUS GLOBAL DA LOJA
 ===================================================== */
 
 function isStoreOpen(){
@@ -1263,106 +1261,16 @@ function isStoreOpen(){
     return false;
   }
 
-  const days = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday"
-  ];
-
-  const now =
-    new Date();
-
-  const currentDay =
-    days[now.getDay()];
-
   /*
-    Se hoje estiver desativado,
-    a loja está fechada.
+    O status agora vem do Supabase.
+
+    true  = Aberto
+    false = Fechado
   */
-  if(
-    storeSettings[
-      `${currentDay}_enabled`
-    ] === false
-  ){
 
-    return false;
-
-  }
-
-  const openTime =
-    storeSettings[
-      `${currentDay}_open`
-    ] || "18:00";
-
-  const closeTime =
-    storeSettings[
-      `${currentDay}_close`
-    ] || "00:00";
-
-  const current =
-    now.getHours() * 60 +
-    now.getMinutes();
-
-  const openParts =
-    String(openTime)
-      .split(":")
-      .map(Number);
-
-  const closeParts =
-    String(closeTime)
-      .split(":")
-      .map(Number);
-
-  const open =
-    openParts[0] * 60 +
-    openParts[1];
-
-  let close =
-    closeParts[0] * 60 +
-    closeParts[1];
-
-  /*
-    Exemplo:
-    18:00 até 00:00
-
-    00:00 precisa ser considerado
-    como o dia seguinte.
-  */
-  if(close <= open){
-    close += 1440;
-  }
-
-  let adjustedCurrent =
-    current;
-
-  /*
-    Exemplo:
-    loja abriu ontem às 18:00
-    e fecha hoje às 00:00.
-  */
-  if(
-    current < open &&
-    close > 1440
-  ){
-
-    adjustedCurrent += 1440;
-
-  }
-
-  return (
-    adjustedCurrent >= open &&
-    adjustedCurrent < close
-  );
+  return storeSettings.store_open !== false;
 
 }
-
-/* =====================================================
-   STATUS DA LOJA
-===================================================== */
 
 function updateStoreStatus(){
 
@@ -1695,7 +1603,6 @@ function renderProducts(
     }).join("");
 
 }
-
 /* =====================================================
    CARRINHO
 ===================================================== */
@@ -2868,4 +2775,4 @@ function escapeJs(value){
 </script>
 
 </body>
-</html>
+</html>  
