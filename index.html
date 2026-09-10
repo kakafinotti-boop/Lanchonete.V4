@@ -1079,7 +1079,6 @@ document.addEventListener(
 /* =====================================================
    CONFIGURAÇÕES DA LOJA
 ===================================================== */
-
 async function loadStoreSettings(){
 
   try{
@@ -1096,7 +1095,9 @@ async function loadStoreSettings(){
     }
 
     storeSettings =
-      result.data || null;
+      result.data || {
+        store_open:true
+      };
 
     updateStoreStatus();
 
@@ -1137,20 +1138,16 @@ async function loadStoreSettings(){
       error
     );
 
-    const status =
-      document.getElementById(
-        "storeStatus"
-      );
+    /*
+      Se o carregamento das configurações falhar,
+      não vamos bloquear a loja.
+    */
 
-    if(status){
+    storeSettings = {
+      store_open:true
+    };
 
-      status.textContent =
-        "Fechado";
-
-      status.className =
-        "status closed";
-
-    }
+    updateStoreStatus();
 
   }
 
