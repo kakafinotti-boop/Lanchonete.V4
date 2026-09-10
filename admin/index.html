@@ -1767,48 +1767,48 @@ async function loadSettings(){
   }
 
   const h =
-    data.hours || {};
+    data.opening_hours || {};
 
   setHours(
     "mon",
-    h.monday?.open,
-    h.monday?.close
+    h.segunda?.open,
+    h.segunda?.close
   );
 
   setHours(
     "tue",
-    h.tuesday?.open,
-    h.tuesday?.close
+    h.terca?.open,
+    h.terca?.close
   );
 
   setHours(
     "wed",
-    h.wednesday?.open,
-    h.wednesday?.close
+    h.quarta?.open,
+    h.quarta?.close
   );
 
   setHours(
     "thu",
-    h.thursday?.open,
-    h.thursday?.close
+    h.quinta?.open,
+    h.quinta?.close
   );
 
   setHours(
     "fri",
-    h.friday?.open,
-    h.friday?.close
+    h.sexta?.open,
+    h.sexta?.close
   );
 
   setHours(
     "sat",
-    h.saturday?.open,
-    h.saturday?.close
+    h.sabado?.open,
+    h.sabado?.close
   );
 
   setHours(
     "sun",
-    h.sunday?.open,
-    h.sunday?.close
+    h.domingo?.open,
+    h.domingo?.close
   );
 
   document.getElementById("deliveryFee").value =
@@ -1828,39 +1828,23 @@ async function loadSettings(){
 
 }
 
-
-function getHour(prefix){
-
-  return {
-
-    open:
-      document.getElementById(prefix+"Open").value,
-
-    close:
-      document.getElementById(prefix+"Close").value
-
-  };
-
-}
-
-
 async function saveSettings(){
 
-  const hours={
+  const opening_hours={
 
-    monday:getHour("mon"),
-    tuesday:getHour("tue"),
-    wednesday:getHour("wed"),
-    thursday:getHour("thu"),
-    friday:getHour("fri"),
-    saturday:getHour("sat"),
-    sunday:getHour("sun")
+    segunda:getHour("mon"),
+    terca:getHour("tue"),
+    quarta:getHour("wed"),
+    quinta:getHour("thu"),
+    sexta:getHour("fri"),
+    sabado:getHour("sat"),
+    domingo:getHour("sun")
 
   };
 
   const update={
 
-    hours,
+    opening_hours,
 
     delivery_fee:
       Number(
