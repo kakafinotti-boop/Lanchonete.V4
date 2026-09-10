@@ -1,0 +1,3284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Burguer Gold - Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#0b0b0b;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* LOGIN */
+
+.login-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:#151515;
+  border:1px solid #292929;
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 15px 50px #000;
+}
+
+.logo{
+  text-align:center;
+  color:#d7aa4d;
+  font-size:27px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#888;
+  margin-bottom:25px;
+}
+
+label{
+  display:block;
+  color:#ccc;
+  font-size:14px;
+  margin:13px 0 6px;
+}
+
+input,select,textarea{
+  width:100%;
+  border:1px solid #363636;
+  border-radius:10px;
+  background:#0d0d0d;
+  color:#fff;
+  padding:12px;
+  outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#d7aa4d;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:12px 15px;
+  font-weight:800;
+}
+
+.btn-gold{
+  background:#d7aa4d;
+  color:#111;
+}
+
+.btn-dark{
+  background:#222;
+  color:#fff;
+  border:1px solid #333;
+}
+
+.btn-red{
+  background:#8d2727;
+  color:#fff;
+}
+
+.full{
+  width:100%;
+}
+
+.error{
+  background:#321515;
+  border:1px solid #642626;
+  color:#ff8d8d;
+  padding:11px;
+  border-radius:10px;
+  margin-top:15px;
+  font-size:14px;
+}
+
+/* ADMIN */
+
+.admin{
+  min-height:100vh;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(11,11,11,.97);
+  border-bottom:1px solid #292929;
+  backdrop-filter:blur(10px);
+}
+
+.topbar-inner{
+  max-width:1200px;
+  margin:auto;
+  min-height:68px;
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.brand{
+  color:#d7aa4d;
+  font-weight:900;
+  font-size:21px;
+}
+
+.admin-user{
+  color:#999;
+  font-size:12px;
+}
+
+.main{
+  width:calc(100% - 28px);
+  max-width:1200px;
+  margin:auto;
+  padding:25px 0 60px;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:18px;
+  scrollbar-width:none;
+}
+
+.tabs::-webkit-scrollbar{
+  display:none;
+}
+
+.tab{
+  flex:none;
+  border:1px solid #333;
+  background:#171717;
+  color:#ddd;
+  border-radius:25px;
+  padding:10px 16px;
+}
+
+.tab.active{
+  background:#d7aa4d;
+  border-color:#d7aa4d;
+  color:#111;
+  font-weight:900;
+}
+
+.panel{
+  display:none;
+}
+
+.panel.active{
+  display:block;
+}
+
+.panel-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.panel-title h1{
+  margin:0;
+  font-size:25px;
+}
+
+.card{
+  background:#151515;
+  border:1px solid #292929;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:15px;
+}
+
+.card h2{
+  margin:0 0 15px;
+  font-size:19px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+
+.product-list{
+  display:grid;
+  gap:12px;
+}
+
+.product-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:#111;
+  border:1px solid #292929;
+  border-radius:12px;
+  padding:12px;
+}
+
+.product-thumb{
+  width:70px;
+  height:70px;
+  border-radius:10px;
+  object-fit:cover;
+  background:#252525;
+  flex:none;
+}
+
+.product-info{
+  flex:1;
+  min-width:0;
+}
+
+.product-name{
+  font-weight:900;
+}
+
+.product-meta{
+  color:#999;
+  font-size:13px;
+  margin-top:5px;
+}
+
+.product-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.small-btn{
+  border:0;
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.available{
+  color:#58d36d;
+}
+
+.unavailable{
+  color:#ff6262;
+}
+
+/* PEDIDOS */
+
+.order{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.order-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.order-number{
+  color:#d7aa4d;
+  font-weight:900;
+  font-size:19px;
+}
+
+.order-date{
+  color:#777;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.status-select{
+  width:auto;
+  min-width:150px;
+}
+
+.order-info{
+  margin-top:15px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.info-box{
+  background:#181818;
+  border-radius:9px;
+  padding:10px;
+}
+
+.info-label{
+  color:#777;
+  font-size:11px;
+  margin-bottom:4px;
+}
+
+.info-value{
+  color:#ddd;
+  font-size:14px;
+}
+
+.order-items{
+  margin-top:15px;
+  border-top:1px solid #292929;
+  padding-top:12px;
+}
+
+.order-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:5px 0;
+  color:#ccc;
+}
+
+.order-total{
+  margin-top:13px;
+  padding-top:12px;
+  border-top:1px solid #333;
+  display:flex;
+  justify-content:space-between;
+  color:#d7aa4d;
+  font-size:19px;
+  font-weight:900;
+}
+
+/* CONFIG */
+
+.hours-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.day-row{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:10px;
+  padding:10px;
+}
+
+.day-name{
+  color:#d7aa4d;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+.time-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.switch-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+  color:#aaa;
+  font-size:13px;
+}
+
+.switch-row input{
+  width:auto;
+}
+
+/* CAIXA */
+
+.balance{
+  font-size:32px;
+  color:#d7aa4d;
+  font-weight:900;
+  margin:5px 0 20px;
+}
+
+.movement{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid #292929;
+}
+
+.movement:last-child{
+  border-bottom:0;
+}
+
+.positive{
+  color:#58d36d;
+}
+
+.negative{
+  color:#ff6262;
+}
+
+.empty{
+  color:#888;
+  text-align:center;
+  padding:35px 10px;
+}
+
+.loading{
+  color:#888;
+  text-align:center;
+  padding:35px;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.8);
+  padding:18px;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:600px;
+  max-height:90vh;
+  overflow-y:auto;
+  background:#151515;
+  border:1px solid #333;
+  border-radius:17px;
+  padding:20px;
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.modal-header h2{
+  margin:0;
+}
+
+.close{
+  width:36px;
+  height:36px;
+  border:0;
+  border-radius:50%;
+  background:#292929;
+  color:#fff;
+  font-size:21px;
+}
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .hours-grid{
+    grid-template-columns:1fr;
+  }
+
+  .order-info{
+    grid-template-columns:1fr;
+  }
+
+  .product-row{
+    align-items:flex-start;
+  }
+
+  .product-actions{
+    flex-direction:column;
+  }
+
+  .order-header{
+    flex-direction:column;
+  }
+
+  .status-select{
+    width:100%;
+  }
+
+  .admin-user{
+    display:none;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<section id="loginPage" class="login-page">
+
+  <div class="login-box">
+
+    <div class="logo">
+      🍔 BURGUER GOLD
+    </div>
+
+    <div class="subtitle">
+      Painel administrativo
+    </div>
+
+    <form onsubmit="login(event)">
+
+      <label>
+        E-mail
+      </label>
+
+      <input
+        id="loginEmail"
+        type="email"
+        value="goldburguer89@gmail.com"
+        autocomplete="email"
+        required>
+
+      <label>
+        Senha
+      </label>
+
+      <input
+        id="loginPassword"
+        type="password"
+        autocomplete="current-password"
+        required>
+
+      <button
+        id="loginButton"
+        class="btn btn-gold full"
+        style="margin-top:18px">
+
+        Entrar
+
+      </button>
+
+    </form>
+
+    <div
+      id="loginError"
+      class="error hidden">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ADMIN
+===================================================== -->
+
+<section
+  id="adminPage"
+  class="admin hidden">
+
+  <header class="topbar">
+
+    <div class="topbar-inner">
+
+      <div class="brand">
+        BURGUER GOLD • ADMIN
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px">
+
+        <div
+          id="adminUser"
+          class="admin-user">
+        </div>
+
+        <button
+          class="btn btn-dark"
+          onclick="logout()">
+
+          Sair
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <main class="main">
+
+    <nav class="tabs">
+
+      <button
+        class="tab active"
+        onclick="showPanel('orders',this)">
+
+        📋 Pedidos
+
+      </button>
+
+      <button
+        class="tab"
+        onclick="showPanel('products',this)">
+
+        🍔 Produtos
+
+      </button>
+
+      <button
+        class="tab"
+        onclick="showPanel('delivery',this)">
+
+        🚚 Entrega
+
+      </button>
+
+      <button
+        class="tab"
+        onclick="showPanel('settings',this)">
+
+        ⚙️ Configurações
+
+      </button>
+
+      <button
+        class="tab"
+        onclick="showPanel('cash',this)">
+
+        💰 Caixa
+
+      </button>
+
+    </nav>
+
+
+    <!-- =================================================
+         PEDIDOS
+    ================================================== -->
+
+    <section
+      id="ordersPanel"
+      class="panel active">
+
+      <div class="panel-title">
+
+        <h1>Pedidos</h1>
+
+        <button
+          class="btn btn-dark"
+          onclick="loadOrders()">
+
+          🔄 Atualizar
+
+        </button>
+
+      </div>
+
+      <div
+        id="ordersList"
+        class="loading">
+
+        Carregando pedidos...
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         PRODUTOS
+    ================================================== -->
+
+    <section
+      id="productsPanel"
+      class="panel">
+
+      <div class="panel-title">
+
+        <h1>Produtos</h1>
+
+        <button
+          class="btn btn-gold"
+          onclick="openProductModal()">
+
+          + Novo produto
+
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div
+          id="productsList"
+          class="product-list">
+
+          Carregando produtos...
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ENTREGA
+    ================================================== -->
+
+    <section
+      id="deliveryPanel"
+      class="panel">
+
+      <div class="panel-title">
+
+        <h1>Zonas de entrega</h1>
+
+        <button
+          class="btn btn-gold"
+          onclick="openZoneModal()">
+
+          + Nova zona
+
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div
+          id="zonesList">
+
+          Carregando zonas...
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CONFIGURAÇÕES
+    ================================================== -->
+
+    <section
+      id="settingsPanel"
+      class="panel">
+
+      <div class="panel-title">
+
+        <h1>Configurações</h1>
+
+      </div>
+
+      <div class="card">
+
+        <h2>Informações da loja</h2>
+
+        <label>
+          Nome da loja
+        </label>
+
+        <input
+          id="settingStoreName"
+          type="text">
+
+        <label>
+          Tempo estimado de entrega
+        </label>
+
+        <input
+          id="settingDeliveryEstimate"
+          type="number"
+          min="0">
+
+        <label>
+          Taxa padrão de entrega
+        </label>
+
+        <input
+          id="settingDefaultFee"
+          type="number"
+          min="0"
+          step="0.01">
+
+        <label>
+          Chave PIX
+        </label>
+
+        <input
+          id="settingPix"
+          type="text">
+
+        <label>
+          WhatsApp
+        </label>
+
+        <input
+          id="settingWhatsapp"
+          type="text">
+
+      </div>
+
+
+      <div class="card">
+
+        <h2>Horários de funcionamento</h2>
+
+        <div
+          id="hoursContainer"
+          class="hours-grid">
+        </div>
+
+      </div>
+
+      <button
+        class="btn btn-gold full"
+        onclick="saveSettings()">
+
+        Salvar configurações
+
+      </button>
+
+    </section>
+
+
+    <!-- =================================================
+         CAIXA
+    ================================================== -->
+
+    <section
+      id="cashPanel"
+      class="panel">
+
+      <div class="panel-title">
+
+        <h1>Caixa</h1>
+
+        <button
+          class="btn btn-gold"
+          onclick="openCashModal()">
+
+          + Lançamento
+
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="balance">
+          R$ <span id="cashBalance">0,00</span>
+        </div>
+
+        <div
+          id="cashList">
+
+          Carregando...
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</section>
+
+
+<!-- =====================================================
+     MODAL PRODUTO
+===================================================== -->
+
+<div
+  id="productModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2 id="productModalTitle">
+        Novo produto
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeProductModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+    <input
+      id="productId"
+      type="hidden">
+
+    <label>
+      Nome
+    </label>
+
+    <input
+      id="productName"
+      type="text"
+      placeholder="Ex: X-Burguer Gold">
+
+    <label>
+      Descrição
+    </label>
+
+    <textarea
+      id="productDescription"
+      placeholder="Descrição do produto">
+    </textarea>
+
+    <label>
+      Preço
+    </label>
+
+    <input
+      id="productPrice"
+      type="number"
+      step="0.01"
+      min="0">
+
+    <label>
+      Categoria
+    </label>
+
+    <input
+      id="productCategory"
+      type="text"
+      placeholder="Ex: Hambúrgueres">
+
+    <label>
+      URL da imagem
+    </label>
+
+    <input
+      id="productImage"
+      type="url"
+      placeholder="https://...">
+
+    <label>
+      Ordem
+    </label>
+
+    <input
+      id="productOrder"
+      type="number"
+      value="0">
+
+    <label class="switch-row">
+
+      <input
+        id="productAvailable"
+        type="checkbox"
+        checked>
+
+      Produto disponível
+
+    </label>
+
+    <label class="switch-row">
+
+      <input
+        id="productFeatured"
+        type="checkbox">
+
+      Produto em destaque
+
+    </label>
+
+    <button
+      class="btn btn-gold full"
+      style="margin-top:18px"
+      onclick="saveProduct()">
+
+      Salvar produto
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL ZONA
+===================================================== -->
+
+<div
+  id="zoneModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>
+        Nova zona de entrega
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeZoneModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+    <input
+      id="zoneId"
+      type="hidden">
+
+    <label>
+      Nome da região
+    </label>
+
+    <input
+      id="zoneName"
+      type="text"
+      placeholder="Ex: Centro">
+
+    <label>
+      Taxa
+    </label>
+
+    <input
+      id="zoneFee"
+      type="number"
+      min="0"
+      step="0.01">
+
+    <label class="switch-row">
+
+      <input
+        id="zoneActive"
+        type="checkbox"
+        checked>
+
+      Zona ativa
+
+    </label>
+
+    <button
+      class="btn btn-gold full"
+      style="margin-top:18px"
+      onclick="saveZone()">
+
+      Salvar zona
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL CAIXA
+===================================================== -->
+
+<div
+  id="cashModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>
+        Lançamento no caixa
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeCashModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+    <label>
+      Tipo
+    </label>
+
+    <select id="cashType">
+
+      <option value="income">
+        Entrada
+      </option>
+
+      <option value="expense">
+        Saída
+      </option>
+
+    </select>
+
+    <label>
+      Valor
+    </label>
+
+    <input
+      id="cashAmount"
+      type="number"
+      min="0"
+      step="0.01">
+
+    <label>
+      Descrição
+    </label>
+
+    <input
+      id="cashDescription"
+      type="text"
+      placeholder="Ex: Compra de ingredientes">
+
+    <button
+      class="btn btn-gold full"
+      style="margin-top:18px"
+      onclick="saveCashMovement()">
+
+      Salvar lançamento
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+  "https://xmxacmfzwrvrrmayivph.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_9sCek2Z6B0H-B3DTfIb5lA_eyN4wESC";
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
+
+let products = [];
+
+let zones = [];
+
+let settings = null;
+
+let orders = [];
+
+let cashMovements = [];
+
+
+/* =====================================================
+   INÍCIO
+===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async function(){
+
+    const {
+      data
+    } =
+      await db.auth.getSession();
+
+    if(data.session){
+
+      showAdmin(
+        data.session
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function login(event){
+
+  event.preventDefault();
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+  const button =
+    document.getElementById(
+      "loginButton"
+    );
+
+  const error =
+    document.getElementById(
+      "loginError"
+    );
+
+  error.classList.add("hidden");
+
+  button.disabled = true;
+
+  button.textContent =
+    "Entrando...";
+
+  try{
+
+    const result =
+      await db.auth.signInWithPassword({
+
+        email:email,
+
+        password:password
+
+      });
+
+    if(result.error){
+      throw result.error;
+    }
+
+    showAdmin(
+      result.data.session
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    error.textContent =
+      "E-mail ou senha incorretos.";
+
+    error.classList.remove(
+      "hidden"
+    );
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent =
+      "Entrar";
+
+  }
+
+}
+
+
+/* =====================================================
+   MOSTRAR ADMIN
+===================================================== */
+
+async function showAdmin(session){
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("adminPage")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("adminUser")
+    .textContent =
+      session.user.email || "";
+
+  await loadAll();
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+  await db.auth.signOut();
+
+  location.reload();
+
+}
+
+
+/* =====================================================
+   NAVEGAÇÃO
+===================================================== */
+
+function showPanel(
+  panel,
+  button
+){
+
+  document
+    .querySelectorAll(".panel")
+    .forEach(el=>{
+      el.classList.remove(
+        "active"
+      );
+    });
+
+  document
+    .getElementById(
+      panel + "Panel"
+    )
+    .classList.add(
+      "active"
+    );
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(el=>{
+      el.classList.remove(
+        "active"
+      );
+    });
+
+  if(button){
+    button.classList.add(
+      "active"
+    );
+  }
+
+  if(panel === "orders"){
+    loadOrders();
+  }
+
+  if(panel === "products"){
+    loadProducts();
+  }
+
+  if(panel === "delivery"){
+    loadZones();
+  }
+
+  if(panel === "settings"){
+    loadSettings();
+  }
+
+  if(panel === "cash"){
+    loadCash();
+  }
+
+}
+
+
+/* =====================================================
+   CARREGAR TUDO
+===================================================== */
+
+async function loadAll(){
+
+  await loadSettings();
+
+  await loadProducts();
+
+  await loadZones();
+
+  await loadOrders();
+
+  await loadCash();
+
+}
+
+
+/* =====================================================
+   PRODUTOS
+===================================================== */
+
+async function loadProducts(){
+
+  const container =
+    document.getElementById(
+      "productsList"
+    );
+
+  try{
+
+    const result =
+      await db
+        .from("products")
+        .select("*")
+        .order(
+          "display_order",
+          {ascending:true}
+        )
+        .order(
+          "name",
+          {ascending:true}
+        );
+
+    if(result.error){
+      throw result.error;
+    }
+
+    products =
+      result.data || [];
+
+    renderProducts();
+
+  }catch(err){
+
+    console.error(err);
+
+    container.innerHTML =
+      `<div class="empty">
+        Erro ao carregar produtos.
+      </div>`;
+
+  }
+
+}
+
+
+function renderProducts(){
+
+  const container =
+    document.getElementById(
+      "productsList"
+    );
+
+  if(!products.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhum produto cadastrado.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    products.map(product=>`
+
+      <div class="product-row">
+
+        ${
+          product.image_url
+          ?
+          `<img
+            class="product-thumb"
+            src="${escapeAttribute(product.image_url)}"
+            onerror="this.style.display='none'">`
+          :
+          `<div
+            class="product-thumb"
+            style="display:flex;align-items:center;justify-content:center;font-size:28px">
+            🍔
+          </div>`
+        }
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${escapeHtml(product.name)}
+          </div>
+
+          <div class="product-meta">
+
+            ${escapeHtml(product.category || "Sem categoria")}
+            •
+            R$ ${money(product.price)}
+
+            <br>
+
+            <span class="${
+              product.available
+              ? "available"
+              : "unavailable"
+            }">
+
+              ${
+                product.available
+                ? "Disponível"
+                : "Indisponível"
+              }
+
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="product-actions">
+
+          <button
+            class="small-btn btn-dark"
+            onclick="editProduct('${escapeJs(product.id)}')">
+
+            Editar
+
+          </button>
+
+          <button
+            class="small-btn ${
+              product.available
+              ? "btn-red"
+              : "btn-gold"
+            }"
+            onclick="toggleProduct('${escapeJs(product.id)}')">
+
+            ${
+              product.available
+              ? "Desativar"
+              : "Ativar"
+            }
+
+          </button>
+
+          <button
+            class="small-btn btn-red"
+            onclick="deleteProduct('${escapeJs(product.id)}')">
+
+            Excluir
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function openProductModal(){
+
+  document.getElementById(
+    "productModalTitle"
+  ).textContent =
+    "Novo produto";
+
+  document.getElementById(
+    "productId"
+  ).value = "";
+
+  document.getElementById(
+    "productName"
+  ).value = "";
+
+  document.getElementById(
+    "productDescription"
+  ).value = "";
+
+  document.getElementById(
+    "productPrice"
+  ).value = "";
+
+  document.getElementById(
+    "productCategory"
+  ).value = "";
+
+  document.getElementById(
+    "productImage"
+  ).value = "";
+
+  document.getElementById(
+    "productOrder"
+  ).value = "0";
+
+  document.getElementById(
+    "productAvailable"
+  ).checked = true;
+
+  document.getElementById(
+    "productFeatured"
+  ).checked = false;
+
+  document
+    .getElementById("productModal")
+    .classList.add("active");
+
+}
+
+
+function closeProductModal(){
+
+  document
+    .getElementById("productModal")
+    .classList.remove("active");
+
+}
+
+
+function editProduct(id){
+
+  const product =
+    products.find(
+      p =>
+        String(p.id) ===
+        String(id)
+    );
+
+  if(!product){
+    return;
+  }
+
+  document.getElementById(
+    "productModalTitle"
+  ).textContent =
+    "Editar produto";
+
+  document.getElementById(
+    "productId"
+  ).value =
+    product.id;
+
+  document.getElementById(
+    "productName"
+  ).value =
+    product.name || "";
+
+  document.getElementById(
+    "productDescription"
+  ).value =
+    product.description || "";
+
+  document.getElementById(
+    "productPrice"
+  ).value =
+    product.price || "";
+
+  document.getElementById(
+    "productCategory"
+  ).value =
+    product.category || "";
+
+  document.getElementById(
+    "productImage"
+  ).value =
+    product.image_url || "";
+
+  document.getElementById(
+    "productOrder"
+  ).value =
+    product.display_order || 0;
+
+  document.getElementById(
+    "productAvailable"
+  ).checked =
+    !!product.available;
+
+  document.getElementById(
+    "productFeatured"
+  ).checked =
+    !!product.featured;
+
+  document
+    .getElementById("productModal")
+    .classList.add("active");
+
+}
+
+
+async function saveProduct(){
+
+  const id =
+    document.getElementById(
+      "productId"
+    ).value;
+
+  const name =
+    document.getElementById(
+      "productName"
+    ).value.trim();
+
+  const description =
+    document.getElementById(
+      "productDescription"
+    ).value.trim();
+
+  const price =
+    Number(
+      document.getElementById(
+        "productPrice"
+      ).value
+    );
+
+  const category =
+    document.getElementById(
+      "productCategory"
+    ).value.trim();
+
+  const image =
+    document.getElementById(
+      "productImage"
+    ).value.trim();
+
+  const displayOrder =
+    Number(
+      document.getElementById(
+        "productOrder"
+      ).value || 0
+    );
+
+  const available =
+    document.getElementById(
+      "productAvailable"
+    ).checked;
+
+  const featured =
+    document.getElementById(
+      "productFeatured"
+    ).checked;
+
+  if(!name){
+
+    alert(
+      "Digite o nome do produto."
+    );
+
+    return;
+
+  }
+
+  if(!category){
+
+    alert(
+      "Digite a categoria."
+    );
+
+    return;
+
+  }
+
+  if(!Number.isFinite(price) || price < 0){
+
+    alert(
+      "Digite um preço válido."
+    );
+
+    return;
+
+  }
+
+  const data = {
+
+    name:name,
+
+    description:description,
+
+    price:price,
+
+    category:category,
+
+    image_url:image || null,
+
+    available:available,
+
+    featured:featured,
+
+    display_order:displayOrder
+
+  };
+
+  try{
+
+    let result;
+
+    if(id){
+
+      result =
+        await db
+          .from("products")
+          .update(data)
+          .eq("id",id);
+
+    }else{
+
+      result =
+        await db
+          .from("products")
+          .insert(data);
+
+    }
+
+    if(result.error){
+      throw result.error;
+    }
+
+    closeProductModal();
+
+    await loadProducts();
+
+    alert(
+      "Produto salvo com sucesso!"
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível salvar o produto."
+    );
+
+  }
+
+}
+
+
+async function toggleProduct(id){
+
+  const product =
+    products.find(
+      p =>
+        String(p.id) ===
+        String(id)
+    );
+
+  if(!product){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("products")
+        .update({
+          available:
+            !product.available
+        })
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadProducts();
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível alterar o produto."
+    );
+
+  }
+
+}
+
+
+async function deleteProduct(id){
+
+  const product =
+    products.find(
+      p =>
+        String(p.id) ===
+        String(id)
+    );
+
+  if(!product){
+    return;
+  }
+
+  if(!confirm(
+    `Excluir "${product.name}"?`
+  )){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("products")
+        .delete()
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadProducts();
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível excluir o produto."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   ZONAS
+===================================================== */
+
+async function loadZones(){
+
+  const container =
+    document.getElementById(
+      "zonesList"
+    );
+
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .select("*")
+        .order(
+          "name",
+          {ascending:true}
+        );
+
+    if(result.error){
+      throw result.error;
+    }
+
+    zones =
+      result.data || [];
+
+    renderZones();
+
+  }catch(err){
+
+    console.error(err);
+
+    container.innerHTML =
+      `<div class="empty">
+        Erro ao carregar zonas.
+      </div>`;
+
+  }
+
+}
+
+
+function renderZones(){
+
+  const container =
+    document.getElementById(
+      "zonesList"
+    );
+
+  if(!zones.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhuma zona cadastrada.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    zones.map(zone=>`
+
+      <div class="product-row">
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${escapeHtml(zone.name)}
+          </div>
+
+          <div class="product-meta">
+
+            Taxa:
+            R$ ${money(zone.fee)}
+
+            •
+
+            ${
+              zone.active
+              ? '<span class="available">Ativa</span>'
+              : '<span class="unavailable">Inativa</span>'
+            }
+
+          </div>
+
+        </div>
+
+        <div class="product-actions">
+
+          <button
+            class="small-btn btn-dark"
+            onclick="editZone('${escapeJs(zone.id)}')">
+
+            Editar
+
+          </button>
+
+          <button
+            class="small-btn ${
+              zone.active
+              ? "btn-red"
+              : "btn-gold"
+            }"
+            onclick="toggleZone('${escapeJs(zone.id)}')">
+
+            ${
+              zone.active
+              ? "Desativar"
+              : "Ativar"
+            }
+
+          </button>
+
+          <button
+            class="small-btn btn-red"
+            onclick="deleteZone('${escapeJs(zone.id)}')">
+
+            Excluir
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function openZoneModal(){
+
+  document.getElementById(
+    "zoneId"
+  ).value = "";
+
+  document.getElementById(
+    "zoneName"
+  ).value = "";
+
+  document.getElementById(
+    "zoneFee"
+  ).value = "";
+
+  document.getElementById(
+    "zoneActive"
+  ).checked = true;
+
+  document
+    .getElementById("zoneModal")
+    .classList.add("active");
+
+}
+
+
+function closeZoneModal(){
+
+  document
+    .getElementById("zoneModal")
+    .classList.remove("active");
+
+}
+
+
+function editZone(id){
+
+  const zone =
+    zones.find(
+      z =>
+        String(z.id) ===
+        String(id)
+    );
+
+  if(!zone){
+    return;
+  }
+
+  document.getElementById(
+    "zoneId"
+  ).value =
+    zone.id;
+
+  document.getElementById(
+    "zoneName"
+  ).value =
+    zone.name || "";
+
+  document.getElementById(
+    "zoneFee"
+  ).value =
+    zone.fee || "";
+
+  document.getElementById(
+    "zoneActive"
+  ).checked =
+    !!zone.active;
+
+  document
+    .getElementById("zoneModal")
+    .classList.add("active");
+
+}
+
+
+async function saveZone(){
+
+  const id =
+    document.getElementById(
+      "zoneId"
+    ).value;
+
+  const name =
+    document.getElementById(
+      "zoneName"
+    ).value.trim();
+
+  const fee =
+    Number(
+      document.getElementById(
+        "zoneFee"
+      ).value
+    );
+
+  const active =
+    document.getElementById(
+      "zoneActive"
+    ).checked;
+
+  if(!name){
+
+    alert(
+      "Digite o nome da região."
+    );
+
+    return;
+
+  }
+
+  if(!Number.isFinite(fee) || fee < 0){
+
+    alert(
+      "Digite uma taxa válida."
+    );
+
+    return;
+
+  }
+
+  const data = {
+
+    name:name,
+
+    fee:fee,
+
+    active:active
+
+  };
+
+  try{
+
+    let result;
+
+    if(id){
+
+      result =
+        await db
+          .from("delivery_zones")
+          .update(data)
+          .eq("id",id);
+
+    }else{
+
+      result =
+        await db
+          .from("delivery_zones")
+          .insert(data);
+
+    }
+
+    if(result.error){
+      throw result.error;
+    }
+
+    closeZoneModal();
+
+    await loadZones();
+
+    alert(
+      "Zona salva com sucesso!"
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível salvar a zona."
+    );
+
+  }
+
+}
+
+
+async function toggleZone(id){
+
+  const zone =
+    zones.find(
+      z =>
+        String(z.id) ===
+        String(id)
+    );
+
+  if(!zone){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .update({
+          active:
+            !zone.active
+        })
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadZones();
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível alterar a zona."
+    );
+
+  }
+
+}
+
+
+async function deleteZone(id){
+
+  const zone =
+    zones.find(
+      z =>
+        String(z.id) ===
+        String(id)
+    );
+
+  if(!zone){
+    return;
+  }
+
+  if(!confirm(
+    `Excluir a zona "${zone.name}"?`
+  )){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .delete()
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadZones();
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível excluir a zona."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
+
+async function loadSettings(){
+
+  try{
+
+    const result =
+      await db
+        .from("store_settings")
+        .select("*")
+        .eq("id",1)
+        .maybeSingle();
+
+    if(result.error){
+      throw result.error;
+    }
+
+    settings =
+      result.data || null;
+
+    renderSettings();
+
+  }catch(err){
+
+    console.error(err);
+
+  }
+
+}
+
+
+function renderSettings(){
+
+  if(!settings){
+    return;
+  }
+
+  document.getElementById(
+    "settingStoreName"
+  ).value =
+    settings.store_name || "";
+
+  document.getElementById(
+    "settingDeliveryEstimate"
+  ).value =
+    settings.delivery_estimate || 0;
+
+  document.getElementById(
+    "settingDefaultFee"
+  ).value =
+    settings.default_delivery_fee || 0;
+
+  document.getElementById(
+    "settingPix"
+  ).value =
+    settings.pix_key || "";
+
+  document.getElementById(
+    "settingWhatsapp"
+  ).value =
+    settings.whatsapp || "";
+
+  renderHours();
+
+}
+
+
+function renderHours(){
+
+  const container =
+    document.getElementById(
+      "hoursContainer"
+    );
+
+  const days = [
+
+    ["sunday","Domingo"],
+
+    ["monday","Segunda"],
+
+    ["tuesday","Terça"],
+
+    ["wednesday","Quarta"],
+
+    ["thursday","Quinta"],
+
+    ["friday","Sexta"],
+
+    ["saturday","Sábado"]
+
+  ];
+
+  const hours =
+    settings?.opening_hours || {};
+
+  container.innerHTML =
+    days.map(([key,label])=>{
+
+      const day =
+        hours[key] || {};
+
+      return `
+
+        <div class="day-row">
+
+          <div class="day-name">
+            ${label}
+          </div>
+
+          <div class="time-row">
+
+            <input
+              id="open_${key}"
+              type="time"
+              value="${day.open || "18:00"}">
+
+            <input
+              id="close_${key}"
+              type="time"
+              value="${day.close || "00:00"}">
+
+          </div>
+
+          <label class="switch-row">
+
+            <input
+              id="closed_${key}"
+              type="checkbox"
+              ${day.closed ? "checked" : ""}>
+
+            Fechado
+
+          </label>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+async function saveSettings(){
+
+  const days = [
+
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday"
+
+  ];
+
+  const openingHours = {};
+
+  days.forEach(day=>{
+
+    openingHours[day] = {
+
+      open:
+        document.getElementById(
+          "open_"+day
+        ).value || "18:00",
+
+      close:
+        document.getElementById(
+          "close_"+day
+        ).value || "00:00",
+
+      closed:
+        document.getElementById(
+          "closed_"+day
+        ).checked
+
+    };
+
+  });
+
+  const data = {
+
+    store_name:
+      document.getElementById(
+        "settingStoreName"
+      ).value.trim(),
+
+    delivery_estimate:
+      Number(
+        document.getElementById(
+          "settingDeliveryEstimate"
+        ).value || 0
+      ),
+
+    default_delivery_fee:
+      Number(
+        document.getElementById(
+          "settingDefaultFee"
+        ).value || 0
+      ),
+
+    pix_key:
+      document.getElementById(
+        "settingPix"
+      ).value.trim(),
+
+    whatsapp:
+      document.getElementById(
+        "settingWhatsapp"
+      ).value.trim(),
+
+    opening_hours:
+      openingHours
+
+  };
+
+  try{
+
+    const result =
+      await db
+        .from("store_settings")
+        .update(data)
+        .eq("id",1);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadSettings();
+
+    alert(
+      "Configurações salvas!"
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível salvar as configurações."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   PEDIDOS
+===================================================== */
+
+async function loadOrders(){
+
+  const container =
+    document.getElementById(
+      "ordersList"
+    );
+
+  container.innerHTML =
+    `<div class="loading">
+      Carregando pedidos...
+    </div>`;
+
+  try{
+
+    const result =
+      await db
+        .from("orders")
+        .select("*")
+        .order(
+          "created_at",
+          {ascending:false}
+        )
+        .limit(100);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    orders =
+      result.data || [];
+
+    renderOrders();
+
+  }catch(err){
+
+    console.error(err);
+
+    container.innerHTML =
+      `<div class="empty">
+        Erro ao carregar pedidos.
+      </div>`;
+
+  }
+
+}
+
+
+function renderOrders(){
+
+  const container =
+    document.getElementById(
+      "ordersList"
+    );
+
+  if(!orders.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhum pedido encontrado.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    orders.map(order=>{
+
+      const items =
+        Array.isArray(order.items)
+        ? order.items
+        : [];
+
+      return `
+
+        <article class="order">
+
+          <div class="order-header">
+
+            <div>
+
+              <div class="order-number">
+                Pedido #${order.id}
+              </div>
+
+              <div class="order-date">
+                ${formatDate(order.created_at)}
+              </div>
+
+            </div>
+
+            <select
+              class="status-select"
+              onchange="
+                updateOrderStatus(
+                  '${escapeJs(order.id)}',
+                  this.value
+                )">
+
+              ${statusOptions(order.status)}
+
+            </select>
+
+          </div>
+
+
+          <div class="order-info">
+
+            <div class="info-box">
+
+              <div class="info-label">
+                CLIENTE
+              </div>
+
+              <div class="info-value">
+                ${escapeHtml(order.customer_name)}
+              </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+              <div class="info-label">
+                TELEFONE
+              </div>
+
+              <div class="info-value">
+                ${escapeHtml(order.customer_phone)}
+              </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+              <div class="info-label">
+                TIPO
+              </div>
+
+              <div class="info-value">
+
+                ${
+                  order.order_type === "delivery"
+                  ? "🚚 Entrega"
+                  : "🏪 Retirada"
+                }
+
+              </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+              <div class="info-label">
+                PAGAMENTO
+              </div>
+
+              <div class="info-value">
+                ${escapeHtml(order.payment_method || "-")}
+              </div>
+
+            </div>
+
+
+            ${
+              order.address
+              ?
+              `<div class="info-box"
+                    style="grid-column:1/-1">
+
+                <div class="info-label">
+                  ENDEREÇO
+                </div>
+
+                <div class="info-value">
+                  ${escapeHtml(order.address)}
+                </div>
+
+              </div>`
+              : ""
+            }
+
+          </div>
+
+
+          <div class="order-items">
+
+            ${items.map(item=>`
+
+              <div class="order-item">
+
+                <span>
+                  ${item.quantity}x
+                  ${escapeHtml(item.name)}
+                </span>
+
+                <span>
+                  R$ ${money(item.subtotal)}
+                </span>
+
+              </div>
+
+            `).join("")}
+
+          </div>
+
+
+          ${
+            order.notes
+            ?
+            `<div
+              style="
+                margin-top:12px;
+                color:#aaa;
+                font-size:13px">
+
+              📝 ${escapeHtml(order.notes)}
+
+            </div>`
+            : ""
+          }
+
+
+          <div class="order-total">
+
+            <span>
+              Total
+            </span>
+
+            <span>
+              R$ ${money(order.total)}
+            </span>
+
+          </div>
+
+        </article>
+
+      `;
+
+    }).join("");
+
+}
+
+
+function statusOptions(current){
+
+  const statuses = [
+
+    ["pending","Pendente"],
+
+    ["confirmed","Confirmado"],
+
+    ["preparing","Preparando"],
+
+    ["ready","Pronto"],
+
+    ["out_for_delivery","Saiu para entrega"],
+
+    ["completed","Concluído"],
+
+    ["cancelled","Cancelado"]
+
+  ];
+
+  return statuses.map(
+    ([value,label])=>`
+
+      <option
+        value="${value}"
+        ${current === value ? "selected" : ""}>
+
+        ${label}
+
+      </option>
+
+    `
+  ).join("");
+
+}
+
+
+async function updateOrderStatus(
+  id,
+  status
+){
+
+  try{
+
+    const result =
+      await db
+        .from("orders")
+        .update({
+          status:status
+        })
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    const order =
+      orders.find(
+        item =>
+          String(item.id) ===
+          String(id)
+      );
+
+    if(order){
+      order.status = status;
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível atualizar o pedido."
+    );
+
+    await loadOrders();
+
+  }
+
+}
+
+
+/* =====================================================
+   CAIXA
+===================================================== */
+
+async function loadCash(){
+
+  const container =
+    document.getElementById(
+      "cashList"
+    );
+
+  try{
+
+    const result =
+      await db
+        .from("cash_movements")
+        .select("*")
+        .order(
+          "created_at",
+          {ascending:false}
+        )
+        .limit(100);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    cashMovements =
+      result.data || [];
+
+    renderCash();
+
+  }catch(err){
+
+    console.error(err);
+
+    container.innerHTML =
+      `<div class="empty">
+        Erro ao carregar caixa.
+      </div>`;
+
+  }
+
+}
+
+
+function renderCash(){
+
+  const container =
+    document.getElementById(
+      "cashList"
+    );
+
+  let balance = 0;
+
+  cashMovements.forEach(item=>{
+
+    const amount =
+      Number(item.amount || 0);
+
+    if(item.type === "income"){
+      balance += amount;
+    }else{
+      balance -= amount;
+    }
+
+  });
+
+  document.getElementById(
+    "cashBalance"
+  ).textContent =
+    money(balance);
+
+  if(!cashMovements.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhum lançamento.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    cashMovements.map(item=>{
+
+      const income =
+        item.type === "income";
+
+      return `
+
+        <div class="movement">
+
+          <div>
+
+            <strong>
+              ${escapeHtml(
+                item.description || "Sem descrição"
+              )}
+            </strong>
+
+            <div
+              style="
+                color:#777;
+                font-size:11px;
+                margin-top:4px">
+
+              ${formatDate(item.created_at)}
+
+            </div>
+
+          </div>
+
+          <strong
+            class="${
+              income
+              ? "positive"
+              : "negative"
+            }">
+
+            ${income ? "+" : "-"}
+            R$ ${money(item.amount)}
+
+          </strong>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+function openCashModal(){
+
+  document.getElementById(
+    "cashType"
+  ).value =
+    "income";
+
+  document.getElementById(
+    "cashAmount"
+  ).value =
+    "";
+
+  document.getElementById(
+    "cashDescription"
+  ).value =
+    "";
+
+  document
+    .getElementById("cashModal")
+    .classList.add("active");
+
+}
+
+
+function closeCashModal(){
+
+  document
+    .getElementById("cashModal")
+    .classList.remove("active");
+
+}
+
+
+async function saveCashMovement(){
+
+  const type =
+    document.getElementById(
+      "cashType"
+    ).value;
+
+  const amount =
+    Number(
+      document.getElementById(
+        "cashAmount"
+      ).value
+    );
+
+  const description =
+    document.getElementById(
+      "cashDescription"
+    ).value.trim();
+
+  if(!Number.isFinite(amount) || amount <= 0){
+
+    alert(
+      "Digite um valor válido."
+    );
+
+    return;
+
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("cash_movements")
+        .insert({
+
+          type:type,
+
+          amount:amount,
+
+          description:
+            description || null
+
+        });
+
+    if(result.error){
+      throw result.error;
+    }
+
+    closeCashModal();
+
+    await loadCash();
+
+    alert(
+      "Lançamento salvo!"
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível salvar o lançamento."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   AUXILIARES
+===================================================== */
+
+function money(value){
+
+  return Number(value || 0)
+    .toFixed(2)
+    .replace(".",",");
+
+}
+
+
+function formatDate(value){
+
+  if(!value){
+    return "-";
+  }
+
+  const date =
+    new Date(value);
+
+  return date.toLocaleString(
+    "pt-BR",
+    {
+      day:"2-digit",
+      month:"2-digit",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+  return escapeHtml(value);
+
+}
+
+
+function escapeJs(value){
+
+  return String(value ?? "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,'\\"')
+    .replace(/\n/g,"\\n")
+    .replace(/\r/g,"\\r");
+
+}
+
+</script>
+
+</body>
+</html>
