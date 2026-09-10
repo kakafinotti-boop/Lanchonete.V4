@@ -473,10 +473,6 @@ textarea{
   margin-right:5px;
 }
 
-/* =========================
-   TAXA DE ENTREGA
-========================= */
-
 .delivery-fee-info{
   margin-top:9px;
   padding:10px 12px;
@@ -487,10 +483,6 @@ textarea{
   font-size:13px;
   font-weight:bold;
 }
-
-/* =========================
-   PIX
-========================= */
 
 .pix-box{
   margin-top:15px;
@@ -631,8 +623,6 @@ textarea{
 
 </header>
 
-<!-- CARDÁPIO -->
-
 <main
   id="menuScreen"
   class="screen active">
@@ -666,8 +656,6 @@ textarea{
   </div>
 
 </main>
-
-<!-- CARRINHO -->
 
 <div
   id="cartOverlay"
@@ -725,8 +713,6 @@ textarea{
   </span>
 
 </button>
-
-<!-- CHECKOUT -->
 
 <main
   id="checkoutScreen"
@@ -841,8 +827,6 @@ textarea{
 
     </div>
 
-    <!-- ENDEREÇO / BAIRROS -->
-
     <div
       id="deliveryFields"
       class="card">
@@ -927,8 +911,6 @@ textarea{
 
       </select>
 
-      <!-- PIX -->
-
       <div
         id="pixBox"
         class="pix-box"
@@ -1010,8 +992,6 @@ textarea{
 
 </main>
 
-<!-- SUCESSO -->
-
 <main
   id="successScreen"
   class="screen">
@@ -1042,10 +1022,6 @@ textarea{
 
 <script>
 
-/* =====================================================
-   SUPABASE
-===================================================== */
-
 const SUPABASE_URL =
   "https://xmxacmfzwrvrrmayivph.supabase.co";
 
@@ -1058,16 +1034,8 @@ const db =
     SUPABASE_KEY
   );
 
-/* =====================================================
-   WHATSAPP DA LOJA
-===================================================== */
-
 const STORE_WHATSAPP =
   "5524998441693";
-
-/* =====================================================
-   ESTADO
-===================================================== */
 
 let products = [];
 
@@ -1078,10 +1046,6 @@ let storeSettings = null;
 let deliveryZones = [];
 
 let lastOrder = null;
-
-/* =====================================================
-   INÍCIO
-===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -1100,6 +1064,16 @@ document.addEventListener(
     toggleDeliveryFields();
 
     updatePaymentFields();
+
+    /*
+      Atualiza o status automaticamente.
+      Assim a loja muda de Aberto/Fechado
+      sem precisar atualizar a página.
+    */
+    setInterval(
+      updateStoreStatus,
+      30000
+    );
 
   }
 );
@@ -1173,7 +1147,10 @@ async function loadStoreSettings(){
     if(status){
 
       status.textContent =
-        "Burguer Gold";
+        "Fechado";
+
+      status.className =
+        "status closed";
 
     }
 
@@ -1182,7 +1159,7 @@ async function loadStoreSettings(){
 }
 
 /* =====================================================
-   BAIRROS E TAXAS DE ENTREGA
+   BAIRROS E TAXAS
 ===================================================== */
 
 async function loadDeliveryZones(){
@@ -1277,30 +1254,13 @@ function renderDeliveryZones(){
 }
 
 /* =====================================================
-   STATUS DA LOJA
+   VERIFICAR SE A LOJA ESTÁ ABERTA
 ===================================================== */
 
-function updateStoreStatus(){
-
-  const element =
-    document.getElementById(
-      "storeStatus"
-    );
-
-  if(!element){
-    return;
-  }
+function isStoreOpen(){
 
   if(!storeSettings){
-
-    element.textContent =
-      "Aberto";
-
-    element.className =
-      "status open";
-
-    return;
-
+    return false;
   }
 
   const days = [
@@ -1316,46 +1276,62 @@ function updateStoreStatus(){
   const now =
     new Date();
 
-  const day =
+  const currentDay =
     days[now.getDay()];
 
-  const hours =
-    storeSettings.opening_hours?.[day];
+  /*
+    Se hoje estiver desativado,
+    a loja está fechada.
+  */
+  if(
+    storeSettings[
+      `${currentDay}_enabled`
+    ] === false
+  ){
 
-  if(!hours || hours.closed){
-
-    element.textContent =
-      "Fechado";
-
-    element.className =
-      "status closed";
-
-    return;
+    return false;
 
   }
 
+  const openTime =
+    storeSettings[
+      `${currentDay}_open`
+    ] || "18:00";
+
+  const closeTime =
+    storeSettings[
+      `${currentDay}_close`
+    ] || "00:00";
+
   const current =
-    now.getHours()*60 +
+    now.getHours() * 60 +
     now.getMinutes();
 
   const openParts =
-    String(hours.open || "18:00")
+    String(openTime)
       .split(":")
       .map(Number);
 
   const closeParts =
-    String(hours.close || "00:00")
+    String(closeTime)
       .split(":")
       .map(Number);
 
   const open =
-    openParts[0]*60 +
+    openParts[0] * 60 +
     openParts[1];
 
   let close =
-    closeParts[0]*60 +
+    closeParts[0] * 60 +
     closeParts[1];
 
+  /*
+    Exemplo:
+    18:00 até 00:00
+
+    00:00 precisa ser considerado
+    como o dia seguinte.
+  */
   if(close <= open){
     close += 1440;
   }
@@ -1363,26 +1339,54 @@ function updateStoreStatus(){
   let adjustedCurrent =
     current;
 
+  /*
+    Exemplo:
+    loja abriu ontem às 18:00
+    e fecha hoje às 00:00.
+  */
   if(
     current < open &&
     close > 1440
   ){
+
     adjustedCurrent += 1440;
+
   }
 
-  const isOpen =
+  return (
     adjustedCurrent >= open &&
-    adjustedCurrent < close;
+    adjustedCurrent < close
+  );
+
+}
+
+/* =====================================================
+   STATUS DA LOJA
+===================================================== */
+
+function updateStoreStatus(){
+
+  const element =
+    document.getElementById(
+      "storeStatus"
+    );
+
+  if(!element){
+    return;
+  }
+
+  const open =
+    isStoreOpen();
 
   element.textContent =
-    isOpen
-    ? "Aberto"
-    : "Fechado";
+    open
+      ? "Aberto"
+      : "Fechado";
 
   element.className =
-    isOpen
-    ? "status open"
-    : "status closed";
+    open
+      ? "status open"
+      : "status closed";
 
 }
 
@@ -1745,6 +1749,18 @@ function saveCart(){
 
 function addToCart(id){
 
+  if(!isStoreOpen()){
+
+    alert(
+      "A loja está fechada no momento. Os pedidos só podem ser feitos durante o horário de funcionamento."
+    );
+
+    updateStoreStatus();
+
+    return;
+
+  }
+
   const product =
     products.find(
       p =>
@@ -1963,6 +1979,18 @@ function goToCheckout(){
     alert(
       "Seu carrinho está vazio."
     );
+
+    return;
+
+  }
+
+  if(!isStoreOpen()){
+
+    alert(
+      "A loja está fechada no momento. Não é possível finalizar pedidos agora."
+    );
+
+    updateStoreStatus();
 
     return;
 
@@ -2407,6 +2435,18 @@ Estou enviando o comprovante do pagamento por aqui.`;
 ===================================================== */
 
 async function finishOrder(){
+
+  if(!isStoreOpen()){
+
+    alert(
+      "A loja está fechada no momento. Não é possível enviar pedidos agora."
+    );
+
+    updateStoreStatus();
+
+    return;
+
+  }
 
   if(!cart.length){
 
