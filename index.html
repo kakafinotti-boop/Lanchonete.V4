@@ -1192,8 +1192,7 @@ async function loadDeliveryZones(){
     const result =
       await db
         .from("delivery_zones")
-        .select("id,name,fee,available")
-        .eq("available",true)
+        .select("id,name,fee")
         .order("name",{ascending:true});
 
     if(result.error){
@@ -2496,11 +2495,6 @@ async function finishOrder(){
 
   let deliveryZoneId = null;
 
-  /*
-    Para entrega:
-    rua + número + bairro escolhido.
-  */
-
   if(type === "delivery"){
 
     const streetElement =
@@ -2605,12 +2599,6 @@ async function finishOrder(){
 
   const totals =
     calculateCheckoutTotal();
-
-  /*
-    Segurança extra:
-    se for entrega, confirma que existe
-    um bairro selecionado antes de enviar.
-  */
 
   if(
     type === "delivery" &&
