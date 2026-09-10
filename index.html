@@ -1366,9 +1366,6 @@ SUPABASE
 const SUPABASE_URL =
 "https://tliifpjfrjuxkjqyrvnw.supabase.co";
 
-/*
- COLE AQUI A SUA PUBLISHABLE KEY DO SUPABASE
-*/
 const SUPABASE_KEY =
 "sb_publishable_Hh-QYqm0beaP_HBhU5i3yg_BFYK_3tj";
 
@@ -1408,6 +1405,90 @@ let currentCashData = null;
 let adminOrders = [];
 
 let lastOrderForWhatsapp = null;
+
+/* ============================================================
+CONTROLE DE ACESSO ADMIN
+============================================================ */
+
+/*
+  O cliente normal sempre começa no menu.
+
+  O login administrativo só pode ser aberto quando a URL
+  estiver em /admin.
+
+  O painel administrativo só é liberado depois que o
+  Supabase confirmar uma sessão autenticada.
+*/
+
+function isAdminRoute(){
+
+return (
+location.pathname === "/admin" ||
+location.hash === "#admin"
+);
+
+}
+
+function isAdminAuthenticated(){
+
+return Boolean(
+window.currentAdminSession
+);
+
+}
+
+function protectAdminScreen(){
+
+if(
+!isAdminRoute() &&
+!isAdminAuthenticated()
+){
+
+const adminLogin=
+document.getElementById("adminLogin");
+
+const adminPanel=
+document.getElementById("adminPanel");
+
+if(adminLogin){
+adminLogin.classList.remove("active");
+}
+
+if(adminPanel){
+adminPanel.classList.remove("active");
+}
+
+}
+
+}
+
+function goToAdminRoute(){
+
+if(location.pathname !== "/admin"){
+
+history.pushState(
+{},
+"",
+"/admin"
+);
+
+}
+
+showScreen("adminLogin");
+
+}
+
+function goToClient(){
+
+history.pushState(
+{},
+"",
+"/"
+);
+
+showScreen("menuScreen");
+
+}
 
 /* ============================================================
 UTILIDADES
@@ -1460,6 +1541,32 @@ return new Date(date)
 }
 
 function showScreen(id){
+
+/*
+  Proteção principal da interface.
+
+  Nenhuma tela administrativa pode aparecer para uma
+  pessoa que não esteja autenticada.
+*/
+
+if(
+(id==="adminLogin" || id==="adminPanel") &&
+!isAdminAuthenticated() &&
+!isAdminRoute()
+){
+
+id="menuScreen";
+
+}
+
+if(
+id==="adminPanel" &&
+!isAdminAuthenticated()
+){
+
+id="adminLogin";
+
+}
 
 document
 .querySelectorAll(".screen")
@@ -2546,3413 +2653,1457 @@ if(open)open.disabled=closed;
 if(close)close.disabled=closed;
 
 }
+  <script>
+/* =========================================================
+   CONFIGURAÇÕES DO CLIENTE
+========================================================= */
 
 async function saveOpeningHours(){
+  const days=[
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+  ];
 
-const newHours={};
+  const updated={};
 
-Object.keys(dayNames)
-.forEach(day=>{
+  days.forEach(day=>{
+    const open=document.getElementById(`open_${day}`);
+    const close=document.getElementById(`close_${day}`);
+    const closed=document.getElementById(`closed_${day}`);
 
-const closed=
-document.getElementById(
-"closed-"+day
-).checked;
+    if(!open || !close || !closed) return;
 
-newHours[day]={
+    updated[day]={
+      open:open.value,
+      close:close.value,
+      closed:closed.checked
+    };
+  });
 
-open:
-document.getElementById(
-"open-"+day
-).value,
+  const {error}=await db
+    .from("store_settings")
+    .upsert({
+      id:1,
+      opening_hours:updated
+    });
 
-close:
-document.getElementById(
-"close-"+day
-).value,
+  if(error){
+    console.error(error);
+    alert("Erro ao salvar horário.");
+    return;
+  }
 
-closed:closed
+  openingHours=updated;
 
-};
-
-});
-
-const ok=
-await updateStoreSetting({
-
-opening_hours:newHours
-
-});
-
-if(!ok)return;
-
-openingHours=newHours;
-
-updateStoreStatus();
-
-showToast(
-"🕐 Horários salvos!"
-);
-
+  alert("Horários salvos com sucesso!");
+  updateStoreStatus();
 }
 
-/* ============================================================
-ESTIMATIVA DE ENTREGA
-============================================================ */
+
+/* =========================================================
+   CONFIGURAÇÕES DA LOJA
+========================================================= */
 
 async function saveDeliveryEstimate(){
+  const value=Number(
+    document.getElementById("deliveryEstimateInput")?.value || 0
+  );
 
-const min=
-Number(
-document.getElementById(
-"deliveryMin"
-).value
-);
+  const {error}=await db
+    .from("store_settings")
+    .upsert({
+      id:1,
+      delivery_estimate:value
+    });
 
-const max=
-Number(
-document.getElementById(
-"deliveryMax"
-).value
-);
+  if(error){
+    console.error(error);
+    alert("Erro ao salvar tempo de entrega.");
+    return;
+  }
 
-if(!min || !max || min<=0 || max<=0){
+  deliveryEstimate=value;
 
-alert(
-"Digite tempos válidos."
-);
-
-return;
-
+  alert("Tempo de entrega salvo!");
 }
 
-if(max<min){
-
-alert(
-"O tempo máximo não pode ser menor que o mínimo."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-delivery_min:min,
-
-delivery_max:max,
-
-estimated_delivery_min:min,
-
-estimated_delivery_max:max
-
-});
-
-if(!ok)return;
-
-deliveryMin=min;
-deliveryMax=max;
-
-showToast(
-"🚚 Estimativa atualizada!"
-);
-
-}
-
-/* ============================================================
-PIX
-============================================================ */
 
 async function savePixKey(){
+  const value=
+    document.getElementById("pixKeyInput")?.value.trim() || "";
 
-const key=
-document.getElementById(
-"pixKeyInput"
-).value.trim();
+  const {error}=await db
+    .from("store_settings")
+    .upsert({
+      id:1,
+      pix_key:value
+    });
 
-if(!key){
+  if(error){
+    console.error(error);
+    alert("Erro ao salvar chave PIX.");
+    return;
+  }
 
-alert(
-"Digite a chave PIX."
-);
+  pixKey=value;
 
-return;
-
+  alert("Chave PIX salva!");
 }
 
-const ok=
-await updateStoreSetting({
-
-pix_key:key
-
-});
-
-if(!ok)return;
-
-pixKey=key;
-
-showToast(
-"💳 PIX salvo!"
-);
-
-}
-
-function updatePaymentBox(){
-
-const payment=
-document.getElementById(
-"payment"
-).value;
-
-const box=
-document.getElementById(
-"pixBox"
-);
-
-if(payment==="PIX"){
-
-box.style.display="block";
-
-document.getElementById(
-"pixKeyDisplay"
-).textContent=
-pixKey ||
-"PIX ainda não configurado.";
-
-}else{
-
-box.style.display="none";
-
-}
-
-}
-
-async function copyPixKey(){
-
-if(!pixKey){
-
-alert(
-"A chave PIX ainda não foi configurada."
-);
-
-return;
-
-}
-
-try{
-
-await navigator.clipboard.writeText(
-pixKey
-);
-
-showToast(
-"📋 Chave PIX copiada!"
-);
-
-}catch(e){
-
-alert(
-"Chave PIX:\n\n"+pixKey
-);
-
-}
-
-}
-
-/* ============================================================
-WHATSAPP
-============================================================ */
 
 async function saveWhatsapp(){
+  const value=
+    document.getElementById("whatsappInput")?.value.trim() || "";
 
-let number=
-document.getElementById(
-"whatsappInput"
-).value.trim();
+  const {error}=await db
+    .from("store_settings")
+    .upsert({
+      id:1,
+      whatsapp:value
+    });
 
-number=
-number.replace(/\D/g,"");
+  if(error){
+    console.error(error);
+    alert("Erro ao salvar WhatsApp.");
+    return;
+  }
 
-if(!number){
+  whatsapp=value;
 
-alert(
-"Digite o número do WhatsApp."
-);
-
-return;
-
-}
-
-const ok=
-await updateStoreSetting({
-
-whatsapp:number,
-
-whatsapp_number:number
-
-});
-
-if(!ok)return;
-
-whatsappNumber=number;
-
-showToast(
-"📱 WhatsApp salvo!"
-);
-
-}
-
-function buildWhatsappMessage(order){
-
-if(!order)return "";
-
-let message=
-"🍔 *BURGuer GOLD*%0A%0A";
-
-message+=
-"🧾 *Pedido #"+
-order.id+"*%0A";
-
-message+=
-"👤 Cliente: "+
-encodeURIComponent(order.customer_name)+
-"%0A";
-
-message+=
-"💳 Pagamento: "+
-encodeURIComponent(order.payment)+
-"%0A";
-
-message+=
-(order.delivery
-?"🚚 Entrega"
-:"🏪 Retirada")+
-"%0A";
-
-if(order.delivery){
-
-message+=
-"📍 "+
-encodeURIComponent(order.address)+
-"%0A";
-
-}
-
-message+="%0A";
-
-message+="*Itens:*%0A";
-
-(order.items||[]).forEach(item=>{
-
-message+=
-"• "+
-item.qty+
-"x "+
-encodeURIComponent(item.name)+
-" — "+
-encodeURIComponent(
-money(item.price*item.qty)
-)+
-"%0A";
-
-});
-
-message+="%0A";
-
-message+=
-"💰 *Total: "+
-encodeURIComponent(
-money(order.total)
-)+
-"*%0A";
-
-if(order.delivery){
-
-message+=
-"⏱️ Estimativa: "+
-deliveryMin+
-" a "+
-deliveryMax+
-" minutos%0A";
-
-}
-
-return message;
-
-}
-
-function openOrderWhatsapp(){
-
-if(!whatsappNumber){
-
-alert(
-"O WhatsApp da loja ainda não foi configurado no administrador."
-);
-
-return;
-
-}
-
-const message=
-buildWhatsappMessage(
-lastOrderForWhatsapp
-);
-
-const url=
-"https://wa.me/"+
-whatsappNumber+
-"?text="+
-message;
-
-window.open(
-url,
-"_blank"
-);
-
-}
-
-/* ============================================================
-ENTREGA / BAIRROS
-============================================================ */
-
-async function loadDeliveryZones(){
-
-const {data,error}=await db
-.from("delivery_zones")
-.select("*")
-.eq("active",true)
-.order("neighborhood",{ascending:true});
-
-if(error){
-
-console.error(error);
-
-deliveryZones=[];
-
-return;
-
-}
-
-deliveryZones=data||[];
-
-}
-
-function renderNeighborhoods(){
-
-const select=
-document.getElementById(
-"customerNeighborhood"
-);
-
-if(!select)return;
-
-select.innerHTML=
-`
-<option value="">
-Selecione seu bairro
-</option>
-`+
-deliveryZones.map(zone=>
-`
-<option value="${zone.id}">
-${escapeHtml(zone.neighborhood)}
-—
-${money(zone.fee)}
-</option>
-`
-).join("");
-
-}
-
-function getSelectedDeliveryFee(){
-
-const select=
-document.getElementById(
-"customerNeighborhood"
-);
-
-if(!select || !select.value){
-
-return Number(deliveryFee)||0;
-
-}
-
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
-);
-
-return zone
-?
-Number(zone.fee)||0
-:
-Number(deliveryFee)||0;
-
-}
-
-function getSelectedNeighborhood(){
-
-const select=
-document.getElementById(
-"customerNeighborhood"
-);
-
-if(!select || !select.value)return "";
-
-const zone=
-deliveryZones.find(
-zone=>
-String(zone.id)===
-String(select.value)
-);
-
-return zone
-?
-zone.neighborhood
-:
-"";
-
-}
-
-function renderCheckout(){
-
-const container=
-document.getElementById(
-"checkoutItems"
-);
-
-container.innerHTML=
-cart.map(item=>`
-
-<div class="cart-item">
-
-<span>
-${item.qty}x
-${escapeHtml(item.name)}
-</span>
-
-<strong>
-${money(item.price*item.qty)}
-</strong>
-
-</div>
-
-`).join("");
-
-document.getElementById(
-"deliveryEstimatePreview"
-).textContent=
-"⏱️ Estimativa: "+
-deliveryMin+
-" a "+
-deliveryMax+
-" minutos";
-
-updateCheckoutTotal();
-
-updatePaymentBox();
-
-}
-
-function updateCheckoutTotal(){
-
-const subtotal=
-getCartTotal();
-
-const deliveryType=
-document.getElementById(
-"deliveryType"
-).value;
-
-const fee=
-deliveryType==="ENTREGA"
-?
-getSelectedDeliveryFee()
-:
-0;
-
-document.getElementById(
-"checkoutSubtotal"
-).textContent=
-money(subtotal);
-
-document.getElementById(
-"checkoutDelivery"
-).textContent=
-money(fee);
-
-document.getElementById(
-"checkoutTotal"
-).textContent=
-money(subtotal+fee);
-
-document.getElementById(
-"deliveryFeePreview"
-).textContent=
-"Taxa de entrega: "+
-money(fee);
-
-}
-
-function toggleDeliveryFields(){
-
-const type=
-document.getElementById(
-"deliveryType"
-).value;
-
-document.getElementById(
-"addressArea"
-).style.display=
-type==="ENTREGA"
-?
-"block"
-:
-"none";
-
-updateCheckoutTotal();
-
-}
-
-/* ============================================================
-ENVIAR PEDIDO
-============================================================ */
-
-async function sendOrder(){
-
-if(!isStoreOpen()){
-
-alert(
-"A loja está fechada no momento."
-);
-
-return;
-
-}
-
-const customerName=
-document.getElementById(
-"customerName"
-).value.trim();
-
-const deliveryType=
-document.getElementById(
-"deliveryType"
-).value;
-
-const delivery=
-deliveryType==="ENTREGA";
-
-const address=
-document.getElementById(
-"customerAddress"
-).value.trim();
-
-const payment=
-document.getElementById(
-"payment"
-).value;
-
-const neighborhood=
-getSelectedNeighborhood();
-
-if(!customerName){
-
-alert(
-"Digite seu nome."
-);
-
-return;
-
-}
-
-if(delivery && !neighborhood){
-
-alert(
-"Selecione seu bairro."
-);
-
-return;
-
-}
-
-if(delivery && !address){
-
-alert(
-"Digite o endereço de entrega."
-);
-
-return;
-
-}
-
-if(!cart.length){
-
-alert(
-"Seu carrinho está vazio."
-);
-
-return;
-
-}
-
-if(payment==="PIX" && !pixKey){
-
-alert(
-"O PIX ainda não foi configurado pela loja."
-);
-
-return;
-
-}
-
-const deliveryFeeValue=
-delivery
-?
-getSelectedDeliveryFee()
-:
-0;
-
-const total=
-getCartTotal()+
-deliveryFeeValue;
-
-const orderId=
-Date.now()*1000+
-Math.floor(
-Math.random()*1000
-);
-
-const finalAddress=
-delivery
-?
-`${address} — Bairro: ${neighborhood}`
-:
-"RETIRADA NA LOJA";
-
-const orderData={
-
-id:orderId,
-
-customer_name:
-customerName,
-
-address:
-finalAddress,
-
-payment:
-payment,
-
-delivery:
-delivery,
-
-total:
-total,
-
-status:
-"RECEBIDO"
-
-};
-
-const {error:orderError}=
-await db
-.from("orders")
-.insert(orderData);
-
-if(orderError){
-
-console.error(orderError);
-
-alert(
-"Não foi possível criar o pedido."
-);
-
-return;
-
-}
-
-const items=
-cart.map((item,index)=>({
-
-id:
-orderId*100+
-index+
-1,
-
-order_id:
-orderId,
-
-product_id:
-item.id,
-
-name:
-item.name,
-
-qty:
-item.qty,
-
-price:
-item.price
-
-}));
-
-const {error:itemsError}=
-await db
-.from("order_items")
-.insert(items);
-
-if(itemsError){
-
-console.error(itemsError);
-
-alert(
-"O pedido foi criado, mas houve um erro ao salvar os itens."
-);
-
-return;
-
-}
-
-lastOrderForWhatsapp={
-
-id:orderId,
-
-customer_name:
-customerName,
-
-address:
-finalAddress,
-
-payment:
-payment,
-
-delivery:
-delivery,
-
-total:
-total,
-
-items:
-cart.map(item=>({...item}))
-
-};
-
-document.getElementById(
-"successOrderId"
-).textContent=
-"#"+orderId;
-
-document.getElementById(
-"successInfo"
-).innerHTML=
-`
-
-<div class="store-notice">
-
-<strong>
-⏱️ Estimativa de entrega:
-</strong>
-
-<br>
-
-<span class="muted">
-${deliveryMin} a ${deliveryMax} minutos
-</span>
-
-</div>
-
-`;
-
-document.getElementById(
-"successWhatsappBtn"
-).style.display=
-whatsappNumber
-?
-"block"
-:
-"none";
-
-cart=[];
-
-renderCart();
-
-showScreen(
-"successScreen"
-);
-
-}
-
-/* ============================================================
-LOGIN
-============================================================ */
-
-async function adminLogin(){
-
-const email=
-document.getElementById(
-"adminEmail"
-).value.trim();
-
-const password=
-document.getElementById(
-"adminPassword"
-).value;
-
-if(!email||!password){
-
-alert(
-"Preencha e-mail e senha."
-);
-
-return;
-
-}
-
-const {data,error}=
-await db.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(
-"E-mail ou senha incorretos."
-);
-
-return;
-
-}
-
-if(data.session){
-
-await showAdminPanel();
-
-}
-
-}
-
-async function adminLogout(){
-
-await db.auth.signOut();
-
-currentCashRegister=null;
-
-currentCashData=null;
-
-showScreen(
-"menuScreen"
-);
-
-}
-
-/* ============================================================
-ABAS ADMIN
-============================================================ */
-
-function openAdminTab(tab){
-
-document
-.querySelectorAll(".admin-tab")
-.forEach(button=>{
-button.classList.remove("active");
-});
-
-document
-.querySelectorAll(".admin-section")
-.forEach(section=>{
-section.classList.remove("active");
-});
-
-const button=
-document.getElementById(
-"adminTab"+
-tab.charAt(0).toUpperCase()+
-tab.slice(1)
-);
-
-if(button){
-
-button.classList.add("active");
-
-}
-
-const section=
-document.getElementById(
-"admin-"+
-(
-tab==="products"
-?
-"products-section"
-:
-tab
-)
-);
-
-if(section){
-
-section.classList.add("active");
-
-}
-
-if(tab==="dashboard"){
-
-renderDashboard();
-
-}
-
-if(tab==="orders"){
-
-loadOrders();
-
-}
-
-if(tab==="products"){
-
-loadAdminProducts();
-
-}
-
-if(tab==="cash"){
-
-loadCashRegister();
-
-}
-
-if(tab==="reports"){
-
-loadReports();
-
-}
-
-if(tab==="settings"){
-
-loadDeliveryZonesAdmin();
-
-renderOpeningHoursAdmin();
-
-document.getElementById(
-"deliveryMin"
-).value=
-deliveryMin;
-
-document.getElementById(
-"deliveryMax"
-).value=
-deliveryMax;
-
-document.getElementById(
-"pixKeyInput"
-).value=
-pixKey;
-
-document.getElementById(
-"whatsappInput"
-).value=
-whatsappNumber;
-
-document.getElementById(
-"defaultDeliveryFee"
-).value=
-Number(deliveryFee).toFixed(2);
-
-}
-
-}
-
-async function showAdminPanel(){
-
-showScreen(
-"adminPanel"
-);
-
-await loadStoreSettings();
-
-await loadOrders();
-
-await loadAdminProducts();
-
-await loadCashRegister();
-
-await loadReports();
-
-await loadDeliveryZonesAdmin();
-
-renderOpeningHoursAdmin();
-
-openAdminTab(
-"dashboard"
-);
-
-}
-
-/* ============================================================
-DASHBOARD
-============================================================ */
-
-function renderDashboard(){
-
-const container=
-document.getElementById(
-"dashboardContent"
-);
-
-const orders=
-adminOrders||[];
-
-const total=
-orders.reduce(
-(sum,order)=>
-sum+
-Number(order.total||0),
-0
-);
-
-const average=
-orders.length
-?
-total/orders.length
-:
-0;
-
-const received=
-orders.filter(
-o=>o.status==="RECEBIDO"
-).length;
-
-const preparing=
-orders.filter(
-o=>o.status==="PREPARANDO"
-).length;
-
-const ready=
-orders.filter(
-o=>o.status==="PRONTO"
-).length;
-
-const delivered=
-orders.filter(
-o=>o.status==="ENTREGUE"
-).length;
-
-container.innerHTML=
-
-`
-
-<div class="dashboard-grid">
-
-<div class="stat">
-<span>Faturamento</span>
-<strong>${money(total)}</strong>
-</div>
-
-<div class="stat">
-<span>Pedidos</span>
-<strong>${orders.length}</strong>
-</div>
-
-<div class="stat">
-<span>Ticket médio</span>
-<strong>${money(average)}</strong>
-</div>
-
-<div class="stat">
-<span>Recebidos</span>
-<strong>${received}</strong>
-</div>
-
-<div class="stat">
-<span>Preparando</span>
-<strong>${preparing}</strong>
-</div>
-
-<div class="stat">
-<span>Prontos</span>
-<strong>${ready}</strong>
-</div>
-
-<div class="stat">
-<span>Entregues</span>
-<strong>${delivered}</strong>
-</div>
-
-</div>
-
-<div class="card"
-style="margin-top:18px">
-
-<h3>
-🕐 Pedidos recentes
-</h3>
-
-${
-orders.length
-?
-
-orders.slice(0,5).map(
-order=>`
-
-<div class="history-item">
-
-<strong>
-#${order.id}
-—
-${escapeHtml(
-order.customer_name
-)}
-</strong>
-
-<div class="muted">
-${formatDateTime(
-order.created_at
-)}
-</div>
-
-<div>
-
-${escapeHtml(
-order.status
-)}
-
-—
-
-<strong class="gold">
-${money(order.total)}
-</strong>
-
-</div>
-
-</div>
-
-`
-).join("")
-
-:
-
-`<div class="empty">
-Nenhum pedido ainda.
-</div>`
-
-}
-
-</div>
-
-`;
-
-}
-
-/* ============================================================
-PEDIDOS
-============================================================ */
-
-async function loadOrders(){
-
-const container=
-document.getElementById(
-"ordersContainer"
-);
-
-if(!container)return;
-
-container.innerHTML=
-"Carregando pedidos...";
-
-const {data,error}=
-await db
-.from("orders")
-.select("*")
-.order(
-"created_at",
-{ascending:false}
-);
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=
-`<div class="empty">
-Erro ao carregar pedidos.
-</div>`;
-
-return;
-
-}
-
-adminOrders=
-data||[];
-
-renderDashboard();
-
-if(!adminOrders.length){
-
-container.innerHTML=
-`<div class="empty">
-Nenhum pedido recebido ainda.
-</div>`;
-
-return;
-
-}
-
-container.innerHTML=
-adminOrders.map(
-order=>`
-
-<div class="order">
-
-<div class="order-top">
-
-<div>
-
-<strong>
-Pedido #${order.id}
-</strong>
-
-<div class="muted">
-${formatDateTime(
-order.created_at
-)}
-</div>
-
-</div>
-
-<span class="status">
-${escapeHtml(
-order.status
-)}
-</span>
-
-</div>
-
-<p>
-<strong>Cliente:</strong>
-${escapeHtml(
-order.customer_name
-)}
-</p>
-
-<p>
-<strong>Pedido:</strong>
-${order.delivery
-?
-"🚚 Entrega"
-:
-"🏪 Retirada"}
-</p>
-
-<p>
-<strong>Endereço:</strong>
-${escapeHtml(
-order.address||"-"
-)}
-</p>
-
-<p>
-<strong>Pagamento:</strong>
-${escapeHtml(
-order.payment
-)}
-</p>
-
-<div id="items-${order.id}"
-class="order-items">
-Carregando itens...
-</div>
-
-<strong class="gold">
-Total: ${money(order.total)}
-</strong>
-
-<label>
-
-Alterar status
-
-<select
-onchange=
-"changeOrderStatus(${order.id},this.value)">
-
-${[
-"RECEBIDO",
-"PREPARANDO",
-"PRONTO",
-"SAIU PARA ENTREGA",
-"ENTREGUE"
-]
-.map(
-status=>`
-
-<option
-value="${status}"
-${order.status===status
-?"selected"
-:""}>
-
-${status}
-
-</option>
-
-`
-).join("")}
-
-</select>
-
-</label>
-
-</div>
-
-`
-).join("");
-
-for(
-const order of adminOrders
-){
-
-loadOrderItems(
-order.id
-);
-
-}
-
-}
-
-async function loadOrderItems(orderId){
-
-const container=
-document.getElementById(
-"items-"+orderId
-);
-
-if(!container)return;
-
-const {data,error}=
-await db
-.from("order_items")
-.select("*")
-.eq(
-"order_id",
-orderId
-)
-.order("id");
-
-if(error){
-
-container.textContent=
-"Erro ao carregar itens.";
-
-return;
-
-}
-
-if(!data||!data.length){
-
-container.textContent=
-"Nenhum item.";
-
-return;
-
-}
-
-container.innerHTML=
-data.map(
-item=>`
-
-${item.qty}x
-${escapeHtml(item.name)}
-—
-${money(
-item.price*item.qty
-)}
-
-`
-).join("<br>");
-
-}
-
-async function changeOrderStatus(
-orderId,
-status
-){
-
-const {error}=
-await db
-.from("orders")
-.update({
-status:status
-})
-.eq(
-"id",
-orderId
-);
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível alterar o status."
-);
-
-return;
-
-}
-
-await loadOrders();
-
-}
-
-/* ============================================================
-PRODUTOS ADMIN
-============================================================ */
-
-async function loadAdminProducts(){
-
-const container=
-document.getElementById(
-"adminProducts"
-);
-
-if(!container)return;
-
-container.innerHTML=
-"Carregando produtos...";
-
-const {data,error}=
-await db
-.from("products")
-.select("*")
-.order(
-"id",
-{ascending:true}
-);
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=
-`<div class="empty">
-Erro ao carregar produtos.
-</div>`;
-
-return;
-
-}
-
-if(!data||!data.length){
-
-container.innerHTML=
-`<div class="empty">
-Nenhum produto cadastrado.
-</div>`;
-
-return;
-
-}
-
-container.innerHTML=
-data.map(
-product=>`
-
-<div class="admin-product">
-
-<h3>
-${escapeHtml(
-product.name
-)}
-</h3>
-
-<div class="gold">
-
-${categoryIcons[
-getProductCategory(product)
-]||"⭐"}
-
-${escapeHtml(
-getProductCategory(product)
-)}
-
-</div>
-
-<p class="muted">
-${escapeHtml(
-product.description||""
-)}
-</p>
-
-<strong class="gold">
-${money(product.price)}
-</strong>
-
-<p>
-Status:
-<strong>
-${product.active
-?
-"ATIVO"
-:
-"INATIVO"}
-</strong>
-</p>
-
-<button
-class="btn small
-${product.active
-?
-"danger"
-:
-""}"
-onclick=
-"toggleProduct(${product.id},${product.active})">
-
-${product.active
-?
-"Desativar"
-:
-"Ativar"}
-
-</button>
-
-</div>
-
-`
-).join("");
-
-}
-
-async function createProduct(){
-
-const name=
-document.getElementById(
-"productName"
-).value.trim();
-
-const description=
-document.getElementById(
-"productDescription"
-).value.trim();
-
-const price=
-parseMoney(
-document.getElementById(
-"productPrice"
-).value
-);
-
-const category=
-document.getElementById(
-"productCategory"
-).value;
-
-if(!name){
-
-alert(
-"Digite o nome do produto."
-);
-
-return;
-
-}
-
-if(!price||price<=0){
-
-alert(
-"Digite um preço válido."
-);
-
-return;
-
-}
-
-const {error}=
-await db
-.from("products")
-.insert({
-
-name:name,
-
-description:description,
-
-price:price,
-
-category:category,
-
-active:true
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível adicionar o produto:\n\n"+
-error.message
-);
-
-return;
-
-}
-
-document.getElementById(
-"productName"
-).value="";
-
-document.getElementById(
-"productDescription"
-).value="";
-
-document.getElementById(
-"productPrice"
-).value="";
-
-await loadAdminProducts();
-
-await loadProducts();
-
-showToast(
-"✅ Produto adicionado!"
-);
-
-}
-
-async function toggleProduct(
-productId,
-currentActive
-){
-
-const {error}=
-await db
-.from("products")
-.update({
-active:!currentActive
-})
-.eq(
-"id",
-productId
-);
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível alterar o produto."
-);
-
-return;
-
-}
-
-await loadAdminProducts();
-
-await loadProducts();
-
-}
-
-/* ============================================================
-CAIXA
-============================================================ */
-
-async function loadCashRegister(){
-
-const container=
-document.getElementById(
-"cashContent"
-);
-
-if(!container)return;
-
-container.innerHTML=
-"Carregando caixa...";
-
-const {data,error}=
-await db
-.from("cash_registers")
-.select("*")
-.eq(
-"status",
-"ABERTO"
-)
-.order(
-"opened_at",
-{ascending:false}
-)
-.limit(1);
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=
-`<div class="empty">
-Erro ao carregar caixa.
-</div>`;
-
-return;
-
-}
-
-if(data&&data.length){
-
-currentCashRegister=
-data[0];
-
-await renderOpenCash();
-
-}else{
-
-currentCashRegister=
-null;
-
-currentCashData=
-null;
-
-await renderClosedCash();
-
-}
-
-}
-
-async function getCashOrders(
-openedAt
-){
-
-const {data,error}=
-await db
-.from("orders")
-.select(
-"id,total,payment,created_at,status"
-)
-.gte(
-"created_at",
-openedAt
-);
-
-if(error){
-
-console.error(error);
-
-return [];
-
-}
-
-return data||[];
-
-}
-
-async function getCashMovements(
-registerId
-){
-
-const {data,error}=
-await db
-.from("cash_movements")
-.select("*")
-.eq(
-"cash_register_id",
-registerId
-)
-.order(
-"created_at",
-{ascending:false}
-);
-
-if(error){
-
-console.error(error);
-
-return [];
-
-}
-
-return data||[];
-
-}
-
-async function calculateCashData(
-register
-){
-
-const orders=
-await getCashOrders(
-register.opened_at
-);
-
-const movements=
-await getCashMovements(
-register.id
-);
-
-let cashSales=0;
-
-let pixSales=0;
-
-let cardSales=0;
-
-orders.forEach(order=>{
-
-const amount=
-Number(order.total)||0;
-
-if(order.payment==="DINHEIRO"){
-
-cashSales+=amount;
-
-}else if(
-order.payment==="PIX"
-){
-
-pixSales+=amount;
-
-}else if(
-order.payment==="CARTAO"
-){
-
-cardSales+=amount;
-
-}
-
-});
-
-let supplies=0;
-let withdrawals=0;
-
-movements.forEach(
-movement=>{
-
-const amount=
-Number(movement.amount)||0;
-
-if(
-movement.type===
-"SUPRIMENTO"
-){
-
-supplies+=amount;
-
-}else if(
-movement.type===
-"SANGRIA"
-){
-
-withdrawals+=amount;
-
-}
-
-});
-
-const totalSales=
-cashSales+
-pixSales+
-cardSales;
-
-const expectedCash=
-Number(
-register.opening_amount
-)+
-cashSales+
-supplies-
-withdrawals;
-
-return{
-
-orders,
-
-movements,
-
-cashSales,
-
-pixSales,
-
-cardSales,
-
-totalSales,
-
-supplies,
-
-withdrawals,
-
-expectedCash
-
-};
-
-}
-
-async function renderOpenCash(){
-
-const container=
-document.getElementById(
-"cashContent"
-);
-
-currentCashData=
-await calculateCashData(
-currentCashRegister
-);
-
-const c=
-currentCashData;
-
-container.innerHTML=
-`
-
-<div class="cash-status">
-
-<strong>
-🟢 CAIXA ABERTO
-</strong>
-
-<div class="muted">
-
-Aberto em:
-${formatDateTime(
-currentCashRegister.opened_at
-)}
-
-</div>
-
-</div>
-
-<div class="cash-grid">
-
-<div class="cash-box">
-<span>Valor de abertura</span>
-<strong>
-${money(
-currentCashRegister.opening_amount
-)}
-</strong>
-</div>
-
-<div class="cash-box">
-<span>Vendas em dinheiro</span>
-<strong>${money(c.cashSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Vendas no PIX</span>
-<strong>${money(c.pixSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Vendas no cartão</span>
-<strong>${money(c.cardSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Total de vendas</span>
-<strong>${money(c.totalSales)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Suprimentos</span>
-<strong>${money(c.supplies)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Sangrias</span>
-<strong>${money(c.withdrawals)}</strong>
-</div>
-
-<div class="cash-box">
-<span>Esperado no caixa</span>
-<strong>${money(c.expectedCash)}</strong>
-</div>
-
-</div>
-
-<div class="card"
-style="margin-top:18px">
-
-<h3>
-💵 Movimentação
-</h3>
-
-<div class="movement">
-
-<div>
-
-<label>
-Valor
-
-<input
-id="movementAmount"
-type="number"
-step="0.01"
-placeholder="0,00">
-
-</label>
-
-</div>
-
-<div>
-
-<label>
-Observação
-
-<input
-id="movementNote"
-type="text"
-placeholder="Ex: troco / retirada">
-
-</label>
-
-</div>
-
-<div>
-
-<button
-class="btn small"
-onclick=
-"addCashMovement('SUPRIMENTO')">
-
-➕ Suprimento
-
-</button>
-
-<button
-class="btn small danger"
-onclick=
-"addCashMovement('SANGRIA')">
-
-➖ Sangria
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>
-🔒 Fechar caixa
-</h3>
-
-<label>
-
-Valor contado
-
-<input
-id="closingAmount"
-type="number"
-step="0.01"
-placeholder="0,00">
-
-</label>
-
-<button
-class="btn"
-onclick=
-"closeCashRegister()">
-
-🔒 Fechar caixa
-
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>
-📜 Movimentações recentes
-</h3>
-
-${
-c.movements.length
-?
-
-c.movements.map(
-movement=>`
-
-<div class="history-item">
-
-<strong>
-
-${movement.type===
-"SUPRIMENTO"
-?
-"➕ Suprimento"
-:
-"➖ Sangria"}
-
-</strong>
-
-<strong class="gold">
-
-${money(
-movement.amount
-)}
-
-</strong>
-
-<div class="muted">
-
-${escapeHtml(
-movement.note||""
-)}
-
-</div>
-
-<div class="muted">
-
-${formatDateTime(
-movement.created_at
-)}
-
-</div>
-
-</div>
-
-`
-).join("")
-
-:
-
-`<div class="empty">
-Nenhuma movimentação.
-</div>`
-
-}
-
-</div>
-
-<div class="card">
-
-<h3>
-📊 Histórico de caixas
-</h3>
-
-<div id="cashHistory">
-Carregando histórico...
-</div>
-
-</div>
-
-`;
-
-await loadCashHistory();
-
-}
-
-async function renderClosedCash(){
-
-const container=
-document.getElementById(
-"cashContent"
-);
-
-container.innerHTML=
-`
-
-<div class="cash-status">
-
-<strong>
-🔴 CAIXA FECHADO
-</strong>
-
-<div class="muted">
-Abra o caixa para começar.
-</div>
-
-</div>
-
-<div class="card"
-style="margin-top:18px">
-
-<h3>
-🟢 Abrir caixa
-</h3>
-
-<label>
-
-Valor inicial
-
-<input
-id="openingAmount"
-type="number"
-step="0.01"
-placeholder="100,00">
-
-</label>
-
-<button
-class="btn"
-onclick=
-"openCashRegister()">
-
-🟢 Abrir caixa
-
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>
-📜 Histórico de caixas
-</h3>
-
-<div id="cashHistory">
-Carregando histórico...
-</div>
-
-</div>
-
-`;
-
-await loadCashHistory();
-
-}
-
-async function openCashRegister(){
-
-const input=
-document.getElementById(
-"openingAmount"
-);
-
-const amount=
-parseMoney(
-input.value
-);
-
-if(amount<0){
-
-alert(
-"O valor não pode ser negativo."
-);
-
-return;
-
-}
-
-const {
-data:existing,
-error:existingError
-}=
-await db
-.from("cash_registers")
-.select("id")
-.eq(
-"status",
-"ABERTO"
-)
-.limit(1);
-
-if(existingError){
-
-console.error(existingError);
-
-alert(
-"Não foi possível verificar o caixa."
-);
-
-return;
-
-}
-
-if(
-existing &&
-existing.length
-){
-
-alert(
-"Já existe um caixa aberto."
-);
-
-await loadCashRegister();
-
-return;
-
-}
-
-const {error}=
-await db
-.from("cash_registers")
-.insert({
-
-opening_amount:
-amount,
-
-status:
-"ABERTO"
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível abrir o caixa."
-);
-
-return;
-
-}
-
-showToast(
-"🟢 Caixa aberto!"
-);
-
-await loadCashRegister();
-
-}
-
-async function addCashMovement(type){
-
-if(!currentCashRegister){
-
-alert(
-"Não existe caixa aberto."
-);
-
-return;
-
-}
-
-const amount=
-parseMoney(
-document.getElementById(
-"movementAmount"
-).value
-);
-
-const note=
-document.getElementById(
-"movementNote"
-).value.trim();
-
-if(!amount||amount<=0){
-
-alert(
-"Digite um valor válido."
-);
-
-return;
-
-}
-
-if(
-type==="SANGRIA"&&
-currentCashData&&
-amount>
-currentCashData.expectedCash
-){
-
-alert(
-"A sangria não pode ser maior que o valor esperado."
-);
-
-return;
-
-}
-
-const {error}=
-await db
-.from("cash_movements")
-.insert({
-
-cash_register_id:
-currentCashRegister.id,
-
-type:type,
-
-amount:amount,
-
-note:note
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível registrar a movimentação."
-);
-
-return;
-
-}
-
-await loadCashRegister();
-
-}
-
-async function closeCashRegister(){
-
-if(!currentCashRegister){
-
-alert(
-"Não existe caixa aberto."
-);
-
-return;
-
-}
-
-const cashData=
-await calculateCashData(
-currentCashRegister
-);
-
-const input=
-document.getElementById(
-"closingAmount"
-);
-
-const closingAmount=
-parseMoney(
-input.value
-);
-
-if(input.value.trim()===""){
-
-alert(
-"Informe o valor contado."
-);
-
-return;
-
-}
-
-const difference=
-closingAmount-
-cashData.expectedCash;
-
-const confirmed=
-confirm(
-
-"Confirma o fechamento?\n\n"+
-"Esperado: "+
-money(
-cashData.expectedCash
-)+
-"\nContado: "+
-money(
-closingAmount
-)+
-"\nDiferença: "+
-money(
-difference
-)
-
-);
-
-if(!confirmed)return;
-
-const {error}=
-await db
-.from("cash_registers")
-.update({
-
-closed_at:
-new Date().toISOString(),
-
-closing_amount:
-closingAmount,
-
-cash_sales:
-cashData.cashSales,
-
-pix_sales:
-cashData.pixSales,
-
-card_sales:
-cashData.cardSales,
-
-supplies:
-cashData.supplies,
-
-withdrawals:
-cashData.withdrawals,
-
-expected_cash:
-cashData.expectedCash,
-
-difference:
-difference,
-
-status:
-"FECHADO"
-
-})
-.eq(
-"id",
-currentCashRegister.id
-);
-
-if(error){
-
-console.error(error);
-
-alert(
-"ERRO AO FECHAR CAIXA:\n\n"+
-error.message
-);
-
-return;
-
-}
-
-alert(
-"Caixa fechado com sucesso!\n\n"+
-"Esperado: "+
-money(
-cashData.expectedCash
-)+
-"\nContado: "+
-money(
-closingAmount
-)+
-"\nDiferença: "+
-money(
-difference
-)
-);
-
-currentCashRegister=null;
-
-currentCashData=null;
-
-await loadCashRegister();
-
-}
-
-async function loadCashHistory(){
-
-const container=
-document.getElementById(
-"cashHistory"
-);
-
-if(!container)return;
-
-const {data,error}=
-await db
-.from("cash_registers")
-.select("*")
-.eq(
-"status",
-"FECHADO"
-)
-.order(
-"closed_at",
-{ascending:false}
-)
-.limit(10);
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=
-`<div class="empty">
-Não foi possível carregar o histórico.
-</div>`;
-
-return;
-
-}
-
-if(!data||!data.length){
-
-container.innerHTML=
-`<div class="empty">
-Nenhum caixa fechado ainda.
-</div>`;
-
-return;
-
-}
-
-container.innerHTML=
-data.map(
-register=>{
-
-const difference=
-Number(
-register.difference
-)||0;
-
-return `
-
-<div class="history-item">
-
-<strong>
-Caixa #${register.id}
-</strong>
-
-<div class="muted">
-Aberto:
-${formatDateTime(
-register.opened_at
-)}
-</div>
-
-<div class="muted">
-Fechado:
-${formatDateTime(
-register.closed_at
-)}
-</div>
-
-<p>
-Vendas:
-<strong class="gold">
-
-${money(
-Number(register.cash_sales)+
-Number(register.pix_sales)+
-Number(register.card_sales)
-)}
-
-</strong>
-</p>
-
-<p>
-Esperado:
-<strong>
-${money(
-register.expected_cash
-)}
-</strong>
-</p>
-
-<p>
-Contado:
-<strong>
-${money(
-register.closing_amount
-)}
-</strong>
-</p>
-
-<p>
-Diferença:
-<strong class="gold">
-${money(difference)}
-</strong>
-</p>
-
-</div>
-
-`;
-
-}
-).join("");
-
-}
-
-/* ============================================================
-RELATÓRIOS
-============================================================ */
-
-async function loadReports(){
-
-const container=
-document.getElementById(
-"reportsContent"
-);
-
-if(!container)return;
-
-container.innerHTML=
-"Carregando relatórios...";
-
-const {data,error}=
-await db
-.from("orders")
-.select("*")
-.order(
-"created_at",
-{ascending:false}
-);
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=
-`<div class="empty">
-Erro ao carregar relatórios.
-</div>`;
-
-return;
-
-}
-
-const orders=
-data||[];
-
-const total=
-orders.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
-
-const average=
-orders.length
-?
-total/orders.length
-:
-0;
-
-const pix=
-orders
-.filter(
-o=>o.payment==="PIX"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
-
-const cash=
-orders
-.filter(
-o=>o.payment==="DINHEIRO"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
-
-const card=
-orders
-.filter(
-o=>o.payment==="CARTAO"
-)
-.reduce(
-(sum,o)=>
-sum+
-Number(o.total||0),
-0
-);
-
-const delivery=
-orders.filter(
-o=>o.delivery
-).length;
-
-const pickup=
-orders.filter(
-o=>!o.delivery
-).length;
-
-const statusList=[
-"RECEBIDO",
-"PREPARANDO",
-"PRONTO",
-"SAIU PARA ENTREGA",
-"ENTREGUE"
-];
-
-container.innerHTML=
-`
-
-<div class="report-grid">
-
-<div class="stat">
-<span>Faturamento total</span>
-<strong>${money(total)}</strong>
-</div>
-
-<div class="stat">
-<span>Total de pedidos</span>
-<strong>${orders.length}</strong>
-</div>
-
-<div class="stat">
-<span>Ticket médio</span>
-<strong>${money(average)}</strong>
-</div>
-
-<div class="stat">
-<span>PIX</span>
-<strong>${money(pix)}</strong>
-</div>
-
-<div class="stat">
-<span>Dinheiro</span>
-<strong>${money(cash)}</strong>
-</div>
-
-<div class="stat">
-<span>Cartão</span>
-<strong>${money(card)}</strong>
-</div>
-
-<div class="stat">
-<span>Entregas</span>
-<strong>${delivery}</strong>
-</div>
-
-<div class="stat">
-<span>Retiradas</span>
-<strong>${pickup}</strong>
-</div>
-
-</div>
-
-<div class="card"
-style="margin-top:18px">
-
-<h3>
-📋 Pedidos por status
-</h3>
-
-${statusList.map(
-status=>`
-
-<div class="history-item">
-
-<span>
-${status}
-</span>
-
-<strong class="gold">
-
-${orders.filter(
-o=>o.status===status
-).length}
-
-</strong>
-
-</div>
-
-`
-).join("")}
-
-</div>
-
-<div class="card">
-
-<h3>
-💳 Vendas por pagamento
-</h3>
-
-<div class="history-item">
-
-PIX
-
-<strong class="gold">
-${money(pix)}
-</strong>
-
-</div>
-
-<div class="history-item">
-
-Dinheiro
-
-<strong class="gold">
-${money(cash)}
-</strong>
-
-</div>
-
-<div class="history-item">
-
-Cartão
-
-<strong class="gold">
-${money(card)}
-</strong>
-
-</div>
-
-</div>
-
-`;
-
-}
-
-/* ============================================================
-BAIRROS
-============================================================ */
-
-async function loadDeliveryZonesAdmin(){
-
-const container=
-document.getElementById(
-"zonesContainer"
-);
-
-if(!container)return;
-
-container.innerHTML=
-"Carregando bairros...";
-
-const {data,error}=
-await db
-.from("delivery_zones")
-.select("*")
-.order(
-"neighborhood",
-{ascending:true}
-);
-
-if(error){
-
-console.error(error);
-
-container.innerHTML=
-`<div class="empty">
-Erro ao carregar bairros.
-</div>`;
-
-return;
-
-}
-
-deliveryZones=
-(data||[])
-.filter(
-zone=>zone.active
-);
-
-if(!data||!data.length){
-
-container.innerHTML=
-`<div class="empty">
-Nenhum bairro cadastrado ainda.
-</div>`;
-
-return;
-
-}
-
-container.innerHTML=
-data.map(
-zone=>`
-
-<div class="zone-row">
-
-<div>
-
-<strong>
-${escapeHtml(
-zone.neighborhood
-)}
-</strong>
-
-<div class="muted">
-${zone.active
-?
-"ATIVO"
-:
-"INATIVO"}
-</div>
-
-</div>
-
-<input
-id="zone-fee-${zone.id}"
-type="number"
-step="0.01"
-value=
-"${Number(zone.fee).toFixed(2)}">
-
-<button
-class="btn small"
-onclick=
-"updateDeliveryZone(${zone.id})">
-
-Salvar
-
-</button>
-
-<button
-class="btn small danger"
-onclick=
-"toggleDeliveryZone(${zone.id},${zone.active})">
-
-${zone.active
-?
-"Desativar"
-:
-"Ativar"}
-
-</button>
-
-</div>
-
-`
-).join("");
-
-}
-
-async function createDeliveryZone(){
-
-const neighborhood=
-document.getElementById(
-"zoneNeighborhood"
-).value.trim();
-
-const fee=
-parseMoney(
-document.getElementById(
-"zoneFee"
-).value
-);
-
-if(!neighborhood){
-
-alert(
-"Digite o bairro."
-);
-
-return;
-
-}
-
-if(fee<0){
-
-alert(
-"A taxa não pode ser negativa."
-);
-
-return;
-
-}
-
-const {error}=
-await db
-.from("delivery_zones")
-.insert({
-
-neighborhood:
-neighborhood,
-
-fee:
-fee,
-
-active:
-true
-
-});
-
-if(error){
-
-console.error(error);
-
-if(error.code==="23505"){
-
-alert(
-"Esse bairro já está cadastrado."
-);
-
-}else{
-
-alert(
-"Não foi possível adicionar o bairro."
-);
-
-}
-
-return;
-
-}
-
-document.getElementById(
-"zoneNeighborhood"
-).value="";
-
-document.getElementById(
-"zoneFee"
-).value="";
-
-await loadDeliveryZonesAdmin();
-
-await loadDeliveryZones();
-
-showToast(
-"📍 Bairro adicionado!"
-);
-
-}
-
-async function updateDeliveryZone(id){
-
-const input=
-document.getElementById(
-"zone-fee-"+id
-);
-
-const fee=
-parseMoney(
-input.value
-);
-
-if(fee<0){
-
-alert(
-"A taxa não pode ser negativa."
-);
-
-return;
-
-}
-
-const {error}=
-await db
-.from("delivery_zones")
-.update({
-fee:fee
-})
-.eq(
-"id",
-id
-);
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível atualizar a taxa."
-);
-
-return;
-
-}
-
-await loadDeliveryZonesAdmin();
-
-await loadDeliveryZones();
-
-showToast(
-"💰 Taxa atualizada!"
-);
-
-}
-
-async function toggleDeliveryZone(
-id,
-currentActive
-){
-
-const {error}=
-await db
-.from("delivery_zones")
-.update({
-
-active:
-!currentActive
-
-})
-.eq(
-"id",
-id
-);
-
-if(error){
-
-console.error(error);
-
-alert(
-"Não foi possível alterar o bairro."
-);
-
-return;
-
-}
-
-await loadDeliveryZonesAdmin();
-
-await loadDeliveryZones();
-
+  alert("WhatsApp salvo!");
 }
 
-/* ============================================================
-TAXA PADRÃO
-============================================================ */
 
 async function saveDefaultDeliveryFee(){
+  const value=Number(
+    document.getElementById("defaultDeliveryFeeInput")?.value || 0
+  );
 
-const fee=
-parseMoney(
-document.getElementById(
-"defaultDeliveryFee"
-).value
-);
+  const {error}=await db
+    .from("store_settings")
+    .upsert({
+      id:1,
+      default_delivery_fee:value
+    });
 
-if(fee<0){
+  if(error){
+    console.error(error);
+    alert("Erro ao salvar taxa de entrega.");
+    return;
+  }
 
-alert(
-"A taxa não pode ser negativa."
-);
+  defaultDeliveryFee=value;
 
-return;
-
+  alert("Taxa padrão salva!");
 }
 
-const ok=
-await updateStoreSetting({
 
-delivery_fee:
-fee,
+/* =========================================================
+   ZONAS DE ENTREGA
+========================================================= */
 
-default_delivery_fee:
-fee
+async function loadDeliveryZones(){
+  const {data,error}=await db
+    .from("delivery_zones")
+    .select("*")
+    .order("name");
 
+  if(error){
+    console.error("Erro ao carregar zonas:",error);
+    deliveryZones=[];
+    return;
+  }
+
+  deliveryZones=data || [];
+  renderDeliveryZones();
+}
+
+
+function renderDeliveryZones(){
+  const container=
+    document.getElementById("deliveryZonesList");
+
+  if(!container) return;
+
+  if(!deliveryZones.length){
+    container.innerHTML=`
+      <div class="empty">
+        Nenhuma zona cadastrada.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML=deliveryZones.map(zone=>`
+    <div class="zone-item">
+      <div>
+        <strong>${escapeHtml(zone.name || "")}</strong>
+        <small>
+          R$ ${Number(zone.fee || 0).toFixed(2).replace(".",",")}
+        </small>
+      </div>
+
+      <button
+        class="danger-btn"
+        onclick="deleteDeliveryZone('${zone.id}')">
+        Excluir
+      </button>
+    </div>
+  `).join("");
+}
+
+
+async function addDeliveryZone(){
+  const name=
+    document.getElementById("newZoneName")?.value.trim() || "";
+
+  const fee=Number(
+    document.getElementById("newZoneFee")?.value || 0
+  );
+
+  if(!name){
+    alert("Digite o nome da região.");
+    return;
+  }
+
+  const {error}=await db
+    .from("delivery_zones")
+    .insert({
+      name,
+      fee
+    });
+
+  if(error){
+    console.error(error);
+    alert("Erro ao cadastrar região.");
+    return;
+  }
+
+  document.getElementById("newZoneName").value="";
+  document.getElementById("newZoneFee").value="";
+
+  await loadDeliveryZones();
+
+  alert("Região cadastrada!");
+}
+
+
+async function deleteDeliveryZone(id){
+  if(!confirm("Excluir esta região?")) return;
+
+  const {error}=await db
+    .from("delivery_zones")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    alert("Erro ao excluir região.");
+    return;
+  }
+
+  await loadDeliveryZones();
+}
+
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+function toggleDeliveryFields(){
+  const delivery=
+    document.querySelector('input[name="orderType"]:checked')?.value;
+
+  const fields=document.getElementById("deliveryFields");
+
+  if(!fields) return;
+
+  fields.style.display=
+    delivery==="delivery" ? "block" : "none";
+
+  calculateCheckoutTotal();
+}
+
+
+function calculateCheckoutTotal(){
+  const subtotal=cart.reduce(
+    (sum,item)=>sum+(Number(item.price)*Number(item.qty)),
+    0
+  );
+
+  let fee=0;
+
+  const type=
+    document.querySelector('input[name="orderType"]:checked')?.value;
+
+  if(type==="delivery"){
+    const zoneId=
+      document.getElementById("deliveryZone")?.value || "";
+
+    const zone=
+      deliveryZones.find(z=>String(z.id)===String(zoneId));
+
+    fee=zone
+      ? Number(zone.fee || 0)
+      : Number(defaultDeliveryFee || 0);
+  }
+
+  const total=subtotal+fee;
+
+  const subtotalEl=
+    document.getElementById("checkoutSubtotal");
+
+  const feeEl=
+    document.getElementById("checkoutDeliveryFee");
+
+  const totalEl=
+    document.getElementById("checkoutTotal");
+
+  if(subtotalEl)
+    subtotalEl.textContent=
+      `R$ ${subtotal.toFixed(2).replace(".",",")}`;
+
+  if(feeEl)
+    feeEl.textContent=
+      `R$ ${fee.toFixed(2).replace(".",",")}`;
+
+  if(totalEl)
+    totalEl.textContent=
+      `R$ ${total.toFixed(2).replace(".",",")}`;
+
+  return {
+    subtotal,
+    fee,
+    total
+  };
+}
+
+
+function populateDeliveryZones(){
+  const select=
+    document.getElementById("deliveryZone");
+
+  if(!select) return;
+
+  select.innerHTML=`
+    <option value="">Selecione sua região</option>
+    ${deliveryZones.map(zone=>`
+      <option value="${zone.id}">
+        ${escapeHtml(zone.name)} -
+        R$ ${Number(zone.fee || 0).toFixed(2).replace(".",",")}
+      </option>
+    `).join("")}
+  `;
+}
+
+
+function goToCheckout(){
+  if(!cart.length){
+    alert("Seu carrinho está vazio.");
+    return;
+  }
+
+  populateDeliveryZones();
+  renderCheckoutItems();
+  calculateCheckoutTotal();
+
+  showScreen("checkoutScreen");
+}
+
+
+function renderCheckoutItems(){
+  const container=
+    document.getElementById("checkoutItems");
+
+  if(!container) return;
+
+  container.innerHTML=cart.map(item=>`
+    <div class="checkout-item">
+      <div>
+        <strong>${escapeHtml(item.name)}</strong>
+        <small>
+          ${item.qty}x
+          R$ ${Number(item.price).toFixed(2).replace(".",",")}
+        </small>
+      </div>
+
+      <strong>
+        R$ ${(Number(item.price)*Number(item.qty))
+          .toFixed(2)
+          .replace(".",",")}
+      </strong>
+    </div>
+  `).join("");
+}
+
+
+/* =========================================================
+   FINALIZAÇÃO DO PEDIDO
+========================================================= */
+
+async function finishOrder(){
+  if(!cart.length){
+    alert("Seu carrinho está vazio.");
+    return;
+  }
+
+  const customerName=
+    document.getElementById("customerName")?.value.trim() || "";
+
+  const customerPhone=
+    document.getElementById("customerPhone")?.value.trim() || "";
+
+  const payment=
+    document.getElementById("paymentMethod")?.value || "";
+
+  const type=
+    document.querySelector('input[name="orderType"]:checked')?.value
+    || "delivery";
+
+  if(!customerName){
+    alert("Digite seu nome.");
+    return;
+  }
+
+  if(!customerPhone){
+    alert("Digite seu telefone.");
+    return;
+  }
+
+  if(!payment){
+    alert("Selecione a forma de pagamento.");
+    return;
+  }
+
+  let address="";
+
+  if(type==="delivery"){
+    const street=
+      document.getElementById("addressStreet")?.value.trim() || "";
+
+    const number=
+      document.getElementById("addressNumber")?.value.trim() || "";
+
+    const neighborhood=
+      document.getElementById("addressNeighborhood")?.value.trim()
+      || "";
+
+    const complement=
+      document.getElementById("addressComplement")?.value.trim()
+      || "";
+
+    const zoneId=
+      document.getElementById("deliveryZone")?.value || "";
+
+    if(!street || !number || !neighborhood){
+      alert("Preencha o endereço de entrega.");
+      return;
+    }
+
+    if(!zoneId){
+      alert("Selecione sua região.");
+      return;
+    }
+
+    address=
+      `${street}, ${number} - ${neighborhood}`+
+      (complement ? ` - ${complement}` : "");
+  }
+
+  const totals=calculateCheckoutTotal();
+
+  const orderItems=cart.map(item=>({
+    product_id:item.id || null,
+    name:item.name,
+    price:Number(item.price),
+    quantity:Number(item.qty),
+    subtotal:Number(item.price)*Number(item.qty)
+  }));
+
+  const orderData={
+    customer_name:customerName,
+    customer_phone:customerPhone,
+    order_type:type,
+    address:address,
+    payment_method:payment,
+    items:orderItems,
+    subtotal:totals.subtotal,
+    delivery_fee:totals.fee,
+    total:totals.total,
+    status:"pending"
+  };
+
+  const button=
+    document.getElementById("finishOrderBtn");
+
+  if(button){
+    button.disabled=true;
+    button.textContent="Enviando pedido...";
+  }
+
+  const {data,error}=await db
+    .from("orders")
+    .insert(orderData)
+    .select()
+    .single();
+
+  if(error){
+    console.error("Erro ao criar pedido:",error);
+
+    alert(
+      "Não foi possível enviar o pedido. " +
+      "Verifique sua conexão e tente novamente."
+    );
+
+    if(button){
+      button.disabled=false;
+      button.textContent="Finalizar pedido";
+    }
+
+    return;
+  }
+
+  lastOrder=data;
+
+  cart=[];
+  saveCart();
+  renderCart();
+
+  document.getElementById("successOrderNumber").textContent=
+    data?.id ? `Pedido #${data.id}` : "Pedido enviado!";
+
+  showScreen("successScreen");
+
+  if(button){
+    button.disabled=false;
+    button.textContent="Finalizar pedido";
+  }
+}
+
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+function sendOrderWhatsApp(){
+  if(!lastOrder){
+    alert("Nenhum pedido encontrado.");
+    return;
+  }
+
+  let phone=
+    String(whatsapp || "")
+      .replace(/\D/g,"");
+
+  if(!phone){
+    alert("WhatsApp da loja não configurado.");
+    return;
+  }
+
+  if(phone.length===10 || phone.length===11){
+    phone="55"+phone;
+  }
+
+  const order=lastOrder;
+
+  let message=
+    `*NOVO PEDIDO - BURGUER GOLD*%0A%0A`;
+
+  message+=
+    `*Cliente:* ${encodeURIComponent(
+      order.customer_name || ""
+    )}%0A`;
+
+  message+=
+    `*Telefone:* ${encodeURIComponent(
+      order.customer_phone || ""
+    )}%0A`;
+
+  message+=
+    `*Tipo:* ${encodeURIComponent(
+      order.order_type==="delivery"
+        ? "Entrega"
+        : "Retirada"
+    )}%0A`;
+
+  if(order.address){
+    message+=
+      `*Endereço:* ${encodeURIComponent(
+        order.address
+      )}%0A`;
+  }
+
+  message+=
+    `*Pagamento:* ${encodeURIComponent(
+      order.payment_method || ""
+    )}%0A%0A`;
+
+  message+=`*ITENS:*%0A`;
+
+  (order.items || []).forEach(item=>{
+    message+=
+      `${encodeURIComponent(
+        `${item.quantity}x ${item.name} - R$ ${Number(item.subtotal).toFixed(2)}`
+      )}%0A`;
+  });
+
+  message+=`%0A`;
+
+  message+=
+    `Subtotal: R$ ${Number(order.subtotal || 0)
+      .toFixed(2)}%0A`;
+
+  message+=
+    `Entrega: R$ ${Number(order.delivery_fee || 0)
+      .toFixed(2)}%0A`;
+
+  message+=
+    `*TOTAL: R$ ${Number(order.total || 0)
+      .toFixed(2)}*`;
+
+  window.open(
+    `https://wa.me/${phone}?text=${message}`,
+    "_blank"
+  );
+}
+
+
+/* =========================================================
+   ADMIN - LOGIN
+========================================================= */
+
+async function adminLogin(){
+  if(!isAdminRoute()){
+    goToAdminRoute();
+    return;
+  }
+
+  const email=
+    document.getElementById("adminEmail")?.value.trim() || "";
+
+  const password=
+    document.getElementById("adminPassword")?.value || "";
+
+  if(!email || !password){
+    alert("Digite seu e-mail e senha.");
+    return;
+  }
+
+  const button=
+    document.getElementById("adminLoginBtn");
+
+  if(button){
+    button.disabled=true;
+    button.textContent="Entrando...";
+  }
+
+  const {data,error}=
+    await db.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if(error){
+    console.error(error);
+    alert("E-mail ou senha incorretos.");
+
+    if(button){
+      button.disabled=false;
+      button.textContent="Entrar";
+    }
+
+    return;
+  }
+
+  window.currentAdminSession=
+    data?.session || null;
+
+  if(data?.session){
+    await showAdminPanel();
+  }
+
+  if(button){
+    button.disabled=false;
+    button.textContent="Entrar";
+  }
+}
+
+
+/* =========================================================
+   ADMIN - PAINEL
+========================================================= */
+
+async function showAdminPanel(){
+  if(!isAdminAuthenticated()){
+    showScreen("adminLogin");
+    return;
+  }
+
+  if(!isAdminRoute()){
+    goToAdminRoute();
+  }
+
+  showScreen("adminPanel");
+
+  await Promise.all([
+    loadAdminOrders(),
+    loadAdminProducts(),
+    loadAdminCash()
+  ]);
+
+  renderAdminOpeningHours();
+
+  const deliveryInput=
+    document.getElementById("deliveryEstimateInput");
+
+  if(deliveryInput)
+    deliveryInput.value=deliveryEstimate || "";
+
+  const pixInput=
+    document.getElementById("pixKeyInput");
+
+  if(pixInput)
+    pixInput.value=pixKey || "";
+
+  const whatsappInput=
+    document.getElementById("whatsappInput");
+
+  if(whatsappInput)
+    whatsappInput.value=whatsapp || "";
+
+  const feeInput=
+    document.getElementById("defaultDeliveryFeeInput");
+
+  if(feeInput)
+    feeInput.value=defaultDeliveryFee || 0;
+
+  renderDeliveryZones();
+}
+
+
+/* =========================================================
+   ADMIN - LOGOUT
+========================================================= */
+
+async function adminLogout(){
+  await db.auth.signOut();
+
+  window.currentAdminSession=null;
+
+  goToClient();
+}
+
+
+/* =========================================================
+   ADMIN - ABAS
+========================================================= */
+
+function openAdminTab(tab){
+  if(!isAdminAuthenticated()){
+    goToAdminRoute();
+    showScreen("adminLogin");
+    return;
+  }
+
+  document
+    .querySelectorAll(".admin-tab")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
+
+  const clicked=
+    document.querySelector(
+      `[data-admin-tab="${tab}"]`
+    );
+
+  if(clicked){
+    clicked.classList.add("active");
+  }
+
+  document
+    .querySelectorAll(".admin-section")
+    .forEach(section=>{
+      section.classList.remove("active");
+    });
+
+  const section=
+    document.getElementById(`admin-${tab}`);
+
+  if(section){
+    section.classList.add("active");
+  }
+
+  if(tab==="orders"){
+    loadAdminOrders();
+  }
+
+  if(tab==="products"){
+    loadAdminProducts();
+  }
+
+  if(tab==="cash"){
+    loadAdminCash();
+  }
+
+  if(tab==="reports"){
+    loadAdminReports();
+  }
+
+  if(tab==="settings"){
+    renderAdminOpeningHours();
+    renderDeliveryZones();
+  }
+} 
+  <script>
+/* =========================================================
+   ADMIN - PEDIDOS
+========================================================= */
+
+async function loadAdminOrders(){
+  const container=document.getElementById("adminOrdersList");
+  if(!container) return;
+
+  const {data,error}=await db
+    .from("orders")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    container.innerHTML=`
+      <div class="empty">
+        Erro ao carregar pedidos.
+      </div>
+    `;
+    return;
+  }
+
+  adminOrders=data || [];
+
+  if(!adminOrders.length){
+    container.innerHTML=`
+      <div class="empty">
+        Nenhum pedido encontrado.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML=adminOrders.map(order=>`
+    <div class="admin-order">
+      <div class="admin-order-head">
+        <div>
+          <strong>Pedido #${order.id}</strong>
+          <small>
+            ${formatDate(order.created_at)}
+          </small>
+        </div>
+
+        <span class="status ${String(order.status || "").toLowerCase()}">
+          ${formatOrderStatus(order.status)}
+        </span>
+      </div>
+
+      <div class="admin-order-body">
+
+        <p>
+          <strong>Cliente:</strong>
+          ${escapeHtml(order.customer_name || "")}
+        </p>
+
+        <p>
+          <strong>Telefone:</strong>
+          ${escapeHtml(order.customer_phone || "")}
+        </p>
+
+        <p>
+          <strong>Tipo:</strong>
+          ${order.order_type==="delivery"
+            ? "Entrega"
+            : "Retirada"}
+        </p>
+
+        ${
+          order.address
+          ? `<p>
+              <strong>Endereço:</strong>
+              ${escapeHtml(order.address)}
+            </p>`
+          : ""
+        }
+
+        <p>
+          <strong>Pagamento:</strong>
+          ${escapeHtml(order.payment_method || "")}
+        </p>
+
+        <div class="order-items">
+          ${(order.items || []).map(item=>`
+            <div class="order-item-line">
+              <span>
+                ${item.quantity}x ${escapeHtml(item.name)}
+              </span>
+
+              <span>
+                R$ ${Number(item.subtotal || 0)
+                  .toFixed(2)
+                  .replace(".",",")}
+              </span>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="admin-order-total">
+          <span>Total</span>
+          <strong>
+            R$ ${Number(order.total || 0)
+              .toFixed(2)
+              .replace(".",",")}
+          </strong>
+        </div>
+
+        <div class="order-actions">
+          <button onclick="updateOrderStatus('${order.id}','preparing')">
+            Preparando
+          </button>
+
+          <button onclick="updateOrderStatus('${order.id}','ready')">
+            Pronto
+          </button>
+
+          <button onclick="updateOrderStatus('${order.id}','completed')">
+            Concluído
+          </button>
+
+          <button
+            class="danger-btn"
+            onclick="updateOrderStatus('${order.id}','cancelled')">
+            Cancelar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `).join("");
+}
+
+
+async function updateOrderStatus(id,status){
+  const {error}=await db
+    .from("orders")
+    .update({status})
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    alert("Erro ao atualizar pedido.");
+    return;
+  }
+
+  await loadAdminOrders();
+}
+
+
+function formatOrderStatus(status){
+  const map={
+    pending:"Pendente",
+    preparing:"Preparando",
+    ready:"Pronto",
+    completed:"Concluído",
+    cancelled:"Cancelado"
+  };
+
+  return map[status] || status || "Pendente";
+}
+
+
+/* =========================================================
+   ADMIN - PRODUTOS
+========================================================= */
+
+async function loadAdminProducts(){
+  const container=document.getElementById("adminProductsList");
+  if(!container) return;
+
+  const {data,error}=await db
+    .from("products")
+    .select("*")
+    .order("category")
+    .order("name");
+
+  if(error){
+    console.error(error);
+    container.innerHTML=`
+      <div class="empty">
+        Erro ao carregar produtos.
+      </div>
+    `;
+    return;
+  }
+
+  adminProducts=data || [];
+
+  if(!adminProducts.length){
+    container.innerHTML=`
+      <div class="empty">
+        Nenhum produto cadastrado.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML=adminProducts.map(product=>`
+    <div class="admin-product">
+
+      <div class="admin-product-info">
+        ${
+          product.image_url
+          ? `<img
+              src="${escapeAttribute(product.image_url)}"
+              alt="${escapeAttribute(product.name || "")}"
+              class="admin-product-image">`
+          : ""
+        }
+
+        <div>
+          <strong>
+            ${escapeHtml(product.name || "")}
+          </strong>
+
+          <small>
+            ${escapeHtml(product.category || "")}
+          </small>
+
+          <span>
+            R$ ${Number(product.price || 0)
+              .toFixed(2)
+              .replace(".",",")}
+          </span>
+
+          <small>
+            ${
+              product.available===false
+              ? "Indisponível"
+              : "Disponível"
+            }
+          </small>
+        </div>
+      </div>
+
+      <div class="admin-product-actions">
+        <button onclick="toggleProductAvailability('${product.id}')">
+          ${
+            product.available===false
+            ? "Ativar"
+            : "Desativar"
+          }
+        </button>
+
+        <button
+          class="danger-btn"
+          onclick="deleteProduct('${product.id}')">
+          Excluir
+        </button>
+      </div>
+
+    </div>
+  `).join("");
+}
+
+
+async function toggleProductAvailability(id){
+  const product=
+    adminProducts.find(p=>String(p.id)===String(id));
+
+  if(!product) return;
+
+  const {error}=await db
+    .from("products")
+    .update({
+      available:product.available===false
+    })
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    alert("Erro ao alterar disponibilidade.");
+    return;
+  }
+
+  await loadAdminProducts();
+  await loadProducts();
+}
+
+
+async function deleteProduct(id){
+  if(!confirm("Tem certeza que deseja excluir este produto?")){
+    return;
+  }
+
+  const {error}=await db
+    .from("products")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    alert("Erro ao excluir produto.");
+    return;
+  }
+
+  await loadAdminProducts();
+  await loadProducts();
+
+  alert("Produto excluído!");
+}
+
+
+/* =========================================================
+   ADMIN - CAIXA
+========================================================= */
+
+async function loadAdminCash(){
+  const container=document.getElementById("adminCashList");
+  if(!container) return;
+
+  const {data,error}=await db
+    .from("cash_movements")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+
+    container.innerHTML=`
+      <div class="empty">
+        Não foi possível carregar o caixa.
+      </div>
+    `;
+
+    return;
+  }
+
+  adminCashMovements=data || [];
+
+  let balance=0;
+
+  adminCashMovements.forEach(item=>{
+    const value=Number(item.amount || 0);
+
+    if(item.type==="in"){
+      balance+=value;
+    }else{
+      balance-=value;
+    }
+  });
+
+  const balanceEl=
+    document.getElementById("cashBalance");
+
+  if(balanceEl){
+    balanceEl.textContent=
+      `R$ ${balance.toFixed(2).replace(".",",")}`;
+  }
+
+  if(!adminCashMovements.length){
+    container.innerHTML=`
+      <div class="empty">
+        Nenhuma movimentação.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML=adminCashMovements.map(item=>`
+    <div class="cash-item">
+
+      <div>
+        <strong>
+          ${escapeHtml(item.description || "")}
+        </strong>
+
+        <small>
+          ${formatDate(item.created_at)}
+        </small>
+      </div>
+
+      <strong class="${item.type==="out" ? "cash-out" : "cash-in"}">
+        ${item.type==="out" ? "-" : "+"}
+        R$ ${Number(item.amount || 0)
+          .toFixed(2)
+          .replace(".",",")}
+      </strong>
+
+    </div>
+  `).join("");
+}
+
+
+async function addCashMovement(){
+  const description=
+    document.getElementById("cashDescription")
+      ?.value.trim() || "";
+
+  const amount=Number(
+    document.getElementById("cashAmount")?.value || 0
+  );
+
+  const type=
+    document.getElementById("cashType")?.value || "in";
+
+  if(!description){
+    alert("Digite uma descrição.");
+    return;
+  }
+
+  if(amount<=0){
+    alert("Digite um valor válido.");
+    return;
+  }
+
+  const {error}=await db
+    .from("cash_movements")
+    .insert({
+      description,
+      amount,
+      type
+    });
+
+  if(error){
+    console.error(error);
+    alert("Erro ao registrar movimentação.");
+    return;
+  }
+
+  document.getElementById("cashDescription").value="";
+  document.getElementById("cashAmount").value="";
+
+  await loadAdminCash();
+
+  alert("Movimentação registrada!");
+}
+
+
+/* =========================================================
+   ADMIN - RELATÓRIOS
+========================================================= */
+
+async function loadAdminReports(){
+  const container=
+    document.getElementById("adminReportsContent");
+
+  if(!container) return;
+
+  const {data,error}=await db
+    .from("orders")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const orders=data || [];
+
+  const completed=
+    orders.filter(o=>o.status==="completed");
+
+  const cancelled=
+    orders.filter(o=>o.status==="cancelled");
+
+  const total=completed.reduce(
+    (sum,o)=>sum+Number(o.total || 0),
+    0
+  );
+
+  const average=
+    completed.length
+    ? total/completed.length
+    : 0;
+
+  container.innerHTML=`
+    <div class="report-grid">
+
+      <div class="report-card">
+        <span>Pedidos concluídos</span>
+        <strong>${completed.length}</strong>
+      </div>
+
+      <div class="report-card">
+        <span>Pedidos cancelados</span>
+        <strong>${cancelled.length}</strong>
+      </div>
+
+      <div class="report-card">
+        <span>Faturamento</span>
+        <strong>
+          R$ ${total.toFixed(2).replace(".",",")}
+        </strong>
+      </div>
+
+      <div class="report-card">
+        <span>Ticket médio</span>
+        <strong>
+          R$ ${average.toFixed(2).replace(".",",")}
+        </strong>
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   AUXILIARES DE SEGURANÇA / FORMATAÇÃO
+========================================================= */
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function escapeAttribute(value){
+  return escapeHtml(value);
+}
+
+
+function formatDate(value){
+  if(!value) return "";
+
+  try{
+    return new Date(value).toLocaleString("pt-BR",{
+      dateStyle:"short",
+      timeStyle:"short"
+    });
+  }catch(e){
+    return "";
+  }
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+db.auth.onAuthStateChange((_event,session)=>{
+  window.currentAdminSession=session || null;
 });
 
-if(!ok)return;
 
-deliveryFee=fee;
-
-showToast(
-"💰 Taxa padrão atualizada!"
-);
-
-}
-
-/* ============================================================
-REALTIME
-============================================================ */
-
-db
-.channel("burguer-gold-realtime")
-
-.on(
-"postgres_changes",
-{
-event:"*",
-schema:"public",
-table:"orders"
-},
-async()=>{
-
-const panel=
-document.getElementById(
-"adminPanel"
-);
-
-if(
-panel &&
-panel.classList.contains(
-"active"
-)
-){
-
-await loadOrders();
-
-const active=
-document.querySelector(
-".admin-section.active"
-);
-
-if(
-active &&
-active.id==="admin-cash"
-){
-
-await loadCashRegister();
-
-}
-
-if(
-active &&
-active.id==="admin-reports"
-){
-
-await loadReports();
-
-}
-
-}
-
-}
-)
-
-.subscribe();
-
-/* ============================================================
-ATUALIZAÇÃO DO HORÁRIO
-============================================================ */
-
-setInterval(
-updateStoreStatus,
-30000
-);
-
-/* ============================================================
-INICIALIZAÇÃO
-============================================================ */
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
 
 async function init(){
 
-openingHours=
-defaultHours();
+  window.currentAdminSession=null;
 
-await loadStoreSettings();
+  openingHours=defaultHours();
 
-await loadProducts();
+  await loadStoreSettings();
+  await loadProducts();
+  await loadDeliveryZones();
 
-await loadDeliveryZones();
+  renderCart();
+  toggleDeliveryFields();
+  updateStoreStatus();
 
-renderCart();
+  const {data,error}=await db.auth.getSession();
 
-toggleDeliveryFields();
+  if(error){
+    console.error("Erro ao verificar sessão:",error);
+  }
 
-updateStoreStatus();
+  window.currentAdminSession=
+    data?.session || null;
 
-const {
-data
-}=
-await db.auth.getSession();
+  /*
+    IMPORTANTE:
 
-if(
-data &&
-data.session
-){
+    Cliente normal:
+    /
+    -> menu
 
-if(
-location.pathname===
-"/admin"
-){
+    Administrador:
+    /admin
+    -> login ou painel
 
-await showAdminPanel();
+    O painel administrativo nunca é mostrado
+    automaticamente para quem está no cliente.
+  */
 
+  if(isAdminRoute()){
+
+    if(window.currentAdminSession){
+      await showAdminPanel();
+    }else{
+      showScreen("adminLogin");
+    }
+
+  }else{
+
+    showScreen("menuScreen");
+
+  }
 }
 
-}else{
 
-if(
-location.pathname===
-"/admin"
-){
+/* =========================================================
+   GARANTIA EXTRA CONTRA ACESSO VISUAL AO ADMIN
+========================================================= */
 
-showScreen(
-"adminLogin"
-);
+document.addEventListener("DOMContentLoaded",()=>{
 
-}
+  document.querySelectorAll(
+    "#adminLogin, #adminPanel"
+  ).forEach(element=>{
+    element.classList.remove("active");
+  });
 
-}
+});
 
-}
+
+/* =========================================================
+   VOLTAR DO /admin PARA O CLIENTE
+========================================================= */
+
+window.addEventListener("popstate",async()=>{
+
+  const {data}=await db.auth.getSession();
+
+  window.currentAdminSession=
+    data?.session || null;
+
+  if(isAdminRoute()){
+
+    if(window.currentAdminSession){
+      await showAdminPanel();
+    }else{
+      showScreen("adminLogin");
+    }
+
+  }else{
+
+    showScreen("menuScreen");
+
+  }
+});
+
+
+/* =========================================================
+   INICIA O SITE
+========================================================= */
 
 init();
 
