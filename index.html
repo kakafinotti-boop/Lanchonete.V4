@@ -1259,16 +1259,43 @@ function isStoreOpen(){
 
   if(!storeSettings){
     return false;
+  }/* =====================================================
+   STATUS GLOBAL DA LOJA
+===================================================== */
+
+function isStoreOpen(){
+
+  if(!storeSettings){
+    return true;
   }
 
-  /*
-    O status agora vem do Supabase.
-
-    true  = Aberto
-    false = Fechado
-  */
-
   return storeSettings.store_open !== false;
+
+}
+
+function updateStoreStatus(){
+
+  const element =
+    document.getElementById(
+      "storeStatus"
+    );
+
+  if(!element){
+    return;
+  }
+
+  const open =
+    isStoreOpen();
+
+  element.textContent =
+    open
+      ? "Aberto"
+      : "Fechado";
+
+  element.className =
+    open
+      ? "status open"
+      : "status closed";
 
 }
 
