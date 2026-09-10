@@ -581,7 +581,9 @@ textarea{
 ===================================================== */
 
 .order-tracking{
-  margin-top:25px;
+  width:100%;
+  max-width:520px;
+  margin:25px auto;
   padding:20px;
   background:#151515;
   border:1px solid #292929;
@@ -593,23 +595,45 @@ textarea{
   color:#d7aa4d;
   font-size:20px;
   font-weight:900;
-  margin-bottom:12px;
+  margin-bottom:15px;
+}
+
+.order-status-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px;
+  background:#0d0d0d;
+  border:1px solid #333;
+  border-radius:13px;
 }
 
 .order-status-icon{
-  font-size:42px;
-  margin-bottom:8px;
+  font-size:38px;
+  flex:none;
+}
+
+.order-status-content{
+  min-width:0;
 }
 
 .order-status-text{
-  font-size:22px;
+  font-size:20px;
   font-weight:900;
 }
 
 .order-status-message{
   color:#999;
-  margin-top:7px;
+  margin-top:6px;
   line-height:1.4;
+  font-size:13px;
+}
+
+.order-status-updated{
+  color:#666;
+  font-size:11px;
+  margin-top:12px;
+  text-align:center;
 }
 
 @media(max-width:600px){
@@ -1052,28 +1076,36 @@ textarea{
         📦 Acompanhe seu pedido
       </div>
 
-      <div
-        id="orderStatusIcon"
-        class="order-status-icon">
+      <div class="order-status-box">
 
-        🟡
+        <div
+          id="orderStatusIcon"
+          class="order-status-icon">
+          🟡
+        </div>
+
+        <div class="order-status-content">
+
+          <div
+            id="orderStatusText"
+            class="order-status-text">
+            Pendente
+          </div>
+
+          <div
+            id="orderStatusMessage"
+            class="order-status-message">
+            Seu pedido está aguardando confirmação da loja.
+          </div>
+
+        </div>
 
       </div>
 
       <div
-        id="orderStatusText"
-        class="order-status-text">
-
-        Pendente
-
-      </div>
-
-      <div
-        id="orderStatusMessage"
-        class="order-status-message">
-
-        Seu pedido está aguardando confirmação da loja.
-
+        id="orderStatusUpdated"
+        class="order-status-updated">
+        Acompanhando seu pedido...
       </div>
 
     </div>
@@ -1117,11 +1149,19 @@ let deliveryZones = [];
 
 let lastOrder = null;
 
-/* NOVO: acompanhamento do pedido */
+/* =====================================================
+   ACOMPANHAMENTO DO PEDIDO
+===================================================== */
 
 let customerOrderId = null;
 
 let orderStatusChannel = null;
+
+let orderStatusTimer = null;
+
+/* =====================================================
+   INICIALIZAÇÃO
+===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -1140,6 +1180,17 @@ document.addEventListener(
     toggleDeliveryFields();
 
     updatePaymentFields();
+
+    /*
+      Se existir um pedido salvo, mantém o ID disponível.
+      O acompanhamento só é iniciado quando a tela de
+      sucesso estiver sendo exibida.
+    */
+
+    customerOrderId =
+      localStorage.getItem(
+        "burguer_gold_order_id"
+      ) || null;
 
     setInterval(
       loadStoreSettings,
@@ -2640,12 +2691,9 @@ async function finishOrder(){
 
     }));
 
-  /* =================================================
-     NOVO:
-     Gera o ID do pedido antes de inserir.
-     Isso permite que o cliente acompanhe
-     exatamente o próprio pedido.
-  ================================================= */
+  /*
+    GERA O ID DO PEDIDO ANTES DO INSERT
+  */
 
   const orderId =
     crypto.randomUUID();
@@ -2719,10 +2767,6 @@ async function finishOrder(){
     lastOrder =
       orderData;
 
-    /* =================================================
-       SALVA O ID DO PEDIDO PARA ACOMPANHAMENTO
-    ================================================= */
-
     customerOrderId =
       orderId;
 
@@ -2731,12 +2775,15 @@ async function finishOrder(){
       orderId
     );
 
-    /* =================================================
-       INICIA ACOMPANHAMENTO EM TEMPO REAL
-    ================================================= */
+    /*
+      O pedido começa como PENDENTE.
+      A tela é mostrada antes de iniciar o
+      acompanhamento para garantir que a área
+      apareça imediatamente.
+    */
 
-    startOrderTracking(
-      orderId
+    updateOrderStatus(
+      "pending"
     );
 
     cart = [];
@@ -2752,6 +2799,15 @@ async function finishOrder(){
 
     showScreen(
       "successScreen"
+    );
+
+    /*
+      Inicia o acompanhamento depois que a tela
+      de sucesso já está visível.
+    */
+
+    startOrderTracking(
+      orderId
     );
 
   }catch(error){
@@ -2804,6 +2860,11 @@ function updateOrderStatus(status){
   const message =
     document.getElementById(
       "orderStatusMessage"
+    );
+
+  const updated =
+    document.getElementById(
+      "orderStatusUpdated"
     );
 
   const statuses = {
@@ -2884,7 +2945,67 @@ function updateOrderStatus(status){
 
   }
 
+  if(updated){
+
+    updated.textContent =
+      "Status atualizado automaticamente.";
+
+  }
+
 }
+
+/* =====================================================
+   BUSCA O STATUS ATUAL NO SUPABASE
+===================================================== */
+
+async function checkOrderStatus(orderId){
+
+  if(!orderId){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("orders")
+        .select("status")
+        .eq("id",orderId)
+        .maybeSingle();
+
+    if(result.error){
+
+      console.error(
+        "Erro ao consultar status:",
+        result.error
+      );
+
+      return;
+
+    }
+
+    if(result.data?.status){
+
+      updateOrderStatus(
+        result.data.status
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Erro na consulta do pedido:",
+      error
+    );
+
+  }
+
+}
+
+/* =====================================================
+   INICIA ACOMPANHAMENTO
+===================================================== */
 
 function startOrderTracking(orderId){
 
@@ -2899,19 +3020,91 @@ function startOrderTracking(orderId){
     "pending"
   );
 
+  /*
+    Remove canal anterior, se existir.
+  */
+
   if(orderStatusChannel){
 
-    db.removeChannel(
-      orderStatusChannel
-    );
+    try{
+
+      db.removeChannel(
+        orderStatusChannel
+      );
+
+    }catch(error){
+
+      console.error(
+        "Erro removendo canal anterior:",
+        error
+      );
+
+    }
+
+    orderStatusChannel =
+      null;
 
   }
+
+  /*
+    Limpa consulta anterior.
+  */
+
+  if(orderStatusTimer){
+
+    clearInterval(
+      orderStatusTimer
+    );
+
+    orderStatusTimer =
+      null;
+
+  }
+
+  /*
+    Faz uma consulta imediatamente.
+    Se o pedido já tiver sido alterado no Admin,
+    o cliente pega o status atual.
+  */
+
+  checkOrderStatus(
+    orderId
+  );
+
+  /*
+    Consulta novamente a cada 3 segundos.
+  */
+
+  orderStatusTimer =
+    setInterval(
+      function(){
+
+        if(
+          customerOrderId ===
+          orderId
+        ){
+
+          checkOrderStatus(
+            orderId
+          );
+
+        }
+
+      },
+      3000
+    );
+
+  /*
+    Mantém também o Realtime.
+  */
 
   orderStatusChannel =
     db
       .channel(
         "burguer-gold-order-" +
-        orderId
+        orderId +
+        "-" +
+        Date.now()
       )
       .on(
         "postgres_changes",
@@ -2923,6 +3116,11 @@ function startOrderTracking(orderId){
             "id=eq." + orderId
         },
         function(payload){
+
+          console.log(
+            "Atualização recebida:",
+            payload
+          );
 
           const newStatus =
             payload?.new?.status;
@@ -2937,7 +3135,16 @@ function startOrderTracking(orderId){
 
         }
       )
-      .subscribe();
+      .subscribe(
+        function(status){
+
+          console.log(
+            "Canal do pedido:",
+            status
+          );
+
+        }
+      );
 
 }
 
