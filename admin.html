@@ -35,8 +35,6 @@ button:disabled{
   display:none!important;
 }
 
-/* LOGIN */
-
 .login-page{
   min-height:100vh;
   display:flex;
@@ -432,6 +430,83 @@ textarea{
 
 /* CAIXA */
 
+.cash-status{
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  border:1px solid #333;
+}
+
+.cash-status.open{
+  background:#102016;
+  border-color:#245b32;
+}
+
+.cash-status.closed{
+  background:#181818;
+  border-color:#333;
+}
+
+.cash-status-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.cash-status-title{
+  font-size:21px;
+  font-weight:900;
+}
+
+.cash-status.open .cash-status-title{
+  color:#58d36d;
+}
+
+.cash-status.closed .cash-status-title{
+  color:#aaa;
+}
+
+.cash-status-info{
+  color:#999;
+  font-size:13px;
+  margin-top:7px;
+  line-height:1.5;
+}
+
+.cash-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.cash-summary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.cash-summary-box{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:12px;
+  padding:14px;
+}
+
+.cash-summary-label{
+  color:#777;
+  font-size:11px;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+
+.cash-summary-value{
+  font-size:21px;
+  font-weight:900;
+  color:#d7aa4d;
+}
+
 .balance{
   font-size:32px;
   color:#d7aa4d;
@@ -469,6 +544,12 @@ textarea{
   color:#888;
   text-align:center;
   padding:35px;
+}
+
+.cash-closed-message{
+  text-align:center;
+  color:#888;
+  padding:20px 10px;
 }
 
 /* MODAL */
@@ -556,15 +637,30 @@ textarea{
     display:none;
   }
 
+  .cash-summary{
+    grid-template-columns:1fr;
+  }
+
+  .cash-status-top{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .cash-actions{
+    width:100%;
+  }
+
+  .cash-actions button{
+    flex:1;
+  }
+
 }
 </style>
 </head>
 
 <body>
 
-<!-- =====================================================
-     LOGIN
-===================================================== -->
+<!-- LOGIN -->
 
 <section id="loginPage" class="login-page">
 
@@ -580,9 +676,7 @@ textarea{
 
     <form onsubmit="login(event)">
 
-      <label>
-        E-mail
-      </label>
+      <label>E-mail</label>
 
       <input
         id="loginEmail"
@@ -591,9 +685,7 @@ textarea{
         autocomplete="email"
         required>
 
-      <label>
-        Senha
-      </label>
+      <label>Senha</label>
 
       <input
         id="loginPassword"
@@ -622,13 +714,9 @@ textarea{
 </section>
 
 
-<!-- =====================================================
-     ADMIN
-===================================================== -->
+<!-- ADMIN -->
 
-<section
-  id="adminPage"
-  class="admin hidden">
+<section id="adminPage" class="admin hidden">
 
   <header class="topbar">
 
@@ -707,9 +795,7 @@ textarea{
     </nav>
 
 
-    <!-- =================================================
-         PEDIDOS
-    ================================================== -->
+    <!-- PEDIDOS -->
 
     <section
       id="ordersPanel"
@@ -740,9 +826,7 @@ textarea{
     </section>
 
 
-    <!-- =================================================
-         PRODUTOS
-    ================================================== -->
+    <!-- PRODUTOS -->
 
     <section
       id="productsPanel"
@@ -777,9 +861,7 @@ textarea{
     </section>
 
 
-    <!-- =================================================
-         ENTREGA
-    ================================================== -->
+    <!-- ENTREGA -->
 
     <section
       id="deliveryPanel"
@@ -801,11 +883,8 @@ textarea{
 
       <div class="card">
 
-        <div
-          id="zonesList">
-
+        <div id="zonesList">
           Carregando zonas...
-
         </div>
 
       </div>
@@ -813,44 +892,34 @@ textarea{
     </section>
 
 
-    <!-- =================================================
-         CONFIGURAÇÕES
-    ================================================== -->
+    <!-- CONFIGURAÇÕES -->
 
     <section
       id="settingsPanel"
       class="panel">
 
       <div class="panel-title">
-
         <h1>Configurações</h1>
-
       </div>
 
       <div class="card">
 
         <h2>Informações da loja</h2>
 
-        <label>
-          Nome da loja
-        </label>
+        <label>Nome da loja</label>
 
         <input
           id="settingStoreName"
           type="text">
 
-        <label>
-          Tempo estimado de entrega
-        </label>
+        <label>Tempo estimado de entrega</label>
 
         <input
           id="settingDeliveryEstimate"
           type="number"
           min="0">
 
-        <label>
-          Taxa padrão de entrega
-        </label>
+        <label>Taxa padrão de entrega</label>
 
         <input
           id="settingDefaultFee"
@@ -858,17 +927,13 @@ textarea{
           min="0"
           step="0.01">
 
-        <label>
-          Chave PIX
-        </label>
+        <label>Chave PIX</label>
 
         <input
           id="settingPix"
           type="text">
 
-        <label>
-          WhatsApp
-        </label>
+        <label>WhatsApp</label>
 
         <input
           id="settingWhatsapp"
@@ -899,9 +964,7 @@ textarea{
     </section>
 
 
-    <!-- =================================================
-         CAIXA
-    ================================================== -->
+    <!-- CAIXA -->
 
     <section
       id="cashPanel"
@@ -911,21 +974,158 @@ textarea{
 
         <h1>Caixa</h1>
 
-        <button
-          class="btn btn-gold"
-          onclick="openCashModal()">
+      </div>
 
-          + Lançamento
 
-        </button>
+      <!-- STATUS -->
+
+      <div
+        id="cashStatus"
+        class="cash-status closed">
+
+        <div class="cash-status-top">
+
+          <div>
+
+            <div
+              id="cashStatusTitle"
+              class="cash-status-title">
+
+              🔒 Caixa fechado
+
+            </div>
+
+            <div
+              id="cashStatusInfo"
+              class="cash-status-info">
+
+              Abra o caixa para começar os lançamentos.
+
+            </div>
+
+          </div>
+
+          <div class="cash-actions">
+
+            <button
+              id="openCashButton"
+              class="btn btn-gold"
+              onclick="openOpenCashModal()">
+
+              🔓 Abrir caixa
+
+            </button>
+
+            <button
+              id="closeCashButton"
+              class="btn btn-red hidden"
+              onclick="openCloseCashModal()">
+
+              🔒 Fechar caixa
+
+            </button>
+
+          </div>
+
+        </div>
 
       </div>
 
+
+      <!-- RESUMO -->
+
+      <div class="cash-summary">
+
+        <div class="cash-summary-box">
+
+          <div class="cash-summary-label">
+            Saldo inicial
+          </div>
+
+          <div
+            id="cashOpeningBalance"
+            class="cash-summary-value">
+
+            R$ 0,00
+
+          </div>
+
+        </div>
+
+
+        <div class="cash-summary-box">
+
+          <div class="cash-summary-label">
+            Entradas
+          </div>
+
+          <div
+            id="cashIncome"
+            class="cash-summary-value positive">
+
+            R$ 0,00
+
+          </div>
+
+        </div>
+
+
+        <div class="cash-summary-box">
+
+          <div class="cash-summary-label">
+            Saídas
+          </div>
+
+          <div
+            id="cashExpense"
+            class="cash-summary-value negative">
+
+            R$ 0,00
+
+          </div>
+
+        </div>
+
+      </div>
+
+
       <div class="card">
 
-        <div class="balance">
-          R$ <span id="cashBalance">0,00</span>
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap:10px;
+          margin-bottom:15px">
+
+          <div>
+
+            <div style="
+              color:#777;
+              font-size:11px;
+              text-transform:uppercase">
+
+              Saldo atual
+
+            </div>
+
+            <div class="balance">
+              R$ <span id="cashBalance">0,00</span>
+            </div>
+
+          </div>
+
+          <button
+            id="newCashMovementButton"
+            class="btn btn-gold"
+            onclick="openCashModal()">
+
+            + Lançamento
+
+          </button>
+
         </div>
+
 
         <div
           id="cashList">
@@ -943,9 +1143,7 @@ textarea{
 </section>
 
 
-<!-- =====================================================
-     MODAL PRODUTO
-===================================================== -->
+<!-- MODAL PRODUTO -->
 
 <div
   id="productModal"
@@ -973,27 +1171,20 @@ textarea{
       id="productId"
       type="hidden">
 
-    <label>
-      Nome
-    </label>
+    <label>Nome</label>
 
     <input
       id="productName"
       type="text"
       placeholder="Ex: X-Burguer Gold">
 
-    <label>
-      Descrição
-    </label>
+    <label>Descrição</label>
 
     <textarea
       id="productDescription"
-      placeholder="Descrição do produto">
-    </textarea>
+      placeholder="Descrição do produto"></textarea>
 
-    <label>
-      Preço
-    </label>
+    <label>Preço</label>
 
     <input
       id="productPrice"
@@ -1001,27 +1192,21 @@ textarea{
       step="0.01"
       min="0">
 
-    <label>
-      Categoria
-    </label>
+    <label>Categoria</label>
 
     <input
       id="productCategory"
       type="text"
       placeholder="Ex: Hambúrgueres">
 
-    <label>
-      URL da imagem
-    </label>
+    <label>URL da imagem</label>
 
     <input
       id="productImage"
       type="url"
       placeholder="https://...">
 
-    <label>
-      Ordem
-    </label>
+    <label>Ordem</label>
 
     <input
       id="productOrder"
@@ -1063,9 +1248,7 @@ textarea{
 </div>
 
 
-<!-- =====================================================
-     MODAL ZONA
-===================================================== -->
+<!-- MODAL ZONA -->
 
 <div
   id="zoneModal"
@@ -1075,9 +1258,7 @@ textarea{
 
     <div class="modal-header">
 
-      <h2>
-        Nova zona de entrega
-      </h2>
+      <h2>Nova zona de entrega</h2>
 
       <button
         class="close"
@@ -1093,18 +1274,14 @@ textarea{
       id="zoneId"
       type="hidden">
 
-    <label>
-      Nome da região
-    </label>
+    <label>Nome da região</label>
 
     <input
       id="zoneName"
       type="text"
       placeholder="Ex: Centro">
 
-    <label>
-      Taxa
-    </label>
+    <label>Taxa</label>
 
     <input
       id="zoneFee"
@@ -1137,9 +1314,7 @@ textarea{
 </div>
 
 
-<!-- =====================================================
-     MODAL CAIXA
-===================================================== -->
+<!-- MODAL LANÇAMENTO -->
 
 <div
   id="cashModal"
@@ -1149,9 +1324,7 @@ textarea{
 
     <div class="modal-header">
 
-      <h2>
-        Lançamento no caixa
-      </h2>
+      <h2>Lançamento no caixa</h2>
 
       <button
         class="close"
@@ -1163,9 +1336,7 @@ textarea{
 
     </div>
 
-    <label>
-      Tipo
-    </label>
+    <label>Tipo</label>
 
     <select id="cashType">
 
@@ -1179,9 +1350,7 @@ textarea{
 
     </select>
 
-    <label>
-      Valor
-    </label>
+    <label>Valor</label>
 
     <input
       id="cashAmount"
@@ -1189,9 +1358,7 @@ textarea{
       min="0"
       step="0.01">
 
-    <label>
-      Descrição
-    </label>
+    <label>Descrição</label>
 
     <input
       id="cashDescription"
@@ -1204,6 +1371,153 @@ textarea{
       onclick="saveCashMovement()">
 
       Salvar lançamento
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL ABRIR CAIXA -->
+
+<div
+  id="openCashModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>🔓 Abrir caixa</h2>
+
+      <button
+        class="close"
+        onclick="closeOpenCashModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+    <div style="
+      color:#aaa;
+      font-size:14px;
+      line-height:1.5;
+      margin-bottom:15px">
+
+      Informe quanto dinheiro já existe no caixa
+      no momento da abertura.
+
+    </div>
+
+    <label>
+      Valor inicial
+    </label>
+
+    <input
+      id="openingCashAmount"
+      type="number"
+      min="0"
+      step="0.01"
+      value="0"
+      placeholder="0,00">
+
+    <button
+      class="btn btn-gold full"
+      style="margin-top:18px"
+      onclick="openCash()">
+
+      Abrir caixa
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL FECHAR CAIXA -->
+
+<div
+  id="closeCashModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>🔒 Fechar caixa</h2>
+
+      <button
+        class="close"
+        onclick="closeCloseCashModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+    <div style="
+      background:#111;
+      border:1px solid #292929;
+      border-radius:12px;
+      padding:15px;
+      margin-bottom:15px">
+
+      <div style="
+        color:#777;
+        font-size:11px;
+        text-transform:uppercase">
+
+        Saldo calculado
+
+      </div>
+
+      <div
+        id="closeCashCalculated"
+        style="
+          color:#d7aa4d;
+          font-size:28px;
+          font-weight:900;
+          margin-top:5px">
+
+        R$ 0,00
+
+      </div>
+
+    </div>
+
+    <div style="
+      color:#aaa;
+      font-size:14px;
+      line-height:1.5;
+      margin-bottom:15px">
+
+      Confira o dinheiro físico do caixa.
+      Você pode registrar o valor encontrado
+      para fechar o caixa.
+
+    </div>
+
+    <label>
+      Valor final contado
+    </label>
+
+    <input
+      id="closingCashAmount"
+      type="number"
+      min="0"
+      step="0.01">
+
+    <button
+      class="btn btn-red full"
+      style="margin-top:18px"
+      onclick="closeCash()">
+
+      Fechar caixa
 
     </button>
 
@@ -1236,14 +1550,11 @@ const db =
 ===================================================== */
 
 let products = [];
-
 let zones = [];
-
 let settings = null;
-
 let orders = [];
-
 let cashMovements = [];
+let cashSession = null;
 
 
 /* =====================================================
@@ -2470,17 +2781,11 @@ function renderHours(){
   const days = [
 
     ["sunday","Domingo"],
-
     ["monday","Segunda"],
-
     ["tuesday","Terça"],
-
     ["wednesday","Quarta"],
-
     ["thursday","Quinta"],
-
     ["friday","Sexta"],
-
     ["saturday","Sábado"]
 
   ];
@@ -2897,17 +3202,11 @@ function statusOptions(current){
   const statuses = [
 
     ["pending","Pendente"],
-
     ["confirmed","Confirmado"],
-
     ["preparing","Preparando"],
-
     ["ready","Pronto"],
-
     ["out_for_delivery","Saiu para entrega"],
-
     ["completed","Concluído"],
-
     ["cancelled","Cancelado"]
 
   ];
@@ -2975,7 +3274,7 @@ async function updateOrderStatus(
 
 
 /* =====================================================
-   CAIXA
+   CAIXA - SESSÃO
 ===================================================== */
 
 async function loadCash(){
@@ -2985,24 +3284,61 @@ async function loadCash(){
       "cashList"
     );
 
+  container.innerHTML =
+    `<div class="loading">
+      Carregando caixa...
+    </div>`;
+
   try{
 
-    const result =
+    const sessionResult =
       await db
-        .from("cash_movements")
+        .from("cash_sessions")
         .select("*")
+        .eq("status","open")
         .order(
-          "created_at",
+          "opened_at",
           {ascending:false}
         )
-        .limit(100);
+        .limit(1)
+        .maybeSingle();
 
-    if(result.error){
-      throw result.error;
+    if(sessionResult.error){
+      throw sessionResult.error;
     }
 
-    cashMovements =
-      result.data || [];
+    cashSession =
+      sessionResult.data || null;
+
+
+    if(cashSession){
+
+      const movementsResult =
+        await db
+          .from("cash_movements")
+          .select("*")
+          .eq(
+            "cash_session_id",
+            cashSession.id
+          )
+          .order(
+            "created_at",
+            {ascending:false}
+          )
+          .limit(100);
+
+      if(movementsResult.error){
+        throw movementsResult.error;
+      }
+
+      cashMovements =
+        movementsResult.data || [];
+
+    }else{
+
+      cashMovements = [];
+
+    }
 
     renderCash();
 
@@ -3015,19 +3351,21 @@ async function loadCash(){
         Erro ao carregar caixa.
       </div>`;
 
+    updateCashStatus();
+
   }
 
 }
 
 
+/* =====================================================
+   RENDER CAIXA
+===================================================== */
+
 function renderCash(){
 
-  const container =
-    document.getElementById(
-      "cashList"
-    );
-
-  let balance = 0;
+  let income = 0;
+  let expense = 0;
 
   cashMovements.forEach(item=>{
 
@@ -3035,28 +3373,78 @@ function renderCash(){
       Number(item.amount || 0);
 
     if(item.type === "income"){
-      balance += amount;
+      income += amount;
     }else{
-      balance -= amount;
+      expense += amount;
     }
 
   });
+
+  const opening =
+    Number(
+      cashSession?.opening_balance || 0
+    );
+
+  const balance =
+    opening +
+    income -
+    expense;
+
+
+  document.getElementById(
+    "cashOpeningBalance"
+  ).textContent =
+    "R$ " + money(opening);
+
+  document.getElementById(
+    "cashIncome"
+  ).textContent =
+    "R$ " + money(income);
+
+  document.getElementById(
+    "cashExpense"
+  ).textContent =
+    "R$ " + money(expense);
 
   document.getElementById(
     "cashBalance"
   ).textContent =
     money(balance);
 
-  if(!cashMovements.length){
+
+  updateCashStatus();
+
+
+  const container =
+    document.getElementById(
+      "cashList"
+    );
+
+
+  if(!cashSession){
 
     container.innerHTML =
-      `<div class="empty">
-        Nenhum lançamento.
+      `<div class="cash-closed-message">
+        🔒 O caixa está fechado.<br>
+        Abra o caixa para registrar entradas e saídas.
       </div>`;
 
     return;
 
   }
+
+
+  if(!cashMovements.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhum lançamento neste caixa.
+      </div>`;
+
+    return;
+
+  }
+
 
   container.innerHTML =
     cashMovements.map(item=>{
@@ -3082,6 +3470,13 @@ function renderCash(){
                 font-size:11px;
                 margin-top:4px">
 
+              ${
+                income
+                ? "Entrada"
+                : "Saída"
+              }
+
+              •
               ${formatDate(item.created_at)}
 
             </div>
@@ -3109,7 +3504,485 @@ function renderCash(){
 }
 
 
+/* =====================================================
+   STATUS DO CAIXA
+===================================================== */
+
+function updateCashStatus(){
+
+  const status =
+    document.getElementById(
+      "cashStatus"
+    );
+
+  const title =
+    document.getElementById(
+      "cashStatusTitle"
+    );
+
+  const info =
+    document.getElementById(
+      "cashStatusInfo"
+    );
+
+  const openButton =
+    document.getElementById(
+      "openCashButton"
+    );
+
+  const closeButton =
+    document.getElementById(
+      "closeCashButton"
+    );
+
+  const movementButton =
+    document.getElementById(
+      "newCashMovementButton"
+    );
+
+
+  if(cashSession){
+
+    status.classList.remove(
+      "closed"
+    );
+
+    status.classList.add(
+      "open"
+    );
+
+    title.textContent =
+      "🟢 Caixa aberto";
+
+    info.innerHTML =
+      "Aberto em " +
+      formatDate(cashSession.opened_at) +
+      "<br>Saldo inicial: R$ " +
+      money(cashSession.opening_balance);
+
+    openButton.classList.add(
+      "hidden"
+    );
+
+    closeButton.classList.remove(
+      "hidden"
+    );
+
+    movementButton.disabled = false;
+
+  }else{
+
+    status.classList.remove(
+      "open"
+    );
+
+    status.classList.add(
+      "closed"
+    );
+
+    title.textContent =
+      "🔒 Caixa fechado";
+
+    info.textContent =
+      "Abra o caixa para começar os lançamentos.";
+
+    openButton.classList.remove(
+      "hidden"
+    );
+
+    closeButton.classList.add(
+      "hidden"
+    );
+
+    movementButton.disabled = true;
+
+  }
+
+}
+
+
+/* =====================================================
+   ABRIR CAIXA
+===================================================== */
+
+function openOpenCashModal(){
+
+  if(cashSession){
+
+    alert(
+      "O caixa já está aberto."
+    );
+
+    return;
+
+  }
+
+  document.getElementById(
+    "openingCashAmount"
+  ).value =
+    "0";
+
+  document
+    .getElementById("openCashModal")
+    .classList.add("active");
+
+}
+
+
+function closeOpenCashModal(){
+
+  document
+    .getElementById("openCashModal")
+    .classList.remove("active");
+
+}
+
+
+async function openCash(){
+
+  const amount =
+    Number(
+      document.getElementById(
+        "openingCashAmount"
+      ).value
+    );
+
+  if(!Number.isFinite(amount) || amount < 0){
+
+    alert(
+      "Digite um valor inicial válido."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    const {
+      data:sessionData
+    } =
+      await db.auth.getSession();
+
+    const userId =
+      sessionData?.session?.user?.id || null;
+
+
+    const existing =
+      await db
+        .from("cash_sessions")
+        .select("id")
+        .eq("status","open")
+        .limit(1)
+        .maybeSingle();
+
+    if(existing.error){
+      throw existing.error;
+    }
+
+    if(existing.data){
+
+      alert(
+        "Já existe um caixa aberto."
+      );
+
+      closeOpenCashModal();
+
+      await loadCash();
+
+      return;
+
+    }
+
+
+    const result =
+      await db
+        .from("cash_sessions")
+        .insert({
+
+          opening_balance:amount,
+
+          status:"open",
+
+          opened_by:userId
+
+        })
+        .select()
+        .single();
+
+
+    if(result.error){
+      throw result.error;
+    }
+
+
+    cashSession =
+      result.data;
+
+    cashMovements = [];
+
+
+    closeOpenCashModal();
+
+    renderCash();
+
+
+    alert(
+      "Caixa aberto com sucesso!"
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível abrir o caixa."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   FECHAR CAIXA
+===================================================== */
+
+function openCloseCashModal(){
+
+  if(!cashSession){
+
+    alert(
+      "O caixa está fechado."
+    );
+
+    return;
+
+  }
+
+
+  const balance =
+    calculateCashBalance();
+
+
+  document.getElementById(
+    "closeCashCalculated"
+  ).textContent =
+    "R$ " + money(balance);
+
+
+  document.getElementById(
+    "closingCashAmount"
+  ).value =
+    balance.toFixed(2);
+
+
+  document
+    .getElementById("closeCashModal")
+    .classList.add("active");
+
+}
+
+
+function closeCloseCashModal(){
+
+  document
+    .getElementById("closeCashModal")
+    .classList.remove("active");
+
+}
+
+
+function calculateCashBalance(){
+
+  if(!cashSession){
+    return 0;
+  }
+
+
+  let income = 0;
+  let expense = 0;
+
+
+  cashMovements.forEach(item=>{
+
+    const amount =
+      Number(item.amount || 0);
+
+    if(item.type === "income"){
+
+      income += amount;
+
+    }else{
+
+      expense += amount;
+
+    }
+
+  });
+
+
+  return (
+    Number(
+      cashSession.opening_balance || 0
+    )
+    +
+    income
+    -
+    expense
+  );
+
+}
+
+
+async function closeCash(){
+
+  if(!cashSession){
+
+    alert(
+      "Não existe caixa aberto."
+    );
+
+    return;
+
+  }
+
+
+  const calculated =
+    calculateCashBalance();
+
+
+  const counted =
+    Number(
+      document.getElementById(
+        "closingCashAmount"
+      ).value
+    );
+
+
+  if(!Number.isFinite(counted) || counted < 0){
+
+    alert(
+      "Digite um valor final válido."
+    );
+
+    return;
+
+  }
+
+
+  const difference =
+    counted - calculated;
+
+
+  let message =
+    "Deseja fechar o caixa?";
+
+
+  if(Math.abs(difference) >= 0.01){
+
+    message =
+      "O valor contado é diferente do saldo calculado.\n\n" +
+      "Saldo calculado: R$ " +
+      money(calculated) +
+      "\n" +
+      "Valor contado: R$ " +
+      money(counted) +
+      "\n" +
+      "Diferença: R$ " +
+      money(difference) +
+      "\n\n" +
+      "Deseja fechar mesmo assim?";
+
+  }
+
+
+  if(!confirm(message)){
+    return;
+  }
+
+
+  try{
+
+    const {
+      data:sessionData
+    } =
+      await db.auth.getSession();
+
+    const userId =
+      sessionData?.session?.user?.id || null;
+
+
+    const result =
+      await db
+        .from("cash_sessions")
+        .update({
+
+          status:"closed",
+
+          closed_at:
+            new Date().toISOString(),
+
+          closing_balance:
+            counted,
+
+          closed_by:userId
+
+        })
+        .eq(
+          "id",
+          cashSession.id
+        );
+
+
+    if(result.error){
+      throw result.error;
+    }
+
+
+    cashSession = null;
+    cashMovements = [];
+
+
+    closeCloseCashModal();
+
+    await loadCash();
+
+
+    alert(
+      "Caixa fechado com sucesso!"
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "Não foi possível fechar o caixa."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   LANÇAMENTOS
+===================================================== */
+
 function openCashModal(){
+
+  if(!cashSession){
+
+    alert(
+      "Abra o caixa antes de fazer um lançamento."
+    );
+
+    return;
+
+  }
+
 
   document.getElementById(
     "cashType"
@@ -3144,6 +4017,19 @@ function closeCashModal(){
 
 async function saveCashMovement(){
 
+  if(!cashSession){
+
+    alert(
+      "Abra o caixa antes de fazer um lançamento."
+    );
+
+    closeCashModal();
+
+    return;
+
+  }
+
+
   const type =
     document.getElementById(
       "cashType"
@@ -3161,6 +4047,7 @@ async function saveCashMovement(){
       "cashDescription"
     ).value.trim();
 
+
   if(!Number.isFinite(amount) || amount <= 0){
 
     alert(
@@ -3170,6 +4057,7 @@ async function saveCashMovement(){
     return;
 
   }
+
 
   try{
 
@@ -3183,17 +4071,26 @@ async function saveCashMovement(){
           amount:amount,
 
           description:
-            description || null
+            description || null,
+
+          cash_session_id:
+            cashSession.id,
+
+          movement_type:
+            type
 
         });
+
 
     if(result.error){
       throw result.error;
     }
 
+
     closeCashModal();
 
     await loadCash();
+
 
     alert(
       "Lançamento salvo!"
