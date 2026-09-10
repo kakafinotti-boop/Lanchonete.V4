@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Burguer Gold</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:#0d0d0d;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.header{
+  background:#111;
+  border-bottom:1px solid #252525;
+  padding:20px 16px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.header-inner{
+  max-width:1000px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.logo{
+  color:#d6a84f;
+  font-size:25px;
+  font-weight:800;
+}
+
+.status{
+  font-size:13px;
+  padding:8px 12px;
+  border-radius:20px;
+  background:#222;
+}
+
+.status.open{
+  color:#55d66b;
+}
+
+.status.closed{
+  color:#ff6464;
+}
+
+.container{
+  width:calc(100% - 28px);
+  max-width:1000px;
+  margin:0 auto;
+}
+
+.hero{
+  padding:30px 0 20px;
+}
+
+.hero h1{
+  margin:0 0 8px;
+  font-size:30px;
+}
+
+.hero p{
+  color:#aaa;
+  margin:0;
+}
+
+.categories{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:10px 0 20px;
+}
+
+.category-btn{
+  border:1px solid #333;
+  background:#171717;
+  color:#ddd;
+  padding:10px 16px;
+  border-radius:22px;
+  white-space:nowrap;
+}
+
+.category-btn.active{
+  background:#d6a84f;
+  color:#111;
+  border-color:#d6a84f;
+  font-weight:bold;
+}
+
+.category-title{
+  margin:22px 0 12px;
+  font-size:22px;
+  color:#d6a84f;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.product{
+  background:#161616;
+  border:1px solid #282828;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.product-image{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  display:block;
+  background:#222;
+}
+
+.product-content{
+  padding:14px;
+}
+
+.product-name{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+.product-description{
+  color:#999;
+  font-size:13px;
+  line-height:1.4;
+  min-height:36px;
+}
+
+.product-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:14px;
+}
+
+.price{
+  color:#d6a84f;
+  font-weight:bold;
+  font-size:17px;
+}
+
+.add-btn{
+  background:#d6a84f;
+  color:#111;
+  border:0;
+  border-radius:10px;
+  padding:9px 13px;
+  font-weight:bold;
+}
+
+.empty{
+  text-align:center;
+  color:#999;
+  padding:50px 15px;
+}
+
+.cart-button{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:30;
+  background:#d6a84f;
+  color:#111;
+  border:0;
+  border-radius:50px;
+  padding:15px 20px;
+  font-weight:bold;
+  box-shadow:0 8px 30px #000;
+}
+
+.cart-count{
+  background:#111;
+  color:#fff;
+  border-radius:50%;
+  padding:3px 7px;
+  margin-left:5px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:#000b;
+  z-index:40;
+  display:none;
+}
+
+.overlay.active{
+  display:block;
+}
+
+.cart{
+  position:absolute;
+  right:0;
+  top:0;
+  height:100%;
+  width:min(430px,100%);
+  background:#111;
+  padding:20px;
+  overflow-y:auto;
+}
+
+.cart-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.close-btn{
+  background:#222;
+  border:0;
+  color:#fff;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+}
+
+.cart-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px solid #292929;
+  padding:14px 0;
+}
+
+.cart-item-info{
+  flex:1;
+}
+
+.cart-item-name{
+  font-weight:bold;
+}
+
+.cart-item-price{
+  color:#d6a84f;
+  margin-top:5px;
+  font-size:14px;
+}
+
+.quantity{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.quantity button{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:8px;
+  background:#292929;
+  color:#fff;
+}
+
+.cart-total{
+  display:flex;
+  justify-content:space-between;
+  margin:20px 0;
+  font-size:19px;
+  font-weight:bold;
+}
+
+.primary-btn{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:14px;
+  background:#d6a84f;
+  color:#111;
+  font-weight:bold;
+}
+
+.secondary-btn{
+  width:100%;
+  border:1px solid #333;
+  border-radius:12px;
+  padding:13px;
+  background:#191919;
+  color:#fff;
+  margin-top:10px;
+}
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+}
+
+.checkout{
+  padding:25px 0 50px;
+}
+
+.back-btn{
+  background:none;
+  border:0;
+  color:#d6a84f;
+  padding:0;
+  margin-bottom:20px;
+}
+
+.card{
+  background:#151515;
+  border:1px solid #282828;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:15px;
+}
+
+.card h2{
+  margin:0 0 15px;
+  font-size:19px;
+}
+
+.checkout-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid #292929;
+}
+
+.checkout-item:last-child{
+  border-bottom:0;
+}
+
+.checkout-item small{
+  display:block;
+  color:#999;
+  margin-top:4px;
+}
+
+label{
+  display:block;
+  margin:12px 0 6px;
+  color:#ccc;
+  font-size:14px;
+}
+
+input,select,textarea{
+  width:100%;
+  background:#0d0d0d;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:10px;
+  padding:12px;
+  outline:none;
+}
+
+input:focus,select:focus,textarea:focus{
+  border-color:#d6a84f;
+}
+
+textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
+.radio-row{
+  display:flex;
+  gap:10px;
+}
+
+.radio-option{
+  flex:1;
+  border:1px solid #333;
+  border-radius:10px;
+  padding:12px;
+  cursor:pointer;
+}
+
+.radio-option input{
+  width:auto;
+}
+
+.total-row{
+  display:flex;
+  justify-content:space-between;
+  margin:9px 0;
+}
+
+.total-final{
+  border-top:1px solid #333;
+  padding-top:12px;
+  margin-top:12px;
+  font-size:21px;
+  font-weight:bold;
+  color:#d6a84f;
+}
+
+.success{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.success-icon{
+  font-size:65px;
+  margin-bottom:15px;
+}
+
+.success h1{
+  color:#d6a84f;
+}
+
+.loading{
+  text-align:center;
+  color:#aaa;
+  padding:60px 15px;
+}
+
+@media(max-width:600px){
+  .products{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:27px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">🍔 BURGUER GOLD</div>
+    <div id="storeStatus" class="status">
+      Carregando horário...
+    </div>
+  </div>
+</header>
+
+
+<!-- ================= CLIENTE ================= -->
+
+<main id="menuScreen" class="screen active">
+
+  <div class="container">
+
+    <section class="hero">
+      <h1>Nosso Cardápio</h1>
+      <p id="deliveryInfo">
+        Carregando cardápio...
+      </p>
+    </section>
+
+    <div id="categories" class="categories"></div>
+
+    <div id="productsContainer">
+      <div class="loading">
+        Carregando cardápio...
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- ================= CARRINHO ================= -->
+
+<div id="cartOverlay" class="overlay">
+
+  <div class="cart">
+
+    <div class="cart-header">
+      <h2>Seu carrinho</h2>
+
+      <button
+        class="close-btn"
+        onclick="closeCart()">
+        ×
+      </button>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">R$ 0,00</span>
+    </div>
+
+    <button
+      class="primary-btn"
+      onclick="goToCheckout()">
+      Finalizar pedido
+    </button>
+
+  </div>
+
+</div>
+
+
+<button
+  id="cartButton"
+  class="cart-button"
+  onclick="openCart()">
+  🛒 Carrinho
+  <span id="cartCount" class="cart-count">0</span>
+</button>
+
+
+<!-- ================= CHECKOUT ================= -->
+
+<main id="checkoutScreen" class="screen">
+
+  <div class="container checkout">
+
+    <button
+      class="back-btn"
+      onclick="showScreen('menuScreen')">
+      ← Voltar ao cardápio
+    </button>
+
+    <div class="card">
+      <h2>Seu pedido</h2>
+      <div id="checkoutItems"></div>
+
+      <div class="total-row">
+        <span>Subtotal</span>
+        <strong id="checkoutSubtotal">
+          R$ 0,00
+        </strong>
+      </div>
+
+      <div class="total-row">
+        <span>Entrega</span>
+        <strong id="checkoutDeliveryFee">
+          R$ 0,00
+        </strong>
+      </div>
+
+      <div class="total-row total-final">
+        <span>Total</span>
+        <strong id="checkoutTotal">
+          R$ 0,00
+        </strong>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <h2>Seus dados</h2>
+
+      <label>Nome</label>
+      <input
+        id="customerName"
+        type="text"
+        placeholder="Seu nome">
+
+      <label>Telefone</label>
+      <input
+        id="customerPhone"
+        type="tel"
+        placeholder="(00) 00000-0000">
+    </div>
+
+
+    <div class="card">
+
+      <h2>Como deseja receber?</h2>
+
+      <div class="radio-row">
+
+        <label class="radio-option">
+          <input
+            type="radio"
+            name="orderType"
+            value="delivery"
+            checked
+            onchange="toggleDeliveryFields()">
+          Entrega
+        </label>
+
+        <label class="radio-option">
+          <input
+            type="radio"
+            name="orderType"
+            value="pickup"
+            onchange="toggleDeliveryFields()">
+          Retirada
+        </label>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="deliveryFields"
+      class="card">
+
+      <h2>Endereço</h2>
+
+      <label>Rua</label>
+      <input
+        id="addressStreet"
+        type="text"
+        placeholder="Nome da rua">
+
+      <label>Número</label>
+      <input
+        id="addressNumber"
+        type="text"
+        placeholder="Número">
+
+      <label>Bairro</label>
+      <input
+        id="addressNeighborhood"
+        type="text"
+        placeholder="Bairro">
+
+      <label>Complemento</label>
+      <input
+        id="addressComplement"
+        type="text"
+        placeholder="Casa, apartamento etc.">
+
+      <label>Região</label>
+      <select
+        id="deliveryZone"
+        onchange="calculateCheckoutTotal()">
+        <option value="">
+          Selecione sua região
+        </option>
+      </select>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Pagamento</h2>
+
+      <label>Forma de pagamento</label>
+
+      <select id="paymentMethod">
+        <option value="">
+          Selecione
+        </option>
+        <option value="PIX">
+          PIX
+        </option>
+        <option value="Dinheiro">
+          Dinheiro
+        </option>
+        <option value="Cartão">
+          Cartão
+        </option>
+      </select>
+
+      <label>Observações</label>
+
+      <textarea
+        id="orderNotes"
+        placeholder="Alguma observação?"></textarea>
+
+    </div>
+
+
+    <button
+      id="finishOrderBtn"
+      class="primary-btn"
+      onclick="finishOrder()">
+      Finalizar pedido
+    </button>
+
+  </div>
+
+</main>
+
+
+<!-- ================= SUCESSO ================= -->
+
+<main id="successScreen" class="screen">
+
+  <div class="container success">
+
+    <div class="success-icon">
+      ✅
+    </div>
+
+    <h1>Pedido enviado!</h1>
+
+    <p id="successOrderNumber">
+      Seu pedido foi recebido.
+    </p>
+
+    <button
+      id="whatsappButton"
+      class="primary-btn"
+      onclick="sendOrderWhatsApp()">
+      Enviar pedido pelo WhatsApp
+    </button>
+
+    <button
+      class="secondary-btn"
+      onclick="showScreen('menuScreen')">
+      Voltar ao cardápio
+    </button>
+
+  </div>
+
+</main>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  "https://xmxacmfzwrvrrmayivph.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_9sCek2Z6B0H-B3DTfIb5lA_eyN4wESC";
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let products=[];
+let deliveryZones=[];
+let cart=[];
+let storeSettings=null;
+let lastOrder=null;
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+  loadSavedCart();
+
+  await loadStoreSettings();
+
+  await loadProducts();
+
+  await loadDeliveryZones();
+
+  renderCart();
+
+  toggleDeliveryFields();
+
+});
+
+
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
+
+async function loadStoreSettings(){
+
+  const status=document.getElementById("storeStatus");
+  const info=document.getElementById("deliveryInfo");
+
+  try{
+
+    const {data,error}=await db
+      .from("store_settings")
+      .select("*")
+      .eq("id",1)
+      .maybeSingle();
+
+    if(error) throw error;
+
+    storeSettings=data;
+
+    if(data){
+
+      const estimate=
+        Number(data.delivery_estimate || 0);
+
+      if(info){
+        info.textContent=
+          estimate>0
+          ? `Entrega estimada: ${estimate} minutos`
+          : "Faça seu pedido!";
+      }
+
+      updateStoreStatus();
+
+    }else{
+
+      if(status){
+        status.textContent="Horário não configurado";
+      }
+
+      if(info){
+        info.textContent="Faça seu pedido!";
+      }
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Erro ao carregar configurações:",
+      error
+    );
+
+    if(status){
+      status.textContent="Burguer Gold";
+    }
+
+    if(info){
+      info.textContent="Faça seu pedido!";
+    }
+
+  }
+
+}
+
+
+function updateStoreStatus(){
+
+  const element=
+    document.getElementById("storeStatus");
+
+  if(!element) return;
+
+  if(!storeSettings){
+
+    element.textContent="Burguer Gold";
+    return;
+
+  }
+
+  const now=new Date();
+
+  const dayNames=[
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday"
+  ];
+
+  const day=dayNames[now.getDay()];
+
+  const hours=
+    storeSettings.opening_hours?.[day];
+
+  if(!hours || hours.closed){
+
+    element.textContent="Fechado";
+    element.className="status closed";
+    return;
+
+  }
+
+  const current=
+    now.getHours()*60+
+    now.getMinutes();
+
+  const [openHour,openMinute]=
+    String(hours.open || "18:00")
+      .split(":")
+      .map(Number);
+
+  const [closeHour,closeMinute]=
+    String(hours.close || "00:00")
+      .split(":")
+      .map(Number);
+
+  const open=
+    openHour*60+openMinute;
+
+  let close=
+    closeHour*60+closeMinute;
+
+  /*
+    Quando fecha depois da meia-noite.
+  */
+
+  if(close<=open){
+    close+=24*60;
+  }
+
+  let currentAdjusted=current;
+
+  if(current<open && close>24*60){
+    currentAdjusted+=24*60;
+  }
+
+  const isOpen=
+    currentAdjusted>=open &&
+    currentAdjusted<close;
+
+  if(isOpen){
+
+    element.textContent="Aberto";
+    element.className="status open";
+
+  }else{
+
+    element.textContent="Fechado";
+    element.className="status closed";
+
+  }
+
+}
+
+
+/* =========================================================
+   PRODUTOS
+========================================================= */
+
+async function loadProducts(){
+
+  const container=
+    document.getElementById("productsContainer");
+
+  try{
+
+    const {data,error}=await db
+      .from("products")
+      .select("*")
+      .eq("available",true)
+      .order("display_order",{ascending:true})
+      .order("name",{ascending:true});
+
+    if(error) throw error;
+
+    products=data || [];
+
+    renderCategories();
+
+    renderProducts();
+
+  }catch(error){
+
+    console.error(
+      "Erro ao carregar produtos:",
+      error
+    );
+
+    container.innerHTML=`
+      <div class="empty">
+        <h3>Não foi possível carregar o cardápio.</h3>
+        <p>Verifique a conexão e tente novamente.</p>
+        <button
+          class="primary-btn"
+          onclick="loadProducts()">
+          Tentar novamente
+        </button>
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   CATEGORIAS
+========================================================= */
+
+function renderCategories(){
+
+  const container=
+    document.getElementById("categories");
+
+  const categories=[
+    ...new Set(
+      products
+        .map(product=>product.category)
+        .filter(Boolean)
+    )
+  ];
+
+  if(!categories.length){
+
+    container.innerHTML="";
+    return;
+
+  }
+
+  container.innerHTML=`
+    <button
+      class="category-btn active"
+      data-category="all"
+      onclick="filterCategory('all',this)">
+      Todos
+    </button>
+
+    ${categories.map(category=>`
+      <button
+        class="category-btn"
+        data-category="${escapeAttribute(category)}"
+        onclick="filterCategory('${escapeJs(category)}',this)">
+        ${escapeHtml(category)}
+      </button>
+    `).join("")}
+  `;
+
+}
+
+
+function filterCategory(category,button){
+
+  document
+    .querySelectorAll(".category-btn")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+  renderProducts(category);
+
+}
+
+
+/* =========================================================
+   RENDER PRODUTOS
+========================================================= */
+
+function renderProducts(category="all"){
+
+  const container=
+    document.getElementById("productsContainer");
+
+  let list=products;
+
+  if(category!=="all"){
+    list=products.filter(
+      product=>product.category===category
+    );
+  }
+
+  if(!list.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        Nenhum produto disponível.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  const categories=[
+    ...new Set(
+      list
+        .map(product=>product.category)
+        .filter(Boolean)
+    )
+  ];
+
+  container.innerHTML=
+    categories.map(cat=>{
+
+      const items=
+        list.filter(
+          product=>product.category===cat
+        );
+
+      return `
+        <section>
+
+          <h2 class="category-title">
+            ${escapeHtml(cat)}
+          </h2>
+
+          <div class="products">
+
+            ${items.map(product=>`
+              <article class="product">
+
+                ${
+                  product.image_url
+                  ? `
+                    <img
+                      class="product-image"
+                      src="${escapeAttribute(product.image_url)}"
+                      alt="${escapeAttribute(product.name)}"
+                      onerror="this.style.display='none'">
+                  `
+                  : ""
+                }
+
+                <div class="product-content">
+
+                  <div class="product-name">
+                    ${escapeHtml(product.name)}
+                  </div>
+
+                  <div class="product-description">
+                    ${escapeHtml(product.description || "")}
+                  </div>
+
+                  <div class="product-bottom">
+
+                    <span class="price">
+                      R$ ${formatMoney(product.price)}
+                    </span>
+
+                    <button
+                      class="add-btn"
+                      onclick="addToCart('${product.id}')">
+                      Adicionar
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </article>
+            `).join("")}
+
+          </div>
+
+        </section>
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================================================
+   CARRINHO
+========================================================= */
+
+function loadSavedCart(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        "burguer_gold_cart"
+      );
+
+    if(saved){
+      cart=JSON.parse(saved);
+    }
+
+  }catch(error){
+
+    console.error(error);
+    cart=[];
+
+  }
+
+}
+
+
+function saveCart(){
+
+  localStorage.setItem(
+    "burguer_gold_cart",
+    JSON.stringify(cart)
+  );
+
+}
+
+
+function addToCart(id){
+
+  const product=
+    products.find(
+      item=>String(item.id)===String(id)
+    );
+
+  if(!product) return;
+
+  const existing=
+    cart.find(
+      item=>String(item.id)===String(id)
+    );
+
+  if(existing){
+
+    existing.qty++;
+
+  }else{
+
+    cart.push({
+      id:product.id,
+      name:product.name,
+      price:Number(product.price),
+      image_url:product.image_url || "",
+      qty:1
+    });
+
+  }
+
+  saveCart();
+
+  renderCart();
+
+  openCart();
+
+}
+
+
+function changeQuantity(id,change){
+
+  const item=
+    cart.find(
+      product=>String(product.id)===String(id)
+    );
+
+  if(!item) return;
+
+  item.qty+=change;
+
+  if(item.qty<=0){
+
+    cart=
+      cart.filter(
+        product=>String(product.id)!==String(id)
+      );
+
+  }
+
+  saveCart();
+
+  renderCart();
+
+  if(
+    document.getElementById("checkoutScreen")
+      ?.classList.contains("active")
+  ){
+    renderCheckoutItems();
+    calculateCheckoutTotal();
+  }
+
+}
+
+
+function renderCart(){
+
+  const container=
+    document.getElementById("cartItems");
+
+  const count=
+    document.getElementById("cartCount");
+
+  const totalElement=
+    document.getElementById("cartTotal");
+
+  const totalItems=
+    cart.reduce(
+      (sum,item)=>sum+Number(item.qty),
+      0
+    );
+
+  const total=
+    cart.reduce(
+      (sum,item)=>
+        sum+
+        Number(item.price)*
+        Number(item.qty),
+      0
+    );
+
+  if(count){
+    count.textContent=totalItems;
+  }
+
+  if(totalElement){
+    totalElement.textContent=
+      `R$ ${formatMoney(total)}`;
+  }
+
+  if(!container) return;
+
+  if(!cart.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        Seu carrinho está vazio.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  container.innerHTML=
+    cart.map(item=>`
+
+      <div class="cart-item">
+
+        <div class="cart-item-info">
+
+          <div class="cart-item-name">
+            ${escapeHtml(item.name)}
+          </div>
+
+          <div class="cart-item-price">
+            R$ ${formatMoney(item.price)}
+          </div>
+
+        </div>
+
+        <div class="quantity">
+
+          <button
+            onclick="changeQuantity('${item.id}',-1)">
+            −
+          </button>
+
+          <strong>${item.qty}</strong>
+
+          <button
+            onclick="changeQuantity('${item.id}',1)">
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function openCart(){
+
+  document
+    .getElementById("cartOverlay")
+    .classList.add("active");
+
+}
+
+
+function closeCart(){
+
+  document
+    .getElementById("cartOverlay")
+    .classList.remove("active");
+
+}
+
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+function goToCheckout(){
+
+  if(!cart.length){
+
+    alert("Seu carrinho está vazio.");
+    return;
+
+  }
+
+  closeCart();
+
+  populateDeliveryZones();
+
+  renderCheckoutItems();
+
+  calculateCheckoutTotal();
+
+  showScreen("checkoutScreen");
+
+}
+
+
+function renderCheckoutItems(){
+
+  const container=
+    document.getElementById("checkoutItems");
+
+  if(!container) return;
+
+  container.innerHTML=
+    cart.map(item=>`
+
+      <div class="checkout-item">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(item.name)}
+          </strong>
+
+          <small>
+            ${item.qty}x
+            R$ ${formatMoney(item.price)}
+          </small>
+
+        </div>
+
+        <strong>
+          R$ ${formatMoney(
+            Number(item.price)*Number(item.qty)
+          )}
+        </strong>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function populateDeliveryZones(){
+
+  const select=
+    document.getElementById("deliveryZone");
+
+  if(!select) return;
+
+  select.innerHTML=`
+    <option value="">
+      Selecione sua região
+    </option>
+
+    ${deliveryZones.map(zone=>`
+      <option value="${zone.id}">
+        ${escapeHtml(zone.name)}
+        -
+        R$ ${formatMoney(zone.fee)}
+      </option>
+    `).join("")}
+  `;
+
+}
+
+
+function toggleDeliveryFields(){
+
+  const type=
+    document.querySelector(
+      'input[name="orderType"]:checked'
+    )?.value;
+
+  const fields=
+    document.getElementById("deliveryFields");
+
+  if(!fields) return;
+
+  fields.style.display=
+    type==="delivery"
+    ? "block"
+    : "none";
+
+  calculateCheckoutTotal();
+
+}
+
+
+function calculateCheckoutTotal(){
+
+  const subtotal=
+    cart.reduce(
+      (sum,item)=>
+        sum+
+        Number(item.price)*
+        Number(item.qty),
+      0
+    );
+
+  let deliveryFee=0;
+
+  const type=
+    document.querySelector(
+      'input[name="orderType"]:checked'
+    )?.value;
+
+  if(type==="delivery"){
+
+    const zoneId=
+      document.getElementById("deliveryZone")
+        ?.value;
+
+    const zone=
+      deliveryZones.find(
+        item=>String(item.id)===String(zoneId)
+      );
+
+    deliveryFee=
+      zone
+      ? Number(zone.fee)
+      : Number(
+          storeSettings?.default_delivery_fee || 0
+        );
+
+  }
+
+  const total=
+    subtotal+deliveryFee;
+
+  const subtotalElement=
+    document.getElementById("checkoutSubtotal");
+
+  const feeElement=
+    document.getElementById("checkoutDeliveryFee");
+
+  const totalElement=
+    document.getElementById("checkoutTotal");
+
+  if(subtotalElement){
+    subtotalElement.textContent=
+      `R$ ${formatMoney(subtotal)}`;
+  }
+
+  if(feeElement){
+    feeElement.textContent=
+      `R$ ${formatMoney(deliveryFee)}`;
+  }
+
+  if(totalElement){
+    totalElement.textContent=
+      `R$ ${formatMoney(total)}`;
+  }
+
+  return {
+    subtotal,
+    deliveryFee,
+    total
+  };
+
+}
+
+
+/* =========================================================
+   FINALIZAR PEDIDO
+========================================================= */
+
+async function finishOrder(){
+
+  if(!cart.length){
+
+    alert("Seu carrinho está vazio.");
+    return;
+
+  }
+
+  const name=
+    document.getElementById("customerName")
+      ?.value.trim();
+
+  const phone=
+    document.getElementById("customerPhone")
+      ?.value.trim();
+
+  const payment=
+    document.getElementById("paymentMethod")
+      ?.value;
+
+  const notes=
+    document.getElementById("orderNotes")
+      ?.value.trim() || "";
+
+  const type=
+    document.querySelector(
+      'input[name="orderType"]:checked'
+    )?.value || "delivery";
+
+  if(!name){
+
+    alert("Digite seu nome.");
+    return;
+
+  }
+
+  if(!phone){
+
+    alert("Digite seu telefone.");
+    return;
+
+  }
+
+  if(!payment){
+
+    alert("Selecione a forma de pagamento.");
+    return;
+
+  }
+
+  let address="";
+  let zoneId=null;
+
+  if(type==="delivery"){
+
+    const street=
+      document.getElementById("addressStreet")
+        ?.value.trim();
+
+    const number=
+      document.getElementById("addressNumber")
+        ?.value.trim();
+
+    const neighborhood=
+      document.getElementById("addressNeighborhood")
+        ?.value.trim();
+
+    const complement=
+      document.getElementById("addressComplement")
+        ?.value.trim() || "";
+
+    zoneId=
+      document.getElementById("deliveryZone")
+        ?.value || null;
+
+    if(!street || !number || !neighborhood){
+
+      alert("Preencha seu endereço.");
+      return;
+
+    }
+
+    if(!zoneId){
+
+      alert("Selecione sua região.");
+      return;
+
+    }
+
+    address=
+      `${street}, ${number} - ${neighborhood}`+
+      (complement
+        ? ` - ${complement}`
+        : "");
+
+  }
+
+  const totals=
+    calculateCheckoutTotal();
+
+  const items=
+    cart.map(item=>({
+      product_id:item.id,
+      name:item.name,
+      price:Number(item.price),
+      quantity:Number(item.qty),
+      subtotal:
+        Number(item.price)*
+        Number(item.qty)
+    }));
+
+  const order={
+
+    customer_name:name,
+
+    customer_phone:phone,
+
+    order_type:type,
+
+    address:address,
+
+    delivery_zone_id:zoneId,
+
+    payment_method:payment,
+
+    notes:notes,
+
+    items:items,
+
+    subtotal:totals.subtotal,
+
+    delivery_fee:totals.deliveryFee,
+
+    total:totals.total,
+
+    status:"pending"
+
+  };
+
+  const button=
+    document.getElementById("finishOrderBtn");
+
+  if(button){
+
+    button.disabled=true;
+    button.textContent="Enviando pedido...";
+
+  }
+
+  try{
+
+    const {data,error}=await db
+      .from("orders")
+      .insert(order)
+      .select()
+      .single();
+
+    if(error) throw error;
+
+    lastOrder=data;
+
+    cart=[];
+
+    saveCart();
+
+    renderCart();
+
+    const number=
+      document.getElementById(
+        "successOrderNumber"
+      );
+
+    if(number){
+
+      number.textContent=
+        `Pedido #${data.id} recebido com sucesso!`;
+
+    }
+
+    showScreen("successScreen");
+
+  }catch(error){
+
+    console.error(
+      "Erro ao criar pedido:",
+      error
+    );
+
+    alert(
+      "Não foi possível enviar o pedido. " +
+      "Tente novamente."
+    );
+
+  }finally{
+
+    if(button){
+
+      button.disabled=false;
+      button.textContent="Finalizar pedido";
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+function sendOrderWhatsApp(){
+
+  if(!lastOrder){
+
+    alert("Pedido não encontrado.");
+    return;
+
+  }
+
+  const number=
+    String(
+      storeSettings?.whatsapp || ""
+    ).replace(/\D/g,"");
+
+  if(!number){
+
+    alert(
+      "O WhatsApp da loja ainda não foi configurado."
+    );
+
+    return;
+
+  }
+
+  const order=lastOrder;
+
+  let message=
+    `*NOVO PEDIDO - BURGUER GOLD*%0A%0A`;
+
+  message+=
+    `*Pedido:* #${order.id}%0A`;
+
+  message+=
+    `*Cliente:* ${encodeURIComponent(
+      order.customer_name
+    )}%0A`;
+
+  message+=
+    `*Telefone:* ${encodeURIComponent(
+      order.customer_phone
+    )}%0A`;
+
+  message+=
+    `*Tipo:* ${
+      order.order_type==="delivery"
+      ? "Entrega"
+      : "Retirada"
+    }%0A`;
+
+  if(order.address){
+
+    message+=
+      `*Endereço:* ${encodeURIComponent(
+        order.address
+      )}%0A`;
+
+  }
+
+  message+=
+    `*Pagamento:* ${encodeURIComponent(
+      order.payment_method
+    )}%0A%0A`;
+
+  message+=`*ITENS:*%0A`;
+
+  (order.items || []).forEach(item=>{
+
+    message+=
+      `${item.quantity}x `+
+      `${encodeURIComponent(item.name)}`+
+      ` - R$ ${Number(item.subtotal)
+        .toFixed(2)
+        .replace(".",",")}`+
+      `%0A`;
+
+  });
+
+  message+=
+    `%0A*TOTAL:* R$ `+
+    Number(order.total)
+      .toFixed(2)
+      .replace(".",",");
+
+  window.open(
+    `https://wa.me/${number}?text=${message}`,
+    "_blank"
+  );
+
+}
+
+
+/* =========================================================
+   TELAS
+========================================================= */
+
+function showScreen(id){
+
+  document
+    .querySelectorAll(".screen")
+    .forEach(screen=>{
+      screen.classList.remove("active");
+    });
+
+  const screen=
+    document.getElementById(id);
+
+  if(screen){
+    screen.classList.add("active");
+  }
+
+  window.scrollTo(0,0);
+
+}
+
+
+/* =========================================================
+   ZONAS
+========================================================= */
+
+async function loadDeliveryZones(){
+
+  try{
+
+    const {data,error}=await db
+      .from("delivery_zones")
+      .select("*")
+      .eq("active",true)
+      .order("name");
+
+    if(error) throw error;
+
+    deliveryZones=data || [];
+
+  }catch(error){
+
+    console.error(
+      "Erro ao carregar zonas:",
+      error
+    );
+
+    deliveryZones=[];
+
+  }
+
+}
+
+
+/* =========================================================
+   SEGURANÇA DE TEXTO
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+  return escapeHtml(value);
+
+}
+
+
+function escapeJs(value){
+
+  return String(value ?? "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,'\\"')
+    .replace(/\n/g,"\\n")
+    .replace(/\r/g,"\\r");
+
+}
+
+
+function formatMoney(value){
+
+  return Number(value || 0)
+    .toFixed(2)
+    .replace(".",",");
+
+}
+
+</script>
+
+</body>
+</html>
