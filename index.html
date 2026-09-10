@@ -1258,14 +1258,6 @@ function renderDeliveryZones(){
 function isStoreOpen(){
 
   if(!storeSettings){
-    return false;
-  }/* =====================================================
-   STATUS GLOBAL DA LOJA
-===================================================== */
-
-function isStoreOpen(){
-
-  if(!storeSettings){
     return true;
   }
 
@@ -1296,35 +1288,8 @@ function updateStoreStatus(){
     open
       ? "status open"
       : "status closed";
-
 }
-
-function updateStoreStatus(){
-
-  const element =
-    document.getElementById(
-      "storeStatus"
-    );
-
-  if(!element){
-    return;
-  }
-
-  const open =
-    isStoreOpen();
-
-  element.textContent =
-    open
-      ? "Aberto"
-      : "Fechado";
-
-  element.className =
-    open
-      ? "status open"
-      : "status closed";
-
-}
-
+  
 /* =====================================================
    PRODUTOS
 ===================================================== */
