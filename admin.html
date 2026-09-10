@@ -660,8 +660,6 @@ textarea{
 
 <body>
 
-<!-- LOGIN -->
-
 <section id="loginPage" class="login-page">
 
   <div class="login-box">
@@ -713,9 +711,6 @@ textarea{
 
 </section>
 
-
-<!-- ADMIN -->
-
 <section id="adminPage" class="admin hidden">
 
   <header class="topbar">
@@ -746,7 +741,6 @@ textarea{
     </div>
 
   </header>
-
 
   <main class="main">
 
@@ -794,9 +788,6 @@ textarea{
 
     </nav>
 
-
-    <!-- PEDIDOS -->
-
     <section
       id="ordersPanel"
       class="panel active">
@@ -824,9 +815,6 @@ textarea{
       </div>
 
     </section>
-
-
-    <!-- PRODUTOS -->
 
     <section
       id="productsPanel"
@@ -860,9 +848,6 @@ textarea{
 
     </section>
 
-
-    <!-- ENTREGA -->
-
     <section
       id="deliveryPanel"
       class="panel">
@@ -890,9 +875,6 @@ textarea{
       </div>
 
     </section>
-
-
-    <!-- CONFIGURAÇÕES -->
 
     <section
       id="settingsPanel"
@@ -942,7 +924,6 @@ textarea{
 
       </div>
 
-
       <div class="card">
 
         <h2>Horários de funcionamento</h2>
@@ -964,9 +945,6 @@ textarea{
 
     </section>
 
-
-    <!-- CAIXA -->
-
     <section
       id="cashPanel"
       class="panel">
@@ -976,9 +954,6 @@ textarea{
         <h1>Caixa</h1>
 
       </div>
-
-
-      <!-- STATUS -->
 
       <div
         id="cashStatus"
@@ -1032,9 +1007,6 @@ textarea{
 
       </div>
 
-
-      <!-- RESUMO -->
-
       <div class="cash-summary">
 
         <div class="cash-summary-box">
@@ -1053,7 +1025,6 @@ textarea{
 
         </div>
 
-
         <div class="cash-summary-box">
 
           <div class="cash-summary-label">
@@ -1069,7 +1040,6 @@ textarea{
           </div>
 
         </div>
-
 
         <div class="cash-summary-box">
 
@@ -1088,7 +1058,6 @@ textarea{
         </div>
 
       </div>
-
 
       <div class="card">
 
@@ -1119,14 +1088,13 @@ textarea{
           <button
             id="newCashMovementButton"
             class="btn btn-gold"
-            onclick="openCashModal()">
+            onclick="openCashMovementModal()">
 
             + Lançamento
 
           </button>
 
         </div>
-
 
         <div
           id="cashList">
@@ -1142,7 +1110,6 @@ textarea{
   </main>
 
 </section>
-
 
 <!-- MODAL PRODUTO -->
 
@@ -1248,7 +1215,6 @@ textarea{
 
 </div>
 
-
 <!-- MODAL ZONA -->
 
 <div
@@ -1313,6 +1279,7 @@ textarea{
   </div>
 
 </div>
+
 <!-- MODAL ABRIR CAIXA -->
 
 <div
@@ -1356,7 +1323,6 @@ textarea{
   </div>
 
 </div>
-
 
 <!-- MODAL FECHAR CAIXA -->
 
@@ -1406,7 +1372,6 @@ textarea{
   </div>
 
 </div>
-
 
 <!-- MODAL MOVIMENTAÇÃO -->
 
@@ -1472,14 +1437,8 @@ textarea{
 
 </div>
 
-
 <script>
-
-/* =====================================================
-   SUPABASE
-===================================================== */
-
-const SUPABASE_URL =
+ const SUPABASE_URL =
   "https://xmxacmfzwrvrrmayivph.supabase.co";
 
 const SUPABASE_KEY =
@@ -1491,41 +1450,744 @@ const db =
     SUPABASE_KEY
   );
 
-
-/* =====================================================
-   ESTADO
-===================================================== */
-
 let currentSession = null;
 
 let products = [];
-
-let zones = [];
-
-let settings = null;
-
+let deliveryZones = [];
 let orders = [];
 
-let currentCashSession = null;
+let storeSettings = null;
 
+let currentCashSession = null;
 let cashMovements = [];
 
-let audioContext = null;
+let orderRealtimeChannel = null;
+let newOrderAudioContext = null;
 
-let orderChannel = null;
+
+/* =========================
+   UTILITÁRIOS
+========================= */
+
+function money(value){
+
+  return Number(value || 0)
+    .toLocaleString("pt-BR",{
+      style:"currency",
+      currency:"BRL"
+    });
+
+}
 
 
-/* =====================================================
-   ALERTA DE NOVO PEDIDO
-===================================================== */
+function formatDate(value){
+
+  if(!value) return "";
+
+  return new Date(value)
+    .toLocaleString("pt-BR",{
+      dateStyle:"short",
+      timeStyle:"short"
+    });
+
+}
+
+
+function escapeHtml(value){
+
+  if(value === null || value === undefined){
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function checkSession(){
+
+  try{
+
+    const result =
+      await db.auth.getSession();
+
+    currentSession =
+      result.data?.session || null;
+
+    if(currentSession){
+
+      await showAdmin(currentSession);
+
+    }else{
+
+      showLogin();
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    showLogin();
+
+  }
+
+}
+
+
+function showLogin(){
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("adminPage")
+    .classList.add("hidden");
+
+}
+
+
+async function login(event){
+
+  event.preventDefault();
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+  const button =
+    document
+      .getElementById("loginButton");
+
+  const errorBox =
+    document
+      .getElementById("loginError");
+
+  errorBox.classList.add("hidden");
+
+  button.disabled = true;
+  button.textContent = "Entrando...";
+
+  try{
+
+    const result =
+      await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if(result.error){
+      throw result.error;
+    }
+
+    currentSession =
+      result.data.session;
+
+    await showAdmin(currentSession);
+
+  }catch(error){
+
+    console.error(error);
+
+    errorBox.textContent =
+      error.message ||
+      "Não foi possível entrar.";
+
+    errorBox.classList.remove("hidden");
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = "Entrar";
+
+  }
+
+}
+
+
+async function logout(){
+
+  try{
+
+    if(orderRealtimeChannel){
+
+      try{
+        await db.removeChannel(
+          orderRealtimeChannel
+        );
+      }catch(e){}
+
+      orderRealtimeChannel = null;
+
+    }
+
+    await db.auth.signOut();
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+  currentSession = null;
+
+  showLogin();
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+async function showAdmin(session){
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("adminPage")
+    .classList.remove("hidden");
+
+  const user =
+    document.getElementById("adminUser");
+
+  if(user){
+
+    user.textContent =
+      session?.user?.email || "";
+
+  }
+
+  await loadAll();
+
+  activateOrderSound();
+
+  setupOrderRealtime();
+
+}
+
+
+async function loadAll(){
+
+  await Promise.allSettled([
+
+    loadOrders(),
+
+    loadProducts(),
+
+    loadDeliveryZones(),
+
+    loadSettings(),
+
+    loadCash()
+
+  ]);
+
+}
+
+
+/* =========================
+   ABAS
+========================= */
+
+function showPanel(name,button){
+
+  document
+    .querySelectorAll(".panel")
+    .forEach(panel => {
+
+      panel.classList.remove("active");
+
+    });
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(tab => {
+
+      tab.classList.remove("active");
+
+    });
+
+  const panel =
+    document.getElementById(
+      name + "Panel"
+    );
+
+  if(panel){
+
+    panel.classList.add("active");
+
+  }
+
+  if(button){
+
+    button.classList.add("active");
+
+  }
+
+}
+
+
+/* =========================
+   PEDIDOS
+========================= */
+
+async function loadOrders(){
+
+  const container =
+    document.getElementById("ordersList");
+
+  if(!container) return;
+
+  container.innerHTML =
+    `<div class="loading">
+      Carregando pedidos...
+    </div>`;
+
+  try{
+
+    const result =
+      await db
+        .from("orders")
+        .select("*")
+        .order("created_at",{
+          ascending:false
+        });
+
+    if(result.error){
+      throw result.error;
+    }
+
+    orders =
+      result.data || [];
+
+    renderOrders();
+
+  }catch(error){
+
+    console.error(error);
+
+    container.innerHTML =
+      `<div class="error">
+        Erro ao carregar pedidos:<br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderOrders(){
+
+  const container =
+    document.getElementById("ordersList");
+
+  if(!container) return;
+
+  if(!orders.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhum pedido encontrado.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    orders
+      .map(order => {
+
+        let items = [];
+
+        try{
+
+          items =
+            Array.isArray(order.items)
+              ? order.items
+              : JSON.parse(order.items || "[]");
+
+        }catch(e){
+
+          items = [];
+
+        }
+
+        const itemsHtml =
+          items.length
+            ? items.map(item => {
+
+                const name =
+                  item.name ||
+                  item.product_name ||
+                  "Produto";
+
+                const quantity =
+                  Number(
+                    item.quantity ||
+                    item.qty ||
+                    1
+                  );
+
+                const price =
+                  Number(
+                    item.price ||
+                    0
+                  );
+
+                return `
+                  <div class="order-item">
+
+                    <span>
+                      ${quantity}x
+                      ${escapeHtml(name)}
+                    </span>
+
+                    <span>
+                      ${money(price * quantity)}
+                    </span>
+
+                  </div>
+                `;
+
+              }).join("")
+            : `
+              <div class="product-meta">
+                Nenhum item informado.
+              </div>
+            `;
+
+        const address =
+          order.order_type === "delivery"
+            ? (
+                order.address ||
+                "Endereço não informado"
+              )
+            : "Retirada no local";
+
+        return `
+
+          <div class="order">
+
+            <div class="order-header">
+
+              <div>
+
+                <div class="order-number">
+                  Pedido #${escapeHtml(order.id)}
+                </div>
+
+                <div class="order-date">
+                  ${formatDate(order.created_at)}
+                </div>
+
+              </div>
+
+              <select
+                class="status-select"
+                onchange="
+                  changeOrderStatus(
+                    ${Number(order.id)},
+                    this.value
+                  )
+                ">
+
+                <option
+                  value="pending"
+                  ${order.status === "pending" ? "selected" : ""}>
+                  🟡 Pendente
+                </option>
+
+                <option
+                  value="confirmed"
+                  ${order.status === "confirmed" ? "selected" : ""}>
+                  🔵 Confirmado
+                </option>
+
+                <option
+                  value="preparing"
+                  ${order.status === "preparing" ? "selected" : ""}>
+                  🟠 Preparando
+                </option>
+
+                <option
+                  value="ready"
+                  ${order.status === "ready" ? "selected" : ""}>
+                  🟣 Pronto
+                </option>
+
+                <option
+                  value="out_for_delivery"
+                  ${order.status === "out_for_delivery" ? "selected" : ""}>
+                  🚚 Saiu para entrega
+                </option>
+
+                <option
+                  value="completed"
+                  ${order.status === "completed" ? "selected" : ""}>
+                  🟢 Concluído
+                </option>
+
+                <option
+                  value="cancelled"
+                  ${order.status === "cancelled" ? "selected" : ""}>
+                  🔴 Cancelado
+                </option>
+
+              </select>
+
+            </div>
+
+            <div class="order-info">
+
+              <div class="info-box">
+
+                <div class="info-label">
+                  CLIENTE
+                </div>
+
+                <div class="info-value">
+                  ${escapeHtml(order.customer_name)}
+                </div>
+
+              </div>
+
+              <div class="info-box">
+
+                <div class="info-label">
+                  TELEFONE
+                </div>
+
+                <div class="info-value">
+                  ${escapeHtml(order.customer_phone)}
+                </div>
+
+              </div>
+
+              <div class="info-box">
+
+                <div class="info-label">
+                  TIPO
+                </div>
+
+                <div class="info-value">
+                  ${
+                    order.order_type === "delivery"
+                      ? "🚚 Entrega"
+                      : "🏪 Retirada"
+                  }
+                </div>
+
+              </div>
+
+              <div class="info-box">
+
+                <div class="info-label">
+                  PAGAMENTO
+                </div>
+
+                <div class="info-value">
+                  ${escapeHtml(order.payment_method || "-")}
+                </div>
+
+              </div>
+
+              <div class="info-box">
+
+                <div class="info-label">
+                  ENDEREÇO
+                </div>
+
+                <div class="info-value">
+                  ${escapeHtml(address)}
+                </div>
+
+              </div>
+
+              <div class="info-box">
+
+                <div class="info-label">
+                  TROCO
+                </div>
+
+                <div class="info-value">
+                  ${
+                    order.change_for
+                      ? money(order.change_for)
+                      : "Não precisa"
+                  }
+                </div>
+
+              </div>
+
+            </div>
+
+            ${
+              order.notes
+                ? `
+                  <div class="info-box" style="margin-top:10px">
+
+                    <div class="info-label">
+                      OBSERVAÇÕES
+                    </div>
+
+                    <div class="info-value">
+                      ${escapeHtml(order.notes)}
+                    </div>
+
+                  </div>
+                `
+                : ""
+            }
+
+            <div class="order-items">
+
+              ${itemsHtml}
+
+            </div>
+
+            <div class="order-total">
+
+              <span>
+                Total
+              </span>
+
+              <span>
+                ${money(order.total)}
+              </span>
+
+            </div>
+
+            <div style="
+              display:flex;
+              justify-content:flex-end;
+              margin-top:12px">
+
+              <button
+                class="small-btn btn-red"
+                onclick="
+                  deleteOrder(${Number(order.id)})
+                ">
+
+                Excluir pedido
+
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+async function changeOrderStatus(id,status){
+
+  try{
+
+    const result =
+      await db
+        .from("orders")
+        .update({
+          status:status
+        })
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadOrders();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao atualizar pedido:\n\n" +
+      error.message
+    );
+
+    await loadOrders();
+
+  }
+
+}
+
+
+async function deleteOrder(id){
+
+  const confirmed =
+    confirm(
+      "Tem certeza que deseja excluir este pedido?"
+    );
+
+  if(!confirmed) return;
+
+  try{
+
+    const result =
+      await db
+        .from("orders")
+        .delete()
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadOrders();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao excluir pedido:\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SOM DE NOVO PEDIDO
+========================= */
 
 function activateOrderSound(){
 
   try{
 
-    if(!audioContext){
+    if(!newOrderAudioContext){
 
-      audioContext =
+      newOrderAudioContext =
         new (
           window.AudioContext ||
           window.webkitAudioContext
@@ -1533,16 +2195,19 @@ function activateOrderSound(){
 
     }
 
-    if(audioContext.state === "suspended"){
+    if(
+      newOrderAudioContext.state ===
+      "suspended"
+    ){
 
-      audioContext.resume();
+      newOrderAudioContext.resume();
 
     }
 
   }catch(error){
 
     console.error(
-      "Não foi possível ativar o áudio:",
+      "Erro ao ativar som:",
       error
     );
 
@@ -1555,84 +2220,80 @@ function playNewOrderSound(){
 
   try{
 
-    if(!audioContext){
+    if(!newOrderAudioContext){
 
-      activateOrderSound();
+      newOrderAudioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
 
     }
 
     if(
-      !audioContext ||
-      audioContext.state === "suspended"
+      newOrderAudioContext.state ===
+      "suspended"
     ){
 
-      return;
+      newOrderAudioContext.resume();
 
     }
 
-    const now =
-      audioContext.currentTime;
+    const ctx =
+      newOrderAudioContext;
 
-    const notes = [
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type = "sine";
+
+    oscillator.frequency.setValueAtTime(
       880,
-      1046.50,
-      1318.51,
-      1046.50
-    ];
+      ctx.currentTime
+    );
 
-    notes.forEach(
-      (frequency,index)=>{
+    oscillator.frequency.setValueAtTime(
+      1174,
+      ctx.currentTime + .12
+    );
 
-        const oscillator =
-          audioContext.createOscillator();
+    oscillator.frequency.setValueAtTime(
+      880,
+      ctx.currentTime + .24
+    );
 
-        const gain =
-          audioContext.createGain();
+    gain.gain.setValueAtTime(
+      .0001,
+      ctx.currentTime
+    );
 
-        oscillator.type =
-          "sine";
+    gain.gain.exponentialRampToValueAtTime(
+      .25,
+      ctx.currentTime + .03
+    );
 
-        oscillator.frequency.value =
-          frequency;
+    gain.gain.exponentialRampToValueAtTime(
+      .0001,
+      ctx.currentTime + .45
+    );
 
-        oscillator.connect(gain);
+    oscillator.connect(gain);
 
-        gain.connect(
-          audioContext.destination
-        );
+    gain.connect(ctx.destination);
 
-        const start =
-          now + index * 0.16;
+    oscillator.start();
 
-        const end =
-          start + 0.13;
-
-        gain.gain.setValueAtTime(
-          0.0001,
-          start
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-          0.28,
-          start + 0.02
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-          0.0001,
-          end
-        );
-
-        oscillator.start(start);
-
-        oscillator.stop(end);
-
-      }
+    oscillator.stop(
+      ctx.currentTime + .5
     );
 
   }catch(error){
 
     console.error(
-      "Erro ao tocar alerta:",
+      "Erro ao tocar som:",
       error
     );
 
@@ -1643,368 +2304,919 @@ function playNewOrderSound(){
 
 function setupOrderRealtime(){
 
-  if(orderChannel){
+  try{
 
-    return;
+    if(orderRealtimeChannel){
 
-  }
-
-  orderChannel =
-    db
-      .channel(
-        "burguer-gold-new-orders"
-      )
-      .on(
-        "postgres_changes",
-        {
-          event:"INSERT",
-          schema:"public",
-          table:"orders"
-        },
-        async function(payload){
-
-          console.log(
-            "NOVO PEDIDO:",
-            payload.new
-          );
-
-          playNewOrderSound();
-
-          await loadOrders();
-
-        }
-      )
-      .subscribe(
-        function(status){
-
-          console.log(
-            "Realtime pedidos:",
-            status
-          );
-
-        }
+      db.removeChannel(
+        orderRealtimeChannel
       );
 
-}
-
-
-document.addEventListener(
-  "click",
-  function(){
-
-    activateOrderSound();
-
-  },
-  {once:true}
-);
-
-
-/* =====================================================
-   FORMATADORES
-===================================================== */
-
-function money(value){
-
-  return Number(value || 0).toLocaleString(
-    "pt-BR",
-    {
-      style:"currency",
-      currency:"BRL"
-    }
-  );
-
-}
-
-
-function dateTime(value){
-
-  if(!value){
-
-    return "-";
-
-  }
-
-  return new Date(value).toLocaleString(
-    "pt-BR",
-    {
-      dateStyle:"short",
-      timeStyle:"short"
-    }
-  );
-
-}
-
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function login(event){
-
-  event.preventDefault();
-
-  const email =
-    document.getElementById(
-      "loginEmail"
-    ).value.trim();
-
-  const password =
-    document.getElementById(
-      "loginPassword"
-    ).value;
-
-  const button =
-    document.getElementById(
-      "loginButton"
-    );
-
-  const errorBox =
-    document.getElementById(
-      "loginError"
-    );
-
-  errorBox.classList.add("hidden");
-
-  button.disabled = true;
-
-  button.textContent =
-    "Entrando...";
-
-  try{
-
-    const {data,error} =
-      await db.auth.signInWithPassword({
-        email,
-        password
-      });
-
-    if(error){
-
-      throw error;
-
     }
 
-    await showAdmin(
-      data.session
-    );
+    orderRealtimeChannel =
+      db
+        .channel(
+          "burguer-gold-admin-orders"
+        )
+        .on(
+          "postgres_changes",
+          {
+            event:"INSERT",
+            schema:"public",
+            table:"orders"
+          },
+          function(){
+
+            playNewOrderSound();
+
+            loadOrders();
+
+          }
+        )
+        .subscribe();
 
   }catch(error){
-
-    console.error(error);
-
-    errorBox.textContent =
-      error.message ||
-      "Não foi possível entrar.";
-
-    errorBox.classList.remove(
-      "hidden"
-    );
-
-  }finally{
-
-    button.disabled = false;
-
-    button.textContent =
-      "Entrar";
-
-  }
-
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logout(){
-
-  try{
-
-    await db.auth.signOut();
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-
-  location.reload();
-
-}
-
-
-/* =====================================================
-   MOSTRAR ADMIN
-===================================================== */
-
-async function showAdmin(session){
-
-  currentSession =
-    session;
-
-  document
-    .getElementById("loginPage")
-    .classList.add("hidden");
-
-  document
-    .getElementById("adminPage")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("adminUser")
-    .textContent =
-      session?.user?.email || "";
-
-  await loadAll();
-
-  activateOrderSound();
-
-  setupOrderRealtime();
-
-}
-
-
-/* =====================================================
-   PAINÉIS
-===================================================== */
-
-function showPanel(
-  panel,
-  button
-){
-
-  document
-    .querySelectorAll(".panel")
-    .forEach(
-      function(item){
-
-        item.classList.remove(
-          "active"
-        );
-
-      }
-    );
-
-  document
-    .querySelectorAll(".tab")
-    .forEach(
-      function(item){
-
-        item.classList.remove(
-          "active"
-        );
-
-      }
-    );
-
-  const target =
-    document.getElementById(
-      panel + "Panel"
-    );
-
-  if(target){
-
-    target.classList.add(
-      "active"
-    );
-
-  }
-
-  if(button){
-
-    button.classList.add(
-      "active"
-    );
-
-  }
-
-  if(panel === "cash"){
-
-    loadCash();
-
-  }
-
-}
-
-
-/* =====================================================
-   CARREGAR TUDO
-===================================================== */
-
-async function loadAll(){
-
-  await Promise.all([
-    loadSettings(),
-    loadProducts(),
-    loadZones(),
-    loadOrders(),
-    loadCash()
-  ]);
-
-}
-
-
-/* =====================================================
-   CONFIGURAÇÕES
-===================================================== */
-
-async function loadSettings(){
-
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("store_settings")
-      .select("*")
-      .limit(1)
-      .maybeSingle();
-
-  if(error){
 
     console.error(
-      "Erro ao carregar configurações:",
+      "Erro no realtime dos pedidos:",
       error
     );
 
+  }
+
+}
+
+
+/* =========================
+   PRODUTOS
+========================= */
+
+async function loadProducts(){
+
+  const container =
+    document.getElementById(
+      "productsList"
+    );
+
+  if(!container) return;
+
+  container.innerHTML =
+    `<div class="loading">
+      Carregando produtos...
+    </div>`;
+
+  try{
+
+    const result =
+      await db
+        .from("products")
+        .select("*")
+        .order("sort_order",{
+          ascending:true
+        })
+        .order("name",{
+          ascending:true
+        });
+
+    if(result.error){
+      throw result.error;
+    }
+
+    products =
+      result.data || [];
+
+    renderProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    container.innerHTML =
+      `<div class="error">
+        Erro ao carregar produtos:<br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderProducts(){
+
+  const container =
+    document.getElementById(
+      "productsList"
+    );
+
+  if(!container) return;
+
+  if(!products.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhum produto cadastrado.
+      </div>`;
+
     return;
 
   }
 
-  settings =
-    data;
+  container.innerHTML =
+    products
+      .map(product => {
 
-  renderSettings();
+        const image =
+          product.image_url ||
+          product.image ||
+          "";
+
+        return `
+
+          <div class="product-row">
+
+            ${
+              image
+                ? `
+                  <img
+                    class="product-thumb"
+                    src="${escapeHtml(image)}"
+                    alt=""
+                    onerror="this.style.display='none'">
+                `
+                : `
+                  <div
+                    class="product-thumb"
+                    style="
+                      display:flex;
+                      align-items:center;
+                      justify-content:center;
+                      font-size:25px">
+
+                    🍔
+
+                  </div>
+                `
+            }
+
+            <div class="product-info">
+
+              <div class="product-name">
+                ${escapeHtml(product.name)}
+              </div>
+
+              <div class="product-meta">
+                ${escapeHtml(product.category || "Sem categoria")}
+                •
+                ${money(product.price)}
+              </div>
+
+              <div class="product-meta">
+
+                ${
+                  product.available !== false
+                    ? `<span class="available">● Disponível</span>`
+                    : `<span class="unavailable">● Indisponível</span>`
+                }
+
+              </div>
+
+            </div>
+
+            <div class="product-actions">
+
+              <button
+                class="small-btn btn-dark"
+                onclick="
+                  editProduct(${Number(product.id)})
+                ">
+
+                Editar
+
+              </button>
+
+              <button
+                class="small-btn btn-red"
+                onclick="
+                  deleteProduct(${Number(product.id)})
+                ">
+
+                Excluir
+
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+function openProductModal(){
+
+  document
+    .getElementById("productModal")
+    .classList.add("active");
+
+  document
+    .getElementById("productModalTitle")
+    .textContent =
+      "Novo produto";
+
+  document
+    .getElementById("productId")
+    .value = "";
+
+  document
+    .getElementById("productName")
+    .value = "";
+
+  document
+    .getElementById("productDescription")
+    .value = "";
+
+  document
+    .getElementById("productPrice")
+    .value = "";
+
+  document
+    .getElementById("productCategory")
+    .value = "";
+
+  document
+    .getElementById("productImage")
+    .value = "";
+
+  document
+    .getElementById("productOrder")
+    .value = "0";
+
+  document
+    .getElementById("productAvailable")
+    .checked = true;
+
+  document
+    .getElementById("productFeatured")
+    .checked = false;
+
+}
+
+
+function closeProductModal(){
+
+  document
+    .getElementById("productModal")
+    .classList.remove("active");
+
+}
+
+
+function editProduct(id){
+
+  const product =
+    products.find(
+      p => Number(p.id) === Number(id)
+    );
+
+  if(!product) return;
+
+  document
+    .getElementById("productModalTitle")
+    .textContent =
+      "Editar produto";
+
+  document
+    .getElementById("productId")
+    .value =
+      product.id;
+
+  document
+    .getElementById("productName")
+    .value =
+      product.name || "";
+
+  document
+    .getElementById("productDescription")
+    .value =
+      product.description || "";
+
+  document
+    .getElementById("productPrice")
+    .value =
+      product.price || "";
+
+  document
+    .getElementById("productCategory")
+    .value =
+      product.category || "";
+
+  document
+    .getElementById("productImage")
+    .value =
+      product.image_url ||
+      product.image ||
+      "";
+
+  document
+    .getElementById("productOrder")
+    .value =
+      product.sort_order || 0;
+
+  document
+    .getElementById("productAvailable")
+    .checked =
+      product.available !== false;
+
+  document
+    .getElementById("productFeatured")
+    .checked =
+      product.featured === true;
+
+  document
+    .getElementById("productModal")
+    .classList.add("active");
+
+}
+
+
+async function saveProduct(){
+
+  try{
+
+    const id =
+      document
+        .getElementById("productId")
+        .value;
+
+    const data = {
+
+      name:
+        document
+          .getElementById("productName")
+          .value
+          .trim(),
+
+      description:
+        document
+          .getElementById("productDescription")
+          .value
+          .trim(),
+
+      price:
+        Number(
+          document
+            .getElementById("productPrice")
+            .value || 0
+        ),
+
+      category:
+        document
+          .getElementById("productCategory")
+          .value
+          .trim(),
+
+      image_url:
+        document
+          .getElementById("productImage")
+          .value
+          .trim(),
+
+      sort_order:
+        Number(
+          document
+            .getElementById("productOrder")
+            .value || 0
+        ),
+
+      available:
+        document
+          .getElementById("productAvailable")
+          .checked,
+
+      featured:
+        document
+          .getElementById("productFeatured")
+          .checked
+
+    };
+
+    if(!data.name){
+
+      alert(
+        "Digite o nome do produto."
+      );
+
+      return;
+
+    }
+
+    if(id){
+
+      const result =
+        await db
+          .from("products")
+          .update(data)
+          .eq("id",id);
+
+      if(result.error){
+        throw result.error;
+      }
+
+    }else{
+
+      const result =
+        await db
+          .from("products")
+          .insert(data);
+
+      if(result.error){
+        throw result.error;
+      }
+
+    }
+
+    closeProductModal();
+
+    await loadProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao salvar produto:\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+async function deleteProduct(id){
+
+  if(
+    !confirm(
+      "Excluir este produto?"
+    )
+  ){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("products")
+        .delete()
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao excluir produto:\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   ZONAS DE ENTREGA
+========================= */
+
+async function loadDeliveryZones(){
+
+  const container =
+    document.getElementById(
+      "zonesList"
+    );
+
+  if(!container) return;
+
+  container.innerHTML =
+    `<div class="loading">
+      Carregando zonas...
+    </div>`;
+
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .select("*")
+        .order("name",{
+          ascending:true
+        });
+
+    if(result.error){
+      throw result.error;
+    }
+
+    deliveryZones =
+      result.data || [];
+
+    renderZones();
+
+  }catch(error){
+
+    console.error(error);
+
+    container.innerHTML =
+      `<div class="error">
+        Erro ao carregar zonas:<br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderZones(){
+
+  const container =
+    document.getElementById(
+      "zonesList"
+    );
+
+  if(!container) return;
+
+  if(!deliveryZones.length){
+
+    container.innerHTML =
+      `<div class="empty">
+        Nenhuma zona cadastrada.
+      </div>`;
+
+    return;
+
+  }
+
+  container.innerHTML =
+    deliveryZones
+      .map(zone => {
+
+        return `
+
+          <div class="movement">
+
+            <div>
+
+              <strong>
+                ${escapeHtml(zone.name)}
+              </strong>
+
+              <div class="product-meta">
+
+                ${
+                  zone.available === false
+                    ? `<span class="unavailable">Inativa</span>`
+                    : `<span class="available">Ativa</span>`
+                }
+
+              </div>
+
+            </div>
+
+            <div style="
+              display:flex;
+              align-items:center;
+              gap:8px">
+
+              <strong style="color:#d7aa4d">
+                ${money(zone.fee)}
+              </strong>
+
+              <button
+                class="small-btn btn-dark"
+                onclick="
+                  editZone(${Number(zone.id)})
+                ">
+
+                Editar
+
+              </button>
+
+              <button
+                class="small-btn btn-red"
+                onclick="
+                  deleteZone(${Number(zone.id)})
+                ">
+
+                Excluir
+
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+function openZoneModal(){
+
+  document
+    .getElementById("zoneModal")
+    .classList.add("active");
+
+  document
+    .getElementById("zoneId")
+    .value = "";
+
+  document
+    .getElementById("zoneName")
+    .value = "";
+
+  document
+    .getElementById("zoneFee")
+    .value = "";
+
+  document
+    .getElementById("zoneActive")
+    .checked = true;
+
+}
+
+
+function closeZoneModal(){
+
+  document
+    .getElementById("zoneModal")
+    .classList.remove("active");
+
+}
+
+
+function editZone(id){
+
+  const zone =
+    deliveryZones.find(
+      z => Number(z.id) === Number(id)
+    );
+
+  if(!zone) return;
+
+  document
+    .getElementById("zoneId")
+    .value =
+      zone.id;
+
+  document
+    .getElementById("zoneName")
+    .value =
+      zone.name || "";
+
+  document
+    .getElementById("zoneFee")
+    .value =
+      zone.fee || 0;
+
+  document
+    .getElementById("zoneActive")
+    .checked =
+      zone.available !== false;
+
+  document
+    .getElementById("zoneModal")
+    .classList.add("active");
+
+}
+
+
+async function saveZone(){
+
+  try{
+
+    const id =
+      document
+        .getElementById("zoneId")
+        .value;
+
+    const data = {
+
+      name:
+        document
+          .getElementById("zoneName")
+          .value
+          .trim(),
+
+      fee:
+        Number(
+          document
+            .getElementById("zoneFee")
+            .value || 0
+        ),
+
+      available:
+        document
+          .getElementById("zoneActive")
+          .checked
+
+    };
+
+    if(!data.name){
+
+      alert(
+        "Digite o nome da zona."
+      );
+
+      return;
+
+    }
+
+    if(id){
+
+      const result =
+        await db
+          .from("delivery_zones")
+          .update(data)
+          .eq("id",id);
+
+      if(result.error){
+        throw result.error;
+      }
+
+    }else{
+
+      const result =
+        await db
+          .from("delivery_zones")
+          .insert(data);
+
+      if(result.error){
+        throw result.error;
+      }
+
+    }
+
+    closeZoneModal();
+
+    await loadDeliveryZones();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao salvar zona:\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+async function deleteZone(id){
+
+  if(
+    !confirm(
+      "Excluir esta zona de entrega?"
+    )
+  ){
+    return;
+  }
+
+  try{
+
+    const result =
+      await db
+        .from("delivery_zones")
+        .delete()
+        .eq("id",id);
+
+    if(result.error){
+      throw result.error;
+    }
+
+    await loadDeliveryZones();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao excluir zona:\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   CONFIGURAÇÕES
+========================= */
+
+const days = [
+
+  {
+    key:"monday",
+    name:"Segunda-feira"
+  },
+
+  {
+    key:"tuesday",
+    name:"Terça-feira"
+  },
+
+  {
+    key:"wednesday",
+    name:"Quarta-feira"
+  },
+
+  {
+    key:"thursday",
+    name:"Quinta-feira"
+  },
+
+  {
+    key:"friday",
+    name:"Sexta-feira"
+  },
+
+  {
+    key:"saturday",
+    name:"Sábado"
+  },
+
+  {
+    key:"sunday",
+    name:"Domingo"
+  }
+
+];
+
+
+async function loadSettings(){
+
+  try{
+
+    const result =
+      await db
+        .from("store_settings")
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+
+    if(result.error){
+      throw result.error;
+    }
+
+    storeSettings =
+      result.data || {};
+
+    renderSettings();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Erro ao carregar configurações:\n\n" +
+      error.message
+    );
+
+  }
 
 }
 
 
 function renderSettings(){
 
-  if(!settings){
-
-    return;
-
-  }
+  const settings =
+    storeSettings || {};
 
   const storeName =
     document.getElementById(
       "settingStoreName"
     );
 
-  const deliveryEstimate =
+  const estimate =
     document.getElementById(
       "settingDeliveryEstimate"
     );
@@ -2027,13 +3239,14 @@ function renderSettings(){
   if(storeName){
 
     storeName.value =
-      settings.store_name || "";
+      settings.store_name ||
+      "Burguer Gold";
 
   }
 
-  if(deliveryEstimate){
+  if(estimate){
 
-    deliveryEstimate.value =
+    estimate.value =
       "40–60 min";
 
   }
@@ -2041,21 +3254,24 @@ function renderSettings(){
   if(defaultFee){
 
     defaultFee.value =
-      settings.default_delivery_fee ?? 0;
+      settings.default_delivery_fee ||
+      0;
 
   }
 
   if(pix){
 
     pix.value =
-      settings.pix_key || "";
+      settings.pix_key ||
+      "";
 
   }
 
   if(whatsapp){
 
     whatsapp.value =
-      settings.whatsapp || "";
+      settings.whatsapp ||
+      "";
 
   }
 
@@ -2071,45 +3287,30 @@ function renderHours(){
       "hoursContainer"
     );
 
-  if(!container){
+  if(!container) return;
 
-    return;
-
-  }
-
-  const days = [
-    ["monday","Segunda-feira"],
-    ["tuesday","Terça-feira"],
-    ["wednesday","Quarta-feira"],
-    ["thursday","Quinta-feira"],
-    ["friday","Sexta-feira"],
-    ["saturday","Sábado"],
-    ["sunday","Domingo"]
-  ];
+  const settings =
+    storeSettings || {};
 
   container.innerHTML =
-    days.map(
-      function(day){
-
-        const key =
-          day[0];
-
-        const label =
-          day[1];
+    days
+      .map(day => {
 
         const open =
           settings[
-            key + "_open"
-          ] || "18:00";
+            day.key + "_open"
+          ] ||
+          "18:00";
 
         const close =
           settings[
-            key + "_close"
-          ] || "00:00";
+            day.key + "_close"
+          ] ||
+          "00:00";
 
         const enabled =
           settings[
-            key + "_enabled"
+            day.key + "_enabled"
           ] !== false;
 
         return `
@@ -2117,18 +3318,18 @@ function renderHours(){
           <div class="day-row">
 
             <div class="day-name">
-              ${label}
+              ${day.name}
             </div>
 
             <div class="time-row">
 
               <input
-                id="open_${key}"
+                id="${day.key}Open"
                 type="time"
                 value="${open}">
 
               <input
-                id="close_${key}"
+                id="${day.key}Close"
                 type="time"
                 value="${close}">
 
@@ -2137,7 +3338,7 @@ function renderHours(){
             <label class="switch-row">
 
               <input
-                id="enabled_${key}"
+                id="${day.key}Enabled"
                 type="checkbox"
                 ${enabled ? "checked" : ""}>
 
@@ -2149,114 +3350,120 @@ function renderHours(){
 
         `;
 
-      }
-    ).join("");
+      })
+      .join("");
 
 }
 
 
-/* =====================================================
-   SALVAR CONFIGURAÇÕES
-===================================================== */
-
 async function saveSettings(){
-
-  if(!settings?.id){
-
-    alert(
-      "Configuração da loja não encontrada."
-    );
-
-    return;
-
-  }
-
-  const days = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday"
-  ];
-
-  const updateData = {
-
-    store_name:
-      document.getElementById(
-        "settingStoreName"
-      ).value.trim(),
-
-    delivery_estimate:40,
-
-    default_delivery_fee:
-      Number(
-        document.getElementById(
-          "settingDefaultFee"
-        ).value || 0
-      ),
-
-    pix_key:
-      document.getElementById(
-        "settingPix"
-      ).value.trim(),
-
-    whatsapp:
-      document.getElementById(
-        "settingWhatsapp"
-      ).value.trim()
-
-  };
-
-  days.forEach(
-    function(day){
-
-      updateData[
-        day + "_open"
-      ] =
-        document.getElementById(
-          "open_" + day
-        ).value;
-
-      updateData[
-        day + "_close"
-      ] =
-        document.getElementById(
-          "close_" + day
-        ).value;
-
-      updateData[
-        day + "_enabled"
-      ] =
-        document.getElementById(
-          "enabled_" + day
-        ).checked;
-
-    }
-  );
 
   try{
 
-    const {
-      error
-    } =
-      await db
-        .from("store_settings")
-        .update(updateData)
-        .eq("id",settings.id);
+    const data = {
 
-    if(error){
+      store_name:
+        document
+          .getElementById(
+            "settingStoreName"
+          )
+          .value
+          .trim(),
 
-      throw error;
+      delivery_estimate:40,
+
+      default_delivery_fee:
+        Number(
+          document
+            .getElementById(
+              "settingDefaultFee"
+            )
+            .value || 0
+        ),
+
+      pix_key:
+        document
+          .getElementById(
+            "settingPix"
+          )
+          .value
+          .trim(),
+
+      whatsapp:
+        document
+          .getElementById(
+            "settingWhatsapp"
+          )
+          .value
+          .trim()
+
+    };
+
+    days.forEach(day => {
+
+      data[
+        day.key + "_open"
+      ] =
+        document
+          .getElementById(
+            day.key + "Open"
+          )
+          .value;
+
+      data[
+        day.key + "_close"
+      ] =
+        document
+          .getElementById(
+            day.key + "Close"
+          )
+          .value;
+
+      data[
+        day.key + "_enabled"
+      ] =
+        document
+          .getElementById(
+            day.key + "Enabled"
+          )
+          .checked;
+
+    });
+
+    let query;
+
+    if(storeSettings?.id){
+
+      query =
+        db
+          .from("store_settings")
+          .update(data)
+          .eq(
+            "id",
+            storeSettings.id
+          );
+
+    }else{
+
+      query =
+        db
+          .from("store_settings")
+          .insert(data);
 
     }
 
-    await loadSettings();
+    const result =
+      await query;
+
+    if(result.error){
+      throw result.error;
+    }
 
     alert(
       "Configurações salvas com sucesso!"
     );
+
+    await loadSettings();
 
   }catch(error){
 
@@ -2272,1411 +3479,77 @@ async function saveSettings(){
 }
 
 
-/* =====================================================
-   PRODUTOS
-===================================================== */
-
-async function loadProducts(){
-
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("products")
-      .select("*")
-      .order("category")
-      .order("sort_order")
-      .order("name");
-
-  if(error){
-
-    console.error(
-      "Erro ao carregar produtos:",
-      error
-    );
-
-    document.getElementById(
-      "productsList"
-    ).innerHTML =
-      `<div class="empty">
-        Erro ao carregar produtos.
-      </div>`;
-
-    return;
-
-  }
-
-  products =
-    data || [];
-
-  renderProducts();
-
-}
-
-
-function renderProducts(){
-
-  const container =
-    document.getElementById(
-      "productsList"
-    );
-
-  if(!products.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        Nenhum produto cadastrado.
-      </div>`;
-
-    return;
-
-  }
-
-  container.innerHTML =
-    products.map(
-      function(product){
-
-        const image =
-          product.image_url ||
-          "";
-
-        return `
-
-          <div class="product-row">
-
-            ${
-              image
-              ?
-              `<img
-                class="product-thumb"
-                src="${escapeHtml(image)}"
-                alt="">`
-              :
-              `<div
-                class="product-thumb"
-                style="
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  font-size:25px">
-
-                🍔
-
-              </div>`
-            }
-
-            <div class="product-info">
-
-              <div class="product-name">
-
-                ${escapeHtml(
-                  product.name
-                )}
-
-              </div>
-
-              <div class="product-meta">
-
-                ${money(product.price)}
-                •
-                ${escapeHtml(
-                  product.category || ""
-                )}
-
-                <span
-                  class="${
-                    product.available
-                    ?
-                    "available"
-                    :
-                    "unavailable"
-                  }">
-
-                  • ${
-                    product.available
-                    ?
-                    "Disponível"
-                    :
-                    "Indisponível"
-                  }
-
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="product-actions">
-
-              <button
-                class="small-btn btn-dark"
-                onclick="editProduct('${product.id}')">
-
-                Editar
-
-              </button>
-
-              <button
-                class="small-btn ${
-                  product.available
-                  ?
-                  "btn-red"
-                  :
-                  "btn-gold"
-                }"
-                onclick="toggleProduct('${product.id}',${!product.available})">
-
-                ${
-                  product.available
-                  ?
-                  "Desativar"
-                  :
-                  "Ativar"
-                }
-
-              </button>
-
-              <button
-                class="small-btn btn-red"
-                onclick="deleteProduct('${product.id}')">
-
-                Excluir
-
-              </button>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-/* =====================================================
-   MODAL PRODUTO
-===================================================== */
-
-function openProductModal(
-  product = null
-){
-
-  document
-    .getElementById(
-      "productModal"
-    )
-    .classList.add("active");
-
-  document
-    .getElementById(
-      "productModalTitle"
-    )
-    .textContent =
-      product
-      ?
-      "Editar produto"
-      :
-      "Novo produto";
-
-  document.getElementById(
-    "productId"
-  ).value =
-    product?.id || "";
-
-  document.getElementById(
-    "productName"
-  ).value =
-    product?.name || "";
-
-  document.getElementById(
-    "productDescription"
-  ).value =
-    product?.description || "";
-
-  document.getElementById(
-    "productPrice"
-  ).value =
-    product?.price ?? "";
-
-  document.getElementById(
-    "productCategory"
-  ).value =
-    product?.category || "";
-
-  document.getElementById(
-    "productImage"
-  ).value =
-    product?.image_url || "";
-
-  document.getElementById(
-    "productOrder"
-  ).value =
-    product?.sort_order ?? 0;
-
-  document.getElementById(
-    "productAvailable"
-  ).checked =
-    product
-    ?
-    product.available !== false
-    :
-    true;
-
-  document.getElementById(
-    "productFeatured"
-  ).checked =
-    product?.featured || false;
-
-}
-
-
-function closeProductModal(){
-
-  document
-    .getElementById(
-      "productModal"
-    )
-    .classList.remove("active");
-
-}
-
-
-function editProduct(id){
-
-  const product =
-    products.find(
-      p => String(p.id) === String(id)
-    );
-
-  if(product){
-
-    openProductModal(product);
-
-  }
-
-}
-
-
-async function saveProduct(){
-
-  const id =
-    document.getElementById(
-      "productId"
-    ).value;
-
-  const productData = {
-
-    name:
-      document.getElementById(
-        "productName"
-      ).value.trim(),
-
-    description:
-      document.getElementById(
-        "productDescription"
-      ).value.trim(),
-
-    price:
-      Number(
-        document.getElementById(
-          "productPrice"
-        ).value || 0
-      ),
-
-    category:
-      document.getElementById(
-        "productCategory"
-      ).value.trim(),
-
-    image_url:
-      document.getElementById(
-        "productImage"
-      ).value.trim() || null,
-
-    sort_order:
-      Number(
-        document.getElementById(
-          "productOrder"
-        ).value || 0
-      ),
-
-    available:
-      document.getElementById(
-        "productAvailable"
-      ).checked,
-
-    featured:
-      document.getElementById(
-        "productFeatured"
-      ).checked
-
-  };
-
-  if(!productData.name){
-
-    alert(
-      "Informe o nome do produto."
-    );
-
-    return;
-
-  }
-
-  try{
-
-    let result;
-
-    if(id){
-
-      result =
-        await db
-          .from("products")
-          .update(productData)
-          .eq("id",id);
-
-    }else{
-
-      result =
-        await db
-          .from("products")
-          .insert(
-            productData
-          );
-
-    }
-
-    if(result.error){
-
-      throw result.error;
-
-    }
-
-    closeProductModal();
-
-    await loadProducts();
-
-    alert(
-      "Produto salvo com sucesso!"
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao salvar produto:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-
-
-async function toggleProduct(
-  id,
-  available
-){
-
-  try{
-
-    const {
-      error
-    } =
-      await db
-        .from("products")
-        .update({
-          available
-        })
-        .eq("id",id);
-
-    if(error){
-
-      throw error;
-
-    }
-
-    await loadProducts();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao alterar produto:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-
-
-async function deleteProduct(id){
-
-  if(
-    !confirm(
-      "Tem certeza que deseja excluir este produto?"
-    )
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    const {
-      error
-    } =
-      await db
-        .from("products")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-
-      throw error;
-
-    }
-
-    await loadProducts();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao excluir produto:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   ZONAS
-===================================================== */
-
-async function loadZones(){
-
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("delivery_zones")
-      .select("*")
-      .order("name");
-
-  if(error){
-
-    console.error(
-      "Erro ao carregar zonas:",
-      error
-    );
-
-    document.getElementById(
-      "zonesList"
-    ).innerHTML =
-      `<div class="empty">
-        Erro ao carregar zonas.
-      </div>`;
-
-    return;
-
-  }
-
-  zones =
-    data || [];
-
-  renderZones();
-
-}
-
-
-function renderZones(){
-
-  const container =
-    document.getElementById(
-      "zonesList"
-    );
-
-  if(!zones.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        Nenhuma zona cadastrada.
-      </div>`;
-
-    return;
-
-  }
-
-  container.innerHTML =
-    zones.map(
-      function(zone){
-
-        return `
-
-          <div
-            class="product-row"
-            style="margin-bottom:10px">
-
-            <div class="product-info">
-
-              <div class="product-name">
-                ${escapeHtml(zone.name)}
-              </div>
-
-              <div class="product-meta">
-
-                Taxa:
-                ${money(zone.fee)}
-
-                <span
-                  class="${
-                    zone.active
-                    ?
-                    "available"
-                    :
-                    "unavailable"
-                  }">
-
-                  • ${
-                    zone.active
-                    ?
-                    "Ativa"
-                    :
-                    "Inativa"
-                  }
-
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="product-actions">
-
-              <button
-                class="small-btn btn-dark"
-                onclick="editZone('${zone.id}')">
-
-                Editar
-
-              </button>
-
-              <button
-                class="small-btn ${
-                  zone.active
-                  ?
-                  "btn-red"
-                  :
-                  "btn-gold"
-                }"
-                onclick="toggleZone('${zone.id}',${!zone.active})">
-
-                ${
-                  zone.active
-                  ?
-                  "Desativar"
-                  :
-                  "Ativar"
-                }
-
-              </button>
-
-              <button
-                class="small-btn btn-red"
-                onclick="deleteZone('${zone.id}')">
-
-                Excluir
-
-              </button>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-/* =====================================================
-   MODAL ZONA
-===================================================== */
-
-function openZoneModal(
-  zone = null
-){
-
-  document
-    .getElementById(
-      "zoneModal"
-    )
-    .classList.add("active");
-
-  document.getElementById(
-    "zoneId"
-  ).value =
-    zone?.id || "";
-
-  document.getElementById(
-    "zoneName"
-  ).value =
-    zone?.name || "";
-
-  document.getElementById(
-    "zoneFee"
-  ).value =
-    zone?.fee ?? "";
-
-  document.getElementById(
-    "zoneActive"
-  ).checked =
-    zone
-    ?
-    zone.active !== false
-    :
-    true;
-
-}
-
-
-function closeZoneModal(){
-
-  document
-    .getElementById(
-      "zoneModal"
-    )
-    .classList.remove("active");
-
-}
-
-
-function editZone(id){
-
-  const zone =
-    zones.find(
-      z => String(z.id) === String(id)
-    );
-
-  if(zone){
-
-    openZoneModal(zone);
-
-  }
-
-}
-
-
-async function saveZone(){
-
-  const id =
-    document.getElementById(
-      "zoneId"
-    ).value;
-
-  const zoneData = {
-
-    name:
-      document.getElementById(
-        "zoneName"
-      ).value.trim(),
-
-    fee:
-      Number(
-        document.getElementById(
-          "zoneFee"
-        ).value || 0
-      ),
-
-    active:
-      document.getElementById(
-        "zoneActive"
-      ).checked
-
-  };
-
-  if(!zoneData.name){
-
-    alert(
-      "Informe o nome da região."
-    );
-
-    return;
-
-  }
-
-  try{
-
-    let result;
-
-    if(id){
-
-      result =
-        await db
-          .from("delivery_zones")
-          .update(zoneData)
-          .eq("id",id);
-
-    }else{
-
-      result =
-        await db
-          .from("delivery_zones")
-          .insert(zoneData);
-
-    }
-
-    if(result.error){
-
-      throw result.error;
-
-    }
-
-    closeZoneModal();
-
-    await loadZones();
-
-    alert(
-      "Zona salva com sucesso!"
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao salvar zona:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-
-
-async function toggleZone(
-  id,
-  active
-){
-
-  try{
-
-    const {
-      error
-    } =
-      await db
-        .from("delivery_zones")
-        .update({
-          active
-        })
-        .eq("id",id);
-
-    if(error){
-
-      throw error;
-
-    }
-
-    await loadZones();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao alterar zona:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-
-
-async function deleteZone(id){
-
-  if(
-    !confirm(
-      "Tem certeza que deseja excluir esta zona?"
-    )
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    const {
-      error
-    } =
-      await db
-        .from("delivery_zones")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-
-      throw error;
-
-    }
-
-    await loadZones();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao excluir zona:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-/* =====================================================
-   PEDIDOS
-===================================================== */
-
-async function loadOrders(){
-
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("orders")
-      .select("*")
-      .order("created_at",{ascending:false});
-
-  if(error){
-
-    console.error(
-      "Erro ao carregar pedidos:",
-      error
-    );
-
-    const container =
-      document.getElementById(
-        "ordersList"
-      );
-
-    if(container){
-
-      container.innerHTML =
-        `<div class="empty">
-          Erro ao carregar pedidos.
-        </div>`;
-
-    }
-
-    return;
-
-  }
-
-  orders =
-    data || [];
-
-  renderOrders();
-
-}
-
-
-function renderOrders(){
-
-  const container =
-    document.getElementById(
-      "ordersList"
-    );
-
-  if(!container){
-
-    return;
-
-  }
-
-  if(!orders.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        Nenhum pedido encontrado.
-      </div>`;
-
-    return;
-
-  }
-
-  container.innerHTML =
-    orders.map(
-      function(order){
-
-        let items = [];
-
-        try{
-
-          items =
-            typeof order.items === "string"
-            ?
-            JSON.parse(order.items)
-            :
-            order.items || [];
-
-        }catch(e){
-
-          items = [];
-
-        }
-
-        const itemsHtml =
-          Array.isArray(items)
-          ?
-          items.map(
-            function(item){
-
-              return `
-                <div class="order-item">
-
-                  <span>
-                    ${Number(item.quantity || 1)}
-                    ×
-                    ${escapeHtml(
-                      item.name || "Produto"
-                    )}
-                  </span>
-
-                  <strong>
-                    ${money(
-                      Number(item.price || 0) *
-                      Number(item.quantity || 1)
-                    )}
-                  </strong>
-
-                </div>
-              `;
-
-            }
-          ).join("")
-          :
-          "";
-
-        const status =
-          order.status || "pending";
-
-        return `
-
-          <div class="order-card">
-
-            <div class="order-top">
-
-              <div>
-
-                <div class="order-number">
-
-                  Pedido #${order.id}
-
-                </div>
-
-                <div class="order-date">
-
-                  ${dateTime(
-                    order.created_at
-                  )}
-
-                </div>
-
-              </div>
-
-              <span
-                class="status status-${escapeHtml(status)}">
-
-                ${getStatusLabel(status)}
-
-              </span>
-
-            </div>
-
-
-            <div class="order-customer">
-
-              <strong>
-                ${escapeHtml(
-                  order.customer_name || ""
-                )}
-              </strong>
-
-              ${
-                order.customer_phone
-                ?
-                `<div>
-                  📱 ${escapeHtml(
-                    order.customer_phone
-                  )}
-                </div>`
-                :
-                ""
-              }
-
-              <div>
-
-                ${
-                  order.order_type === "delivery"
-                  ?
-                  "🛵 Entrega"
-                  :
-                  "🏪 Retirada"
-                }
-
-              </div>
-
-              ${
-                order.address
-                ?
-                `<div>
-                  📍 ${escapeHtml(
-                    order.address
-                  )}
-                </div>`
-                :
-                ""
-              }
-
-            </div>
-
-
-            <div class="order-items">
-
-              ${itemsHtml}
-
-            </div>
-
-
-            ${
-              order.notes
-              ?
-              `
-                <div class="order-notes">
-
-                  <strong>Observação:</strong>
-                  ${escapeHtml(
-                    order.notes
-                  )}
-
-                </div>
-              `
-              :
-              ""
-            }
-
-
-            <div class="order-payment">
-
-              <div>
-
-                Pagamento:
-                <strong>
-                  ${escapeHtml(
-                    getPaymentLabel(
-                      order.payment_method
-                    )
-                  )}
-                </strong>
-
-              </div>
-
-              ${
-                order.change_for
-                ?
-                `
-                  <div>
-                    Troco para:
-                    <strong>
-                      ${money(
-                        order.change_for
-                      )}
-                    </strong>
-                  </div>
-                `
-                :
-                ""
-              }
-
-            </div>
-
-
-            <div class="order-total">
-
-              <span>Total</span>
-
-              <strong>
-                ${money(order.total)}
-              </strong>
-
-            </div>
-
-
-            <div class="order-actions">
-
-              <select
-                onchange="changeOrderStatus('${order.id}',this.value)">
-
-                <option
-                  value="pending"
-                  ${status === "pending" ? "selected" : ""}>
-                  Pendente
-                </option>
-
-                <option
-                  value="confirmed"
-                  ${status === "confirmed" ? "selected" : ""}>
-                  Confirmado
-                </option>
-
-                <option
-                  value="preparing"
-                  ${status === "preparing" ? "selected" : ""}>
-                  Preparando
-                </option>
-
-                <option
-                  value="ready"
-                  ${status === "ready" ? "selected" : ""}>
-                  Pronto
-                </option>
-
-                <option
-                  value="out_for_delivery"
-                  ${status === "out_for_delivery" ? "selected" : ""}>
-                  Saiu para entrega
-                </option>
-
-                <option
-                  value="completed"
-                  ${status === "completed" ? "selected" : ""}>
-                  Concluído
-                </option>
-
-                <option
-                  value="cancelled"
-                  ${status === "cancelled" ? "selected" : ""}>
-                  Cancelado
-                </option>
-
-              </select>
-
-              <button
-                class="small-btn btn-red"
-                onclick="deleteOrder('${order.id}')">
-
-                Excluir
-
-              </button>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-function getStatusLabel(status){
-
-  const labels = {
-
-    pending:"Pendente",
-
-    confirmed:"Confirmado",
-
-    preparing:"Preparando",
-
-    ready:"Pronto",
-
-    out_for_delivery:
-      "Saiu para entrega",
-
-    completed:"Concluído",
-
-    cancelled:"Cancelado"
-
-  };
-
-  return labels[status] || status;
-
-}
-
-
-function getPaymentLabel(payment){
-
-  const labels = {
-
-    pix:"PIX",
-
-    cash:"Dinheiro",
-
-    card:"Cartão",
-
-    credit:"Cartão de crédito",
-
-    debit:"Cartão de débito"
-
-  };
-
-  return labels[payment] || payment || "-";
-
-}
-
-
-/* =====================================================
-   ALTERAR STATUS DO PEDIDO
-===================================================== */
-
-async function changeOrderStatus(
-  id,
-  status
-){
-
-  try{
-
-    const {
-      error
-    } =
-      await db
-        .from("orders")
-        .update({
-          status
-        })
-        .eq("id",id);
-
-    if(error){
-
-      throw error;
-
-    }
-
-    await loadOrders();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao atualizar pedido:\n\n" +
-      error.message
-    );
-
-    await loadOrders();
-
-  }
-
-}
-
-
-/* =====================================================
-   EXCLUIR PEDIDO
-===================================================== */
-
-async function deleteOrder(id){
-
-  if(
-    !confirm(
-      "Tem certeza que deseja excluir este pedido?"
-    )
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    const {
-      error
-    } =
-      await db
-        .from("orders")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-
-      throw error;
-
-    }
-
-    await loadOrders();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao excluir pedido:\n\n" +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
+/* =========================
    CAIXA
-===================================================== */
+========================= */
 
 async function loadCash(){
 
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("cash_sessions")
-      .select("*")
-      .order(
-        "opened_at",
-        {ascending:false}
-      )
-      .limit(1)
-      .maybeSingle();
+  try{
 
-  if(error){
+    const sessionResult =
+      await db
+        .from("cash_sessions")
+        .select("*")
+        .is("closed_at",null)
+        .order("opened_at",{
+          ascending:false
+        })
+        .limit(1)
+        .maybeSingle();
 
-    console.error(
-      "Erro ao carregar caixa:",
-      error
-    );
+    if(sessionResult.error){
+      throw sessionResult.error;
+    }
 
-  }
+    currentCashSession =
+      sessionResult.data || null;
 
-  currentCashSession =
-    data || null;
+    cashMovements = [];
 
-  renderCash();
+    if(currentCashSession?.id){
 
-  if(
-    currentCashSession?.id
-  ){
+      const movementResult =
+        await db
+          .from("cash_movements")
+          .select("*")
+          .eq(
+            "cash_session_id",
+            currentCashSession.id
+          )
+          .order("created_at",{
+            ascending:false
+          });
 
-    await loadCashMovements();
+      if(movementResult.error){
+        throw movementResult.error;
+      }
+
+      cashMovements =
+        movementResult.data || [];
+
+    }
+
+    renderCash();
+
+  }catch(error){
+
+    console.error(error);
+
+    const list =
+      document.getElementById(
+        "cashList"
+      );
+
+    if(list){
+
+      list.innerHTML =
+        `<div class="error">
+          Erro ao carregar caixa:<br><br>
+          ${escapeHtml(error.message)}
+        </div>`;
+
+    }
 
   }
 
@@ -3690,9 +3563,24 @@ function renderCash(){
       "cashStatus"
     );
 
+  const statusTitle =
+    document.getElementById(
+      "cashStatusTitle"
+    );
+
+  const statusInfo =
+    document.getElementById(
+      "cashStatusInfo"
+    );
+
   const balance =
     document.getElementById(
       "cashBalance"
+    );
+
+  const openingBalance =
+    document.getElementById(
+      "cashOpeningBalance"
     );
 
   const openButton =
@@ -3707,18 +3595,100 @@ function renderCash(){
 
   const movementButton =
     document.getElementById(
-      "movementCashButton"
+      "newCashMovementButton"
     );
 
-  if(
+  const incomeElement =
+    document.getElementById(
+      "cashIncome"
+    );
+
+  const expenseElement =
+    document.getElementById(
+      "cashExpense"
+    );
+
+
+  const isOpen =
     currentCashSession &&
-    !currentCashSession.closed_at
-  ){
+    !currentCashSession.closed_at;
+
+
+  if(isOpen){
 
     if(status){
 
-      status.textContent =
-        "Caixa aberto";
+      status.classList.remove(
+        "closed"
+      );
+
+      status.classList.add(
+        "open"
+      );
+
+    }
+
+    if(statusTitle){
+
+      statusTitle.textContent =
+        "🔓 Caixa aberto";
+
+    }
+
+    if(statusInfo){
+
+      statusInfo.textContent =
+        "O caixa está aberto e pronto para receber lançamentos.";
+
+    }
+
+    if(openingBalance){
+
+      openingBalance.textContent =
+        money(
+          currentCashSession.opening_balance || 0
+        );
+
+    }
+
+    const opening =
+      Number(
+        currentCashSession.opening_balance || 0
+      );
+
+    const income =
+      cashMovements
+        .filter(
+          m => m.type === "income"
+        )
+        .reduce(
+          (sum,m) =>
+            sum + Number(m.amount || 0),
+          0
+        );
+
+    const expense =
+      cashMovements
+        .filter(
+          m => m.type === "expense"
+        )
+        .reduce(
+          (sum,m) =>
+            sum + Number(m.amount || 0),
+          0
+        );
+
+    if(incomeElement){
+
+      incomeElement.textContent =
+        money(income);
+
+    }
+
+    if(expenseElement){
+
+      expenseElement.textContent =
+        money(expense);
 
     }
 
@@ -3726,7 +3696,7 @@ function renderCash(){
 
       balance.textContent =
         money(
-          currentCashSession.opening_balance || 0
+          opening + income - expense
         );
 
     }
@@ -3759,8 +3729,48 @@ function renderCash(){
 
     if(status){
 
-      status.textContent =
-        "Caixa fechado";
+      status.classList.remove(
+        "open"
+      );
+
+      status.classList.add(
+        "closed"
+      );
+
+    }
+
+    if(statusTitle){
+
+      statusTitle.textContent =
+        "🔒 Caixa fechado";
+
+    }
+
+    if(statusInfo){
+
+      statusInfo.textContent =
+        "Abra o caixa para começar os lançamentos.";
+
+    }
+
+    if(openingBalance){
+
+      openingBalance.textContent =
+        money(0);
+
+    }
+
+    if(incomeElement){
+
+      incomeElement.textContent =
+        money(0);
+
+    }
+
+    if(expenseElement){
+
+      expenseElement.textContent =
+        money(0);
 
     }
 
@@ -3797,53 +3807,6 @@ function renderCash(){
 
   }
 
-}
-
-
-async function loadCashMovements(){
-
-  if(
-    !currentCashSession?.id
-  ){
-
-    cashMovements = [];
-
-    renderCashMovements();
-
-    return;
-
-  }
-
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("cash_movements")
-      .select("*")
-      .eq(
-        "cash_session_id",
-        currentCashSession.id
-      )
-      .order(
-        "created_at",
-        {ascending:false}
-      );
-
-  if(error){
-
-    console.error(
-      "Erro ao carregar movimentações:",
-      error
-    );
-
-    return;
-
-  }
-
-  cashMovements =
-    data || [];
-
   renderCashMovements();
 
 }
@@ -3853,10 +3816,20 @@ function renderCashMovements(){
 
   const container =
     document.getElementById(
-      "cashMovementsList"
+      "cashList"
     );
 
-  if(!container){
+  if(!container) return;
+
+  if(
+    !currentCashSession ||
+    !currentCashSession.id
+  ){
+
+    container.innerHTML =
+      `<div class="cash-closed-message">
+        Abra o caixa para visualizar e adicionar lançamentos.
+      </div>`;
 
     return;
 
@@ -3866,7 +3839,7 @@ function renderCashMovements(){
 
     container.innerHTML =
       `<div class="empty">
-        Nenhuma movimentação.
+        Nenhum lançamento neste caixa.
       </div>`;
 
     return;
@@ -3874,66 +3847,68 @@ function renderCashMovements(){
   }
 
   container.innerHTML =
-    cashMovements.map(
-      function(item){
+    cashMovements
+      .map(movement => {
 
-        const income =
-          item.type === "income";
+        const isIncome =
+          movement.type === "income";
 
         return `
 
-          <div class="movement-row">
+          <div class="movement">
 
             <div>
 
               <strong>
                 ${escapeHtml(
-                  item.description || "Sem descrição"
+                  movement.description ||
+                  (isIncome
+                    ? "Entrada"
+                    : "Saída")
                 )}
               </strong>
 
-              <small>
-                ${dateTime(
-                  item.created_at
+              <div class="product-meta">
+                ${formatDate(
+                  movement.created_at
                 )}
-              </small>
+              </div>
 
             </div>
 
-            <strong
-              class="${
-                income
-                ?
-                "available"
-                :
-                "unavailable"
-              }">
+            <div
+              class="${isIncome ? "positive" : "negative"}"
+              style="
+                font-weight:900;
+                white-space:nowrap">
 
-              ${income ? "+" : "-"}
-              ${money(item.amount)}
+              ${isIncome ? "+" : "-"}
+              ${money(movement.amount)}
 
-            </strong>
+            </div>
 
           </div>
 
         `;
 
-      }
-    ).join("");
+      })
+      .join("");
 
 }
 
 
-/* =====================================================
-   ABRIR CAIXA
-===================================================== */
+/* =========================
+   MODAL ABRIR CAIXA
+========================= */
 
 function openOpenCashModal(){
 
   document
-    .getElementById(
-      "openCashModal"
-    )
+    .getElementById("openingBalance")
+    .value = "0";
+
+  document
+    .getElementById("openCashModal")
     .classList.add("active");
 
 }
@@ -3942,9 +3917,7 @@ function openOpenCashModal(){
 function closeOpenCashModal(){
 
   document
-    .getElementById(
-      "openCashModal"
-    )
+    .getElementById("openCashModal")
     .classList.remove("active");
 
 }
@@ -3952,38 +3925,52 @@ function closeOpenCashModal(){
 
 async function openCash(){
 
-  const openingBalance =
-    Number(
-      document.getElementById(
-        "openingBalance"
-      ).value || 0
-    );
-
   try{
 
-    const {
-      data,
-      error
-    } =
+    if(currentCashSession){
+
+      alert(
+        "Já existe um caixa aberto."
+      );
+
+      closeOpenCashModal();
+
+      return;
+
+    }
+
+    const opening =
+      Number(
+        document
+          .getElementById(
+            "openingBalance"
+          )
+          .value || 0
+      );
+
+    const result =
       await db
         .from("cash_sessions")
         .insert({
+
           opening_balance:
-            openingBalance,
-          opened_by:
-            currentSession?.user?.id
+            opening,
+
+          opened_at:
+            new Date().toISOString()
+
         })
         .select()
         .single();
 
-    if(error){
-
-      throw error;
-
+    if(result.error){
+      throw result.error;
     }
 
     currentCashSession =
-      data;
+      result.data;
+
+    cashMovements = [];
 
     closeOpenCashModal();
 
@@ -4007,15 +3994,17 @@ async function openCash(){
 }
 
 
-/* =====================================================
-   FECHAR CAIXA
-===================================================== */
+/* =========================
+   MODAL FECHAR CAIXA
+========================= */
 
 function openCloseCashModal(){
 
-  if(
-    !currentCashSession?.id
-  ){
+  if(!currentCashSession?.id){
+
+    alert(
+      "Abra o caixa primeiro."
+    );
 
     return;
 
@@ -4048,46 +4037,39 @@ function openCloseCashModal(){
         0
       );
 
-  const expected =
+  const total =
     opening + income - expense;
 
-  const summary =
-    document.getElementById(
+  document
+    .getElementById(
       "closeCashSummary"
-    );
+    )
+    .innerHTML = `
 
-  if(summary){
+      Saldo inicial:
+      <strong>
+        ${money(opening)}
+      </strong>
+      <br><br>
 
-    summary.innerHTML = `
+      Entradas:
+      <strong class="positive">
+        ${money(income)}
+      </strong>
+      <br><br>
 
-      <div>
-        Saldo inicial:
-        <strong>${money(opening)}</strong>
-      </div>
+      Saídas:
+      <strong class="negative">
+        ${money(expense)}
+      </strong>
+      <br><br>
 
-      <div>
-        Entradas:
-        <strong>${money(income)}</strong>
-      </div>
-
-      <div>
-        Saídas:
-        <strong>${money(expense)}</strong>
-      </div>
-
-      <div
-        style="
-          margin-top:10px;
-          font-size:18px">
-
-        Saldo esperado:
-        <strong>${money(expected)}</strong>
-
-      </div>
+      Saldo final:
+      <strong style="color:#d7aa4d;font-size:22px">
+        ${money(total)}
+      </strong>
 
     `;
-
-  }
 
   document
     .getElementById(
@@ -4111,43 +4093,65 @@ function closeCloseCashModal(){
 
 async function closeCash(){
 
+  if(!currentCashSession?.id){
+
+    alert(
+      "Nenhum caixa aberto."
+    );
+
+    return;
+
+  }
+
   if(
-    !currentCashSession?.id
+    !confirm(
+      "Deseja realmente fechar o caixa?"
+    )
   ){
 
     return;
 
   }
 
-  const notes =
-    document.getElementById(
-      "closeCashNotes"
-    ).value.trim();
-
   try{
 
-    const {
-      error
-    } =
+    const notes =
+      document
+        .getElementById(
+          "closeCashNotes"
+        )
+        .value
+        .trim();
+
+    const result =
       await db
         .from("cash_sessions")
         .update({
+
           closed_at:
             new Date().toISOString(),
-          closed_by:
-            currentSession?.user?.id,
-          notes
+
+          notes:
+            notes || null
+
         })
         .eq(
           "id",
           currentCashSession.id
         );
 
-    if(error){
-
-      throw error;
-
+    if(result.error){
+      throw result.error;
     }
+
+    currentCashSession = null;
+    cashMovements = [];
+
+    document
+      .getElementById(
+        "closeCashNotes"
+      )
+      .value = "";
 
     closeCloseCashModal();
 
@@ -4171,15 +4175,13 @@ async function closeCash(){
 }
 
 
-/* =====================================================
-   MOVIMENTAÇÃO DE CAIXA
-===================================================== */
+/* =========================
+   LANÇAMENTO DO CAIXA
+========================= */
 
 function openCashMovementModal(){
 
-  if(
-    !currentCashSession?.id
-  ){
+  if(!currentCashSession?.id){
 
     alert(
       "Abra o caixa primeiro."
@@ -4191,9 +4193,35 @@ function openCashMovementModal(){
 
   document
     .getElementById(
+      "movementType"
+    )
+    .value = "income";
+
+  document
+    .getElementById(
+      "movementAmount"
+    )
+    .value = "";
+
+  document
+    .getElementById(
+      "movementDescription"
+    )
+    .value = "";
+
+  document
+    .getElementById(
       "cashModal"
     )
     .classList.add("active");
+
+}
+
+
+/* compatibilidade caso algum botão antigo chame openCashModal() */
+function openCashModal(){
+
+  openCashMovementModal();
 
 }
 
@@ -4211,50 +4239,55 @@ function closeCashModal(){
 
 async function saveCashMovement(){
 
-  if(
-    !currentCashSession?.id
-  ){
-
-    alert(
-      "Abra o caixa primeiro."
-    );
-
-    return;
-
-  }
-
-  const type =
-    document.getElementById(
-      "movementType"
-    ).value;
-
-  const amount =
-    Number(
-      document.getElementById(
-        "movementAmount"
-      ).value || 0
-    );
-
-  const description =
-    document.getElementById(
-      "movementDescription"
-    ).value.trim();
-
-  if(amount <= 0){
-
-    alert(
-      "Informe um valor válido."
-    );
-
-    return;
-
-  }
-
   try{
 
-    const {
-      error
-    } =
+    if(!currentCashSession?.id){
+
+      alert(
+        "Abra o caixa primeiro."
+      );
+
+      closeCashModal();
+
+      return;
+
+    }
+
+    const type =
+      document
+        .getElementById(
+          "movementType"
+        )
+        .value;
+
+    const amount =
+      Number(
+        document
+          .getElementById(
+            "movementAmount"
+          )
+          .value || 0
+      );
+
+    const description =
+      document
+        .getElementById(
+          "movementDescription"
+        )
+        .value
+        .trim();
+
+    if(amount <= 0){
+
+      alert(
+        "Digite um valor válido."
+      );
+
+      return;
+
+    }
+
+    const result =
       await db
         .from("cash_movements")
         .insert({
@@ -4262,38 +4295,24 @@ async function saveCashMovement(){
           cash_session_id:
             currentCashSession.id,
 
-          type,
+          type:
+            type,
 
-          amount,
+          amount:
+            amount,
 
-          description,
-
-          created_by:
-            currentSession?.user?.id
+          description:
+            description || null
 
         });
 
-    if(error){
-
-      throw error;
-
+    if(result.error){
+      throw result.error;
     }
-
-    document.getElementById(
-      "movementAmount"
-    ).value = "";
-
-    document.getElementById(
-      "movementDescription"
-    ).value = "";
 
     closeCashModal();
 
     await loadCash();
-
-    alert(
-      "Lançamento salvo!"
-    );
 
   }catch(error){
 
@@ -4309,95 +4328,58 @@ async function saveCashMovement(){
 }
 
 
-/* =====================================================
-   INICIALIZAÇÃO
-===================================================== */
+/* =========================
+   FECHAR MODAIS AO CLICAR FORA
+========================= */
 
-async function init(){
+document
+  .querySelectorAll(".modal")
+  .forEach(modal => {
 
-  try{
+    modal.addEventListener(
+      "click",
+      function(event){
 
-    const {
-      data
-    } =
-      await db.auth.getSession();
+        if(
+          event.target === modal
+        ){
 
-    if(data?.session){
+          modal.classList.remove(
+            "active"
+          );
 
-      await showAdmin(
-        data.session
-      );
+        }
 
-    }else{
-
-      document
-        .getElementById(
-          "loginPage"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
-      document
-        .getElementById(
-          "adminPage"
-        )
-        .classList.add(
-          "hidden"
-        );
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "Erro ao iniciar painel:",
-      error
+      }
     );
 
-  }
+  });
 
-}
 
+/* =========================
+   INICIAR
+========================= */
 
 db.auth.onAuthStateChange(
-  async function(
-    event,
-    session
-  ){
+  function(event,session){
+
+    currentSession =
+      session || null;
 
     if(
       event === "SIGNED_IN" &&
       session
     ){
 
-      await showAdmin(
-        session
-      );
+      showAdmin(session);
 
     }
-
-  }
-);
-
-
-/* =====================================================
-   FECHAR MODAIS AO CLICAR FORA
-===================================================== */
-
-document.addEventListener(
-  "click",
-  function(event){
 
     if(
-      event.target.classList.contains(
-        "modal"
-      )
+      event === "SIGNED_OUT"
     ){
 
-      event.target.classList.remove(
-        "active"
-      );
+      showLogin();
 
     }
 
@@ -4405,13 +4387,8 @@ document.addEventListener(
 );
 
 
-/* =====================================================
-   INICIAR
-===================================================== */
-
-init();
+checkSession();
 
 </script>
-
 </body>
-</html>  
+</html>
